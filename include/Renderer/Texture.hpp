@@ -1,0 +1,24 @@
+#pragma once
+#include <memory>
+#include <string>
+#include <vector>
+#include <dllapi.hpp>
+
+namespace VaultRenderer {
+    class DLL_API Texture {
+    public:
+        struct t_texture {
+            uint32_t ID;
+            std::string texture_filepath;
+        };
+
+        static inline std::vector<std::shared_ptr<t_texture>> textures;
+
+        std::shared_ptr<t_texture> texture_data;
+
+        Texture(const std::string &texture_file);
+        ~Texture();
+
+        void Bind(uint32_t slot);
+    };
+} // namespace VaultRenderer

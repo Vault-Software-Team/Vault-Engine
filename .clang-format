@@ -1,0 +1,7 @@
+IndentWidth: 4
+NamespaceIndentation: All
+IndentAccessModifiers: false
+AccessModifierOffset: -4
+SortIncludes: false
+ColumnLimit: 0
+IndentPPDirectives: None
