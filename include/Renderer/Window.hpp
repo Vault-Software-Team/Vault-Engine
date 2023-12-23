@@ -8,6 +8,7 @@
 namespace VaultRenderer {
     class DLL_API Window {
     public:
+        static inline Window *window;
         Window(const int width, const int height, const char *title);
         ~Window();
 
@@ -23,6 +24,7 @@ namespace VaultRenderer {
         void SetViewport(const int width, const int height);
 
     private:
+        static void FramebufferSizeCallback(GLFWwindow *window, int width, int height);
         void SetupImGui();
         void SetDefaultImGuiTheme();
         mutable GLFWwindow *glfw_window;

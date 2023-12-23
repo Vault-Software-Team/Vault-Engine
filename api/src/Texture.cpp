@@ -15,7 +15,7 @@ namespace VaultRenderer {
         }
     }
 
-    Texture::Texture(const std::string &texture_file) {
+    Texture::Texture(const std::string &texture_file, const TextureType &type) {
         bool found = false;
         for (auto tex : textures) {
             if (tex->texture_filepath == texture_file) {
@@ -28,6 +28,7 @@ namespace VaultRenderer {
         if (!found) {
             texture_data = std::make_shared<t_texture>();
             texture_data->texture_filepath = texture_file;
+            texture_data->type = type;
 
             int width, height, nrChannels;
             stbi_set_flip_vertically_on_load(true);

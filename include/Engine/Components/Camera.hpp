@@ -1,11 +1,18 @@
 #pragma once
 #include "Transform.hpp"
 #include "Base.hpp"
+#include <dllapi.hpp>
 #include <Renderer/Shader.hpp>
 
 namespace Engine {
     namespace Components {
-        struct Camera : Base {
+        struct DLL_API Camera : Base {
+        private:
+            bool first_click;
+
+        public:
+            Transform *transform;
+            void Init();
             Camera() = default;
             glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f);
 
@@ -21,6 +28,7 @@ namespace Engine {
 
             void UpdateMatrix();
             void BindToShader(VaultRenderer::Shader &shader);
+            void Inputs();
         };
     } // namespace Components
 } // namespace Engine

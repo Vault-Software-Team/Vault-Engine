@@ -7,6 +7,7 @@
 
 namespace VaultRenderer {
     Window::Window(const int width, const int height, const char *title) : width(width), height(height), title(title) {
+        window = this;
         glfwInit();
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -24,6 +25,10 @@ namespace VaultRenderer {
 
         glEnable(GL_DEPTH_TEST);
         glViewport(0, 0, width, height);
+
+        glfwSetFramebufferSizeCallback(glfw_window, FramebufferSizeCallback);
+
+        // ImGui Setup
         SetupImGui();
         SetDefaultImGuiTheme();
     }
@@ -36,6 +41,8 @@ namespace VaultRenderer {
         ImGuiIO &io = ImGui::GetIO();
 
         while (!glfwWindowShouldClose(glfw_window)) {
+            glfwGetWindowSize(glfw_window, &width, &height);
+
             ImGui_ImplOpenGL3_NewFrame();
             ImGui_ImplGlfw_NewFrame();
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -191,5 +198,9 @@ namespace VaultRenderer {
         style.Colors[ImGuiCol_NavWindowingHighlight] = ImVec4(1.0f, 0.0f, 0.0f, 0.699999988079071f);
         style.Colors[ImGuiCol_NavWindowingDimBg] = ImVec4(1.0f, 0.0f, 0.0f, 0.2000000029802322f);
         style.Colors[ImGuiCol_ModalWindowDimBg] = ImVec4(1.0f, 0.0f, 0.0f, 0.3499999940395355f);
+    }
+
+    void Window::FramebufferSizeCallback(GLFWwindow *window, int width, int height) {
+        glViewport(0, 0, width, height);
     }
 } // namespace VaultRenderer

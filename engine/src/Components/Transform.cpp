@@ -1,4 +1,5 @@
 #include <Engine/Components/Transform.hpp>
+#include <glm/gtx/quaternion.hpp>
 
 namespace Engine::Components {
     glm::mat4 &Transform::UpdateModel() {
@@ -15,5 +16,9 @@ namespace Engine::Components {
         up = glm::normalize(glm::cross(right, forward));
 
         return model;
+    }
+
+    void Transform::Update() {
+        UpdateModel();
     }
 } // namespace Engine::Components

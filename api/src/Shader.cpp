@@ -104,7 +104,12 @@ namespace VaultRenderer {
         }
     }
 
-    void Shader::Bind() { glUseProgram(ID); }
+    void Shader::Bind() {
+        if (binded_shader != this)
+            glUseProgram(ID);
+
+        binded_shader = this;
+    }
 
     void Shader::Unbind() { glUseProgram(0); }
 

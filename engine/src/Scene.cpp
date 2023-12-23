@@ -1,5 +1,6 @@
 #include <Engine/Scene.hpp>
 #include <iostream>
+#include <Engine/GameObject.hpp>
 
 namespace Engine {
     Scene::Scene(const std::string &scene_file) : scene_file_path(scene_file) {

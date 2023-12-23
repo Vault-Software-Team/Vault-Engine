@@ -9,6 +9,7 @@
 namespace VaultRenderer {
     class DLL_API Shader {
     private:
+        static inline Shader *binded_shader;
         uint32_t ID;
 
     public:

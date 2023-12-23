@@ -1,73 +1,117 @@
+#include "Engine/GameObject.hpp"
 #include <iostream>
 #include <Renderer/Window.hpp>
 #include <Renderer/Mesh.hpp>
 #include <Renderer/Texture.hpp>
 #include <imgui/imgui.h>
 #include <Engine/Scene.hpp>
+#include <Engine/Components/IncludeComponents.hpp>
+
+static VaultRenderer::Shader *default_shader;
+
+void UpdateGameObjects() {
+    using namespace Engine;
+    using namespace Engine::Components;
+    for (auto gameObject : Scene::Main->GameObjects) {
+        if (gameObject->HasComponent<MeshRenderer>()) {
+
+            auto &meshRenderer = gameObject->GetComponent<MeshRenderer>();
+            if (meshRenderer.mesh) {
+                meshRenderer.mesh->Draw(*default_shader);
+            }
+        }
+
+        if (gameObject->HasComponent<AmbientLight>()) {
+            auto &light = gameObject->GetComponent<AmbientLight>();
+            light.AttachToShader(*default_shader);
+        }
+
+        if (gameObject->HasComponent<PointLight>()) {
+            auto &light = gameObject->GetComponent<PointLight>();
+            light.AttachToShader(*default_shader);
+        }
+    }
+}
 
 int main() {
     using namespace VaultRenderer;
     Window window(800, 600, "Vault Engine");
 
-    std::vector<Vertex> vertices = {
-        // {glm::vec3(0.5f, 0.5f, 0.0f), glm::vec2(1, 1)},
-        // {glm::vec3(0.5f, -0.5f, 0.0f), glm::vec2(1, 0)},
-        // {glm::vec3(-0.5f, -0.5f, 0.0f), glm::vec2(0, 0)},
-        // {glm::vec3(-0.5f, 0.5f, 0.0f), glm::vec2(0, 1)},
-
-        {glm::vec3(-0.5f, 0.0f, 0.5f), glm::vec2(0.0f, 0.0f)},
-        {glm::vec3(-0.5f, 0.0f, -0.5f), glm::vec2(5.0f, 0.0f)},
-        {glm::vec3(0.5f, 0.0f, -0.5f), glm::vec2(0.0f, 0.0f)},
-        {glm::vec3(0.5f, 0.0f, 0.5f), glm::vec2(5.0f, 0.0f)},
-        {glm::vec3(0.0f, 0.8f, 0.0f), glm::vec2(2.5f, 5.0f)}};
-
-    std::vector<uint32_t> indices = {
-        // 0, 1, 3, // first triangle
-        // 1, 2, 3
-        0, 1, 2,
-        0, 2, 3,
-        0, 1, 4,
-        1, 2, 4,
-        2, 3, 4,
-        3, 0, 4};
-
     Shader shader("../shaders/default.glsl");
-    Mesh square(vertices, indices);
-    Texture texture("../assets/k7.png");
+    default_shader = &shader;
 
     shader.Bind();
-    texture.Bind(0);
-    shader.SetUniform1i("texture_diffuse", 0);
 
     float rotation = 0.5f;
-
     double previousTime = glfwGetTime();
 
-    window.Run([&] {
-        window.SetClearColor(0x000000);
+    using namespace Engine;
+    Scene::New("../assets/main.vault");
 
-        glm::mat4 model = glm::mat4(1.0f);
+    auto gameObject = GameObject::New("My GameObject");
+    gameObject->AddComponent<Components::MeshRenderer>();
+    gameObject->AddComponent<Components::AmbientLight>();
+    auto &meshRenderer = gameObject->GetComponent<Components::MeshRenderer>();
+    gameObject->GetComponent<Components::AmbientLight>().amount = 0.2f;
+    meshRenderer.SetMeshType(Components::MESH_PLANE);
+    meshRenderer.mesh->material.SetDiffuse("../assets/planks.png");
+    meshRenderer.mesh->material.SetSpecular("../assets/planksSpec.png");
+
+    auto cameraObject = GameObject::New("Camera");
+    cameraObject->AddComponent<Components::Camera>();
+
+    auto lightObject = GameObject::New("PointLight");
+    lightObject->AddComponent<Components::PointLight>();
+
+    using namespace Engine::Components;
+    auto &transform = gameObject->GetComponent<Transform>();
+    auto &light_transform = lightObject->GetComponent<Transform>();
+    transform.rotation.x = glm::radians(90.f);
+    transform.scale = glm::vec3(10, 10, 10);
+    auto &camera_transform = cameraObject->GetComponent<Transform>();
+    auto &camera = cameraObject->GetComponent<Camera>();
+    camera_transform.rotation.z = -1.0f;
+
+    camera.fov = 45;
+    camera.near = 0.01f;
+    camera.far = 100.0f;
+    camera.width = 800;
+    camera.height = 600;
+    camera_transform.position.y = 0.5f;
+    camera_transform.position.z = 25.f;
+
+    window.Run([&] {
+        camera.width = window.width;
+        camera.height = window.height;
+        window.SetClearColor(0x000000);
+        transform.Update();
+        shader.SetUniformMat4("transformModel", transform.model);
+
         glm::mat4 view = glm::mat4(1.0f);
         glm::mat4 projection = glm::mat4(1.0f);
 
-        model = glm::rotate(model, glm::radians(rotation), glm::vec3(0.f, 1.f, 0.f));
-        view = glm::translate(view, glm::vec3(0.0f, -0.5f, -2.0f));
-        projection = glm::perspective(glm::radians(45.0f), (float)(800.f / 600.f), 0.01f, 100.0f);
+        // model = glm::rotate(m/* */odel, glm::radians(rotation), glm::vec3(0.f, 1.f, 0.f));
+        // view = glm::translate(view, glm::vec3(0.0f, -0.5f, -2.0f));
+        // projection = glm::perspective(glm::radians(45.0f), (float)(800.f / 600.f), 0.01f, 100.0f);
+        // shader.SetUniformMat4("camera_view", view);
+        // shader.SetUniformMat4("camera_projection", projection);
 
-        double currentTime = glfwGetTime();
-        if (currentTime - previousTime >= 1 / 60) {
-            rotation += 0.5f;
-            previousTime = currentTime;
-        }
+        // square.Draw(shader);
+        // auto meshRendererView = Scene::Main->EntityRegistry.view<Components::MeshRenderer>();
+        camera.UpdateMatrix();
+        camera.BindToShader(shader);
+        camera.Inputs();
 
-        shader.SetUniformMat4("transformModel", model);
-        shader.SetUniformMat4("view", view);
-        shader.SetUniformMat4("projection", projection);
+        UpdateGameObjects();
 
-        square.Draw(shader);
-
-        if (ImGui::Begin("test")) {
-            ImGui::Text("Hello filthy world!");
+        if (ImGui::Begin("Hierarchy")) {
+            for (auto &gameObject : Scene::Main->GameObjects) {
+                if (gameObject) {
+                    ImGui::Text("%s", gameObject->name.c_str());
+                    ImGui::NewLine();
+                }
+            }
+            ImGui::DragFloat3("Pos", &light_transform.position.x, 0.01f);
             ImGui::End();
         }
     });
