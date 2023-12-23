@@ -12,11 +12,18 @@ static VaultRenderer::Shader *default_shader;
 void UpdateGameObjects() {
     using namespace Engine;
     using namespace Engine::Components;
+    glEnable(GL_BLEND);
+    default_shader->Bind();
     for (auto gameObject : Scene::Main->GameObjects) {
         if (gameObject->HasComponent<MeshRenderer>()) {
 
             auto &meshRenderer = gameObject->GetComponent<MeshRenderer>();
             if (meshRenderer.mesh) {
+                if (meshRenderer.mesh_type == Engine::Components::MESH_PLANE) {
+                    glDisable(GL_CULL_FACE);
+                } else {
+                    glEnable(GL_CULL_FACE);
+                }
                 meshRenderer.mesh->Draw(*default_shader);
             }
         }
@@ -41,6 +48,7 @@ void UpdateGameObjects() {
             light.AttachToShader(*default_shader);
         }
     }
+    glDisable(GL_BLEND);
 }
 
 int main() {

@@ -9,13 +9,13 @@
 namespace VaultRenderer {
     class DLL_API Material {
     public:
-        glm::vec3 color;
+        glm::vec4 color;
         std::unique_ptr<VaultRenderer::Texture> diffuse{nullptr};
         std::unique_ptr<VaultRenderer::Texture> specular{nullptr};
         std::unique_ptr<VaultRenderer::Texture> normal{nullptr};
         std::unique_ptr<VaultRenderer::Texture> height{nullptr};
 
-        Material(const glm::vec3 &color = glm::vec3(1, 1, 1));
+        Material(const glm::vec4 &color = glm::vec4(1, 1, 1, 1));
 
         void SetDiffuse(const std::string &texture_path);
         void SetSpecular(const std::string &texture_path);

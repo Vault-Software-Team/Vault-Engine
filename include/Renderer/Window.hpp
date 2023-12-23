@@ -4,11 +4,16 @@
 #include <GLFW/glfw3.h>
 #include <functional>
 #include <dllapi.hpp>
+#include <Renderer/Framebuffer.hpp>
+#include <memory>
+#include <Renderer/Shader.hpp>
 
 namespace VaultRenderer {
     class DLL_API Window {
     public:
         static inline Window *window;
+        std::unique_ptr<Framebuffer> framebuffer = nullptr;
+
         Window(const int width, const int height, const char *title);
         ~Window();
 

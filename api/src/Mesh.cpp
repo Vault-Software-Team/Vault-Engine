@@ -3,7 +3,7 @@
 #include <GLFW/glfw3.h>
 
 namespace VaultRenderer {
-    Mesh::Mesh(std::vector<Vertex> &vertices, std::vector<uint32_t> &indices) : vertices(vertices), indices(indices), material{glm::vec3(1, 1, 1)} {
+    Mesh::Mesh(std::vector<Vertex> &vertices, std::vector<uint32_t> &indices) : vertices(vertices), indices(indices), material{glm::vec4(1, 1, 1, 1)} {
         // VAO setup
         glGenVertexArrays(1, &VAO);
 
@@ -41,7 +41,7 @@ namespace VaultRenderer {
         glBindVertexArray(0);
     }
 
-    Material::Material(const glm::vec3 &color) : color(color) {}
+    Material::Material(const glm::vec4 &color) : color(color) {}
 
     void Material::SetDiffuse(const std::string &texture_path) {
         diffuse = std::make_unique<Texture>(texture_path, TEXTURE_DIFFUSE);
@@ -59,7 +59,7 @@ namespace VaultRenderer {
     void Material::BindToShader(Shader &shader) {
         shader.Bind();
 
-        shader.SetUniform3f("baseColor", color.r, color.g, color.b);
+        shader.SetUniform4f("baseColor", color.r, color.g, color.b, color.a);
 
         if (diffuse) {
             diffuse->Bind(0);

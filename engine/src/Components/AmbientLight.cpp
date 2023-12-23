@@ -1,4 +1,3 @@
-#pragma once
 #include <Engine/Components/AmbientLight.hpp>
 
 namespace Engine::Components {

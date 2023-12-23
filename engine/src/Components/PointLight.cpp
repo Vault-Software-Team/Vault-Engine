@@ -1,4 +1,3 @@
-#pragma once
 #include <Engine/Components/PointLight.hpp>
 #include <Engine/Scene.hpp>
 

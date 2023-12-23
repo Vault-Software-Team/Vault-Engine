@@ -37,7 +37,7 @@ uniform Texture texture_specular;
 uniform float ambient_amount;
 uniform vec3 ambient_color;
 uniform vec3 camera_position;
-uniform vec3 baseColor;
+uniform vec4 baseColor;
 vec3 m_normal = normalize(normal);
 
 // Lights
@@ -98,9 +98,9 @@ vec3 point_light(PointLight light) {
 
     if(texture_diffuse.defined) {
 
-        return (texture(texture_diffuse.tex, texUV).rgb * baseColor) * light.color * (diffuse * inten + ambient_amount) + (spec);
+        return (texture(texture_diffuse.tex, texUV).rgb * baseColor.rgb) * light.color * (diffuse * inten + ambient_amount) + (spec);
     } else {
-        return (baseColor) * light.color * (diffuse * inten + ambient_amount) + (spec);
+        return (baseColor.rgb) * light.color * (diffuse * inten + ambient_amount) + (spec);
     }
 }
 
@@ -128,9 +128,9 @@ vec3 directional_light(DirectionalLight light) {
 
     if(texture_diffuse.defined) {
 
-        return (texture(texture_diffuse.tex, texUV).rgb * baseColor) * light.color * (diffuse * inten + ambient_amount) + (spec);
+        return (texture(texture_diffuse.tex, texUV).rgb * baseColor.rgb) * light.color * (diffuse * inten + ambient_amount) + (spec);
     } else {
-        return (baseColor) * light.color * (diffuse * inten + ambient_amount) + (spec);
+        return (baseColor.rgb) * light.color * (diffuse * inten + ambient_amount) + (spec);
     }
 
 }
@@ -164,16 +164,15 @@ vec3 spot_light(SpotLight light) {
 
     if(texture_diffuse.defined) {
 
-        return (texture(texture_diffuse.tex, texUV).rgb * baseColor) * light.color * (diffuse * inten + ambient_amount) + (spec);
+        return (texture(texture_diffuse.tex, texUV).rgb * baseColor.rgb) * light.color * (diffuse * inten + ambient_amount) + (spec);
     } else {
-        return (baseColor) * light.color * (diffuse * inten + ambient_amount) + (spec);
+        return (baseColor.rgb) * light.color * (diffuse * inten + ambient_amount) + (spec);
     }
 }
 
 void main()
 {
     vec4 total_color = vec4(0);
-    total_color.a = 1;
     for(int i = 0; i < MAX_LIGHTS; i++) {
         if(point_lights[i].intensity > 0)
             total_color += vec4(point_light(point_lights[i]), 1.0f);
@@ -186,7 +185,13 @@ void main()
     }
 
     if(total_color.r == 0 && total_color.g == 0 && total_color.b == 0) {
-        total_color = vec4(texture(texture_diffuse.tex, texUV).rgb * ambient_amount, 1);
+        total_color = vec4(texture(texture_diffuse.tex, texUV).rgb * baseColor.rgb * ambient_amount, 1);
+    }
+    
+    if(texture_diffuse.defined) {
+        total_color.a = texture(texture_diffuse.tex, texUV).a * baseColor.a;
+    } else {
+        total_color.a = baseColor.a;
     }
     // PointLight light;
     // light.position = vec3(1.0, 0.3, 1);

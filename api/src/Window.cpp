@@ -4,6 +4,7 @@
 #include <imgui/imgui_impl_glfw.h>
 #include <imgui/imgui_impl_opengl3.h>
 #include <icons/icons.h>
+#include <Renderer/Framebuffer.hpp>
 
 namespace VaultRenderer {
     Window::Window(const int width, const int height, const char *title) : width(width), height(height), title(title) {
@@ -24,6 +25,10 @@ namespace VaultRenderer {
         gladLoadGL();
 
         glEnable(GL_DEPTH_TEST);
+        glEnable(GL_CULL_FACE);
+        glCullFace(GL_FRONT);
+        glFrontFace(GL_CCW);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glViewport(0, 0, width, height);
 
         glfwSetFramebufferSizeCallback(glfw_window, FramebufferSizeCallback);
@@ -31,6 +36,8 @@ namespace VaultRenderer {
         // ImGui Setup
         SetupImGui();
         SetDefaultImGuiTheme();
+
+        framebuffer = std::make_unique<Framebuffer>();
     }
 
     Window::~Window() {
@@ -38,6 +45,8 @@ namespace VaultRenderer {
     };
 
     void Window::Run(std::function<void()> update_call) {
+        static int before_width, before_height;
+        Shader framebuffer_shader("../shaders/framebuffer.glsl");
         ImGuiIO &io = ImGui::GetIO();
 
         while (!glfwWindowShouldClose(glfw_window)) {
@@ -45,11 +54,22 @@ namespace VaultRenderer {
 
             ImGui_ImplOpenGL3_NewFrame();
             ImGui_ImplGlfw_NewFrame();
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             ImGui::NewFrame();
-            update_call();
 
+            // Framebuffer Shenanigans
             glfwPollEvents();
+
+            if (before_width != width || before_height != height) {
+                framebuffer->RegenerateFramebuffer();
+            }
+
+            framebuffer->Bind();
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            glEnable(GL_DEPTH_TEST);
+            update_call();
+            framebuffer->UnbindAndDrawOnScreen(framebuffer_shader);
+
+            // End of Framebuffer Shenanigans
 
             ImGui::Render();
             ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
@@ -64,6 +84,8 @@ namespace VaultRenderer {
                 glfwMakeContextCurrent(backup_current_context);
             }
             glfwSwapBuffers(glfw_window);
+            before_width = width;
+            before_height = height;
         }
     }
 

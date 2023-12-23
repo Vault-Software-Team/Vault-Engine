@@ -1,4 +1,3 @@
-#pragma once
 #include <Engine/Components/SpotLight.hpp>
 #include <Engine/Scene.hpp>
 
