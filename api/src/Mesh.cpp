@@ -63,22 +63,34 @@ namespace VaultRenderer {
 
         if (diffuse) {
             diffuse->Bind(0);
-            shader.SetUniform1i("texture_diffuse", 0);
+            shader.SetUniform1i("texture_diffuse.tex", 0);
+            shader.SetUniform1i("texture_diffuse.defined", 1);
+        } else {
+            shader.SetUniform1i("texture_diffuse.defined", 0);
         }
 
         if (specular) {
             specular->Bind(1);
-            shader.SetUniform1i("texture_specular", 1);
+            shader.SetUniform1i("texture_specular.tex", 1);
+            shader.SetUniform1i("texture_specular.defined", 1);
+        } else {
+            shader.SetUniform1i("texture_specular.defined", 0);
         }
 
         if (normal) {
             normal->Bind(2);
-            shader.SetUniform1i("texture_normal", 2);
+            shader.SetUniform1i("texture_normal.tex", 2);
+            shader.SetUniform1i("texture_normal.defined", 1);
+        } else {
+            shader.SetUniform1i("texture_normal.defined", 0);
         }
 
         if (height) {
             height->Bind(3);
-            shader.SetUniform1i("texture_height", 3);
+            shader.SetUniform1i("texture_height.tex", 3);
+            shader.SetUniform1i("texture_height.defined", 1);
+        } else {
+            shader.SetUniform1i("texture_height.defined", 0);
         }
     }
 } // namespace VaultRenderer

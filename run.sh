@@ -1,4 +1,4 @@
 cmake -S . -B ./build
 cd build
 make
-gdb ./app/app
+mangohud --dlsym ./app/app

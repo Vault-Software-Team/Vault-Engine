@@ -30,12 +30,22 @@ void UpdateGameObjects() {
             auto &light = gameObject->GetComponent<PointLight>();
             light.AttachToShader(*default_shader);
         }
+
+        if (gameObject->HasComponent<DirectionalLight>()) {
+            auto &light = gameObject->GetComponent<DirectionalLight>();
+            light.AttachToShader(*default_shader);
+        }
+
+        if (gameObject->HasComponent<SpotLight>()) {
+            auto &light = gameObject->GetComponent<SpotLight>();
+            light.AttachToShader(*default_shader);
+        }
     }
 }
 
 int main() {
     using namespace VaultRenderer;
-    Window window(800, 600, "Vault Engine");
+    Window window(1280, 720, "Vault Engine");
 
     Shader shader("../shaders/default.glsl");
     default_shader = &shader;
@@ -60,8 +70,8 @@ int main() {
     auto cameraObject = GameObject::New("Camera");
     cameraObject->AddComponent<Components::Camera>();
 
-    auto lightObject = GameObject::New("PointLight");
-    lightObject->AddComponent<Components::PointLight>();
+    auto lightObject = GameObject::New("DirectionalLight");
+    lightObject->AddComponent<Components::SpotLight>();
 
     using namespace Engine::Components;
     auto &transform = gameObject->GetComponent<Transform>();
@@ -112,6 +122,7 @@ int main() {
                 }
             }
             ImGui::DragFloat3("Pos", &light_transform.position.x, 0.01f);
+            ImGui::DragFloat3("Rot", &light_transform.rotation.x, 0.01f);
             ImGui::End();
         }
     });
