@@ -1,6 +1,7 @@
 #include <Renderer/Mesh.hpp>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <Renderer/Stats.hpp>
 
 namespace VaultRenderer {
     Mesh::Mesh(std::vector<Vertex> &vertices, std::vector<uint32_t> &indices) : vertices(vertices), indices(indices), material{glm::vec4(1, 1, 1, 1)} {
@@ -35,6 +36,7 @@ namespace VaultRenderer {
 
     void Mesh::Draw(Shader &shader) {
         material.BindToShader(shader);
+        Statistics::DrawCall();
 
         glBindVertexArray(VAO);
         glDrawElements(GL_TRIANGLES, static_cast<uint32_t>(indices.size()), GL_UNSIGNED_INT, 0);
@@ -50,14 +52,19 @@ namespace VaultRenderer {
         specular = std::make_unique<Texture>(texture_path, TEXTURE_SPECULAR);
     }
     void Material::SetNormal(const std::string &texture_path) {
-        specular = std::make_unique<Texture>(texture_path, TEXTURE_NORMAL);
+        normal = std::make_unique<Texture>(texture_path, TEXTURE_NORMAL);
     }
     void Material::SetHeight(const std::string &texture_path) {
-        specular = std::make_unique<Texture>(texture_path, TEXTURE_HEIGHT);
+        height = std::make_unique<Texture>(texture_path, TEXTURE_HEIGHT);
     }
 
     void Material::BindToShader(Shader &shader) {
         shader.Bind();
+        for (uint32_t i = 0; i < 4; i++) {
+            // unbind all texture
+            glActiveTexture(GL_TEXTURE0 + i);
+            glBindTexture(GL_TEXTURE_2D, 0);
+        }
 
         shader.SetUniform4f("baseColor", color.r, color.g, color.b, color.a);
 
@@ -66,6 +73,7 @@ namespace VaultRenderer {
             shader.SetUniform1i("texture_diffuse.tex", 0);
             shader.SetUniform1i("texture_diffuse.defined", 1);
         } else {
+            shader.SetUniform1i("texture_diffuse.tex", -1);
             shader.SetUniform1i("texture_diffuse.defined", 0);
         }
 
@@ -74,6 +82,7 @@ namespace VaultRenderer {
             shader.SetUniform1i("texture_specular.tex", 1);
             shader.SetUniform1i("texture_specular.defined", 1);
         } else {
+            shader.SetUniform1i("texture_specular.tex", -1);
             shader.SetUniform1i("texture_specular.defined", 0);
         }
 
@@ -82,6 +91,7 @@ namespace VaultRenderer {
             shader.SetUniform1i("texture_normal.tex", 2);
             shader.SetUniform1i("texture_normal.defined", 1);
         } else {
+            shader.SetUniform1i("texture_normal.tex", -1);
             shader.SetUniform1i("texture_normal.defined", 0);
         }
 
@@ -90,6 +100,7 @@ namespace VaultRenderer {
             shader.SetUniform1i("texture_height.tex", 3);
             shader.SetUniform1i("texture_height.defined", 1);
         } else {
+            shader.SetUniform1i("texture_height.tex", -1);
             shader.SetUniform1i("texture_height.defined", 0);
         }
     }

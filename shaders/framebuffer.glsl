@@ -16,7 +16,12 @@ out vec4 FragColor;
 in vec2 texCoords;
 
 uniform sampler2D screen_texture;
+const float gamma = 1.0;
 
 void main() {
-    FragColor = texture(screen_texture, texCoords);
+    vec4 frag = texture(screen_texture, texCoords);
+
+    FragColor = frag;
+    // FragColor.rgb = pow(frag.rgb, vec3(1.0 / gamma));
+    // FragColor.a = 1;
 }

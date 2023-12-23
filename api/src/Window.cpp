@@ -26,7 +26,8 @@ namespace VaultRenderer {
 
         glEnable(GL_DEPTH_TEST);
         glEnable(GL_CULL_FACE);
-        glCullFace(GL_FRONT);
+        // glEnable(GL_FRAMEBUFFER_SRGB);
+        glCullFace(GL_BACK);
         glFrontFace(GL_CCW);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glViewport(0, 0, width, height);
@@ -44,17 +45,14 @@ namespace VaultRenderer {
         glfwTerminate();
     };
 
-    void Window::Run(std::function<void()> update_call) {
+    void Window::Run(std::function<void()> update_call, std::function<void()> gui_call, std::function<void()> shadow_render_call) {
         static int before_width, before_height;
         Shader framebuffer_shader("../shaders/framebuffer.glsl");
         ImGuiIO &io = ImGui::GetIO();
 
         while (!glfwWindowShouldClose(glfw_window)) {
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             glfwGetWindowSize(glfw_window, &width, &height);
-
-            ImGui_ImplOpenGL3_NewFrame();
-            ImGui_ImplGlfw_NewFrame();
-            ImGui::NewFrame();
 
             // Framebuffer Shenanigans
             glfwPollEvents();
@@ -63,14 +61,20 @@ namespace VaultRenderer {
                 framebuffer->RegenerateFramebuffer();
             }
 
+            shadow_render_call();
+
             framebuffer->Bind();
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             glEnable(GL_DEPTH_TEST);
+
             update_call();
             framebuffer->UnbindAndDrawOnScreen(framebuffer_shader);
 
             // End of Framebuffer Shenanigans
-
+            ImGui_ImplOpenGL3_NewFrame();
+            ImGui_ImplGlfw_NewFrame();
+            ImGui::NewFrame();
+            gui_call();
             ImGui::Render();
             ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
@@ -102,7 +106,7 @@ namespace VaultRenderer {
     }
 
     void Window::SetViewport(const int width, const int height) {
-        glViewport(0, 0, width, height);
+        // glViewport(0, 0, width, height);
     }
 
     void Window::SetupImGui() {

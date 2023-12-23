@@ -1,5 +1,6 @@
 #include <Engine/Components/Transform.hpp>
 #include <glm/gtx/quaternion.hpp>
+#include <Engine/GameObject.hpp>
 
 namespace Engine::Components {
     glm::mat4 &Transform::UpdateModel() {
@@ -15,6 +16,12 @@ namespace Engine::Components {
         right = glm::normalize(glm::cross(forward, glm::vec3(0, 1, 0)));
         up = glm::normalize(glm::cross(right, forward));
 
+        auto &self = GameObject::FindGameObjectByEntity(entity);
+        if (self->parent != "NO_PARENT") {
+            auto &pTransform = GameObject::FindGameObjectByID(self->parent)->GetComponent<Transform>();
+            pTransform.Update();
+            model = pTransform.model * model;
+        }
         return model;
     }
 

@@ -7,9 +7,11 @@ layout(location = 2) in vec3 vNormal;
 out vec2 texUV;
 out vec3 normal;
 out vec3 current_position;
+out vec4 fragPosLight;
 uniform mat4 transformModel;
 uniform mat4 camera_view;
 uniform mat4 camera_projection;
+uniform mat4 light_proj;
 
 void main()
 {
@@ -17,6 +19,7 @@ void main()
     gl_Position = camera_projection * camera_view * vec4(current_position, 1.0);
     texUV = vTextureUV;
     normal = vNormal;
+    fragPosLight = light_proj * vec4(current_position, 1);
 }
 
 #shader fragment
@@ -26,6 +29,7 @@ out vec4 FragColor;
 in vec2 texUV;
 in vec3 normal;
 in vec3 current_position;
+in vec4 fragPosLight;
 
 struct Texture {
     sampler2D tex;
@@ -34,6 +38,8 @@ struct Texture {
 
 uniform Texture texture_diffuse;
 uniform Texture texture_specular;
+uniform Texture texture_normal;
+uniform sampler2D shadowMap;
 uniform float ambient_amount;
 uniform vec3 ambient_color;
 uniform vec3 camera_position;
@@ -61,6 +67,9 @@ struct SpotLight {
 };
 
 #define MAX_LIGHTS 100
+uniform int point_light_count;
+uniform int dir_light_count;
+uniform int spot_light_count;
 uniform PointLight point_lights[MAX_LIGHTS];
 uniform DirectionalLight directional_lights[MAX_LIGHTS];
 uniform SpotLight spot_lights[MAX_LIGHTS];
@@ -109,16 +118,23 @@ vec3 directional_light(DirectionalLight light) {
     float inten = light.intensity;
     vec3 light_dir = normalize(light.position);
 
-    float diffuse = max(dot(m_normal, light_dir), 0.0f);
+    vec3 t_normal = vec3(0);
+    if(texture_normal.defined) {
+        t_normal = normalize(texture(texture_normal.tex, texUV).rgb * 2.0 - 1.0);
+    } else {
+        t_normal = m_normal;
+    }
+    float diffuse = max(dot(t_normal, light_dir), 0.0f);
 
     float specular_light = 0.5;
 
+
     vec3 view_dir = normalize(camera_position - current_position);
-    vec3 reflection_dir = reflect(-light_dir, m_normal);
+    vec3 reflection_dir = reflect(-light_dir, t_normal);
 
     vec3 halfway_vec = normalize(view_dir + light_dir);
 
-    float specular_amount = pow(max(dot(m_normal, halfway_vec), 0.0), 16);
+    float specular_amount = pow(max(dot(t_normal, halfway_vec), 0.0), 16);
     float specular = specular_amount * specular_light;
 
     float spec = 0;
@@ -129,11 +145,46 @@ vec3 directional_light(DirectionalLight light) {
     }
     spec *= inten;
 
-    if(texture_diffuse.defined) {
+    // float shadow = 0.0;
+    // vec3 lightCoords = fragPosLight.xyz / fragPosLight.w;
+    // if(lightCoords.z <= 1.0) {
+    //     lightCoords = (lightCoords + 1.0) / 2.0;
 
-        return (texture(texture_diffuse.tex, texUV).rgb * baseColor.rgb) * light.color * (diffuse * inten + ambient_amount) + (spec);
+    //     float closestDepth = texture(shadowMap, lightCoords.xy).r;
+    //     float currentDepth = lightCoords.z;
+
+    //     float bias = 0.005;
+    //     if(currentDepth > closestDepth + bias) {
+    //         shadow = 1;
+    //     }
+    // } 
+
+    float shadow = 0.0f;
+    vec3 lightCoords = fragPosLight.xyz / fragPosLight.w;
+    if(lightCoords.z <= 1.0f) {
+        lightCoords = (lightCoords + 1.0f) / 2.0f;
+
+        float closestDepth = texture(shadowMap, lightCoords.xy).r;
+        float currentDepth = lightCoords.z;
+        float bias = max(0.025f * (1.0f - dot(t_normal, light_dir)), 0.0005f);
+
+        int sampleRadius = 2;
+        vec2 pixelSize  = 1.0 / textureSize(shadowMap, 0);
+        for(int y = -sampleRadius; y <= sampleRadius; y++) {
+            for(int x = -sampleRadius; x <= sampleRadius; x++) {
+                float closestDepth = texture(shadowMap, lightCoords.xy + vec2(x,y) * pixelSize).r;
+                if(currentDepth > closestDepth + bias)
+                    shadow += 1.0f;
+            }
+        }
+
+        shadow /= pow((sampleRadius * 2 + 1), 2);
+    }
+
+    if(texture_diffuse.defined) {
+        return (texture(texture_diffuse.tex, texUV).rgb * baseColor.rgb) * light.color * (diffuse * (1.0 - shadow) * inten + ambient_amount) + (spec * (1.0 - shadow));
     } else {
-        return (baseColor.rgb) * light.color * (diffuse * inten + ambient_amount) + (spec);
+        return (baseColor.rgb) * light.color * (diffuse * (1.0 - shadow) * inten + ambient_amount) + (spec * (1.0 - shadow));
     }
 
 }
@@ -168,7 +219,6 @@ vec3 spot_light(SpotLight light) {
     spec *= inten;
 
     if(texture_diffuse.defined) {
-
         return (texture(texture_diffuse.tex, texUV).rgb * baseColor.rgb) * light.color * (diffuse * inten + ambient_amount) + (spec);
     } else {
         return (baseColor.rgb) * light.color * (diffuse * inten + ambient_amount) + (spec);
@@ -178,13 +228,23 @@ vec3 spot_light(SpotLight light) {
 void main()
 {
     vec4 total_color = vec4(0);
-    for(int i = 0; i < MAX_LIGHTS; i++) {
+    for(int i = 0; i < point_light_count; i++) {
         if(point_lights[i].intensity > 0)
             total_color += vec4(point_light(point_lights[i]), 1.0f);
 
         if(directional_lights[i].intensity > 0)
             total_color += vec4(directional_light(directional_lights[i]), 1.0f);
 
+        if(spot_lights[i].intensity > 0)
+            total_color += vec4(spot_light(spot_lights[i]), 1.0f);
+    }
+
+    for(int i = 0; i < dir_light_count; i++) {
+        if(directional_lights[i].intensity > 0)
+            total_color += vec4(directional_light(directional_lights[i]), 1.0f);
+    }
+
+    for(int i = 0; i < spot_light_count; i++) {
         if(spot_lights[i].intensity > 0)
             total_color += vec4(spot_light(spot_lights[i]), 1.0f);
     }

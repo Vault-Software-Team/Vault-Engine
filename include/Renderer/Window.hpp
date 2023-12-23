@@ -23,7 +23,7 @@ namespace VaultRenderer {
 
         GLFWwindow *GetGLFWWindow() const;
 
-        void Run(std::function<void()> update_call);
+        void Run(std::function<void()> update_call, std::function<void()> gui_call, std::function<void()> shadow_render_call);
         void SetClearColor(const float r, const float g, const float b);
         void SetClearColor(const uint32_t hex_color);
         void SetViewport(const int width, const int height);

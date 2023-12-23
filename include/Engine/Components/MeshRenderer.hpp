@@ -23,6 +23,7 @@ namespace Engine {
             MeshRenderer() = default;
 
             void SetMeshType(const MeshType &a_mesh_type);
+            void SetCustomMeshType(std::vector<VaultRenderer::Vertex> &vertices, std::vector<uint32_t> &indices);
         };
     } // namespace Components
 } // namespace Engine

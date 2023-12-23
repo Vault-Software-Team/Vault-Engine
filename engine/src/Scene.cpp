@@ -13,5 +13,10 @@ namespace Engine {
     Scene::~Scene() {
         std::cout << "Deleting scene...\n";
         GameObjects.clear();
+        main_camera_object = nullptr;
+    }
+
+    void Scene::SetMainCameraObject(const std::shared_ptr<GameObject> &camObject) {
+        main_camera_object = &camObject->GetComponent<Components::Camera>();
     }
 } // namespace Engine

@@ -71,4 +71,11 @@ namespace Engine::Components {
         }
         }
     }
+
+    void MeshRenderer::SetCustomMeshType(std::vector<VaultRenderer::Vertex> &vertices, std::vector<uint32_t> &indices) {
+        mesh_type = MESH_CUSTOM_MODEL;
+        mesh.reset();
+
+        mesh = std::make_unique<VaultRenderer::Mesh>(vertices, indices);
+    }
 } // namespace Engine::Components

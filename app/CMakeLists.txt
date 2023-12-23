@@ -6,7 +6,7 @@ include_directories(${CMAKE_SOURCE_DIR}/vendor)
 
 add_executable(app ${SRC_FILES} ${IMGUI_FILES} ${CMAKE_SOURCE_DIR}/vendor/glad/glad.c)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g")
-target_link_libraries(app engine api glfw)
+target_link_libraries(app engine api glfw assimp)
 
 # if(DEFINED WINDOWS_BUILD)
 #     message("Building for Windows")

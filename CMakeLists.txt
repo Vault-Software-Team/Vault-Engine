@@ -8,6 +8,7 @@ add_subdirectory(api)
 add_subdirectory(app)
 add_subdirectory(engine)
 add_subdirectory(external/glfw)
+add_subdirectory(external/assimp)
 
 # file(GLOB SRC_FILES
 #     "include/*.hpp"
