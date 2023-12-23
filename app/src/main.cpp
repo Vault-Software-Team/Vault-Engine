@@ -3,6 +3,7 @@
 #include <Renderer/Window.hpp>
 #include <Renderer/Mesh.hpp>
 #include <Renderer/Texture.hpp>
+#include <Renderer/Skybox.hpp>
 #include <imgui/imgui.h>
 #include <Engine/Scene.hpp>
 #include <Engine/Components/IncludeComponents.hpp>
@@ -56,7 +57,10 @@ int main() {
     Window window(1280, 720, "Vault Engine");
 
     Shader shader("../shaders/default.glsl");
+    Shader skybox_shader("../shaders/skybox.glsl");
     default_shader = &shader;
+
+    Skybox skybox;
 
     shader.Bind();
 
@@ -78,8 +82,8 @@ int main() {
     auto cameraObject = GameObject::New("Camera");
     cameraObject->AddComponent<Components::Camera>();
 
-    auto lightObject = GameObject::New("DirectionalLight");
-    lightObject->AddComponent<Components::SpotLight>();
+    auto lightObject = GameObject::New("PointLight");
+    lightObject->AddComponent<Components::PointLight>();
 
     using namespace Engine::Components;
     auto &transform = gameObject->GetComponent<Transform>();
@@ -119,6 +123,8 @@ int main() {
         camera.UpdateMatrix();
         camera.BindToShader(shader);
         camera.Inputs();
+
+        skybox.Render(skybox_shader, camera_transform.position, camera_transform.rotation, camera.up);
 
         UpdateGameObjects();
 

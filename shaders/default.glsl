@@ -84,17 +84,18 @@ vec3 point_light(PointLight light) {
 
     vec3 view_dir = normalize(camera_position - current_position);
     vec3 reflection_dir = reflect(-light_dir, m_normal);
-    float specular_amount = pow(max(dot(view_dir, reflection_dir), 0.0), 16);
+    vec3 halfway_vec = normalize(view_dir + light_dir);
+    float specular_amount = pow(max(dot(m_normal, halfway_vec), 0.0), 16);
 
     float specular = specular_amount * specular_light;
 
-        float spec = 0;
-        if(texture_specular.defined) {
-            spec = texture(texture_specular.tex, texUV).r * specular;
-        } else {
-            spec = specular;
-        }
-        spec *= inten;
+    float spec = 0;
+    if(texture_specular.defined) {
+        spec = texture(texture_specular.tex, texUV).r * specular;
+    } else {
+        spec = specular;
+    }
+    spec *= inten;
 
     if(texture_diffuse.defined) {
 
@@ -114,17 +115,19 @@ vec3 directional_light(DirectionalLight light) {
 
     vec3 view_dir = normalize(camera_position - current_position);
     vec3 reflection_dir = reflect(-light_dir, m_normal);
-    float specular_amount = pow(max(dot(view_dir, reflection_dir), 0.0), 16);
 
+    vec3 halfway_vec = normalize(view_dir + light_dir);
+
+    float specular_amount = pow(max(dot(m_normal, halfway_vec), 0.0), 16);
     float specular = specular_amount * specular_light;
 
-        float spec = 0;
-        if(texture_specular.defined) {
-            spec = texture(texture_specular.tex, texUV).r * specular;
-        } else {
-            spec = specular;
-        }
-        spec *= inten;
+    float spec = 0;
+    if(texture_specular.defined) {
+        spec = texture(texture_specular.tex, texUV).r * specular;
+    } else {
+        spec = specular;
+    }
+    spec *= inten;
 
     if(texture_diffuse.defined) {
 
@@ -147,7 +150,9 @@ vec3 spot_light(SpotLight light) {
 
     vec3 view_dir = normalize(camera_position - current_position);
     vec3 reflection_dir = reflect(-light_dir, m_normal);
-    float specular_amount = pow(max(dot(view_dir, reflection_dir), 0.0), 16);
+
+    vec3 halfway_vec = normalize(view_dir + light_dir);
+    float specular_amount = pow(max(dot(m_normal, halfway_vec), 0.0), 16);
 
     float specular = specular_amount * specular_light;
 
