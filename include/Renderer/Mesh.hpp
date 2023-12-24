@@ -29,6 +29,8 @@ namespace VaultRenderer {
         glm::vec3 position;
         glm::vec2 texUV = glm::vec2(0, 0);
         glm::vec3 normal = glm::vec3(0, 1, 0);
+        glm::vec3 tangent = glm::vec3(0, 0, 0);
+        glm::vec3 bitangent = glm::vec3(0, 0, 0);
     };
 
     class DLL_API Mesh {

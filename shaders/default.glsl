@@ -3,11 +3,19 @@
 layout (location = 0) in vec3 vPosition;
 layout(location = 1) in vec2 vTextureUV;
 layout(location = 2) in vec3 vNormal;
+layout(location = 3) in vec3 tangent;
+layout(location = 4) in vec3 bitangent;
 
-out vec2 texUV;
-out vec3 normal;
-out vec3 current_position;
-out vec4 fragPosLight;
+out DATA
+{
+    vec2 texUV;
+    vec3 normal;
+    vec3 current_position;
+    vec4 fragPosLight;
+    mat4 cameraCalcs;
+    mat4 model;
+} data_out;
+
 uniform mat4 transformModel;
 uniform mat4 camera_view;
 uniform mat4 camera_projection;
@@ -15,11 +23,18 @@ uniform mat4 light_proj;
 
 void main()
 {
-    current_position = vec3(transformModel * vec4(vPosition.x, vPosition.y, vPosition.z, 1.0));
-    gl_Position = camera_projection * camera_view * vec4(current_position, 1.0);
-    texUV = vTextureUV;
-    normal = vNormal;
-    fragPosLight = light_proj * vec4(current_position, 1);
+    data_out.current_position = vec3(transformModel * vec4(vPosition.x, vPosition.y, vPosition.z, 1.0));
+    gl_Position = vec4(data_out.current_position, 1.0);
+
+    // Set data_out
+    data_out.cameraCalcs = camera_projection * camera_view;
+    data_out.texUV = vTextureUV;
+    data_out.normal = normalize(vNormal);
+    data_out.model = transformModel;
+
+    // data_out.TBN = mat3(T, B, N);
+    // TBN = transpose(TBN);
+    data_out.fragPosLight = light_proj * vec4(data_out.current_position, 1);
 }
 
 #shader fragment
@@ -30,6 +45,7 @@ in vec2 texUV;
 in vec3 normal;
 in vec3 current_position;
 in vec4 fragPosLight;
+in mat3 TBN;
 
 struct Texture {
     sampler2D tex;
@@ -116,11 +132,14 @@ vec3 point_light(PointLight light) {
 
 vec3 directional_light(DirectionalLight light) {
     float inten = light.intensity;
-    vec3 light_dir = normalize(light.position);
+    vec3 light_dir = normalize(TBN * light.position);
 
     vec3 t_normal = vec3(0);
     if(texture_normal.defined) {
-        t_normal = normalize(texture(texture_normal.tex, texUV).rgb * 2.0 - 1.0);
+        t_normal = texture(texture_normal.tex, texUV).rgb;
+        t_normal = t_normal * 2.0 - 1.0;
+        t_normal = normalize(t_normal);
+        
     } else {
         t_normal = m_normal;
     }
@@ -129,7 +148,7 @@ vec3 directional_light(DirectionalLight light) {
     float specular_light = 0.5;
 
 
-    vec3 view_dir = normalize(camera_position - current_position);
+    vec3 view_dir = normalize(TBN * camera_position - TBN * current_position);
     vec3 reflection_dir = reflect(-light_dir, t_normal);
 
     vec3 halfway_vec = normalize(view_dir + light_dir);
@@ -266,3 +285,68 @@ void main()
 
     FragColor = total_color;
 } 
+#shader geometry
+#version 330 core
+layout(triangles) in;
+layout(triangle_strip, max_vertices = 3) out;
+
+out vec2 texUV;
+out vec3 normal;
+out vec3 current_position;
+out vec4 fragPosLight;
+out mat3 TBN;
+
+in DATA
+{
+    vec2 texUV;
+    vec3 normal;
+    vec3 current_position;
+    vec4 fragPosLight;
+    mat4 cameraCalcs;
+    mat4 model;
+} data_in[];
+
+void main() {
+    vec3 edge0 = gl_in[1].gl_Position.xyz - gl_in[0].gl_Position.xyz;
+    vec3 edge1 = gl_in[2].gl_Position.xyz - gl_in[0].gl_Position.xyz;
+    vec2 deltaUV0 = data_in[1].texUV - data_in[0].texUV;
+    vec2 deltaUV1 = data_in[2].texUV - data_in[0].texUV;
+
+    float invDet = 1.0f / (deltaUV0.x * deltaUV1.y - deltaUV1.x * deltaUV0.y);
+
+    vec3 tangent = vec3(invDet * (deltaUV1.y * edge0 - deltaUV0.y * edge1));
+    vec3 bitangent = vec3(invDet * (-deltaUV1.x * edge0 + deltaUV0.x * edge1));
+
+    vec3 T = normalize(vec3(data_in[0].model * vec4(tangent, 0.0)));
+    vec3 B = normalize(vec3(data_in[0].model * vec4(bitangent, 0.0)));
+    vec3 N = normalize(vec3(data_in[0].model * vec4(cross(edge1, edge0), 0.0)));
+
+    mat3 mTBN = mat3(T, B, N);
+    mTBN = transpose(mTBN);
+
+    gl_Position = data_in[0].cameraCalcs * gl_in[0].gl_Position;
+    texUV = data_in[0].texUV;
+    normal = data_in[0].normal;
+    current_position = data_in[0].current_position;
+    fragPosLight = data_in[0].fragPosLight;
+    TBN = mTBN;
+    EmitVertex();
+
+    gl_Position = data_in[1].cameraCalcs * gl_in[1].gl_Position;
+    texUV = data_in[1].texUV;
+    normal = data_in[1].normal;
+    current_position = data_in[1].current_position;
+    fragPosLight = data_in[1].fragPosLight;
+    TBN = mTBN;
+    EmitVertex();
+
+    gl_Position = data_in[2].cameraCalcs * gl_in[2].gl_Position;
+    texUV = data_in[2].texUV;
+    normal = data_in[2].normal;
+    current_position = data_in[2].current_position;
+    fragPosLight = data_in[2].fragPosLight;
+    TBN = mTBN;
+    EmitVertex();
+
+    EndPrimitive();
+}

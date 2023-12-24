@@ -7,7 +7,20 @@ include_directories(${CMAKE_SOURCE_DIR}/vendor)
 add_subdirectory(api)
 add_subdirectory(app)
 add_subdirectory(engine)
+if (NOT EMSCRIPTEN)
 add_subdirectory(external/glfw)
+else()
+    include_directories(/usr/lib/emsdk/upstream/emscripten/cache/sysroot/include)
+    set_target_properties(api
+        PROPERTIES SUFFIX ".html"
+        LINK_FLAGS " --bind -s WASM=0 -s MIN_WEBGL_VERSION=1 -s ABORT_ON_WASM_EXCEPTIONS=1 -g2 -s USE_GLFW=3")
+    set_target_properties(app
+        PROPERTIES SUFFIX ".html"
+        LINK_FLAGS " --bind -s WASM=0 -s MIN_WEBGL_VERSION=1 -s ABORT_ON_WASM_EXCEPTIONS=1 -g2 -s USE_GLFW=3")
+    set_target_properties(engine
+        PROPERTIES SUFFIX ".html"
+        LINK_FLAGS " --bind -s WASM=0 -s MIN_WEBGL_VERSION=1 -s ABORT_ON_WASM_EXCEPTIONS=1 -g2 -s USE_GLFW=3")
+endif()
 add_subdirectory(external/assimp)
 
 # file(GLOB SRC_FILES
