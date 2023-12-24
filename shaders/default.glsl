@@ -60,6 +60,8 @@ uniform float ambient_amount;
 uniform vec3 ambient_color;
 uniform vec3 camera_position;
 uniform vec4 baseColor;
+uniform samplerCube shadowCubemap;
+uniform float shadowCubemapFarPlane;
 vec3 m_normal = normalize(normal);
 
 // Lights
@@ -122,20 +124,38 @@ vec3 point_light(PointLight light) {
     }
     spec *= inten;
 
-    if(texture_diffuse.defined) {
+    float shadow = 0.0;
+    vec3 fragToLight = current_position - light.position;
+    float current_depth = length(fragToLight);
+    float bias = max(0.5 * (1.0 - dot(m_normal, light_dir)), 0.0005);
 
-        return (texture(texture_diffuse.tex, texUV).rgb * baseColor.rgb) * light.color * (diffuse * inten + ambient_amount) + (spec);
+    int sampleRadius = 2;
+    float pixelSize = 1.0 / 1024;
+
+    for(int z = -sampleRadius; z <= sampleRadius; z++) {
+        for (int y = -sampleRadius; y <= sampleRadius; y++) {
+            for (int x = -sampleRadius; x <= sampleRadius; x++) {
+                float closestDepth = texture(shadowCubemap, fragToLight + vec3(x,y,z) * pixelSize).r;
+                closestDepth *= shadowCubemapFarPlane;
+                if(current_depth > closestDepth + bias) shadow += 1.0;
+            }
+        }
+    }
+    shadow /= pow((sampleRadius * 2 + 1), 3);
+
+    if(texture_diffuse.defined) {
+        return (texture(texture_diffuse.tex, texUV).rgb * baseColor.rgb) * light.color * (diffuse * (1.0 - shadow) * inten + ambient_amount) + (spec * (1.0 - shadow));
     } else {
-        return (baseColor.rgb) * light.color * (diffuse * inten + ambient_amount) + (spec);
+        return (baseColor.rgb) * light.color * (diffuse * (1.0 - shadow) * inten + ambient_amount) + (spec * (1.0 - shadow));
     }
 }
 
 vec3 directional_light(DirectionalLight light) {
     float inten = light.intensity;
-    vec3 light_dir = normalize(TBN * light.position);
+    vec3 light_dir = normalize(light.position);
 
     vec3 t_normal = vec3(0);
-    if(texture_normal.defined) {
+    if(false) {
         t_normal = texture(texture_normal.tex, texUV).rgb;
         t_normal = t_normal * 2.0 - 1.0;
         t_normal = normalize(t_normal);
@@ -148,7 +168,7 @@ vec3 directional_light(DirectionalLight light) {
     float specular_light = 0.5;
 
 
-    vec3 view_dir = normalize(TBN * camera_position - TBN * current_position);
+    vec3 view_dir = normalize(camera_position - current_position);
     vec3 reflection_dir = reflect(-light_dir, t_normal);
 
     vec3 halfway_vec = normalize(view_dir + light_dir);
