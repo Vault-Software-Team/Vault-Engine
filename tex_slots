@@ -1,2 +1,4 @@
 0, 1, 2, 3 = diffuse, specular, normal, height
 10 = shadowMap
+11 = shadowCubemap
+12 = bloomTexture

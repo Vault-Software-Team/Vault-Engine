@@ -5,6 +5,7 @@
 #include <imgui/backends/imgui_impl_opengl3.h>
 #include <icons/icons.h>
 #include <Renderer/Framebuffer.hpp>
+#include <Renderer/Bloom.hpp>
 
 namespace VaultRenderer {
     Window::Window(const int width, const int height, const char *title) : width(width), height(height), title(title) {
@@ -43,6 +44,7 @@ namespace VaultRenderer {
         SetDefaultImGuiTheme();
 
         framebuffer = std::make_unique<Framebuffer>();
+        framebuffer->AddColorAttachement(1);
     }
 
     Window::~Window() {
@@ -53,6 +55,10 @@ namespace VaultRenderer {
         static int before_width, before_height;
         Shader framebuffer_shader("../shaders/framebuffer.glsl");
         ImGuiIO &io = ImGui::GetIO();
+
+        BloomRenderer bloomRenderer;
+        bloomRenderer.Init(width, height);
+
         std::function<void()> main_loop = [&] {
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             glfwGetWindowSize(glfw_window, &width, &height);

@@ -14,7 +14,7 @@ namespace VaultRenderer {
 
         std::string vertCode, fragCode, geometryCode, line;
 
-        printf("%s", (std::string("Loading shader: ") + shader_file).c_str());
+        printf("%s\n", (std::string("Loading shader: ") + shader_file).c_str());
         std::ifstream fstream_shader_file(shader_file);
         if (!fstream_shader_file.is_open()) {
             std::cout << "Failed to open shader file" << std::endl;

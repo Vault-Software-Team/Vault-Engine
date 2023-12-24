@@ -310,6 +310,9 @@ void main()
     // total_color += vec4(point_light(light), 1.0f);
 
     FragColor = total_color;
+
+    float brightness = dot(FragColor.rgb, vec3(0.2126, 0.7152, 0.0722));
+    
 } 
 #shader geometry
 #version 330 core
