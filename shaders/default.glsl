@@ -61,6 +61,8 @@ uniform vec3 ambient_color;
 uniform vec3 camera_position;
 uniform vec4 baseColor;
 uniform samplerCube shadowCubemap;
+uniform bool shadow_cubemap_mapping;
+uniform bool shadow_mapping;
 uniform float shadowCubemapFarPlane;
 vec3 m_normal = normalize(normal);
 
@@ -125,23 +127,25 @@ vec3 point_light(PointLight light) {
     spec *= inten;
 
     float shadow = 0.0;
-    vec3 fragToLight = current_position - light.position;
-    float current_depth = length(fragToLight);
-    float bias = max(0.5 * (1.0 - dot(m_normal, light_dir)), 0.0005);
+    // if(false) {
+    //     vec3 fragToLight = current_position - light.position;
+    //     float current_depth = length(fragToLight);
+    //     float bias = max(0.5 * (1.0 - dot(m_normal, light_dir)), 0.0005);
 
-    int sampleRadius = 2;
-    float pixelSize = 1.0 / 1024;
+    //     int sampleRadius = 2;
+    //     float pixelSize = 1.0 / 1024;
 
-    for(int z = -sampleRadius; z <= sampleRadius; z++) {
-        for (int y = -sampleRadius; y <= sampleRadius; y++) {
-            for (int x = -sampleRadius; x <= sampleRadius; x++) {
-                float closestDepth = texture(shadowCubemap, fragToLight + vec3(x,y,z) * pixelSize).r;
-                closestDepth *= shadowCubemapFarPlane;
-                if(current_depth > closestDepth + bias) shadow += 1.0;
-            }
-        }
-    }
-    shadow /= pow((sampleRadius * 2 + 1), 3);
+    //     for(int z = -sampleRadius; z <= sampleRadius; z++) {
+    //         for (int y = -sampleRadius; y <= sampleRadius; y++) {
+    //             for (int x = -sampleRadius; x <= sampleRadius; x++) {
+    //                 float closestDepth = texture(shadowCubemap, fragToLight + vec3(x,y,z) * pixelSize).r;
+    //                 closestDepth *= shadowCubemapFarPlane;
+    //                 if(current_depth > closestDepth + bias) shadow += 1.0;
+    //             }
+    //         }
+    //     }
+    //     shadow /= pow((sampleRadius * 2 + 1), 3);
+    // }
 
     if(texture_diffuse.defined) {
         return (texture(texture_diffuse.tex, texUV).rgb * baseColor.rgb) * light.color * (diffuse * (1.0 - shadow) * inten + ambient_amount) + (spec * (1.0 - shadow));
@@ -199,25 +203,27 @@ vec3 directional_light(DirectionalLight light) {
     // } 
 
     float shadow = 0.0f;
-    vec3 lightCoords = fragPosLight.xyz / fragPosLight.w;
-    if(lightCoords.z <= 1.0f) {
-        lightCoords = (lightCoords + 1.0f) / 2.0f;
+    if(shadow_mapping) {
+        vec3 lightCoords = fragPosLight.xyz / fragPosLight.w;
+        if(lightCoords.z <= 1.0f) {
+            lightCoords = (lightCoords + 1.0f) / 2.0f;
 
-        float closestDepth = texture(shadowMap, lightCoords.xy).r;
-        float currentDepth = lightCoords.z;
-        float bias = max(0.025f * (1.0f - dot(t_normal, light_dir)), 0.0005f);
+            float closestDepth = texture(shadowMap, lightCoords.xy).r;
+            float currentDepth = lightCoords.z;
+            float bias = max(0.025f * (1.0f - dot(t_normal, light_dir)), 0.0005f);
 
-        int sampleRadius = 2;
-        vec2 pixelSize  = 1.0 / textureSize(shadowMap, 0);
-        for(int y = -sampleRadius; y <= sampleRadius; y++) {
-            for(int x = -sampleRadius; x <= sampleRadius; x++) {
-                float closestDepth = texture(shadowMap, lightCoords.xy + vec2(x,y) * pixelSize).r;
-                if(currentDepth > closestDepth + bias)
-                    shadow += 1.0f;
+            int sampleRadius = 2;
+            vec2 pixelSize  = 1.0 / textureSize(shadowMap, 0);
+            for(int y = -sampleRadius; y <= sampleRadius; y++) {
+                for(int x = -sampleRadius; x <= sampleRadius; x++) {
+                    float closestDepth = texture(shadowMap, lightCoords.xy + vec2(x,y) * pixelSize).r;
+                    if(currentDepth > closestDepth + bias)
+                        shadow += 1.0f;
+                }
             }
-        }
 
-        shadow /= pow((sampleRadius * 2 + 1), 2);
+            shadow /= pow((sampleRadius * 2 + 1), 2);
+        }
     }
 
     if(texture_diffuse.defined) {

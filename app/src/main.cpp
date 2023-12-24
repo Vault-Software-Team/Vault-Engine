@@ -112,8 +112,17 @@ void BindShadowsToShader(Shader &shader, ShadowMap &shadow_map) {
     shader.Bind();
 
     // Set DirectionalLight shadow properties
-    shadow_map.BindTexture(10);
-    shader.SetUniform1i("shadowMap", 10);
+    if (Scene::Main->EntityRegistry.valid(Scene::Main->EntityRegistry.view<DirectionalLight>().back())) {
+        if (Scene::Main->EntityRegistry.get<DirectionalLight>(Scene::Main->EntityRegistry.view<DirectionalLight>().back()).enable_shadow_mapping) {
+            shadow_map.BindTexture(10);
+            shader.SetUniform1i("shadowMap", 10);
+            shader.SetUniform1i("shadow_mapping", 1);
+        } else {
+            shader.SetUniform1i("shadow_mapping", 0);
+        }
+    } else {
+        shader.SetUniform1i("shadow_mapping", 0);
+    }
     // Set Point Light shadow properties
 
     PointLight *pLight = nullptr;
@@ -122,6 +131,8 @@ void BindShadowsToShader(Shader &shader, ShadowMap &shadow_map) {
     PointLight *mainPointLight = nullptr;
     for (auto e : v_PointLight) {
         auto &lPLight = Scene::Main->EntityRegistry.get<PointLight>(e);
+        if (!lPLight.enable_shadow_mapping)
+            continue;
 
         if (mainPointLight) {
             if (Scene::Main) {
@@ -136,11 +147,22 @@ void BindShadowsToShader(Shader &shader, ShadowMap &shadow_map) {
         }
     }
 
-    if (mainPointLight) {
+    if (mainPointLight && mainPointLight->enable_shadow_mapping) {
         glActiveTexture(GL_TEXTURE11);
         glBindTexture(GL_TEXTURE_CUBE_MAP, mainPointLight->cubemap);
         shader.SetUniform1i("shadowCubemap", 11);
         shader.SetUniform1f("shadowCubemapFarPlane", mainPointLight->shadow_far_plane);
+        shader.SetUniform1i("shadow_cubemap_mapping", 1);
+    } else {
+        shader.SetUniform1i("shadow_cubemap_mapping", 0);
+    }
+}
+
+void UpdateMainCameraObject() {
+    if (Scene::Main->main_camera_object) {
+        Scene::Main->main_camera_object->UpdateMatrix();
+        Scene::Main->main_camera_object->BindToShader(*default_shader);
+        Scene::Main->main_camera_object->Inputs();
     }
 }
 
@@ -179,9 +201,10 @@ int main() {
     cameraObject->AddComponent<Components::Camera>();
 
     auto lightObject = GameObject::New("PointLight");
-    lightObject->AddComponent<Components::PointLight>();
+    lightObject->AddComponent<Components::DirectionalLight>();
     lightObject->AddComponent<Components::MeshRenderer>();
     lightObject->GetComponent<Components::MeshRenderer>().SetMeshType(Components::MESH_PYRAMID);
+    lightObject->GetComponent<Components::DirectionalLight>().enable_shadow_mapping = false;
 
     using namespace Engine::Components;
     auto &transform = gameObject->GetComponent<Transform>();
@@ -210,27 +233,17 @@ int main() {
         Statistics::ResetDrawCalls();
         window.SetClearColor(0x000000);
 
-        // model = glm::rotate(m/* */odel, glm::radians(rotation), glm::vec3(0.f, 1.f, 0.f));
-        // view = glm::translate(view, glm::vec3(0.0f, -0.5f, -2.0f));
-        // projection = glm::perspective(glm::radians(45.0f), (float)(800.f / 600.f), 0.01f, 100.0f);
-        // shader.SetUniformMat4("camera_view", view);
-        // shader.SetUniformMat4("camera_projection", projection);
+        UpdateMainCameraObject();
 
-        // square.Draw(shader);
-        // auto meshRendererView = Scene::Main->EntityRegistry.view<Components::MeshRenderer>();
-        if (Scene::Main->main_camera_object) {
-            Scene::Main->main_camera_object->UpdateMatrix();
-            Scene::Main->main_camera_object->BindToShader(shader);
-            Scene::Main->main_camera_object->Inputs();
-        }
-
+        // Skybox Render Call
         skybox.Render(skybox_shader, camera_transform.position, camera_transform.rotation, camera.up);
 
+        // Viewport shit
         // AspectRatioCameraViewport();
         glViewport(0, 0, window.width, window.height);
-        // DrawToShadowMap(shadowMap, lightProj, shadow_map_shader);
+        
+        // Shadow shenanigans and fuckery
         BindShadowsToShader(shader, shadow_map);
-
         shadow_map.CalculateMatrices(light_transform.position);
         shadow_map.SetLightProjection(shader);
 
@@ -240,16 +253,23 @@ int main() {
                },
                [&] {
                    // Directional Light  Shadow Mapping
-                   shadow_map.RenderSpace([&](std::unique_ptr<Shader> &shadow_shader) {
-                       // NOTE: shadow_shader is already binded
-                       DrawToShadowMap(shadow_map.GetDepthBuffer(), *shadow_shader);
-                   });
+                   if (Scene::Main->EntityRegistry.valid(Scene::Main->EntityRegistry.view<DirectionalLight>().back())) {
+                       if (Scene::Main->EntityRegistry.get<DirectionalLight>(Scene::Main->EntityRegistry.view<DirectionalLight>().back()).enable_shadow_mapping) {
+                           shadow_map.RenderSpace([&](std::unique_ptr<Shader> &shadow_shader) {
+                               // NOTE: shadow_shader is already binded
+                               DrawToShadowMap(shadow_map.GetDepthBuffer(), *shadow_shader);
+                           });
+                       }
+                   }
 
                    // Point Light Shadow Mapping
                    auto pointLightView = Scene::Main->EntityRegistry.view<PointLight>();
 
                    for (auto e : pointLightView) {
                        auto &light = Scene::Main->EntityRegistry.get<PointLight>(e);
+                       if (!light.enable_shadow_mapping)
+                           continue;
+
                        light.DrawToShadowMap(shadow_cubemap_shader);
                    }
                });
