@@ -9,17 +9,11 @@
 using namespace Engine;
 using namespace Engine::Components;
 
-char asciitolower(char in) {
-    if (in <= 'Z' && in >= 'A')
-        return in - ('Z' - 'z');
-    return in;
-}
-
 void DirectoryIterator(const std::string &str, const char *filter_str) {
     auto iter = std::filesystem::directory_iterator(str);
 
     std::string filterStr = filter_str;
-    std::transform(filterStr.begin(), filterStr.end(), filterStr.begin(), asciitolower);
+    std::transform(filterStr.begin(), filterStr.end(), filterStr.begin(), Editor::asciitolower);
 
     for (auto &dir : iter) {
 
@@ -30,7 +24,7 @@ void DirectoryIterator(const std::string &str, const char *filter_str) {
             }
         } else {
             std::string dir_filename = dir.path().filename().string();
-            std::transform(dir_filename.begin(), dir_filename.end(), dir_filename.begin(), asciitolower);
+            std::transform(dir_filename.begin(), dir_filename.end(), dir_filename.begin(), Editor::asciitolower);
             if (dir_filename.find(filterStr) == std::string::npos && filterStr != "")
                 continue;
             std::string icon = ICON_FA_CUBE;

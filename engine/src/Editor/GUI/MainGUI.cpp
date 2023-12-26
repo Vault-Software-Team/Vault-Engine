@@ -5,6 +5,12 @@
 using namespace Engine::Components;
 
 namespace Editor {
+    char asciitolower(char in) {
+        if (in <= 'Z' && in >= 'A')
+            return in - ('Z' - 'z');
+        return in;
+    }
+
     void GUI::SetNameIcon(std::string &txt, Engine::GameObject *gameObject) {
         if (gameObject->HasComponent<Camera>()) {
             txt = ICON_FA_CAMERA;

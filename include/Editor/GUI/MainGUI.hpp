@@ -5,6 +5,7 @@
 #include <vector>
 
 namespace Editor {
+    char asciitolower(char in);
     struct DLL_API Log {
         enum LogType {
             LOG_INFO,
