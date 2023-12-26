@@ -47,15 +47,35 @@ namespace Engine {
         default_shader->SetUniform1i("spot_light_count", Engine::Scene::Main->EntityRegistry.view<Engine::Components::SpotLight>().size());
     }
 
+    void AspectRatioCameraViewport() {
+        const int targetWidth = 1920, targetHeight = 1080;
+        float targetAspectRatio = (float)targetWidth / (float)targetHeight;
+
+        int aspectWidth = VaultRenderer::Window::window->width;
+        int aspectHeight = (int)((float)aspectWidth / targetAspectRatio);
+        if (aspectHeight > VaultRenderer::Window::window->height) {
+            aspectHeight = VaultRenderer::Window::window->height;
+            aspectWidth = (int)((float)aspectHeight * targetAspectRatio);
+        }
+        int vpX = (int)(((float)VaultRenderer::Window::window->width / 2.0f) - ((float)aspectWidth / 2.0f));
+        int vpY = (int)(((float)VaultRenderer::Window::window->height / 2.0f) - ((float)aspectHeight / 2.0f));
+
+        glViewport(vpX, vpY, aspectWidth, aspectHeight);
+    }
+
     void Runtime::UpdateMainCamera(Window &window) {
         if (!Scene::Main->main_camera_object)
             return;
 
-        Scene::Main->main_camera_object->width = window.width;
-        Scene::Main->main_camera_object->height = window.height;
         Scene::Main->main_camera_object->UpdateMatrix();
         Scene::Main->main_camera_object->BindToShader(*default_shader);
         Scene::Main->main_camera_object->Inputs();
+
+        if (Engine::Scene::Main->main_camera_object) {
+            Engine::Scene::Main->main_camera_object->width = VaultRenderer::Window::window->width;
+            Engine::Scene::Main->main_camera_object->height = VaultRenderer::Window::window->height;
+        }
+        // AspectRatioCameraViewport();
     }
 
     // ---- SHADOW FUCKERY ---- //
@@ -86,7 +106,7 @@ namespace Engine {
         }
 
         shadowMap.Unbind();
-        // AspectRatioCameraViewport();
+        glViewport(0, 0, VaultRenderer::Window::window->width, VaultRenderer::Window::window->height);
     }
 
     void Runtime::ShadowShenanigans(VaultRenderer::ShadowMap &shadow_map) {

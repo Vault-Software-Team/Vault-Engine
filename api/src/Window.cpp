@@ -8,7 +8,7 @@
 #include <Renderer/Bloom.hpp>
 
 namespace VaultRenderer {
-    Window::Window(const int width, const int height, const char *title) : width(width), height(height), title(title) {
+    Window::Window(const int width, const int height, const char *title, bool draw_screen) : width(width), height(height), title(title) {
         window = this;
         glfwInit();
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -31,7 +31,7 @@ namespace VaultRenderer {
 
         glEnable(GL_DEPTH_TEST);
         glEnable(GL_CULL_FACE);
-        // glEnable(GL_FRAMEBUFFER_SRGB);
+        glEnable(GL_FRAMEBUFFER_SRGB);
         glCullFace(GL_BACK);
         glFrontFace(GL_CCW);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -45,8 +45,9 @@ namespace VaultRenderer {
         SetupImGui();
         SetDefaultImGuiTheme();
 
-        framebuffer = std::make_unique<Framebuffer>();
+        framebuffer = std::make_unique<Framebuffer>(true);
         framebuffer->AddColorAttachement(1);
+        framebuffer->draw_screen = draw_screen;
     }
 
     Window::~Window() {
@@ -58,14 +59,15 @@ namespace VaultRenderer {
         Shader framebuffer_shader("../shaders/framebuffer.glsl");
         ImGuiIO &io = ImGui::GetIO();
 
-        framebuffer->bloomRenderer.Init(width, height);
+        // framebuffer->bloomRenderer.Init(width, height);
 
 #ifdef __EMSCRIPTEN__
         emscripten_set_main_loop(main_loop, 0, true);
 #else
         while (!glfwWindowShouldClose(glfw_window)) {
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-            glfwGetWindowSize(glfw_window, &width, &height);
+            if (!use_imgui_size)
+                glfwGetWindowSize(glfw_window, &width, &height);
             framebuffer->bloomRenderer.m_SrcViewportSize.x = width;
             framebuffer->bloomRenderer.m_SrcViewportSize.x = height;
 
@@ -75,15 +77,10 @@ namespace VaultRenderer {
             // Framebuffer Shenanigans
             glfwPollEvents();
 
-            if (before_width != width || before_height != height) {
-                framebuffer->width = width;
-                framebuffer->height = height;
-                framebuffer->RegenerateFramebuffer();
-            }
-
             shadow_render_call();
-            glViewport(0, 0, width, height);
+            // glViewport(0, 0, width, height);
 
+            glEnable(GL_FRAMEBUFFER_SRGB);
             framebuffer->Bind();
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             glEnable(GL_DEPTH_TEST);
@@ -107,6 +104,11 @@ namespace VaultRenderer {
             ImGui::Render();
             ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
+            if (before_width != width || before_height != height) {
+                framebuffer->width = width;
+                framebuffer->height = height;
+                framebuffer->RegenerateFramebuffer();
+            }
             // Update and Render additional Platform Windows
             // (Platform functions may change the current OpenGL context, so we save/restore it to make it easier to paste this code elsewhere.
             //  For this specific demo app we could also call glfwMakeContextCurrent(window) directly)
@@ -257,6 +259,6 @@ namespace VaultRenderer {
         }
 
         void Window::FramebufferSizeCallback(GLFWwindow * window, int width, int height) {
-            glViewport(0, 0, width, height);
+            // glViewport(0, 0, width, height);
         }
     } // namespace VaultRenderer

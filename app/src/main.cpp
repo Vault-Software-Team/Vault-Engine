@@ -14,6 +14,7 @@
 #include <Engine/Runtime.hpp>
 #include <Editor/EditorLayer.hpp>
 #include <fstream>
+#include <Editor/GUI/MainGUI.hpp>
 
 static VaultRenderer::Shader *default_shader;
 
@@ -114,6 +115,10 @@ int main() {
 
     Runtime runtime(default_shader);
     EditorLayer editor;
+
+    GUI::LogInfo("Hello, World!");
+    GUI::framebufferTextureID = window.framebuffer->framebuffer->texture;
+    window.use_imgui_size = true;
 
     window.Run([&] {
         // Update the Main Camera of a scene

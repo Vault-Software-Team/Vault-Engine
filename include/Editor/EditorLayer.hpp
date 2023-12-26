@@ -1,7 +1,8 @@
 #pragma once
+#include <dllapi.hpp>
 
 namespace Editor {
-    class EditorLayer {
+    class DLL_API EditorLayer {
     public:
         static inline EditorLayer *instance;
 

@@ -10,7 +10,7 @@
 namespace Engine::Components {
     void Camera::UpdateMatrix() {
         view = glm::lookAt(transform->position, transform->position + transform->rotation, up);
-        projection = glm::perspective(glm::radians(fov), (float)width / height, near, far);
+        projection = glm::perspective(glm::radians(fov), (float)VaultRenderer::Window::window->width / VaultRenderer::Window::window->height, near, far);
     }
 
     void Camera::Init() {
@@ -26,6 +26,10 @@ namespace Engine::Components {
 
     void Camera::Inputs() {
         GLFWwindow *window = VaultRenderer::Window::window->GetGLFWWindow();
+        int width, heigth;
+        glfwGetWindowSize(window, &width, &height);
+        // width = VaultRenderer::Window::window->width;
+        // height = VaultRenderer::Window::window->height;
 
         if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
             transform->position += speed * transform->rotation;

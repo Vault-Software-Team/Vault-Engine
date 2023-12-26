@@ -10,7 +10,7 @@ using namespace Engine::Components;
 
 namespace Editor {
     void GUI::Hierarchy() {
-        ImGui::Begin("Hierarhcy");
+        ImGui::Begin(ICON_FA_CUBES " Hierarhcy");
         std::string icon = ICON_FA_CUBE;
 
         for (auto &gameObject : Scene::Main->GameObjects) {

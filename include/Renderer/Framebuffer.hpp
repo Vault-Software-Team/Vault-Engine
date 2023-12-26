@@ -17,6 +17,8 @@
 namespace VaultRenderer {
     class Framebuffer {
     public:
+        std::unique_ptr<Framebuffer> framebuffer = nullptr;
+
         struct ColorAttachement {
             uint32_t ID;
             uint32_t attachement;
@@ -26,7 +28,8 @@ namespace VaultRenderer {
 
         std::vector<ColorAttachement> color_attachements;
 
-        int width, height;
+        bool draw_screen = false;
+        int width = 1920, height = 1080;
 
         uint32_t FBO;
         uint32_t texture, bloomTexture;
@@ -34,7 +37,7 @@ namespace VaultRenderer {
 
         uint32_t rectVAO, rectVBO;
 
-        Framebuffer();
+        Framebuffer(bool have_housing = false);
 
         void GenerateFramebuffer();
         void DeleteFramebuffer();

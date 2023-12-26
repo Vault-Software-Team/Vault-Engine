@@ -14,7 +14,10 @@ float rectangleVertices[] =
         -1.0f, 1.0f, 0.0f, 1.0f};
 
 namespace VaultRenderer {
-    Framebuffer::Framebuffer() {
+    Framebuffer::Framebuffer(bool have_housing) {
+        if (have_housing)
+            framebuffer = std::make_unique<Framebuffer>();
+
         // Framebuffer
         GenerateFramebuffer();
 
@@ -83,7 +86,11 @@ namespace VaultRenderer {
 
     void Framebuffer::RegenerateFramebuffer() {
         DeleteFramebuffer();
+        if (framebuffer)
+            framebuffer->DeleteFramebuffer();
         GenerateFramebuffer();
+        if (framebuffer)
+            framebuffer->GenerateFramebuffer();
     }
 
     void Framebuffer::Bind() {
@@ -95,19 +102,53 @@ namespace VaultRenderer {
     }
 
     void Framebuffer::UnbindAndDrawOnScreen(Shader &shader) {
+        framebuffer->width = width;
+        framebuffer->height = height;
 
-        glDisable(GL_CULL_FACE);
-        shader.Bind();
+        if (draw_screen) {
+            glViewport(0, 0, VaultRenderer::Window::window->width, VaultRenderer::Window::window->height);
+            glDisable(GL_CULL_FACE);
+            shader.Bind();
+            Unbind();
+
+            glBindVertexArray(rectVAO);
+            glDisable(GL_DEPTH_TEST);
+            glActiveTexture(GL_TEXTURE0);
+            glBindTexture(GL_TEXTURE_2D, texture);
+            shader.SetUniform1i("screen_texture", 0);
+            glDrawArrays(GL_TRIANGLES, 0, 6);
+            glEnable(GL_DEPTH_TEST);
+        } else {
+            // Bind a framebuffer that houses our actual framebuffer, we do this so that the framebuffer shader gets applied to the texture wink wink
+            framebuffer->Bind();
+            // Clear the framebuffer
+            glClearColor(0, 0, 0, 1.0f);
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+            glViewport(0, 0, VaultRenderer::Window::window->width, VaultRenderer::Window::window->height);
+            // Enable Depth
+            glEnable(GL_DEPTH_TEST);
+
+            // Disable cull face and bind the framebuffer shader provided
+            glDisable(GL_CULL_FACE);
+            shader.Bind();
+
+            // Draw the framebuffer to a quad
+            glBindVertexArray(rectVAO);
+            glDisable(GL_DEPTH_TEST);
+            glActiveTexture(GL_TEXTURE0);
+            glBindTexture(GL_TEXTURE_2D, texture);
+            shader.SetUniform1i("screen_texture", 0);
+            glDrawArrays(GL_TRIANGLES, 0, 6);
+            glEnable(GL_DEPTH_TEST);
+
+            // Unbind the static framebuffer that houses the actual framebuffer
+            framebuffer->Unbind();
+        }
+
         Unbind();
-
-        glBindVertexArray(rectVAO);
-        glDisable(GL_DEPTH_TEST);
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, texture);
-        shader.SetUniform1i("screen_texture", 0);
-        glDrawArrays(GL_TRIANGLES, 0, 6);
-        glEnable(GL_DEPTH_TEST);
         // glEnable(GL_CULL_FACE);
+        glViewport(0, 0, VaultRenderer::Window::window->width, VaultRenderer::Window::window->height);
     }
 
     void Framebuffer::AddColorAttachement(uint32_t attachement) {

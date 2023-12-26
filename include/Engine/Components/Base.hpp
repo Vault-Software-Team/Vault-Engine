@@ -1,9 +1,10 @@
 #pragma once
 #include <entt/entt.hpp>
+#include <dllapi.hpp>
 
 namespace Engine {
     namespace Components {
-        struct Base {
+        struct DLL_API Base {
             entt::entity entity;
             std::string ID;
 

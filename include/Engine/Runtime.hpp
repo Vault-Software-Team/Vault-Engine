@@ -4,9 +4,10 @@
 #include <Renderer/Framebuffer.hpp>
 #include <Renderer/Window.hpp>
 #include <Renderer/ShadowMap.hpp>
+#include <dllapi.hpp>
 
 namespace Engine {
-    class Runtime {
+    class DLL_API Runtime {
     private:
         bool paused = false;
 

@@ -8,5 +8,8 @@ namespace Editor {
 
     void EditorLayer::GUI() {
         GUI::Hierarchy();
+        GUI::Assets();
+        GUI::Console();
+        GUI::Scene();
     }
 } // namespace Editor

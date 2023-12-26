@@ -20,7 +20,9 @@ namespace VaultRenderer {
         static inline Window *window;
         std::unique_ptr<Framebuffer> framebuffer = nullptr;
 
-        Window(const int width, const int height, const char *title);
+        bool use_imgui_size = false;
+
+        Window(const int width, const int height, const char *title, bool draw_framebuffer = false);
         ~Window();
 
         int width;
