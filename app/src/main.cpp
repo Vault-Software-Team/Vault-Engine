@@ -120,6 +120,8 @@ int main() {
     GUI::framebufferTextureID = window.framebuffer->framebuffer->texture;
     window.use_imgui_size = true;
 
+    // Model model("../assets/capsule.obj");
+
     window.Run([&] {
         // Update the Main Camera of a scene
         runtime.UpdateMainCamera(window);
