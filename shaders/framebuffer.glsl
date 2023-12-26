@@ -22,9 +22,10 @@ uniform float gamma;
 void main() {
     vec4 frag = texture(screen_texture, texCoords);
     // vec3 bloomColor = texture(bloomTexture, texCoords).rgb;
-    FragColor.rgb = pow(frag.rgb, vec3(1.0 / gamma));
+    // FragColor.rgb = pow(frag.rgb, vec3(1.0 / gamma));
     // FragColor.rgb = frag.rgb;
     FragColor.a = 1;
+    FragColor.rgb = frag;
 
     // FragColor = frag;
     // FragColor.rgb = pow(frag.rgb, vec3(1.0 / gamma));

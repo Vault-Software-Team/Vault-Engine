@@ -31,7 +31,7 @@ namespace VaultRenderer {
 
         glEnable(GL_DEPTH_TEST);
         glEnable(GL_CULL_FACE);
-        glEnable(GL_FRAMEBUFFER_SRGB);
+        // glEnable(GL_FRAMEBUFFER_SRGB);
         glCullFace(GL_BACK);
         glFrontFace(GL_CCW);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -80,7 +80,7 @@ namespace VaultRenderer {
             shadow_render_call();
             // glViewport(0, 0, width, height);
 
-            glEnable(GL_FRAMEBUFFER_SRGB);
+            // glEnable(GL_FRAMEBUFFER_SRGB);
             framebuffer->Bind();
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             glEnable(GL_DEPTH_TEST);
