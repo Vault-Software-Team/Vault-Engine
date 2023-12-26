@@ -1,6 +1,6 @@
 #pragma once
-#include <entt/entt.hpp>
 #include <dllapi.hpp>
+#include <entt/entt.hpp>
 
 namespace Engine {
     namespace Components {

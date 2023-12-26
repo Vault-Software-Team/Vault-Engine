@@ -4,7 +4,7 @@
 namespace Editor {
     class DLL_API EditorLayer {
     public:
-        static inline EditorLayer *instance;
+        static DLL_API EditorLayer *instance;
 
         EditorLayer();
         void GUI();

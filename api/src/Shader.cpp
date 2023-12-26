@@ -4,6 +4,8 @@
 #include <iostream>
 
 namespace VaultRenderer {
+    DLL_API Shader *Shader::binded_shader;
+
     Shader::Shader(const std::string &shader_file) : path(shader_file) {
         enum ShaderType {
             NONE = -1,

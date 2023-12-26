@@ -1,4 +1,5 @@
 #pragma once
+#include <dllapi.hpp>
 #include <string>
 #include <entt/entt.hpp>
 #include <Engine/Scene.hpp>
@@ -15,13 +16,13 @@
 namespace Engine {
     class DLL_API GameObject : public std::enable_shared_from_this<GameObject> {
     public:
-        static std::shared_ptr<GameObject> &FindGameObjectByEntity(const entt::entity &entity);
-        static std::shared_ptr<GameObject> &FindGameObjectByID(const std::string &id);
-        static std::shared_ptr<GameObject> &FindGameObjectByName(const std::string &name);
-        static std::shared_ptr<GameObject> &FindGameObjectByTag(const std::string &tag);
+        static DLL_API std::shared_ptr<GameObject> &FindGameObjectByEntity(const entt::entity &entity);
+        static DLL_API std::shared_ptr<GameObject> &FindGameObjectByID(const std::string &id);
+        static DLL_API std::shared_ptr<GameObject> &FindGameObjectByName(const std::string &name);
+        static DLL_API std::shared_ptr<GameObject> &FindGameObjectByTag(const std::string &tag);
 
-        static std::shared_ptr<GameObject> &New(const std::string &name, const std::string &tag = "Default");
-        static std::shared_ptr<GameObject> &NewStatic(const std::string &name, const std::string &tag = "Default");
+        static DLL_API std::shared_ptr<GameObject> &New(const std::string &name, const std::string &tag = "Default");
+        static DLL_API std::shared_ptr<GameObject> &NewStatic(const std::string &name, const std::string &tag = "Default");
 
         std::string ID, name, tag;
         entt::entity entity;

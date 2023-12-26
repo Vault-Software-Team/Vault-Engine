@@ -1,4 +1,5 @@
 #pragma once
+#include <dllapi.hpp>
 #include <cstdint>
 #include <string>
 #ifdef __EMSCRIPTEN__
@@ -15,7 +16,7 @@
 #include <memory>
 
 namespace VaultRenderer {
-    class ShadowMap {
+    class DLL_API ShadowMap {
     private:
         glm::mat4 light_proj;
         glm::mat4 light_view;

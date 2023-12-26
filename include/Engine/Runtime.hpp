@@ -1,10 +1,10 @@
 #pragma once
+#include <dllapi.hpp>
 #include <Engine/Scene.hpp>
 #include <Engine/GameObject.hpp>
 #include <Renderer/Framebuffer.hpp>
 #include <Renderer/Window.hpp>
 #include <Renderer/ShadowMap.hpp>
-#include <dllapi.hpp>
 
 namespace Engine {
     class DLL_API Runtime {
@@ -13,8 +13,8 @@ namespace Engine {
 
     public:
         int width, height;
-        static inline Runtime *instance = nullptr;
-        static inline VaultRenderer::Shader *default_shader = nullptr;
+        static DLL_API Runtime *instance;
+        static DLL_API VaultRenderer::Shader *default_shader;
 
         Runtime(VaultRenderer::Shader *default_shader);
 

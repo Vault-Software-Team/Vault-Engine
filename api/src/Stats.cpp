@@ -9,6 +9,13 @@
 #include <GLFW/glfw3.h>
 
 namespace VaultRenderer {
+    DLL_API int Statistics::draw_calls;
+    DLL_API std::string Statistics::vendor;
+    DLL_API std::string Statistics::renderer;
+    DLL_API std::string Statistics::version;
+    DLL_API std::string Statistics::shading_language;
+    DLL_API int fps;
+
     void Statistics::SetStats() {
         vendor = (char *)glGetString(GL_VENDOR);
         vendor = (char *)glGetString(GL_RENDERER);

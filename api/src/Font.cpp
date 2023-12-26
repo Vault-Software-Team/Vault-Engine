@@ -4,8 +4,8 @@
 #include <Renderer/Stats.hpp>
 
 namespace VaultRenderer {
-    DLL_API FT_Library ft;
-    DLL_API Shader *font_shader;
+    DLL_API FT_Library Font::ft;
+    DLL_API std::unique_ptr<Shader> Font::font_shader;
 
     int Font::InitFT() {
         font_shader = std::make_unique<Shader>("../shaders/text_shader.glsl");

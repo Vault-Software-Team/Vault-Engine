@@ -11,6 +11,8 @@
 #include <iostream>
 
 namespace VaultRenderer {
+    DLL_API std::vector<std::shared_ptr<Texture::t_texture>> Texture::textures;
+
     Texture::~Texture() {
         if (texture_data.use_count() <= 1) {
             for (int i = 0; i < textures.size(); i++) {

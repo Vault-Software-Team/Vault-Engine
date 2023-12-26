@@ -1,4 +1,5 @@
 #pragma once
+#include <dllapi.hpp>
 #include "Camera.hpp"
 #include "Transform.hpp"
 #include "MeshRenderer.hpp"

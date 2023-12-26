@@ -1,4 +1,5 @@
 #pragma once
+#include <dllapi.hpp>
 #include <string>
 #ifdef __EMSCRIPTEN__
 #include <emscripten.h>
@@ -9,7 +10,6 @@
 #endif
 #include <GLFW/glfw3.h>
 #include <functional>
-#include <dllapi.hpp>
 #include <Renderer/Framebuffer.hpp>
 #include <memory>
 #include <Renderer/Shader.hpp>
@@ -17,7 +17,7 @@
 namespace VaultRenderer {
     class DLL_API Window {
     public:
-        static inline Window *window;
+        static DLL_API Window *window;
         std::unique_ptr<Framebuffer> framebuffer = nullptr;
 
         bool use_imgui_size = false;
@@ -38,7 +38,7 @@ namespace VaultRenderer {
         void SetViewport(const int width, const int height);
 
     private:
-        static void FramebufferSizeCallback(GLFWwindow *window, int width, int height);
+        static DLL_API void FramebufferSizeCallback(GLFWwindow *window, int width, int height);
         void SetupImGui();
         void SetDefaultImGuiTheme();
         mutable GLFWwindow *glfw_window;

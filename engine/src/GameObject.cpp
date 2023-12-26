@@ -131,7 +131,9 @@ namespace Engine {
             }
             ImGui::TreePop();
         } else {
-            ImGui::Selectable((icon + " " + name).c_str());
+            if (ImGui::Selectable((icon + " " + name).c_str())) {
+                Editor::GUI::selected_gameObject = this;
+            }
         }
     }
 } // namespace Engine

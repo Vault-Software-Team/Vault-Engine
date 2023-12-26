@@ -8,6 +8,8 @@
 #include <Renderer/Bloom.hpp>
 
 namespace VaultRenderer {
+    DLL_API Window *Window::window;
+
     Window::Window(const int width, const int height, const char *title, bool draw_screen) : width(width), height(height), title(title) {
         window = this;
         glfwInit();

@@ -2,8 +2,13 @@
 #include <iostream>
 #include <Engine/GameObject.hpp>
 #include <Engine/Runtime.hpp>
+#include <Editor/GUI/MainGUI.hpp>
 
 namespace Engine {
+    std::unique_ptr<Scene> Scene::Main;
+    Components::Camera *Scene::EditorSceneCamera = nullptr;
+    std::vector<std::shared_ptr<GameObject>> Scene::StaticGameObjects;
+
     Scene::Scene(const std::string &scene_file) : scene_file_path(scene_file) {
     }
 
@@ -12,6 +17,7 @@ namespace Engine {
     }
 
     Scene::~Scene() {
+        Editor::GUI::selected_gameObject = nullptr;
         std::cout << "Deleting scene...\n";
         GameObjects.clear();
         main_camera_object = nullptr;

@@ -1,4 +1,5 @@
 #pragma once
+#include <dllapi.hpp>
 #include <cstdint>
 #include <string>
 #ifdef __EMSCRIPTEN__
@@ -13,7 +14,7 @@
 #include <glm/ext.hpp>
 
 namespace VaultRenderer {
-    class Skybox {
+    class DLL_API Skybox {
     public:
         uint32_t skyboxVAO, skyboxVBO, skyboxEBO, cubemapTexture;
 

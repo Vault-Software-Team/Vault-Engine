@@ -1,20 +1,21 @@
 #pragma once
+#include <dllapi.hpp>
 #include <string>
 
 namespace VaultRenderer {
-    class Statistics {
+    class DLL_API Statistics {
     public:
-        static inline int draw_calls;
-        static inline std::string vendor;
-        static inline std::string renderer;
-        static inline std::string version;
-        static inline std::string shading_language;
-        static inline int fps;
+        static DLL_API int draw_calls;
+        static DLL_API std::string vendor;
+        static DLL_API std::string renderer;
+        static DLL_API std::string version;
+        static DLL_API std::string shading_language;
+        static DLL_API int fps;
 
-        static void SetStats();
-        static void ResetDrawCalls();
-        static void DrawCall();
-        static int GetDrawCalls();
+        static DLL_API void SetStats();
+        static DLL_API void ResetDrawCalls();
+        static DLL_API void DrawCall();
+        static DLL_API int GetDrawCalls();
 
         // ImGui::Text("Vendor: %s", glGetString(GL_VENDOR));
         // ImGui::Text("Renderer: %s", glGetString(GL_RENDERER));

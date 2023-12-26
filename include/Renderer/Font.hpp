@@ -1,7 +1,7 @@
 #pragma once
+#include <dllapi.hpp>
 #include <map>
 #include <memory>
-#include <dllapi.hpp>
 #include "Shader.hpp"
 #include <ft2build.h>
 #include FT_FREETYPE_H
@@ -10,9 +10,9 @@ namespace VaultRenderer {
 
     class DLL_API Font {
     public:
-        static inline FT_Library ft;
-        static inline std::unique_ptr<Shader> font_shader = nullptr;
-        static int InitFT();
+        static DLL_API FT_Library ft;
+        static DLL_API std::unique_ptr<Shader> font_shader;
+        static DLL_API int InitFT();
 
         uint32_t VAO, VBO;
         std::string font_path;

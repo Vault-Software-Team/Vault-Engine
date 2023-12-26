@@ -1,4 +1,5 @@
 #pragma once
+#include <dllapi.hpp>
 #include <cstdint>
 #include <string>
 #ifdef __EMSCRIPTEN__
@@ -15,7 +16,7 @@
 #include <Renderer/Bloom.hpp>
 
 namespace VaultRenderer {
-    class Framebuffer {
+    class DLL_API Framebuffer {
     public:
         std::unique_ptr<Framebuffer> framebuffer = nullptr;
 
@@ -53,7 +54,7 @@ namespace VaultRenderer {
         int color_attachements_to_generate;
     };
 
-    class DepthFramebuffer {
+    class DLL_API DepthFramebuffer {
 
     public:
         uint32_t FBO;

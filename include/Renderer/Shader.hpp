@@ -1,4 +1,5 @@
 #pragma once
+#include <dllapi.hpp>
 #include <cstdint>
 #include <string>
 #ifdef __EMSCRIPTEN__
@@ -10,12 +11,11 @@
 #endif
 #include <GLFW/glfw3.h>
 #include <glm/ext.hpp>
-#include <dllapi.hpp>
 
 namespace VaultRenderer {
     class DLL_API Shader {
     private:
-        static inline Shader *binded_shader;
+        static DLL_API Shader *binded_shader;
         uint32_t ID;
 
     public:

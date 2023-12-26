@@ -1,8 +1,8 @@
 #pragma once
+#include <dllapi.hpp>
 #include <memory>
 #include <string>
 #include <vector>
-#include <dllapi.hpp>
 
 namespace VaultRenderer {
     enum TextureType {
@@ -19,7 +19,7 @@ namespace VaultRenderer {
             TextureType type;
         };
 
-        static inline std::vector<std::shared_ptr<t_texture>> textures;
+        static DLL_API std::vector<std::shared_ptr<t_texture>> textures;
 
         std::shared_ptr<t_texture> texture_data;
 

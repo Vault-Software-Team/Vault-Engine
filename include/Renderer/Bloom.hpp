@@ -1,6 +1,6 @@
 #pragma once
-#include <glm/ext.hpp>
 #include <dllapi.hpp>
+#include <glm/ext.hpp>
 #include <vector>
 #include <memory>
 #include <Renderer/Shader.hpp>

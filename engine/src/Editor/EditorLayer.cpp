@@ -2,6 +2,9 @@
 #include <Editor/EditorLayer.hpp>
 
 namespace Editor {
+    // Variable Definition
+    DLL_API EditorLayer *EditorLayer::instance;
+
     EditorLayer::EditorLayer() {
         instance = this;
     }
@@ -11,5 +14,6 @@ namespace Editor {
         GUI::Assets();
         GUI::Console();
         GUI::Scene();
+        GUI::Components();
     }
 } // namespace Editor

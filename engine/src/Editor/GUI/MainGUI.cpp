@@ -5,6 +5,10 @@
 using namespace Engine::Components;
 
 namespace Editor {
+    DLL_API std::vector<Log> GUI::logs;
+    DLL_API uint32_t GUI::framebufferTextureID;
+    DLL_API Engine::GameObject *GUI::selected_gameObject;
+
     char asciitolower(char in) {
         if (in <= 'Z' && in >= 'A')
             return in - ('Z' - 'z');
