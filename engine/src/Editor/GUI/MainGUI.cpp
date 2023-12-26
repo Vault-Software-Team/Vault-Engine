@@ -5,7 +5,7 @@
 using namespace Engine::Components;
 
 namespace Editor {
-    void GUI::SetNameIcon(std::string &txt, std::shared_ptr<Engine::GameObject> &gameObject) {
+    void GUI::SetNameIcon(std::string &txt, Engine::GameObject *gameObject) {
         if (gameObject->HasComponent<Camera>()) {
             txt = ICON_FA_CAMERA;
         }

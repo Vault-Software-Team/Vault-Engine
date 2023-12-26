@@ -24,7 +24,7 @@ namespace Editor {
         static void LogError(const std::string &content);
         static void LogWarning(const std::string &content);
 
-        static void SetNameIcon(std::string &txt, std::shared_ptr<Engine::GameObject> &gameObject);
+        static void SetNameIcon(std::string &txt, Engine::GameObject *gameObject);
         static void Hierarchy();
         static void Assets();
         static void Console();

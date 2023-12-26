@@ -120,8 +120,7 @@ namespace Engine {
                 break;
             }
         }
-        std::shared_ptr<GameObject> sg(this);
-        Editor::GUI::SetNameIcon(icon, sg);
+        Editor::GUI::SetNameIcon(icon, this);
 
         if (hasChildren) {
             ImGui::TreeNode((icon + " " + name).c_str());
