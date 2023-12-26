@@ -25,6 +25,7 @@ namespace VaultRenderer {
 
         int width;
         int height;
+        float gamma = 2.2;
         std::string title;
 
         GLFWwindow *GetGLFWWindow() const;

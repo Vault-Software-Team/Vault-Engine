@@ -1,4 +1,4 @@
-file(GLOB SRC_FILES src/*.cpp src/*/*.cpp src/*/*/*.cpp)
+file(GLOB SRC_FILES src/*.cpp src/*/*.cpp src/*/*/*.cpp src/*/*/*/*.cpp src/*/*/*/*/*.cpp)
 file(GLOB IMGUI_FILES ${CMAKE_SOURCE_DIR}/vendor/imgui/*.cpp ${CMAKE_SOURCE_DIR}/vendor/imgui/*/*.cpp ${CMAKE_SOURCE_DIR}/vendor/imgui/*/*/*.cpp)
 
 include_directories(${CMAKE_SOURCE_DIR}/include)

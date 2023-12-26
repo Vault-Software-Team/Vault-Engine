@@ -3,11 +3,18 @@
 #include <Engine/Components/IncludeComponents.hpp>
 #include <uuid.hpp>
 #include <iostream>
+#include <Editor/GUI/MainGUI.hpp>
+#include <imgui/imgui.h>
 
 namespace Engine {
     std::shared_ptr<GameObject> &GameObject::New(const std::string &name, const std::string &tag) {
         Scene::Main->GameObjects.push_back(std::make_shared<GameObject>(name, tag));
         return Scene::Main->GameObjects.back();
+    }
+
+    std::shared_ptr<GameObject> &GameObject::NewStatic(const std::string &name, const std::string &tag) {
+        Scene::StaticGameObjects.push_back(std::make_shared<GameObject>(name, tag));
+        return Scene::StaticGameObjects.back();
     }
 
     GameObject::GameObject(const std::string &name, const std::string &tag) : name(name), tag(tag) {
@@ -32,6 +39,15 @@ namespace Engine {
 
                 meshRenderer.mesh->Draw(shader);
             }
+        }
+
+        if (HasComponent<Text3D>()) {
+            glDisable(GL_CULL_FACE);
+            auto &text3D = GetComponent<Text3D>();
+            if (VaultRenderer::Font::font_shader != nullptr) {
+                text3D.Draw(*VaultRenderer::Font::font_shader);
+            }
+            glEnable(GL_CULL_FACE);
         }
 
         if (HasComponent<AmbientLight>()) {
@@ -95,4 +111,28 @@ namespace Engine {
         }
     }
 
+    void GameObject::GUI() {
+        std::string icon;
+        bool hasChildren = false;
+        for (auto &gameObject : Scene::Main->GameObjects) {
+            if (gameObject->parent == gameObject->ID) {
+                hasChildren = true;
+                break;
+            }
+        }
+        std::shared_ptr<GameObject> sg(this);
+        Editor::GUI::SetNameIcon(icon, sg);
+
+        if (hasChildren) {
+            ImGui::TreeNode((icon + " " + name).c_str());
+            for (auto &gameObject : Scene::Main->GameObjects) {
+                if (gameObject->parent == gameObject->ID) {
+                    gameObject->GUI();
+                }
+            }
+            ImGui::TreePop();
+        } else {
+            ImGui::Selectable((icon + " " + name).c_str());
+        }
+    }
 } // namespace Engine

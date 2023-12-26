@@ -8,6 +8,7 @@
 #endif
 #include <GLFW/glfw3.h>
 #include <Renderer/Stats.hpp>
+#include <iostream>
 
 namespace VaultRenderer {
     Mesh::Mesh(std::vector<Vertex> &vertices, std::vector<uint32_t> &indices) : vertices(vertices), indices(indices), material{glm::vec4(1, 1, 1, 1)} {
@@ -75,6 +76,11 @@ namespace VaultRenderer {
 
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+        material.diffuse = nullptr;
+        material.specular = nullptr;
+        material.normal = nullptr;
+        material.height = nullptr;
     }
 
     void Mesh::Draw(Shader &shader) {

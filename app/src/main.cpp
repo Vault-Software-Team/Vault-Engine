@@ -10,14 +10,12 @@
 #include <Engine/Components/IncludeComponents.hpp>
 #include <Renderer/ShadowMap.hpp>
 #include <Renderer/Stats.hpp>
+#include <Renderer/Font.hpp>
+#include <Engine/Runtime.hpp>
+#include <Editor/EditorLayer.hpp>
+#include <fstream>
 
 static VaultRenderer::Shader *default_shader;
-
-void SetGlobalUniforms() {
-    default_shader->SetUniform1i("point_light_count", Engine::Scene::Main->EntityRegistry.view<Engine::Components::PointLight>().size());
-    default_shader->SetUniform1i("dir_light_count", Engine::Scene::Main->EntityRegistry.view<Engine::Components::DirectionalLight>().size());
-    default_shader->SetUniform1i("spot_light_count", Engine::Scene::Main->EntityRegistry.view<Engine::Components::SpotLight>().size());
-}
 
 using namespace Engine;
 using namespace VaultRenderer;
@@ -44,130 +42,23 @@ void AspectRatioCameraViewport() {
     glViewport(vpX, vpY, aspectWidth, aspectHeight);
 }
 
-void DrawToShadowMap(DepthFramebuffer &shadowMap, Shader &shader) {
-    glEnable(GL_DEPTH_TEST);
-    glViewport(0, 0, shadowMap.width, shadowMap.height);
-    shadowMap.Bind();
-    glClear(GL_DEPTH_BUFFER_BIT);
-    auto v = Scene::Main->EntityRegistry.view<MeshRenderer>();
-
-    shader.Bind();
-
-    for (auto e : v) {
-        auto &meshRenderer = Scene::Main->EntityRegistry.get<MeshRenderer>(e);
-        auto &transform = Scene::Main->EntityRegistry.get<Transform>(e);
-        if (meshRenderer.mesh) {
-            transform.Update();
-            shader.SetUniformMat4("transformModel", transform.model);
-            meshRenderer.mesh->Draw(shader);
-        }
-    }
-
-    shadowMap.Unbind();
-    glViewport(0, 0, Window::window->width, Window::window->height);
-    // AspectRatioCameraViewport();
-}
-
-void UpdateGameObjects() {
-    glEnable(GL_BLEND);
-    glEnable(GL_DEPTH_TEST);
-    default_shader->Bind();
-    SetGlobalUniforms();
-    for (auto gameObject : Scene::Main->GameObjects) {
-        // if (gameObject->parent != "NO_PARENT")
-        gameObject->UpdateComponents(*default_shader);
-    }
-    glDisable(GL_BLEND);
-}
-
-void OnGUI(Engine::Components::Transform &light_transform) {
+void OnGUI(uint32_t smID) {
     using namespace VaultRenderer;
     using namespace Engine;
     using namespace Engine::Components;
-    if (ImGui::Begin("Hierarchy")) {
-        for (auto &gameObject : Scene::Main->GameObjects) {
-            if (gameObject) {
-                ImGui::Text("%s", gameObject->name.c_str());
-                ImGui::DragFloat3((gameObject->name + "h").c_str(), &gameObject->GetComponent<Transform>().position.x, 0.01f);
-                ImGui::DragFloat3((gameObject->name + "a").c_str(), &gameObject->GetComponent<Transform>().rotation.x, 0.01f);
-                ImGui::NewLine();
-            }
-        }
-        ImGui::DragFloat3("Pos", &light_transform.position.x, 0.01f);
-        ImGui::DragFloat3("Rot", &light_transform.rotation.x, 0.01f);
-        ImGui::End();
-    }
-
-    ImGui::Begin("Statistics");
-    ImGui::Text("Draw Calls: %d", Statistics::GetDrawCalls());
-    ImGui::Text("Vendor: %s", Statistics::vendor.c_str());
-    ImGui::Text("Renderer: %s", Statistics::renderer.c_str());
-    ImGui::Text("Version: %s", Statistics::version.c_str());
-    ImGui::Text("Shading Language: %s", Statistics::shading_language.c_str());
-    ImGui::End();
+    // ImGui::Begin("Statistics");
+    // ImGui::Text("Draw Calls: %d", Statistics::GetDrawCalls());
+    // ImGui::Text("Vendor: %s", Statistics::vendor.c_str());
+    // ImGui::Text("Renderer: %s", Statistics::renderer.c_str());
+    // ImGui::Text("Version: %s", Statistics::version.c_str());
+    // ImGui::Text("Shading Language: %s", Statistics::shading_language.c_str());
+    // ImGui::End();
 }
 
-void BindShadowsToShader(Shader &shader, ShadowMap &shadow_map) {
-    // Bind the shader
-    shader.Bind();
-
-    // Set DirectionalLight shadow properties
-    if (Scene::Main->EntityRegistry.valid(Scene::Main->EntityRegistry.view<DirectionalLight>().back())) {
-        if (Scene::Main->EntityRegistry.get<DirectionalLight>(Scene::Main->EntityRegistry.view<DirectionalLight>().back()).enable_shadow_mapping) {
-            shadow_map.BindTexture(10);
-            shader.SetUniform1i("shadowMap", 10);
-            shader.SetUniform1i("shadow_mapping", 1);
-        } else {
-            shader.SetUniform1i("shadow_mapping", 0);
-        }
-    } else {
-        shader.SetUniform1i("shadow_mapping", 0);
-    }
-    // Set Point Light shadow properties
-
-    PointLight *pLight = nullptr;
-    auto v_PointLight = Scene::Main->EntityRegistry.view<PointLight>();
-
-    PointLight *mainPointLight = nullptr;
-    for (auto e : v_PointLight) {
-        auto &lPLight = Scene::Main->EntityRegistry.get<PointLight>(e);
-        if (!lPLight.enable_shadow_mapping)
-            continue;
-
-        if (mainPointLight) {
-            if (Scene::Main) {
-                if (Scene::Main->main_camera_object) {
-                    if (glm::distance(Scene::Main->main_camera_object->transform->position, lPLight.transform->position) < glm::distance(Scene::Main->main_camera_object->transform->position, mainPointLight->transform->position)) {
-                        mainPointLight = &lPLight;
-                    }
-                }
-            }
-        } else {
-            mainPointLight = &lPLight;
-        }
-    }
-
-    if (mainPointLight && mainPointLight->enable_shadow_mapping) {
-        glActiveTexture(GL_TEXTURE11);
-        glBindTexture(GL_TEXTURE_CUBE_MAP, mainPointLight->cubemap);
-        shader.SetUniform1i("shadowCubemap", 11);
-        shader.SetUniform1f("shadowCubemapFarPlane", mainPointLight->shadow_far_plane);
-        shader.SetUniform1i("shadow_cubemap_mapping", 1);
-    } else {
-        shader.SetUniform1i("shadow_cubemap_mapping", 0);
-    }
-}
-
-void UpdateMainCameraObject() {
-    if (Scene::Main->main_camera_object) {
-        Scene::Main->main_camera_object->UpdateMatrix();
-        Scene::Main->main_camera_object->BindToShader(*default_shader);
-        Scene::Main->main_camera_object->Inputs();
-    }
-}
-
+using namespace Editor;
 int main() {
     using namespace VaultRenderer;
+
     Window window(1280, 720, "Vault Engine");
     Statistics::SetStats();
 
@@ -175,6 +66,7 @@ int main() {
     Shader skybox_shader("../shaders/skybox.glsl");
     Shader shadow_map_shader("../shaders/shadow_map.glsl");
     Shader shadow_cubemap_shader("../shaders/shadow_map_point.glsl");
+    Font::InitFT();
     default_shader = &shader;
 
     Skybox skybox;
@@ -195,61 +87,62 @@ int main() {
     meshRenderer.SetMeshType(Components::MESH_PLANE);
     meshRenderer.mesh->material.SetDiffuse("../assets/diffuse.png");
     meshRenderer.mesh->material.SetSpecular("../assets/diffuse.png");
-    meshRenderer.mesh->material.SetNormal("../assets/normal.png");
-
-    auto cameraObject = GameObject::New("Camera");
-    cameraObject->AddComponent<Components::Camera>();
 
     auto lightObject = GameObject::New("PointLight");
     lightObject->AddComponent<Components::DirectionalLight>();
     lightObject->AddComponent<Components::MeshRenderer>();
     lightObject->GetComponent<Components::MeshRenderer>().SetMeshType(Components::MESH_PYRAMID);
-    lightObject->GetComponent<Components::DirectionalLight>().enable_shadow_mapping = false;
+    lightObject->GetComponent<Components::DirectionalLight>().enable_shadow_mapping = true;
+
+    auto emptyObject = GameObject::New("Text");
+    emptyObject->AddComponent<Text3D>();
+    emptyObject->GetComponent<Text3D>().text = "Hello, World!";
+    emptyObject->GetComponent<Text3D>().scale = 0.02;
+    emptyObject->GetComponent<Text3D>().ChangeFont("../assets/fonts/OpenSans-Bold.ttf");
+    auto &empty_transform = emptyObject->GetComponent<Transform>();
 
     using namespace Engine::Components;
     auto &transform = gameObject->GetComponent<Transform>();
     auto &light_transform = lightObject->GetComponent<Transform>();
-    transform.rotation.x = glm::radians(90.f);
+    // transform.rotation.x = glm::radians(90.f);
     transform.scale = glm::vec3(10, 10, 10);
-    auto &camera_transform = cameraObject->GetComponent<Transform>();
-    auto &camera = cameraObject->GetComponent<Camera>();
-    camera_transform.rotation.z = -1.0f;
+    Scene::MakeSceneCamera();
+    Scene::Main->SetMainCameraObject(Scene::StaticGameObjects.back());
 
-    camera.fov = 45;
-    camera.near = 0.01f;
-    camera.far = 100.0f;
-    camera.width = 800;
-    camera.height = 600;
-    camera_transform.position.y = 0.5f;
-    camera_transform.position.z = 25.f;
-    Scene::Main->SetMainCameraObject(cameraObject);
-
-    Model model("../assets/capsule.obj");
     ShadowMap shadow_map;
+    shadow_map.ortho_size = 20.0f;
+
+    Runtime runtime(default_shader);
+    EditorLayer editor;
 
     window.Run([&] {
-        camera.width = window.width;
-        camera.height = window.height;
+        // Update the Main Camera of a scene
+        runtime.UpdateMainCamera(window);
+        // Reset the Statistic Draw Calls
         Statistics::ResetDrawCalls();
-        window.SetClearColor(0x000000);
 
-        UpdateMainCameraObject();
+        // Set the background color to RED
+        window.SetClearColor(0xFF0000);
 
-        // Skybox Render Call
-        skybox.Render(skybox_shader, camera_transform.position, camera_transform.rotation, camera.up);
+        // Render the skybox
+        skybox.Render(skybox_shader, Scene::Main->main_camera_object->transform->position, Scene::Main->main_camera_object->transform->rotation, Scene::Main->main_camera_object->up);
 
-        // Viewport shit
-        // AspectRatioCameraViewport();
-        glViewport(0, 0, window.width, window.height);
-        
         // Shadow shenanigans and fuckery
-        BindShadowsToShader(shader, shadow_map);
-        shadow_map.CalculateMatrices(light_transform.position);
-        shadow_map.SetLightProjection(shader);
+        runtime.ShadowShenanigans(shadow_map);
 
-        UpdateGameObjects(); },
+        // Drawing Meshes and updaing GameObject Components
+        glEnable(GL_BLEND);
+        glEnable(GL_DEPTH_TEST);
+
+        // Bind all the camera matricies to the Font Shader (Text)
+        Scene::Main->main_camera_object->BindToShader(*Font::font_shader);
+
+        // Update all the GameObjects components
+        runtime.UpdateGameObjects(window); //
+    },
                [&] {
-                   OnGUI(light_transform);
+                   ImGui::DockSpaceOverViewport(ImGui::GetMainViewport(), ImGuiDockNodeFlags_PassthruCentralNode);
+                   editor.GUI();
                },
                [&] {
                    // Directional Light  Shadow Mapping
@@ -257,7 +150,7 @@ int main() {
                        if (Scene::Main->EntityRegistry.get<DirectionalLight>(Scene::Main->EntityRegistry.view<DirectionalLight>().back()).enable_shadow_mapping) {
                            shadow_map.RenderSpace([&](std::unique_ptr<Shader> &shadow_shader) {
                                // NOTE: shadow_shader is already binded
-                               DrawToShadowMap(shadow_map.GetDepthBuffer(), *shadow_shader);
+                               runtime.DrawToShadowMap(shadow_map.GetDepthBuffer(), *shadow_shader);
                            });
                        }
                    }

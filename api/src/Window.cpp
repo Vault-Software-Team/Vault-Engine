@@ -37,6 +37,8 @@ namespace VaultRenderer {
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glViewport(0, 0, width, height);
 
+        glfwSwapInterval(1);
+
         glfwSetFramebufferSizeCallback(glfw_window, FramebufferSizeCallback);
 
         // ImGui Setup
@@ -56,33 +58,51 @@ namespace VaultRenderer {
         Shader framebuffer_shader("../shaders/framebuffer.glsl");
         ImGuiIO &io = ImGui::GetIO();
 
-        BloomRenderer bloomRenderer;
-        bloomRenderer.Init(width, height);
+        framebuffer->bloomRenderer.Init(width, height);
 
-        std::function<void()> main_loop = [&] {
+#ifdef __EMSCRIPTEN__
+        emscripten_set_main_loop(main_loop, 0, true);
+#else
+        while (!glfwWindowShouldClose(glfw_window)) {
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             glfwGetWindowSize(glfw_window, &width, &height);
+            framebuffer->bloomRenderer.m_SrcViewportSize.x = width;
+            framebuffer->bloomRenderer.m_SrcViewportSize.x = height;
+
+            framebuffer->bloomRenderer.m_SrcViewportSizeFloat.x = width;
+            framebuffer->bloomRenderer.m_SrcViewportSizeFloat.x = height;
 
             // Framebuffer Shenanigans
             glfwPollEvents();
 
             if (before_width != width || before_height != height) {
+                framebuffer->width = width;
+                framebuffer->height = height;
                 framebuffer->RegenerateFramebuffer();
             }
 
             shadow_render_call();
+            glViewport(0, 0, width, height);
 
             framebuffer->Bind();
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             glEnable(GL_DEPTH_TEST);
 
             update_call();
+            framebuffer_shader.Bind();
+            framebuffer_shader.SetUniform1f("gamma", gamma);
+
+            // framebuffer->BindAttachement(1, 1);
+            // framebuffer_shader.SetUniform1f("bloomTexture", 1);
+            // bloomRenderer.RenderBloomTexture(framebuffer->GetAttachement(1), 0.005f, framebuffer->rectVAO);
             framebuffer->UnbindAndDrawOnScreen(framebuffer_shader);
 
             // End of Framebuffer Shenanigans
             ImGui_ImplOpenGL3_NewFrame();
             ImGui_ImplGlfw_NewFrame();
             ImGui::NewFrame();
+            // ImGui::DockSpaceOverViewport(ImGui::GetMainViewport(), ImGuiDockNodeFlags_PassthruCentralNode);
+
             gui_call();
             ImGui::Render();
             ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
@@ -99,13 +119,6 @@ namespace VaultRenderer {
             glfwSwapBuffers(glfw_window);
             before_width = width;
             before_height = height;
-        };
-
-#ifdef __EMSCRIPTEN__
-        emscripten_set_main_loop(main_loop, 0, true);
-#else
-        while (!glfwWindowShouldClose(glfw_window)) {
-            main_loop();
         }
     }
 #endif
@@ -115,11 +128,11 @@ namespace VaultRenderer {
         };
 
         void Window::SetClearColor(const float r, const float g, const float b) {
-            glClearColor(r, g, b, 1);
+            glClearColor(pow(r, gamma), pow(gamma, g), pow(gamma, b), 1);
         }
 
         void Window::SetClearColor(const uint32_t hex_color) {
-            glClearColor(((hex_color >> 16) & 0xFF) / 255.0, ((hex_color >> 8) & 0xFF) / 255.0, ((hex_color)&0xFF) / 255.0, 1);
+            glClearColor(pow(((hex_color >> 16) & 0xFF) / 255.0, gamma), pow(((hex_color >> 8) & 0xFF) / 255.0, gamma), pow(((hex_color)&0xFF) / 255.0, gamma), 1);
         }
 
         void Window::SetViewport(const int width, const int height) {

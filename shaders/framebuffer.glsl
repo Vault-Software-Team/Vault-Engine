@@ -17,14 +17,14 @@ in vec2 texCoords;
 
 uniform sampler2D screen_texture;
 // uniform sampler2D bloomTexture;
-const float gamma = 1.0;
+uniform float gamma;
 
 void main() {
     vec4 frag = texture(screen_texture, texCoords);
     // vec3 bloomColor = texture(bloomTexture, texCoords).rgb;
-    FragColor = vec4(frag.rgb, 1);
+    FragColor.rgb = pow(frag.rgb, vec3(1.0 / gamma));
     // FragColor.rgb = frag.rgb;
-    // FragColor.a = 1;
+    FragColor.a = 1;
 
     // FragColor = frag;
     // FragColor.rgb = pow(frag.rgb, vec3(1.0 / gamma));

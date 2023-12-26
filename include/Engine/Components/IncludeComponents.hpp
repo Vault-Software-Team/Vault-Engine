@@ -6,3 +6,4 @@
 #include "PointLight.hpp"
 #include "DirectionalLight.hpp"
 #include "SpotLight.hpp"
+#include "Text3D.hpp"

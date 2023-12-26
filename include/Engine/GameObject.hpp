@@ -21,6 +21,7 @@ namespace Engine {
         static std::shared_ptr<GameObject> &FindGameObjectByTag(const std::string &tag);
 
         static std::shared_ptr<GameObject> &New(const std::string &name, const std::string &tag = "Default");
+        static std::shared_ptr<GameObject> &NewStatic(const std::string &name, const std::string &tag = "Default");
 
         std::string ID, name, tag;
         entt::entity entity;
@@ -71,5 +72,7 @@ namespace Engine {
         void RemoveComponent() {
             Scene::Main->EntityRegistry.remove<T>(entity);
         }
+
+        void GUI();
     };
 } // namespace Engine

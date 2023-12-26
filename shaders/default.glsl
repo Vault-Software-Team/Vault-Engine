@@ -14,12 +14,14 @@ out DATA
     vec4 fragPosLight;
     mat4 cameraCalcs;
     mat4 model;
+    vec3 camera_position;
 } data_out;
 
 uniform mat4 transformModel;
 uniform mat4 camera_view;
 uniform mat4 camera_projection;
 uniform mat4 light_proj;
+uniform vec3 camera_position;
 
 void main()
 {
@@ -29,8 +31,9 @@ void main()
     // Set data_out
     data_out.cameraCalcs = camera_projection * camera_view;
     data_out.texUV = vTextureUV;
-    data_out.normal = normalize(vNormal);
+    data_out.normal = mat3(transpose(inverse(transformModel))) * vNormal;
     data_out.model = transformModel;
+    data_out.camera_position = camera_position;
 
     // data_out.TBN = mat3(T, B, N);
     // TBN = transpose(TBN);
@@ -46,6 +49,7 @@ in vec3 normal;
 in vec3 current_position;
 in vec4 fragPosLight;
 in mat3 TBN;
+in vec3 camera_position;
 
 struct Texture {
     sampler2D tex;
@@ -55,10 +59,10 @@ struct Texture {
 uniform Texture texture_diffuse;
 uniform Texture texture_specular;
 uniform Texture texture_normal;
+uniform Texture texture_height;
 uniform sampler2D shadowMap;
 uniform float ambient_amount;
 uniform vec3 ambient_color;
-uniform vec3 camera_position;
 uniform vec4 baseColor;
 uniform samplerCube shadowCubemap;
 uniform bool shadow_cubemap_mapping;
@@ -99,7 +103,28 @@ vec4 ambient() {
 }
 
 vec3 point_light(PointLight light) {
-    vec3 light_vec = light.position - current_position;
+    vec3 current_position = current_position;
+    vec3 camera_position = camera_position;
+
+    if(texture_normal.defined) {
+        current_position = TBN * current_position;
+        camera_position = TBN * camera_position;
+    } 
+    vec3 aNormal = m_normal;
+    
+    vec3 view_dir = normalize(camera_position - current_position);
+
+    vec3 lightPos = light.position;
+    vec2 UVs = texUV;
+    if(texture_normal.defined) {
+        lightPos = TBN * lightPos;
+        aNormal = texture(texture_normal.tex, UVs).xyz * 2.0f - 1.0f;
+        aNormal = normalize(aNormal);
+    } else {
+        aNormal = m_normal;        
+    }
+
+    vec3 light_vec = (lightPos) - current_position;
     float dist = length(light_vec);
     float a = 1.0;
     float b = 0.04;
@@ -107,20 +132,19 @@ vec3 point_light(PointLight light) {
 
     vec3 light_dir = normalize(light_vec);
 
-    float diffuse = max(dot(m_normal, light_dir), 0.0f);
+    float diffuse = max(dot(aNormal, light_dir), 0.0f);
 
     float specular_light = 0.5;
 
-    vec3 view_dir = normalize(camera_position - current_position);
-    vec3 reflection_dir = reflect(-light_dir, m_normal);
+    vec3 reflection_dir = reflect(-light_dir, aNormal);
     vec3 halfway_vec = normalize(view_dir + light_dir);
-    float specular_amount = pow(max(dot(m_normal, halfway_vec), 0.0), 16);
+    float specular_amount = pow(max(dot(aNormal, halfway_vec), 0.0), 16);
 
     float specular = specular_amount * specular_light;
 
     float spec = 0;
     if(texture_specular.defined) {
-        spec = texture(texture_specular.tex, texUV).r * specular;
+        spec = texture(texture_specular.tex, UVs).r * specular;
     } else {
         spec = specular;
     }
@@ -128,9 +152,9 @@ vec3 point_light(PointLight light) {
 
     float shadow = 0.0;
     // if(false) {
-    //     vec3 fragToLight = current_position - light.position;
+    //     vec3 fragToLight = current_position - (lightPos);
     //     float current_depth = length(fragToLight);
-    //     float bias = max(0.5 * (1.0 - dot(m_normal, light_dir)), 0.0005);
+    //     float bias = max(0.5 * (1.0 - dot(aNormal, light_dir)), 0.0005);
 
     //     int sampleRadius = 2;
     //     float pixelSize = 1.0 / 1024;
@@ -147,10 +171,12 @@ vec3 point_light(PointLight light) {
     //     shadow /= pow((sampleRadius * 2 + 1), 3);
     // }
 
+    vec3 light_calc = light.color * (diffuse * (1.0 - shadow) * inten + ambient_amount) + (spec * (1.0 - shadow));
+
     if(texture_diffuse.defined) {
-        return (texture(texture_diffuse.tex, texUV).rgb * baseColor.rgb) * light.color * (diffuse * (1.0 - shadow) * inten + ambient_amount) + (spec * (1.0 - shadow));
+        return (texture(texture_diffuse.tex, UVs).rgb * baseColor.rgb) * light_calc;
     } else {
-        return (baseColor.rgb) * light.color * (diffuse * (1.0 - shadow) * inten + ambient_amount) + (spec * (1.0 - shadow));
+        return (baseColor.rgb) * light_calc;
     }
 }
 
@@ -158,26 +184,17 @@ vec3 directional_light(DirectionalLight light) {
     float inten = light.intensity;
     vec3 light_dir = normalize(light.position);
 
-    vec3 t_normal = vec3(0);
-    if(false) {
-        t_normal = texture(texture_normal.tex, texUV).rgb;
-        t_normal = t_normal * 2.0 - 1.0;
-        t_normal = normalize(t_normal);
-        
-    } else {
-        t_normal = m_normal;
-    }
-    float diffuse = max(dot(t_normal, light_dir), 0.0f);
+    float diffuse = max(dot(m_normal, light_dir), 0.0f);
 
     float specular_light = 0.5;
 
 
     vec3 view_dir = normalize(camera_position - current_position);
-    vec3 reflection_dir = reflect(-light_dir, t_normal);
+    vec3 reflection_dir = reflect(-light_dir, m_normal);
 
     vec3 halfway_vec = normalize(view_dir + light_dir);
 
-    float specular_amount = pow(max(dot(t_normal, halfway_vec), 0.0), 16);
+    float specular_amount = pow(max(dot(m_normal, halfway_vec), 0.0), 16);
     float specular = specular_amount * specular_light;
 
     float spec = 0;
@@ -210,7 +227,7 @@ vec3 directional_light(DirectionalLight light) {
 
             float closestDepth = texture(shadowMap, lightCoords.xy).r;
             float currentDepth = lightCoords.z;
-            float bias = max(0.025f * (1.0f - dot(t_normal, light_dir)), 0.0005f);
+            float bias = max(0.025f * (1.0f - dot(m_normal, light_dir)), 0.0005f);
 
             int sampleRadius = 2;
             vec2 pixelSize  = 1.0 / textureSize(shadowMap, 0);
@@ -310,6 +327,7 @@ void main()
     // total_color += vec4(point_light(light), 1.0f);
 
     FragColor = total_color;
+    FragColor.a = 1;
 
     float brightness = dot(FragColor.rgb, vec3(0.2126, 0.7152, 0.0722));
     
@@ -324,6 +342,7 @@ out vec3 normal;
 out vec3 current_position;
 out vec4 fragPosLight;
 out mat3 TBN;
+out vec3 camera_position;
 
 in DATA
 {
@@ -333,6 +352,7 @@ in DATA
     vec4 fragPosLight;
     mat4 cameraCalcs;
     mat4 model;
+    vec3 camera_position;
 } data_in[];
 
 void main() {
@@ -347,17 +367,23 @@ void main() {
     vec3 bitangent = vec3(invDet * (-deltaUV1.x * edge0 + deltaUV0.x * edge1));
 
     vec3 T = normalize(vec3(data_in[0].model * vec4(tangent, 0.0)));
-    vec3 B = normalize(vec3(data_in[0].model * vec4(bitangent, 0.0)));
+    // vec3 B = normalize(vec3(data_in[0].model * vec4(bitangent, 0.0)));
     vec3 N = normalize(vec3(data_in[0].model * vec4(cross(edge1, edge0), 0.0)));
+
+    T = normalize(T - dot(T, N) * N);
+    // then retrieve perpendicular vector B with the cross product of T and N
+    vec3 B = cross(N, T);
 
     mat3 mTBN = mat3(T, B, N);
     mTBN = transpose(mTBN);
+
 
     gl_Position = data_in[0].cameraCalcs * gl_in[0].gl_Position;
     texUV = data_in[0].texUV;
     normal = data_in[0].normal;
     current_position = data_in[0].current_position;
     fragPosLight = data_in[0].fragPosLight;
+    camera_position = data_in[0].camera_position;
     TBN = mTBN;
     EmitVertex();
 
@@ -366,6 +392,7 @@ void main() {
     normal = data_in[1].normal;
     current_position = data_in[1].current_position;
     fragPosLight = data_in[1].fragPosLight;
+    camera_position = data_in[1].camera_position;
     TBN = mTBN;
     EmitVertex();
 
@@ -374,6 +401,7 @@ void main() {
     normal = data_in[2].normal;
     current_position = data_in[2].current_position;
     fragPosLight = data_in[2].fragPosLight;
+    camera_position = data_in[2].camera_position;
     TBN = mTBN;
     EmitVertex();
 
