@@ -12,15 +12,18 @@ using namespace VaultRenderer;
 
 namespace Editor {
     void GUI::Scene() {
-        ImGui::Begin(ICON_FA_CUBES " Scene", NULL, ImGuiWindowFlags_NoScrollbar);
+        ImGuiStyle &style = ImGui::GetStyle();
+        style.WindowPadding = ImVec2(0.0f, 0.0f);
+        ImGui::Begin(ICON_FA_CUBES " Scene", NULL, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
         ImVec2 size = ImGui::GetWindowSize();
         if (Window::window->use_imgui_size) {
             Window::window->width = size.x;
             Window::window->height = size.y;
             // glViewport(0, 0, size.x, size.y);
         }
-        ImGui::Image((void *)framebufferTextureID, ImVec2(size.x, size.y - 35), ImVec2(0, 1), ImVec2(1, 0));
+        ImGui::Image((void *)framebufferTextureID, size, ImVec2(0, 1), ImVec2(1, 0));
 
         ImGui::End();
+        style.WindowPadding = ImVec2(8.0f, 8.0f);
     }
 } // namespace Editor

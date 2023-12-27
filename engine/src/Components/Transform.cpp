@@ -35,7 +35,9 @@ namespace Engine::Components {
     void Transform::OnGUI() {
         if (ImGui::TreeNode("Transform")) {
             Editor::GUI::DrawVec3Control("Position", position);
+            rotation = glm::degrees(rotation);
             Editor::GUI::DrawVec3Control("Rotation", rotation);
+            rotation = glm::radians(rotation);
             Editor::GUI::DrawVec3Control("Scale", scale);
             ImGui::TreePop();
         }
