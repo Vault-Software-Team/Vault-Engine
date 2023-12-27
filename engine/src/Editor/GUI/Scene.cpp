@@ -21,7 +21,13 @@ namespace Editor {
             Window::window->height = size.y;
             // glViewport(0, 0, size.x, size.y);
         }
+
         ImGui::Image((void *)framebufferTextureID, size, ImVec2(0, 1), ImVec2(1, 0));
+        if (ImGui::IsWindowHovered()) {
+            if (glfwGetMouseButton(Window::window->GetGLFWWindow(), GLFW_MOUSE_BUTTON_2)) {
+                Scene::Main->main_camera_object->Inputs();
+            }
+        }
 
         ImGui::End();
         style.WindowPadding = ImVec2(8.0f, 8.0f);

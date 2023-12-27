@@ -72,7 +72,6 @@ namespace Engine {
 
         Scene::Main->main_camera_object->UpdateMatrix();
         Scene::Main->main_camera_object->BindToShader(*default_shader);
-        Scene::Main->main_camera_object->Inputs();
 
         if (Engine::Scene::Main->main_camera_object) {
             Engine::Scene::Main->main_camera_object->width = VaultRenderer::Window::window->width;
