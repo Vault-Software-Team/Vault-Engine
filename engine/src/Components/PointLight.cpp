@@ -2,6 +2,8 @@
 #include <Engine/Scene.hpp>
 #include <Engine/Components/MeshRenderer.hpp>
 #include <Renderer/Window.hpp>
+#include <Editor/GUI/MainGUI.hpp>
+#include <icons/icons.h>
 
 namespace Engine::Components {
     void PointLight::Init() {
@@ -86,5 +88,25 @@ namespace Engine::Components {
 
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
         glViewport(0, 0, VaultRenderer::Window::window->width, VaultRenderer::Window::window->height);
+    }
+
+    void PointLight::OnGUI() {
+        if (ImGui::TreeNode("Point Light")) {
+            ImGui::DragFloat("Intensity", &intensity, 0.01f, 0.0);
+            ImGui::DragFloat("Shadow Far Plane", &shadow_far_plane, 0.1f, 0.0);
+            ImGui::Checkbox("Shadows", &enable_shadow_mapping);
+            ImGui::ColorEdit3("Color", &color.x);
+
+            // float intensity = 1.0f;
+            // float shadow_far_plane = 100.0f;
+            // bool enable_shadow_mapping = false
+
+            ImVec2 winSize = ImGui::GetWindowSize();
+            if (ImGui::Button(ICON_FA_TRASH " Delete", ImVec2(winSize.x - 50, 0))) {
+                GameObject::FindGameObjectByEntity(entity)->RemoveComponent<PointLight>();
+            }
+
+            ImGui::TreePop();
+        }
     }
 } // namespace Engine::Components

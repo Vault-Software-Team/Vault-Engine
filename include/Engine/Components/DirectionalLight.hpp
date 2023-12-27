@@ -19,6 +19,7 @@ namespace Engine {
             int index = 0;
 
             void AttachToShader(VaultRenderer::Shader &shader);
+            void OnGUI() override;
         };
     } // namespace Components
 } // namespace Engine

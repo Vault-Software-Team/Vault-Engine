@@ -6,6 +6,8 @@
 #include <glm/gtx/vector_angle.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <Editor/GUI/MainGUI.hpp>
+#include <icons/icons.h>
 
 namespace Engine::Components {
     void Camera::UpdateMatrix() {
@@ -92,6 +94,34 @@ namespace Engine::Components {
         if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_RELEASE) {
             glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
             first_click = true;
+        }
+    }
+
+    void Camera::OnGUI() {
+        if (ImGui::TreeNode("Camera")) {
+            ImGui::DragFloat("FOV", &fov, 0.1f, 0.1f);
+            ImGui::DragFloat("Near", &near, 0.1f, 0.0f);
+            ImGui::DragFloat("Far", &far, 0.1f, 0.0f);
+            ImGui::Checkbox("Main Camera", &main_camera);
+
+            // if (ImGui::Button(check_scene_cam ? "Stop viewing as Scene Camera" : "View as Scene Camera"))
+
+            if (Scene::Main->main_camera_object == this) {
+                if (ImGui::Button(ICON_FA_CAMERA " Unselect as Scene Camera")) {
+                    Scene::Main->main_camera_object = Scene::Main->EditorSceneCamera;
+                }
+            } else {
+                if (ImGui::Button(ICON_FA_CAMERA " Select as Scene Camera")) {
+                    Scene::Main->main_camera_object = this;
+                }
+            }
+
+            ImVec2 winSize = ImGui::GetWindowSize();
+            if (ImGui::Button(ICON_FA_TRASH " Delete", ImVec2(winSize.x - 50, 0))) {
+                GameObject::FindGameObjectByEntity(entity)->RemoveComponent<Camera>();
+            }
+
+            ImGui::TreePop();
         }
     }
 } // namespace Engine::Components

@@ -11,7 +11,7 @@ namespace Engine {
             AmbientLight() = default;
             glm::vec3 color = glm::vec3(1, 1, 1);
             float amount = 0.2f;
-
+            void OnGUI() override;
             void AttachToShader(VaultRenderer::Shader &shader);
         };
     } // namespace Components

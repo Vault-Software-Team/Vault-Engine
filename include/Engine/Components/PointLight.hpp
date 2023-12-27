@@ -23,6 +23,7 @@ namespace Engine {
 
             void AttachToShader(VaultRenderer::Shader &shader);
             void DrawToShadowMap(VaultRenderer::Shader &shader);
+            void OnGUI() override;
         };
     } // namespace Components
 } // namespace Engine

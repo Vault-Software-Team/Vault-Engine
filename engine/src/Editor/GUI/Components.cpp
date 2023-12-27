@@ -44,18 +44,67 @@ void ComponentGUI(GameObject *gameObject) {
     }
 }
 
+void AddComponentsGUIPopup(GameObject *gameObject) {
+    if (ImGui::Button("Transform", ImVec2(200, 0))) {
+        if (!gameObject->HasComponent<Transform>()) {
+            gameObject->AddComponent<Transform>();
+        }
+    }
+
+    if (ImGui::Button("Ambient Light", ImVec2(200, 0))) {
+        if (!gameObject->HasComponent<AmbientLight>()) {
+            gameObject->AddComponent<AmbientLight>();
+        }
+    }
+
+    if (ImGui::Button("Directional Light", ImVec2(200, 0))) {
+        if (!gameObject->HasComponent<DirectionalLight>()) {
+            gameObject->AddComponent<DirectionalLight>();
+        }
+    }
+
+    if (ImGui::Button("Mesh Renderer", ImVec2(200, 0))) {
+        if (!gameObject->HasComponent<MeshRenderer>()) {
+            gameObject->AddComponent<MeshRenderer>();
+        }
+    }
+
+    if (ImGui::Button("Point Light", ImVec2(200, 0))) {
+        if (!gameObject->HasComponent<PointLight>()) {
+            gameObject->AddComponent<PointLight>();
+        }
+    }
+
+    if (ImGui::Button("Spot Light", ImVec2(200, 0))) {
+        if (!gameObject->HasComponent<SpotLight>()) {
+            gameObject->AddComponent<SpotLight>();
+        }
+    }
+
+    if (ImGui::Button("Text 3D", ImVec2(200, 0))) {
+        if (!gameObject->HasComponent<Text3D>()) {
+            gameObject->AddComponent<Text3D>();
+        }
+    }
+
+    if (ImGui::Button("Camera", ImVec2(200, 0))) {
+        if (!gameObject->HasComponent<Camera>()) {
+            gameObject->AddComponent<Camera>();
+        }
+    }
+}
+
 namespace Editor {
     void GUI::Components() {
         constexpr int search_size = 256;
         static char name[search_size];
         static char search[search_size];
 
-        ImVec2 win_size = ImGui::GetWindowSize();
-
         std::string filterStr = search;
         std::transform(filterStr.begin(), filterStr.end(), filterStr.begin(), asciitolower);
 
         ImGui::Begin(ICON_FA_SHARE_NODES " Components");
+        ImVec2 win_size = ImGui::GetWindowSize();
 
         // Check if a GameObject is selected
         if (!GUI::selected_gameObject) {
@@ -68,8 +117,13 @@ namespace Editor {
 
         ComponentGUI(GUI::selected_gameObject);
 
-        if (ImGui::Button(ICON_FA_PLUS " Add Component", ImVec2(win_size.x - 15, 0))) {
+        if (ImGui::Button(ICON_FA_PLUS " Add Component", ImVec2(win_size.x - 20, 0))) {
             ImGui::OpenPopup("Add Component");
+        }
+
+        if (ImGui::BeginPopup("Add Component")) {
+            AddComponentsGUIPopup(GUI::selected_gameObject);
+            ImGui::EndPopup();
         }
 
         ImGui::End();

@@ -25,10 +25,12 @@ namespace Engine {
 
             // Camera Properties
             float fov, near, far;
+            bool main_camera;
 
             void UpdateMatrix();
             void BindToShader(VaultRenderer::Shader &shader);
             void Inputs();
+            void OnGUI() override;
         };
     } // namespace Components
 } // namespace Engine
