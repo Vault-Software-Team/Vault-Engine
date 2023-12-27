@@ -3,6 +3,10 @@
 #include <Engine/GameObject.hpp>
 #include <string>
 #include <vector>
+#include <imgui/imgui.h>
+#include <imgui/backends/imgui_impl_glfw.h>
+#include <imgui/backends/imgui_impl_opengl3.h>
+#include <imgui/imgui_internal.h>
 
 namespace Editor {
     char asciitolower(char in);
@@ -32,5 +36,8 @@ namespace Editor {
         static DLL_API void Console();
         static DLL_API void Scene();
         static DLL_API void Components();
+
+        static DLL_API void DrawVec3Control(const std::string &label, glm::vec3 &values, float resetValue = 0.0f, float columnWidth = 100.0f);
+        static DLL_API void DrawVec2Control(const std::string &label, glm::vec2 &values, float resetValue = 0.0f, float columnWidth = 100.0f);
     };
 } // namespace Editor

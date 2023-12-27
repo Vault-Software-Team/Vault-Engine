@@ -1,6 +1,9 @@
 #include <Engine/Components/Transform.hpp>
 #include <glm/gtx/quaternion.hpp>
 #include <Engine/GameObject.hpp>
+#include <icons/icons.h>
+
+#include <Editor/GUI/MainGUI.hpp>
 
 namespace Engine::Components {
     glm::mat4 &Transform::UpdateModel() {
@@ -27,5 +30,14 @@ namespace Engine::Components {
 
     void Transform::Update() {
         UpdateModel();
+    }
+
+    void Transform::OnGUI() {
+        if (ImGui::TreeNode("Transform")) {
+            Editor::GUI::DrawVec3Control("Position", position);
+            Editor::GUI::DrawVec3Control("Rotation", rotation);
+            Editor::GUI::DrawVec3Control("Scale", scale);
+            ImGui::TreePop();
+        }
     }
 } // namespace Engine::Components

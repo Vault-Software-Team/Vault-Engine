@@ -18,6 +18,7 @@ namespace Engine {
 
             glm::mat4 &UpdateModel();
             void Update() override;
+            void OnGUI() override;
         };
     } // namespace Components
 } // namespace Engine
