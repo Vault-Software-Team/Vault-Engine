@@ -89,6 +89,7 @@ int main() {
     meshRenderer.mesh->material.SetDiffuse("../assets/diffuse.png");
     meshRenderer.mesh->material.SetSpecular("../assets/diffuse.png");
     meshRenderer.mesh->material.SetNormal("../assets/normal.png");
+    meshRenderer.mesh->material.SetHeight("../assets/displacement.png");
 
     auto lightObject = GameObject::New("PointLight");
     lightObject->AddComponent<Components::PointLight>();

@@ -181,13 +181,20 @@ vec3 point_light(PointLight light) {
 vec3 directional_light(DirectionalLight light) {
     float inten = light.intensity;
     vec3 light_dir = normalize(light.position);
+    
+    vec3 m_normal = normal;
+    
+    vec2 UVs = texUV;
+    if(texture_normal.defined) {
+        m_normal = normalize(TBN * (texture(texture_normal.tex, UVs).xyz * 2.0 - 1.0));
+    }
 
-    float diffuse = max(dot(normal, light_dir), 0.0f);
+    float diffuse = max(dot(m_normal, light_dir), 0.0f);
 
     float specular_light = 0.5;
 
     vec3 view_dir = normalize(camera_position - current_position);
-    vec3 reflection_dir = reflect(-light_dir, normal);
+    vec3 reflection_dir = reflect(-light_dir, m_normal);
     float specular_amount = pow(max(dot(view_dir, reflection_dir), 0.0), 16);
 
     float specular = specular_amount * specular_light;
@@ -208,7 +215,7 @@ vec3 directional_light(DirectionalLight light) {
 
             float closestDepth = texture(shadowMap, lightCoords.xy).r;
             float currentDepth = lightCoords.z;
-            float bias = max(0.025f * (1.0f - dot(normal, light_dir)), 0.0005f);
+            float bias = max(0.025f * (1.0f - dot(m_normal, light_dir)), 0.0005f);
 
             int sampleRadius = 2;
             vec2 pixelSize  = 1.0 / textureSize(shadowMap, 0);
