@@ -31,6 +31,8 @@ namespace VaultRenderer {
         glm::vec3 normal = glm::vec3(0, 1, 0);
         glm::vec3 tangent = glm::vec3(0, 0, 0);
         glm::vec3 bitangent = glm::vec3(0, 0, 0);
+        uint32_t EntityID;
+        int modelIndex;
     };
 
     class DLL_API Mesh {

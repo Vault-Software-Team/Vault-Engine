@@ -22,6 +22,7 @@ else()
         LINK_FLAGS " --bind -s WASM=0 -s MIN_WEBGL_VERSION=1 -s ABORT_ON_WASM_EXCEPTIONS=1 -g2 -s USE_GLFW=3")
 endif()
 add_subdirectory(external/assimp)
+add_subdirectory(external/yaml-cpp)
 
 # file(GLOB SRC_FILES
 #     "include/*.hpp"

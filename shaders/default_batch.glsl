@@ -5,6 +5,8 @@ layout(location = 1) in vec2 vTextureUV;
 layout(location = 2) in vec3 vNormal;
 layout(location = 3) in vec3 tangent;
 layout(location = 4) in vec3 bitangent;
+layout(location = 5) in uint EntityID;
+layout(location = 6) in int transformIndex;
 
 out DATA
 {
@@ -28,18 +30,20 @@ uniform mat4 camera_view;
 uniform mat4 camera_projection;
 uniform mat4 light_proj;
 
+uniform mat4 transforms[32];
+
 void main()
 {
-    data_out.current_position = vec3(transformModel * vec4(vPosition.x, vPosition.y, vPosition.z, 1.0));
+    data_out.current_position = vec3(transforms[0] * vec4(vPosition.x, vPosition.y, vPosition.z, 1.0));
     gl_Position = vec4(data_out.current_position, 1.0);
     // Set data_out
-    data_out.model = transformModel;
+    data_out.model = transforms[0];
     data_out.cameraCalcs = camera_projection * camera_view;
     data_out.texUV = vTextureUV;
-    data_out.normal = mat3(transpose(inverse(transformModel))) * vNormal;
+    data_out.normal = mat3(transpose(inverse(transforms[0]))) * vNormal;
     data_out.normal = normalize(data_out.normal);
     // normal = vNormal;
-    // model = transformModel;
+    // model = transforms[transformIndex];
 
     // TBN = mat3(T, B, N);
     // TBN = transpose(TBN);

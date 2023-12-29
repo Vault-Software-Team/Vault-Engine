@@ -1,0 +1,55 @@
+Scene: Untitled
+GameObjects:
+  - GameObject:
+      ID: 8a5fdb2c-1410-4634-a802-b19f5e15f712
+      name: My GameObject
+      tag: Default
+      parent: NO_PARENT
+      Transform:
+        position: [0, 0, 0]
+        rotation: [0, 0, 0]
+        scale: [10, 10, 10]
+      AmbientLight:
+        amount: 0.200000003
+        color: [1, 1, 1]
+      MeshRenderer:
+        mesh_type: 0
+  - GameObject:
+      ID: 911d2394-4b94-4800-b147-26d0d175326e
+      name: PointLight
+      tag: Default
+      parent: NO_PARENT
+      Transform:
+        position: [0, 0, 0]
+        rotation: [0, 0, 0]
+        scale: [1, 1, 1]
+      PointLight:
+        intensity: 1
+        color: [1, 1, 1]
+        enable_shadow_mapping: true
+      MeshRenderer:
+        mesh_type: 1
+  - GameObject:
+      ID: 1785cbff-7c83-4382-9d29-f69a145e3724
+      name: Text
+      tag: Default
+      parent: NO_PARENT
+      Transform:
+        position: [0, 0, 0]
+        rotation: [0, 0, 0]
+        scale: [1, 1, 1]
+      Text3D:
+        text: Hello, World!
+        font_path: ../assets/fonts/OpenSans-Bold.ttf
+        color: [1, 1, 1]
+        scale: 0.0199999996
+        y_offset: 1
+  - GameObject:
+      ID: a944b84e-b371-4ed1-9664-421165e9009c
+      name: Cunt
+      tag: Default
+      parent: 1785cbff-7c83-4382-9d29-f69a145e3724
+      Transform:
+        position: [0, 0, 0]
+        rotation: [0, 0, 0]
+        scale: [1, 1, 1]

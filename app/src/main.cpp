@@ -15,6 +15,8 @@
 #include <Editor/EditorLayer.hpp>
 #include <fstream>
 #include <Editor/GUI/MainGUI.hpp>
+#include <Engine/Batch.hpp>
+#include <Engine/SceneSerialization.hpp>
 
 static VaultRenderer::Shader *default_shader;
 
@@ -79,40 +81,40 @@ int main() {
 
     using namespace Engine;
     Scene::New("../assets/main.vault");
-
-    auto gameObject = GameObject::New("My GameObject");
-    gameObject->AddComponent<Components::MeshRenderer>();
-    gameObject->AddComponent<Components::AmbientLight>();
-    auto &meshRenderer = gameObject->GetComponent<Components::MeshRenderer>();
-    gameObject->GetComponent<Components::AmbientLight>().amount = 0.2f;
-    meshRenderer.SetMeshType(Components::MESH_PLANE);
-    meshRenderer.mesh->material.SetDiffuse("../assets/diffuse.png");
-    meshRenderer.mesh->material.SetSpecular("../assets/diffuse.png");
-    meshRenderer.mesh->material.SetNormal("../assets/normal.png");
-    meshRenderer.mesh->material.SetHeight("../assets/displacement.png");
-
-    auto lightObject = GameObject::New("PointLight");
-    lightObject->AddComponent<Components::PointLight>();
-    lightObject->AddComponent<Components::MeshRenderer>();
-    lightObject->GetComponent<Components::MeshRenderer>().SetMeshType(Components::MESH_PYRAMID);
-    lightObject->GetComponent<Components::PointLight>().enable_shadow_mapping = true;
-
-    auto emptyObject = GameObject::New("Text");
-    emptyObject->AddComponent<Text3D>();
-    emptyObject->GetComponent<Text3D>().text = "Hello, World!";
-    emptyObject->GetComponent<Text3D>().scale = 0.02;
-    emptyObject->GetComponent<Text3D>().ChangeFont("../assets/fonts/OpenSans-Bold.ttf");
-    auto &empty_transform = emptyObject->GetComponent<Transform>();
-
-    using namespace Engine::Components;
-    auto &transform = gameObject->GetComponent<Transform>();
-    auto &light_transform = lightObject->GetComponent<Transform>();
-    // transform.rotation.x = glm::radians(90.f);
-    transform.scale = glm::vec3(10, 10, 10);
     Scene::MakeSceneCamera();
     Scene::Main->SetMainCameraObject(Scene::StaticGameObjects.back());
 
-    emptyObject->AddChild("Cunt");
+    // auto gameObject = GameObject::New("My GameObject");
+    // gameObject->AddComponent<Components::MeshRenderer>();
+    // gameObject->AddComponent<Components::AmbientLight>();
+    // auto &meshRenderer = gameObject->GetComponent<Components::MeshRenderer>();
+    // gameObject->GetComponent<Components::AmbientLight>().amount = 0.2f;
+    // meshRenderer.SetMeshType(Components::MESH_PLANE);
+    // meshRenderer.mesh->material.SetDiffuse("../assets/diffuse.png");
+    // meshRenderer.mesh->material.SetSpecular("../assets/diffuse.png");
+    // meshRenderer.mesh->material.SetNormal("../assets/normal.png");
+    // meshRenderer.mesh->material.SetHeight("../assets/displacement.png");
+
+    // auto lightObject = GameObject::New("PointLight");
+    // lightObject->AddComponent<Components::PointLight>();
+    // lightObject->AddComponent<Components::MeshRenderer>();
+    // lightObject->GetComponent<Components::MeshRenderer>().SetMeshType(Components::MESH_PYRAMID);
+    // lightObject->GetComponent<Components::PointLight>().enable_shadow_mapping = true;
+
+    // auto emptyObject = GameObject::New("Text");
+    // emptyObject->AddComponent<Text3D>();
+    // emptyObject->GetComponent<Text3D>().text = "Hello, World!";
+    // emptyObject->GetComponent<Text3D>().scale = 0.02;
+    // emptyObject->GetComponent<Text3D>().ChangeFont("../assets/fonts/OpenSans-Bold.ttf");
+    // auto &empty_transform = emptyObject->GetComponent<Transform>();
+
+    // using namespace Engine::Components;
+    // auto &transform = gameObject->GetComponent<Transform>();
+    // auto &light_transform = lightObject->GetComponent<Transform>();
+    // // transform.rotation.x = glm::radians(90.f);
+    // transform.scale = glm::vec3(10, 10, 10);
+
+    // emptyObject->AddChild("Cunt");
 
     ShadowMap shadow_map;
     shadow_map.ortho_size = 20.0f;
@@ -126,6 +128,10 @@ int main() {
 
     // Model model("../assets/capsule.obj");
 
+    Serializer sceneSerializer(Scene::Main);
+    sceneSerializer.Deserialize("../assets/scene.vault");
+    // sceneSerializer.Serialize("../assets/scene.vault");
+
     window.Run([&] {
         // Update the Main Camera of a scene
         runtime.UpdateMainCamera(window);
@@ -136,7 +142,9 @@ int main() {
         window.SetClearColor(0xFF0000);
 
         // Render the skybox
-        skybox.Render(skybox_shader, Scene::Main->main_camera_object->transform->position, Scene::Main->main_camera_object->transform->rotation, Scene::Main->main_camera_object->up);
+        if (Scene::Main->main_camera_object) {
+            skybox.Render(skybox_shader, Scene::Main->main_camera_object->transform->position, Scene::Main->main_camera_object->transform->rotation, Scene::Main->main_camera_object->up);
+        }
 
         // Shadow shenanigans and fuckery
         runtime.ShadowShenanigans(shadow_map);

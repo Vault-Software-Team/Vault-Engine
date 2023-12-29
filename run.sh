@@ -3,4 +3,5 @@ cd build
 make
 cp ../imgui.ini ./app/imgui.ini
 cp ../imgui.ini ./imgui.ini
+# mangohud --dlsym ./app/app
 gdb ./app/app
