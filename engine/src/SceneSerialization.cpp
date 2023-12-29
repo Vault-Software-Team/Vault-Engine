@@ -266,6 +266,7 @@ namespace Engine {
 
             auto gameObject = GameObject::New(m_name, m_tag);
             gameObject->ID = m_ID;
+            gameObject->parent = m_parent;
             gameObject->GetComponent<Transform>().ID = m_ID;
 
             YAMLToEntity(go, gameObject);
