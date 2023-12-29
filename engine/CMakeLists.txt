@@ -1,5 +1,6 @@
 file(GLOB SRC_FILES src/*.cpp src/*/*.cpp src/*/*/*.cpp src/*/*/*/*.cpp src/*/*/*/*/*.cpp)
 file(GLOB IMGUI_FILES ${CMAKE_SOURCE_DIR}/vendor/imgui/*.cpp ${CMAKE_SOURCE_DIR}/vendor/imgui/*/*.cpp ${CMAKE_SOURCE_DIR}/vendor/imgui/*/*/*.cpp)
+file(GLOB IMGUI_FILES ${CMAKE_SOURCE_DIR}/vendor/ImGuiFileDialog/*.cpp ${CMAKE_SOURCE_DIR}/vendor/ImGuiFileDialog/*/*.cpp ${CMAKE_SOURCE_DIR}/vendor/ImGuiFileDialog/*/*/*.cpp)
 
 include_directories(${CMAKE_SOURCE_DIR}/include)
 include_directories(${CMAKE_SOURCE_DIR}/vendor)

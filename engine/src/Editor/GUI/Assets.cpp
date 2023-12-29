@@ -5,9 +5,12 @@
 #include <icons/icons.h>
 #include <imgui/imgui.h>
 #include <filesystem>
+#include <iostream>
+#include <Engine/SceneSerialization.hpp>
 
 using namespace Engine;
 using namespace Engine::Components;
+namespace fs = std::filesystem;
 
 void DirectoryIterator(const std::string &str, const char *filter_str) {
     auto iter = std::filesystem::directory_iterator(str);
@@ -39,11 +42,24 @@ void DirectoryIterator(const std::string &str, const char *filter_str) {
             if (name.ends_with(".obj")) {
                 icon = ICON_FA_CUBES;
             }
-            if (name.ends_with(".mtl")) {
+            if (name.ends_with(".mtl") || name.ends_with(".material")) {
                 icon = ICON_FA_PAINT_ROLLER;
             }
 
-            ImGui::Selectable((icon + " " + dir.path().filename().string()).c_str());
+            bool pressed = ImGui::Selectable((icon + " " + dir.path().filename().string()).c_str());
+            if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None)) {
+                Editor::GUI::dragPayload = fs::absolute(dir.path()).string();
+                ImGui::SetDragDropPayload("material", dir.path().string().c_str(), dir.path().string().length() + 1);
+                ImGui::Text("%s %s", icon.c_str(), dir.path().filename().string().c_str());
+                ImGui::EndDragDropSource();
+            }
+
+            if ((name.ends_with(".mtl") || name.ends_with(".material")) && (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(0))) {
+                Editor::GUI::MaterialInspector_material_path = dir.path().relative_path();
+                Editor::GUI::isMaterialInspectorOpen = true;
+
+                Serializer::DeserializeMaterial(dir.path().relative_path(), Editor::GUI::MaterialInspector_material);
+            }
         }
     }
 }

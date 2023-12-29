@@ -7,6 +7,7 @@
 #include <imgui/backends/imgui_impl_glfw.h>
 #include <imgui/backends/imgui_impl_opengl3.h>
 #include <imgui/imgui_internal.h>
+#include <Renderer/Mesh.hpp>
 
 namespace Editor {
     char asciitolower(char in);
@@ -24,6 +25,8 @@ namespace Editor {
         static DLL_API DLL_API std::vector<Log> logs;
 
     public:
+        static DLL_API std::string dragPayload;
+
         static DLL_API Engine::GameObject *selected_gameObject;
         static DLL_API uint32_t framebufferTextureID;
         static DLL_API void LogInfo(const std::string &content);
@@ -38,7 +41,14 @@ namespace Editor {
         static DLL_API void Components();
         static DLL_API void BottomLogCounter();
 
+        static DLL_API bool isMaterialInspectorOpen;
+        static DLL_API VaultRenderer::Material MaterialInspector_material;
+        static DLL_API std::string MaterialInspector_material_path;
+        static DLL_API void MaterialInspector();
+
         static DLL_API void DrawVec3Control(const std::string &label, glm::vec3 &values, float resetValue = 0.0f, float columnWidth = 100.0f);
         static DLL_API void DrawVec2Control(const std::string &label, glm::vec2 &values, float resetValue = 0.0f, float columnWidth = 100.0f);
+
+        static DLL_API bool IsImage(const std::string &file_path);
     };
 } // namespace Editor

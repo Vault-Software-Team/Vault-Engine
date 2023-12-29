@@ -8,6 +8,7 @@ namespace Editor {
     DLL_API std::vector<Log> GUI::logs;
     DLL_API uint32_t GUI::framebufferTextureID;
     DLL_API Engine::GameObject *GUI::selected_gameObject;
+    DLL_API std::string GUI::dragPayload;
 
     char asciitolower(char in) {
         if (in <= 'Z' && in >= 'A')
@@ -158,4 +159,11 @@ namespace Editor {
         ImGui::PopID();
     }
 
+    bool GUI::IsImage(const std::string &file_path) {
+        if (file_path.ends_with(".png") || file_path.ends_with(".jpg") || file_path.ends_with(".jpeg") || file_path.ends_with(".tiff") || file_path.ends_with(".bmp")) {
+            return true;
+        }
+
+        return false;
+    }
 } // namespace Editor

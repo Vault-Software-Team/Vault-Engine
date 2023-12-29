@@ -1,6 +1,8 @@
 #include <Editor/GUI/MainGUI.hpp>
 #include <Editor/EditorLayer.hpp>
 #include <Renderer/Stats.hpp>
+#include <ImGuiFileDialog/ImGuiFileDialog.h>
+#include <icons/icons.h>
 
 namespace Editor {
     // Variable Definition
@@ -8,6 +10,9 @@ namespace Editor {
 
     EditorLayer::EditorLayer() {
         instance = this;
+
+        ImGuiFileDialog::Instance()->SetFileStyle(IGFD_FileStyleByTypeFile, "", ImVec4(1, 1, 1, 1.0f), ICON_FA_FILE);
+        ImGuiFileDialog::Instance()->SetFileStyle(IGFD_FileStyleByTypeDir, "", ImVec4(1, 1, 1, 1.0f), ICON_FA_FOLDER);
     }
 
     void EditorLayer::GUI() {
@@ -16,6 +21,8 @@ namespace Editor {
         GUI::Console();
         GUI::Scene();
         GUI::Components();
+        GUI::MaterialInspector();
+        GUI::BottomLogCounter();
 
         ImGui::Begin("Statistics");
         ImGui::Text("Draw Calls: %d", VaultRenderer::Statistics::GetDrawCalls());
