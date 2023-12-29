@@ -149,26 +149,25 @@ vec3 point_light(PointLight light) {
     spec *= inten;
 
     float shadow = 0.0;
-    // if(false) {
-    //     vec3 fragToLight = current_position - (lightPos);
-    //     float current_depth = length(fragToLight);
-    //     float bias = max(0.5 * (1.0 - dot(normal, light_dir)), 0.0005);
+    if(shadow_cubemap_mapping) {
+        vec3 fragToLight = current_position - (lightPos);
+        float current_depth = length(fragToLight);
+        float bias = max(0.5 * (1.0 - dot(normal, light_dir)), 0.0005);
 
-    //     int sampleRadius = 2;
-    //     float pixelSize = 1.0 / 1024;
+        int sampleRadius = 2;
+        float pixelSize = 1.0 / 1024;
 
-    //     for(int z = -sampleRadius; z <= sampleRadius; z++) {
-    //         for (int y = -sampleRadius; y <= sampleRadius; y++) {
-    //             for (int x = -sampleRadius; x <= sampleRadius; x++) {
-    //                 float closestDepth = texture(shadowCubemap, fragToLight + vec3(x,y,z) * pixelSize).r;
-    //                 closestDepth *= shadowCubemapFarPlane;
-    //                 if(current_depth > closestDepth + bias) shadow += 1.0;
-    //             }
-    //         }
-    //     }
-    //     shadow /= pow((sampleRadius * 2 + 1), 3);
-    // }
-
+        for(int z = -sampleRadius; z <= sampleRadius; z++) {
+            for (int y = -sampleRadius; y <= sampleRadius; y++) {
+                for (int x = -sampleRadius; x <= sampleRadius; x++) {
+                    float closestDepth = texture(shadowCubemap, fragToLight + vec3(x,y,z) * pixelSize).r;
+                    closestDepth *= shadowCubemapFarPlane;
+                    if(current_depth > closestDepth + bias) shadow += 1.0;
+                }
+            }
+        }
+        shadow /= pow((sampleRadius * 2 + 1), 3);
+    }
     vec3 light_calc = light.color * (diffuse * (1.0 - shadow) * inten + ambient_amount) + (spec * (1.0 - shadow));
 
     if(texture_diffuse.defined) {

@@ -22,8 +22,8 @@ namespace Engine {
             float scale = 0.020;
 
             void ChangeFont(const std::string &font_path);
-
             void Draw(VaultRenderer::Shader &shader);
+            void OnGUI() override;
         };
     } // namespace Components
 } // namespace Engine

@@ -27,7 +27,7 @@ struct Texture {
 uniform Texture texture_diffuse;
 
 void main() {
-    if(texture(texture_diffuse.tex, texCoords).r < 0.1) discard;  
+    // if(texture(texture_diffuse.tex, texCoords).r < 1.0) discard;  
     gl_FragDepth = length(FragPos.xyz - light_position) / far;
 }
 

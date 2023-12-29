@@ -1,6 +1,7 @@
 #include <Engine/Components/PointLight.hpp>
 #include <Engine/Scene.hpp>
 #include <Engine/Components/MeshRenderer.hpp>
+#include <Engine/Components/Text3D.hpp>
 #include <Renderer/Window.hpp>
 #include <Editor/GUI/MainGUI.hpp>
 #include <icons/icons.h>
@@ -53,6 +54,7 @@ namespace Engine::Components {
         glBindFramebuffer(GL_FRAMEBUFFER, shadowMapFBO);
         glClear(GL_DEPTH_BUFFER_BIT);
         auto v = Scene::Main->EntityRegistry.view<MeshRenderer>();
+        auto v2 = Scene::Main->EntityRegistry.view<Text3D>();
 
         shader.Bind();
 
@@ -84,6 +86,14 @@ namespace Engine::Components {
                 shader.SetUniformMat4("transformModel", transform.model);
                 meshRenderer.mesh->Draw(shader);
             }
+        }
+
+        for (auto e : v2) {
+            auto &meshRenderer = Scene::Main->EntityRegistry.get<Text3D>(e);
+            auto &transform = Scene::Main->EntityRegistry.get<Transform>(e);
+            transform.Update();
+            shader.SetUniformMat4("transformModel", transform.model);
+            meshRenderer.Draw(shader);
         }
 
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
