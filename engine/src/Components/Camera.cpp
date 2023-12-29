@@ -72,6 +72,7 @@ namespace Engine::Components {
             if (first_click) {
                 glfwSetCursorPos(window, (float)width / 2, (float)height / 2);
                 first_click = false;
+                return;
             }
 
             double mouse_x;
@@ -91,6 +92,7 @@ namespace Engine::Components {
 
             glfwSetCursorPos(window, (float)width / 2, (float)height / 2);
         }
+
         if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_RELEASE) {
             glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
             first_click = true;

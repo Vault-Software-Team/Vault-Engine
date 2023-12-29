@@ -36,6 +36,7 @@ namespace Editor {
         static DLL_API void Console();
         static DLL_API void Scene();
         static DLL_API void Components();
+        static DLL_API void BottomLogCounter();
 
         static DLL_API void DrawVec3Control(const std::string &label, glm::vec3 &values, float resetValue = 0.0f, float columnWidth = 100.0f);
         static DLL_API void DrawVec2Control(const std::string &label, glm::vec2 &values, float resetValue = 0.0f, float columnWidth = 100.0f);

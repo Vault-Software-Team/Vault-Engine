@@ -83,6 +83,7 @@ namespace Engine {
     std::shared_ptr<GameObject> &GameObject::AddChild(const std::string &name, const std::string &tag) {
         auto &pChild = GameObject::New(name, tag);
         pChild->parent = ID;
+        std::cout << ID << " " << pChild->parent << " " << pChild->name << " " << this->name << "\n";
         return pChild;
     }
 
@@ -115,7 +116,7 @@ namespace Engine {
         std::string icon;
         bool hasChildren = false;
         for (auto &gameObject : Scene::Main->GameObjects) {
-            if (gameObject->parent == gameObject->ID) {
+            if (gameObject->parent == ID) {
                 hasChildren = true;
                 break;
             }
@@ -123,13 +124,18 @@ namespace Engine {
         Editor::GUI::SetNameIcon(icon, this);
 
         if (hasChildren) {
-            ImGui::TreeNode((icon + " " + name).c_str());
-            for (auto &gameObject : Scene::Main->GameObjects) {
-                if (gameObject->parent == gameObject->ID) {
-                    gameObject->GUI();
+            if (ImGui::TreeNode((icon + " " + name).c_str())) {
+                for (auto &gameObject : Scene::Main->GameObjects) {
+                    if (gameObject->parent == ID) {
+                        gameObject->GUI();
+                    }
                 }
+                ImGui::TreePop();
             }
-            ImGui::TreePop();
+
+            if (ImGui::IsMouseClicked(0) && ImGui::IsItemHovered() && !ImGui::IsMouseDragging(0)) {
+                Editor::GUI::selected_gameObject = this;
+            }
         } else {
             if (ImGui::Selectable((icon + " " + name).c_str())) {
                 Editor::GUI::selected_gameObject = this;

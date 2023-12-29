@@ -88,12 +88,13 @@ int main() {
     meshRenderer.SetMeshType(Components::MESH_PLANE);
     meshRenderer.mesh->material.SetDiffuse("../assets/diffuse.png");
     meshRenderer.mesh->material.SetSpecular("../assets/diffuse.png");
+    meshRenderer.mesh->material.SetNormal("../assets/normal.png");
 
     auto lightObject = GameObject::New("PointLight");
-    lightObject->AddComponent<Components::DirectionalLight>();
+    lightObject->AddComponent<Components::PointLight>();
     lightObject->AddComponent<Components::MeshRenderer>();
     lightObject->GetComponent<Components::MeshRenderer>().SetMeshType(Components::MESH_PYRAMID);
-    lightObject->GetComponent<Components::DirectionalLight>().enable_shadow_mapping = true;
+    lightObject->GetComponent<Components::PointLight>().enable_shadow_mapping = true;
 
     auto emptyObject = GameObject::New("Text");
     emptyObject->AddComponent<Text3D>();
@@ -109,6 +110,8 @@ int main() {
     transform.scale = glm::vec3(10, 10, 10);
     Scene::MakeSceneCamera();
     Scene::Main->SetMainCameraObject(Scene::StaticGameObjects.back());
+
+    emptyObject->AddChild("Cunt");
 
     ShadowMap shadow_map;
     shadow_map.ortho_size = 20.0f;

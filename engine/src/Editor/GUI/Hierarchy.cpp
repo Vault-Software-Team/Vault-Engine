@@ -23,6 +23,9 @@ namespace Editor {
         ImGui::InputText("##HierarhcySearch", search, search_size);
 
         for (auto &gameObject : Scene::Main->GameObjects) {
+            if (gameObject->parent != "NO_PARENT")
+                continue;
+
             std::string n = gameObject->name;
             std::transform(n.begin(), n.end(), n.begin(), asciitolower);
             if (n.find(filterStr) == std::string::npos && filterStr != "")

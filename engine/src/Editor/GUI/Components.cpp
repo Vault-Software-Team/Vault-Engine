@@ -49,48 +49,64 @@ void AddComponentsGUIPopup(GameObject *gameObject) {
         if (!gameObject->HasComponent<Transform>()) {
             gameObject->AddComponent<Transform>();
         }
+
+        ImGui::CloseCurrentPopup();
     }
 
     if (ImGui::Button("Ambient Light", ImVec2(200, 0))) {
         if (!gameObject->HasComponent<AmbientLight>()) {
             gameObject->AddComponent<AmbientLight>();
         }
+
+        ImGui::CloseCurrentPopup();
     }
 
     if (ImGui::Button("Directional Light", ImVec2(200, 0))) {
         if (!gameObject->HasComponent<DirectionalLight>()) {
             gameObject->AddComponent<DirectionalLight>();
         }
+
+        ImGui::CloseCurrentPopup();
     }
 
     if (ImGui::Button("Mesh Renderer", ImVec2(200, 0))) {
         if (!gameObject->HasComponent<MeshRenderer>()) {
             gameObject->AddComponent<MeshRenderer>();
         }
+
+        ImGui::CloseCurrentPopup();
     }
 
     if (ImGui::Button("Point Light", ImVec2(200, 0))) {
         if (!gameObject->HasComponent<PointLight>()) {
             gameObject->AddComponent<PointLight>();
         }
+
+        ImGui::CloseCurrentPopup();
     }
 
     if (ImGui::Button("Spot Light", ImVec2(200, 0))) {
         if (!gameObject->HasComponent<SpotLight>()) {
             gameObject->AddComponent<SpotLight>();
         }
+
+        ImGui::CloseCurrentPopup();
     }
 
     if (ImGui::Button("Text 3D", ImVec2(200, 0))) {
         if (!gameObject->HasComponent<Text3D>()) {
             gameObject->AddComponent<Text3D>();
         }
+
+        ImGui::CloseCurrentPopup();
     }
 
     if (ImGui::Button("Camera", ImVec2(200, 0))) {
         if (!gameObject->HasComponent<Camera>()) {
             gameObject->AddComponent<Camera>();
         }
+
+        ImGui::CloseCurrentPopup();
     }
 }
 

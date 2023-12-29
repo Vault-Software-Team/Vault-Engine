@@ -24,6 +24,7 @@ namespace Engine {
 
             void SetMeshType(const MeshType &a_mesh_type);
             void SetCustomMeshType(std::vector<VaultRenderer::Vertex> &vertices, std::vector<uint32_t> &indices);
+            void OnGUI() override;
         };
     } // namespace Components
 } // namespace Engine
