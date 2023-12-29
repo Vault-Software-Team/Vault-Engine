@@ -128,8 +128,8 @@ int main() {
 
     // Model model("../assets/capsule.obj");
 
-    Serializer sceneSerializer(Scene::Main);
-    sceneSerializer.Deserialize("../assets/scene.vault");
+    Serializer::Deserialize("../assets/scene.vault");
+    Serializer::DeserializeMaterial("../assets/main.material", GameObject::FindGameObjectByName("My GameObject")->GetComponent<MeshRenderer>().mesh->material);
     // sceneSerializer.Serialize("../assets/scene.vault");
 
     window.Run([&] {

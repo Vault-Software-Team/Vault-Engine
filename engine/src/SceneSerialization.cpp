@@ -20,8 +20,32 @@ namespace YAML {
                 return false;
 
             rhs.x = node[0].as<float>();
-            rhs.y = node[0].as<float>();
-            rhs.z = node[0].as<float>();
+            rhs.y = node[1].as<float>();
+            rhs.z = node[2].as<float>();
+
+            return true;
+        }
+    };
+
+    template <>
+    struct convert<glm::vec4> {
+        static Node encode(const glm::vec4 &rhs) {
+            Node node;
+            node.push_back(rhs.x);
+            node.push_back(rhs.y);
+            node.push_back(rhs.z);
+            node.push_back(rhs.w);
+            return node;
+        }
+
+        static bool decode(const Node &node, glm::vec4 &rhs) {
+            if (!node.IsSequence() || node.size() != 4)
+                return false;
+
+            rhs.x = node[0].as<float>();
+            rhs.y = node[1].as<float>();
+            rhs.z = node[2].as<float>();
+            rhs.w = node[3].as<float>();
 
             return true;
         }
@@ -41,10 +65,7 @@ namespace Engine {
         return out;
     }
 
-    Serializer::Serializer(std::unique_ptr<Scene> &scene) : scene(scene) {
-    }
-
-    void Serializer::Serialize(const std::string &path) {
+    void Serializer::Serialize(std::unique_ptr<Scene> &scene, const std::string &path) {
         yaml::Emitter emitter;
         emitter << yaml::BeginMap;
         emitter << yaml::Key << "Scene" << yaml::Value << "Untitled";
@@ -273,5 +294,39 @@ namespace Engine {
         }
     }
     void Serializer::DeserializeRuntime(const std::string &path) {
+    }
+
+    void Serializer::SerializeMaterial(const std::string &path, VaultRenderer::Material &material) {
+        yaml::Emitter emitter;
+        emitter << yaml::BeginMap;
+        emitter << yaml::Key << "color" << yaml::Value << material.color;
+        emitter << yaml::Key << "diffuse" << yaml::Value << (material.diffuse ? material.diffuse->texture_data->texture_filepath : "nullptr");
+        emitter << yaml::Key << "specular" << yaml::Value << (material.specular ? material.specular->texture_data->texture_filepath : "nullptr");
+        emitter << yaml::Key << "normal" << yaml::Value << (material.normal ? material.normal->texture_data->texture_filepath : "nullptr");
+        emitter << yaml::Key << "height" << yaml::Value << (material.height ? material.height->texture_data->texture_filepath : "nullptr");
+
+        std::ofstream file(path);
+        file << emitter.c_str();
+    }
+    void Serializer::DeserializeMaterial(const std::string &path, VaultRenderer::Material &material) {
+        std::ifstream stream(path);
+        std::stringstream ss;
+        ss << stream.rdbuf();
+
+        yaml::Node data = yaml::Load(ss.str());
+        material.color = data["color"].as<glm::vec4>();
+
+        if (data["diffuse"].as<std::string>() != "nullptr") {
+            material.SetDiffuse(data["diffuse"].as<std::string>());
+        }
+        if (data["specular"].as<std::string>() != "nullptr") {
+            material.SetSpecular(data["specular"].as<std::string>());
+        }
+        if (data["normal"].as<std::string>() != "nullptr") {
+            material.SetNormal(data["normal"].as<std::string>());
+        }
+        if (data["height"].as<std::string>() != "nullptr") {
+            material.SetHeight(data["height"].as<std::string>());
+        }
     }
 } // namespace Engine
