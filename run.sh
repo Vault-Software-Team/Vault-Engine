@@ -4,4 +4,4 @@ make
 cp ../imgui.ini ./app/imgui.ini
 cp ../imgui.ini ./imgui.ini
 # mangohud --dlsym ./app/app
-./app/app
+gdb ./app/app

@@ -15,8 +15,12 @@
 
 namespace Engine {
     class DLL_API GameObject : public std::enable_shared_from_this<GameObject> {
+    private:
+        void GUI_ContextMenu();
+        std::string icon;
+
     public:
-        static DLL_API std::vector<int> scheduled_deletions;
+        static DLL_API std::vector<std::shared_ptr<GameObject>> scheduled_deletions;
 
         static DLL_API std::shared_ptr<GameObject> &FindGameObjectByEntity(const entt::entity &entity);
         static DLL_API std::shared_ptr<GameObject> &FindGameObjectByID(const std::string &id);

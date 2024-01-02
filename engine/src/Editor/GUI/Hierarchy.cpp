@@ -27,6 +27,8 @@ namespace Editor {
         ImGui::InputText("##HierarhcySearch", search, search_size);
 
         for (auto &gameObject : Scene::Main->GameObjects) {
+            if (!gameObject)
+                continue;
             if (gameObject->parent != "NO_PARENT")
                 continue;
 

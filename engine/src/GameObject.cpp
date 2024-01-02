@@ -5,9 +5,10 @@
 #include <iostream>
 #include <Editor/GUI/MainGUI.hpp>
 #include <imgui/imgui.h>
+#include <icons/icons.h>
 
 namespace Engine {
-    DLL_API std::vector<int> GameObject::scheduled_deletions;
+    DLL_API std::vector<std::shared_ptr<GameObject>> GameObject::scheduled_deletions;
 
     std::shared_ptr<GameObject> &GameObject::New(const std::string &name, const std::string &tag) {
         Scene::Main->GameObjects.push_back(std::make_shared<GameObject>(name, tag));
@@ -115,7 +116,6 @@ namespace Engine {
     }
 
     void GameObject::GUI() {
-        std::string icon;
         bool hasChildren = false;
         for (auto &gameObject : Scene::Main->GameObjects) {
             if (gameObject->parent == ID) {
@@ -126,7 +126,9 @@ namespace Engine {
         Editor::GUI::SetNameIcon(icon, this);
 
         if (hasChildren) {
-            if (ImGui::TreeNode((icon + " " + name).c_str())) {
+            bool tree_node_open = ImGui::TreeNode((icon + " " + name).c_str());
+            GUI_ContextMenu();
+            if (tree_node_open) {
                 for (auto &gameObject : Scene::Main->GameObjects) {
                     if (gameObject->parent == ID) {
                         gameObject->GUI();
@@ -134,10 +136,6 @@ namespace Engine {
                 }
                 ImGui::TreePop();
             }
-            if (ImGui::IsItemHovered() && ImGui::IsKeyPressed(ImGuiKey_Delete)) {
-                DeleteGameObject();
-            }
-
             if (ImGui::IsMouseClicked(0) && ImGui::IsItemHovered() && !ImGui::IsMouseDragging(0)) {
                 Editor::GUI::selected_gameObject = this;
             }
@@ -145,22 +143,51 @@ namespace Engine {
             if (ImGui::Selectable((icon + " " + name).c_str())) {
                 Editor::GUI::selected_gameObject = this;
             }
-            if (ImGui::IsItemHovered() && ImGui::IsKeyPressed(ImGuiKey_Delete)) {
-                DeleteGameObject();
+            GUI_ContextMenu();
+        }
+
+        if (ImGui::BeginPopup(("GameObject_" + ID).c_str())) {
+            ImGui::Text("%s %s", icon.c_str(), name.c_str());
+            if (ImGui::Button("Select GameObject", ImVec2(200, 0))) {
+                Editor::GUI::selected_gameObject = this;
+                ImGui::CloseCurrentPopup();
             }
+
+            if (ImGui::Button(ICON_FA_TRASH " Delete GameObject", ImVec2(200, 0))) {
+                scheduled_deletions.push_back(FindGameObjectByEntity(entity));
+                ImGui::CloseCurrentPopup();
+            }
+            ImGui::EndPopup();
+        }
+    }
+    void GameObject::GUI_ContextMenu() {
+        if (ImGui::IsItemHovered() && ImGui::IsKeyPressed(ImGuiKey_Delete)) {
+            scheduled_deletions.push_back(FindGameObjectByEntity(entity));
+        }
+
+        if (ImGui::IsItemHovered() && ImGui::IsMouseClicked(1)) {
+            ImGui::OpenPopup(("GameObject_" + ID).c_str());
         }
     }
 
     void GameObject::DeleteGameObject() {
+        if (Editor::GUI::selected_gameObject) {
+            if (Editor::GUI::selected_gameObject->ID == ID)
+                Editor::GUI::selected_gameObject = nullptr;
+        }
+        // Get the shared pointer of this instance
         auto &sharedPtr = FindGameObjectByEntity(entity);
+        std::vector<std::shared_ptr<GameObject>> children_to_delete;
+        for (std::vector<std::shared_ptr<GameObject>>::iterator it = Scene::Main->GameObjects.begin(); it != Scene::Main->GameObjects.end();) {
+            if (it->get()->parent == ID) {
+                it->get()->parent = "NO_PARENT";
+                it->get()->DeleteGameObject();
+            } else
+                ++it;
+        }
+        // Destroy the entity from the EnTT Registry
         Scene::Main->EntityRegistry.destroy(entity);
+        // Remove the GameObject from GameObjects
         Scene::Main->GameObjects.erase(std::remove(Scene::Main->GameObjects.begin(), Scene::Main->GameObjects.end(), sharedPtr), Scene::Main->GameObjects.end());
-        // for (int i = 0; i < Scene::Main->GameObjects.size(); i++) {
-        //     if (Scene::Main->GameObjects[i]->ID == ID) {
-        //         scheduled_deletions.push_back(i);
-
-        //         break;
-        //     }
-        // }
     }
 } // namespace Engine

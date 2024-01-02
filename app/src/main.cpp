@@ -171,9 +171,10 @@ int main() {
                    ImGui::DockSpaceOverViewport(ImGui::GetMainViewport(), ImGuiDockNodeFlags_PassthruCentralNode);
                    editor.GUI();
 
-                   for (int index : GameObject::scheduled_deletions) {
-                       Scene::Main->GameObjects.erase(Scene::Main->GameObjects.begin() + index);
+                   for (auto &pointer : GameObject::scheduled_deletions) {
+                       pointer->DeleteGameObject();
                    }
+                   GameObject::scheduled_deletions.clear();
                },
                [&] {
                    // Directional Light  Shadow Mapping
