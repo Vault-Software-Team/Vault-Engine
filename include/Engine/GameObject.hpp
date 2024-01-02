@@ -16,6 +16,8 @@
 namespace Engine {
     class DLL_API GameObject : public std::enable_shared_from_this<GameObject> {
     public:
+        static DLL_API std::vector<int> scheduled_deletions;
+
         static DLL_API std::shared_ptr<GameObject> &FindGameObjectByEntity(const entt::entity &entity);
         static DLL_API std::shared_ptr<GameObject> &FindGameObjectByID(const std::string &id);
         static DLL_API std::shared_ptr<GameObject> &FindGameObjectByName(const std::string &name);
@@ -73,6 +75,8 @@ namespace Engine {
         void RemoveComponent() {
             Scene::Main->EntityRegistry.remove<T>(entity);
         }
+
+        void DeleteGameObject();
 
         void GUI();
     };

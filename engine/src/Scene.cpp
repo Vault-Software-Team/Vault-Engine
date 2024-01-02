@@ -3,17 +3,32 @@
 #include <Engine/GameObject.hpp>
 #include <Engine/Runtime.hpp>
 #include <Editor/GUI/MainGUI.hpp>
+#include <Engine/Components/IncludeComponents.hpp>
 
 namespace Engine {
-    std::unique_ptr<Scene> Scene::Main;
+    DLL_API std::shared_ptr<Scene> Scene::Main;
+    DLL_API std::shared_ptr<Scene> Scene::EditorScene;
+
     Components::Camera *Scene::EditorSceneCamera = nullptr;
     std::vector<std::shared_ptr<GameObject>> Scene::StaticGameObjects;
 
-    Scene::Scene(const std::string &scene_file) : scene_file_path(scene_file) {
+    Scene::Scene(const std::string &scene_file) : scene_file_path(scene_file) {}
+
+    std::shared_ptr<Scene> Scene::New(const std::string &scene_file) {
+        return std::move(std::make_shared<Scene>(scene_file));
     }
 
-    void Scene::New(const std::string &scene_file) {
-        Main = std::make_unique<Scene>(scene_file);
+    void Scene::SetMainScene(std::shared_ptr<Scene> &scene) {
+        Main = scene;
+    }
+
+    void Scene::SetEditorScene(std::shared_ptr<Scene> &scene) {
+        EditorScene = scene;
+    }
+
+    std::shared_ptr<GameObject> &Scene::MakeGameObject(const std::string &name, const std::string &tag) {
+        GameObjects.push_back(std::make_shared<GameObject>(name, tag));
+        return GameObjects.back();
     }
 
     Scene::~Scene() {
@@ -70,4 +85,71 @@ namespace Engine {
         main_camera_object = EditorSceneCamera;
     }
 
+    std::shared_ptr<GameObject> &Scene::FindGameObjectByEntity(const entt::entity &entity) {
+        for (auto &pGameObject : GameObjects) {
+            if (pGameObject->entity == entity)
+                return pGameObject;
+        }
+    }
+    std::shared_ptr<GameObject> &Scene::FindGameObjectByID(const std::string &ID) {
+        for (auto &pGameObject : GameObjects) {
+            if (pGameObject->ID == ID)
+                return pGameObject;
+        }
+    }
+
+    std::shared_ptr<GameObject> &Scene::FindGameObjectByName(const std::string &name) {
+        for (auto &pGameObject : GameObjects) {
+            if (pGameObject->name == name)
+                return pGameObject;
+        }
+    }
+
+    template <typename T>
+    static void CopyComponent(entt::registry &dest, entt::registry &src) {
+        using namespace Components;
+        auto src_view = src.view<T>();
+
+        for (auto se : src_view) {
+            auto &component = src.get<T>(se);
+            auto dest_view = dest.view<Transform>();
+            for (auto de : dest_view) {
+                if (dest_view.get<Transform>(de).ID == src.get<Transform>(de).ID) {
+                    dest.emplace_or_replace<T>(de, component);
+                }
+            }
+        }
+    }
+
+    std::shared_ptr<Scene> Scene::Copy(std::shared_ptr<Scene> &other) {
+        using namespace Components;
+        std::shared_ptr<Scene> new_scene = Scene::New("");
+        // Scene::SetEditorScene(other);
+        // Scene::SetMainScene(new_scene);
+
+        auto &source_reg = other->EntityRegistry;
+        auto &destination_reg = new_scene->EntityRegistry;
+
+        auto view = source_reg.view<Transform>();
+        for (auto e : view) {
+            auto &gameObject = other->FindGameObjectByEntity(e);
+            auto &new_gameObject = new_scene->MakeGameObject(gameObject->name, gameObject->tag);
+            new_gameObject->ID = gameObject->ID;
+            new_gameObject->parent = gameObject->parent;
+
+            auto &transform = destination_reg.get<Transform>(e);
+            transform.ID = new_gameObject->ID;
+        }
+
+        CopyComponent<Transform>(destination_reg, source_reg);
+        CopyComponent<Camera>(destination_reg, source_reg);
+        CopyComponent<MeshRenderer>(destination_reg, source_reg);
+        CopyComponent<AmbientLight>(destination_reg, source_reg);
+        CopyComponent<PointLight>(destination_reg, source_reg);
+        CopyComponent<DirectionalLight>(destination_reg, source_reg);
+        CopyComponent<SpotLight>(destination_reg, source_reg);
+        CopyComponent<Text3D>(destination_reg, source_reg);
+
+        return new_scene;
+    }
 } // namespace Engine

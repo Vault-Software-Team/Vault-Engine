@@ -7,6 +7,8 @@
 #include <imgui/imgui.h>
 
 namespace Engine {
+    DLL_API std::vector<int> GameObject::scheduled_deletions;
+
     std::shared_ptr<GameObject> &GameObject::New(const std::string &name, const std::string &tag) {
         Scene::Main->GameObjects.push_back(std::make_shared<GameObject>(name, tag));
         return Scene::Main->GameObjects.back();
@@ -132,6 +134,9 @@ namespace Engine {
                 }
                 ImGui::TreePop();
             }
+            if (ImGui::IsItemHovered() && ImGui::IsKeyPressed(ImGuiKey_Delete)) {
+                DeleteGameObject();
+            }
 
             if (ImGui::IsMouseClicked(0) && ImGui::IsItemHovered() && !ImGui::IsMouseDragging(0)) {
                 Editor::GUI::selected_gameObject = this;
@@ -140,6 +145,22 @@ namespace Engine {
             if (ImGui::Selectable((icon + " " + name).c_str())) {
                 Editor::GUI::selected_gameObject = this;
             }
+            if (ImGui::IsItemHovered() && ImGui::IsKeyPressed(ImGuiKey_Delete)) {
+                DeleteGameObject();
+            }
         }
+    }
+
+    void GameObject::DeleteGameObject() {
+        auto &sharedPtr = FindGameObjectByEntity(entity);
+        Scene::Main->EntityRegistry.destroy(entity);
+        Scene::Main->GameObjects.erase(std::remove(Scene::Main->GameObjects.begin(), Scene::Main->GameObjects.end(), sharedPtr), Scene::Main->GameObjects.end());
+        // for (int i = 0; i < Scene::Main->GameObjects.size(); i++) {
+        //     if (Scene::Main->GameObjects[i]->ID == ID) {
+        //         scheduled_deletions.push_back(i);
+
+        //         break;
+        //     }
+        // }
     }
 } // namespace Engine

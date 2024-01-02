@@ -80,7 +80,8 @@ int main() {
     double previousTime = glfwGetTime();
 
     using namespace Engine;
-    Scene::New("../assets/main.vault");
+    auto scene = Scene::New("../assets/main.vault");
+    Scene::SetMainScene(scene);
     Scene::MakeSceneCamera();
     Scene::Main->SetMainCameraObject(Scene::StaticGameObjects.back());
 
@@ -128,9 +129,16 @@ int main() {
 
     // Model model("../assets/capsule.obj");
 
-    Serializer::Deserialize("../assets/scene.vault");
-    Serializer::DeserializeMaterial("../assets/main.material", GameObject::FindGameObjectByName("My GameObject")->GetComponent<MeshRenderer>().mesh->material);
+    // Serializer::Deserialize("../assets/scene.vault");
+    // Serializer::DeserializeMaterial("../assets/main.material", GameObject::FindGameObjectByName("My GameObject")->GetComponent<MeshRenderer>().mesh->material);
     // sceneSerializer.Serialize("../assets/scene.vault");
+
+    // auto new_scene = Scene::Copy(scene);
+    // Scene::SetMainScene(new_scene);
+    // Scene::MakeSceneCamera();
+    // Scene::Main->SetMainCameraObject(Scene::StaticGameObjects.back());
+
+    Model model("../assets/sphere.obj");
 
     window.Run([&] {
         // Update the Main Camera of a scene
@@ -162,6 +170,10 @@ int main() {
                [&] {
                    ImGui::DockSpaceOverViewport(ImGui::GetMainViewport(), ImGuiDockNodeFlags_PassthruCentralNode);
                    editor.GUI();
+
+                   for (int index : GameObject::scheduled_deletions) {
+                       Scene::Main->GameObjects.erase(Scene::Main->GameObjects.begin() + index);
+                   }
                },
                [&] {
                    // Directional Light  Shadow Mapping

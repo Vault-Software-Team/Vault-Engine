@@ -24,8 +24,8 @@ namespace Engine {
             glm::mat4 view, projection;
 
             // Camera Properties
-            float fov, near, far;
-            bool main_camera;
+            float fov = 45, near = 0.1, far = 100.0;
+            bool main_camera = false;
 
             void UpdateMatrix();
             void BindToShader(VaultRenderer::Shader &shader);

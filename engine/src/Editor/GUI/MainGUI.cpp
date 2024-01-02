@@ -19,23 +19,30 @@ namespace Editor {
     void GUI::SetNameIcon(std::string &txt, Engine::GameObject *gameObject) {
         if (gameObject->HasComponent<Camera>()) {
             txt = ICON_FA_CAMERA;
+            return;
         }
 
         if (gameObject->HasComponent<AmbientLight>()) {
             txt = ICON_FA_STAR;
+            return;
         }
 
         if (gameObject->HasComponent<DirectionalLight>()) {
             txt = ICON_FA_SUN;
+            return;
         }
 
         if (gameObject->HasComponent<PointLight>()) {
             txt = ICON_FA_LIGHTBULB;
+            return;
         }
 
         if (gameObject->HasComponent<Text3D>()) {
             txt = ICON_FA_FONT;
+            return;
         }
+
+        txt = ICON_FA_CUBE;
     }
 
     void GUI::DrawVec3Control(const std::string &label, glm::vec3 &values, float resetValue, float columnWidth) {

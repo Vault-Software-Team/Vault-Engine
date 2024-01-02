@@ -17,7 +17,11 @@ namespace Editor {
         std::transform(filterStr.begin(), filterStr.end(), filterStr.begin(), asciitolower);
 
         ImGui::Begin(ICON_FA_CUBES " Hierarhcy");
-        std::string icon = ICON_FA_CUBE;
+        if (ImGui::Button(ICON_FA_PLUS " Add GameObject", ImVec2(ImGui::GetWindowSize().x - 20, 25))) {
+            auto &gameObject = GameObject::New("GameObject");
+            ImGui::CloseCurrentPopup();
+        }
+        ImGui::Separator();
 
         ImGui::PushItemWidth(ImGui::GetWindowSize().x - 20);
         ImGui::InputText("##HierarhcySearch", search, search_size);

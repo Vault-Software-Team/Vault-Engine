@@ -19,7 +19,7 @@ namespace Engine::Components {
             std::vector<uint32_t>
                 indices = {0, 1, 2, 0, 2, 3};
 
-            mesh = std::make_unique<VaultRenderer::Mesh>(vertices, indices);
+            mesh = std::make_shared<VaultRenderer::Mesh>(vertices, indices);
             break;
         }
         case MESH_PYRAMID: {
@@ -64,7 +64,7 @@ namespace Engine::Components {
                 7, 9, 8,    // Non-facing side
                 10, 12, 11, // Right side
                 13, 15, 14};
-            mesh = std::make_unique<VaultRenderer::Mesh>(vertices, indices);
+            mesh = std::make_shared<VaultRenderer::Mesh>(vertices, indices);
             break;
         }
 
@@ -78,7 +78,7 @@ namespace Engine::Components {
         mesh_type = MESH_CUSTOM_MODEL;
         mesh.reset();
 
-        mesh = std::make_unique<VaultRenderer::Mesh>(vertices, indices);
+        mesh = std::make_shared<VaultRenderer::Mesh>(vertices, indices);
     }
 
     void MeshRenderer::OnGUI() {

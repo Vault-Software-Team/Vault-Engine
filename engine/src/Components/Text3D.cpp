@@ -13,7 +13,7 @@ namespace Engine::Components {
 
     void Text3D::ChangeFont(const std::string &font_path) {
         font.reset();
-        font = std::make_unique<VaultRenderer::Font>(font_path.c_str(), 64);
+        font = std::make_shared<VaultRenderer::Font>(font_path.c_str(), 64);
     }
 
     void Text3D::Init() {

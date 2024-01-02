@@ -25,7 +25,7 @@ namespace Editor {
         ImGui::Image((void *)framebufferTextureID, size, ImVec2(0, 1), ImVec2(1, 0));
         if (ImGui::IsWindowHovered()) {
             if (glfwGetMouseButton(Window::window->GetGLFWWindow(), GLFW_MOUSE_BUTTON_2)) {
-                Scene::Main->main_camera_object->Inputs();
+                Scene::EditorSceneCamera->Inputs();
             }
         }
 
