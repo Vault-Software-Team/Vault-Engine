@@ -80,7 +80,7 @@ namespace Engine {
             Scene::Main->EntityRegistry.remove<T>(entity);
         }
 
-        void DeleteGameObject();
+        void UNSAFE_DeleteGameObject();
 
         void GUI();
     };

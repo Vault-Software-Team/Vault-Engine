@@ -172,7 +172,7 @@ int main() {
                    editor.GUI();
 
                    for (auto &pointer : GameObject::scheduled_deletions) {
-                       pointer->DeleteGameObject();
+                       pointer->UNSAFE_DeleteGameObject();
                    }
                    GameObject::scheduled_deletions.clear();
                },

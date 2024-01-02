@@ -170,7 +170,7 @@ namespace Engine {
         }
     }
 
-    void GameObject::DeleteGameObject() {
+    void GameObject::UNSAFE_DeleteGameObject() {
         if (Editor::GUI::selected_gameObject) {
             if (Editor::GUI::selected_gameObject->ID == ID)
                 Editor::GUI::selected_gameObject = nullptr;
@@ -181,7 +181,7 @@ namespace Engine {
         for (std::vector<std::shared_ptr<GameObject>>::iterator it = Scene::Main->GameObjects.begin(); it != Scene::Main->GameObjects.end();) {
             if (it->get()->parent == ID) {
                 it->get()->parent = "NO_PARENT";
-                it->get()->DeleteGameObject();
+                it->get()->UNSAFE_DeleteGameObject();
             } else
                 ++it;
         }
