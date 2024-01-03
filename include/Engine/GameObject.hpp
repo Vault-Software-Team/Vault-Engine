@@ -19,6 +19,8 @@ namespace Engine {
     private:
         void GUI_ContextMenu();
         std::string icon;
+        bool another_registry = false;
+        entt::registry *other_registry = nullptr;
 
     public:
         static DLL_API std::vector<std::shared_ptr<GameObject>> scheduled_deletions;
@@ -37,9 +39,7 @@ namespace Engine {
 
         GameObject(const std::string &name, const std::string &tag = "Default");
         GameObject(entt::registry &registry, const std::string &name, const std::string &tag = "Default");
-        ~GameObject() {
-            Scene::Main->EntityRegistry.destroy(entity);
-        }
+        ~GameObject();
 
         void UpdateComponents(VaultRenderer::Shader &shader);
         void SetParent(std::shared_ptr<GameObject> &parent);
@@ -91,8 +91,9 @@ namespace Engine {
                 T &component = registry.emplace<T>(
                     entity, std::forward<Args>(args)...);
 
-                auto &comp = GetComponent<T>();
+                auto &comp = GetComponent<T>(registry);
                 comp.entity = entity;
+                comp.static_registry = true;
                 comp.ID = ID;
                 comp.Init();
 

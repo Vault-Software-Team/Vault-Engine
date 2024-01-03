@@ -7,6 +7,7 @@ namespace Engine {
         struct DLL_API Base {
             entt::entity entity;
             std::string ID;
+            bool static_registry = false;
 
             virtual void OnGUI(){};
             virtual void Update() {}

@@ -90,7 +90,7 @@ int main() {
     auto scene = Scene::New("../assets/main.vault");
     Scene::SetMainScene(scene);
     Scene::MakeSceneCamera();
-    Scene::Main->SetMainCameraObject(Scene::StaticGameObjects.back());
+    Scene::Main->SetMainCameraObject(Scene::StaticGameObjects.back(), true);
 
     // auto gameObject = GameObject::New("My GameObject");
     // gameObject->AddComponent<Components::MeshRenderer>();
@@ -146,6 +146,51 @@ int main() {
 
     Model model("../assets/sphere.obj");
 
+    auto Function_GUI = [&] {
+        ImGui::DockSpaceOverViewport(ImGui::GetMainViewport(), ImGuiDockNodeFlags_PassthruCentralNode);
+        editor.GUI();
+
+        for (auto &pointer : GameObject::scheduled_deletions) {
+            pointer->UNSAFE_DeleteGameObject();
+        }
+        GameObject::scheduled_deletions.clear();
+    };
+
+    auto Function_ShadowMapRendering = [&] {
+        // Directional Light  Shadow Mapping
+        if (Scene::Main->EntityRegistry.valid(Scene::Main->EntityRegistry.view<DirectionalLight>().back())) {
+            if (Scene::Main->EntityRegistry.get<DirectionalLight>(Scene::Main->EntityRegistry.view<DirectionalLight>().back()).enable_shadow_mapping) {
+                shadow_map.RenderSpace([&](std::unique_ptr<Shader> &shadow_shader) {
+                    // NOTE: shadow_shader is already binded
+                    runtime.DrawToShadowMap(shadow_map.GetDepthBuffer(), *shadow_shader);
+                });
+            }
+        }
+
+        // Point Light Shadow Mapping
+        auto pointLightView = Scene::Main->EntityRegistry.view<PointLight>();
+
+        for (auto e : pointLightView) {
+            auto &light = Scene::Main->EntityRegistry.get<PointLight>(e);
+            if (!light.enable_shadow_mapping)
+                continue;
+
+            light.DrawToShadowMap(shadow_cubemap_shader);
+        }
+    };
+
+    /*
+    FUNCTION EXECUTION ORDER:
+    1. Shadow Map Rendering Function, the last argument in window.Run
+    2. Runtime Function, the first argument in window.Run
+    3. GUI Function, the second argument in window.Run
+
+    basically:
+    shadow_function()
+    runtime_function()
+    gui_function()
+    */
+
     window.Run([&] {
         // Update the Main Camera of a scene
         runtime.UpdateMainCamera(window);
@@ -174,41 +219,12 @@ int main() {
         runtime.UpdateGameObjects(window); //
 
         // Scheduling
-        if(Serializer::scheduled_scene_path != "") {
+        if (Serializer::scheduled_scene_path != "") {
             Serializer::Deserialize(Serializer::scheduled_scene_path);
             Serializer::scheduled_scene_path = "";
-        } },
-               [&] {
-                   ImGui::DockSpaceOverViewport(ImGui::GetMainViewport(), ImGuiDockNodeFlags_PassthruCentralNode);
-                   editor.GUI();
-
-                   for (auto &pointer : GameObject::scheduled_deletions) {
-                       pointer->UNSAFE_DeleteGameObject();
-                   }
-                   GameObject::scheduled_deletions.clear();
-               },
-               [&] {
-                   // Directional Light  Shadow Mapping
-                   if (Scene::Main->EntityRegistry.valid(Scene::Main->EntityRegistry.view<DirectionalLight>().back())) {
-                       if (Scene::Main->EntityRegistry.get<DirectionalLight>(Scene::Main->EntityRegistry.view<DirectionalLight>().back()).enable_shadow_mapping) {
-                           shadow_map.RenderSpace([&](std::unique_ptr<Shader> &shadow_shader) {
-                               // NOTE: shadow_shader is already binded
-                               runtime.DrawToShadowMap(shadow_map.GetDepthBuffer(), *shadow_shader);
-                           });
-                       }
-                   }
-
-                   // Point Light Shadow Mapping
-                   auto pointLightView = Scene::Main->EntityRegistry.view<PointLight>();
-
-                   for (auto e : pointLightView) {
-                       auto &light = Scene::Main->EntityRegistry.get<PointLight>(e);
-                       if (!light.enable_shadow_mapping)
-                           continue;
-
-                       light.DrawToShadowMap(shadow_cubemap_shader);
-                   }
-               });
+        } // clang-format off
+    }, Function_GUI, Function_ShadowMapRendering);
+    // clang-format on
 
     return 0;
 }

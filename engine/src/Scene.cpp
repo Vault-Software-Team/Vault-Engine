@@ -8,6 +8,7 @@
 namespace Engine {
     DLL_API std::shared_ptr<Scene> Scene::Main;
     DLL_API std::shared_ptr<Scene> Scene::EditorScene;
+    DLL_API entt::registry Scene::StaticGameObjects_EntityRegistry;
 
     Components::Camera *Scene::EditorSceneCamera = nullptr;
     std::vector<std::shared_ptr<GameObject>> Scene::StaticGameObjects;
@@ -38,8 +39,8 @@ namespace Engine {
         main_camera_object = nullptr;
     }
 
-    void Scene::SetMainCameraObject(const std::shared_ptr<GameObject> &camObject) {
-        main_camera_object = &camObject->GetComponent<Components::Camera>();
+    void Scene::SetMainCameraObject(const std::shared_ptr<GameObject> &camObject, bool static_registry) {
+        main_camera_object = static_registry ? &camObject->GetComponent<Components::Camera>(StaticGameObjects_EntityRegistry) : &camObject->GetComponent<Components::Camera>();
     }
 
     void Scene::UpdateGameObjectComponents() {
@@ -64,21 +65,21 @@ namespace Engine {
     }
 
     void Scene::MakeSceneCamera() {
-        StaticGameObjects.push_back(std::make_shared<GameObject>("VAULT_SceneCamera", "VAULT_SceneCamera"));
+        StaticGameObjects.push_back(std::make_shared<GameObject>(StaticGameObjects_EntityRegistry, "VAULT_SceneCamera", "VAULT_SceneCamera"));
         auto &cam = StaticGameObjects.back();
-        cam->AddComponent<Components::Camera>();
-        cam->GetComponent<Components::Transform>().rotation.z = -1.0;
+        cam->AddComponent<Components::Camera>(StaticGameObjects_EntityRegistry);
+        cam->GetComponent<Components::Transform>(StaticGameObjects_EntityRegistry).rotation.z = -1.0;
 
-        cam->GetComponent<Components::Camera>().fov = 45;
-        cam->GetComponent<Components::Camera>().near = 0.01f;
-        cam->GetComponent<Components::Camera>().far = 100.0f;
+        cam->GetComponent<Components::Camera>(StaticGameObjects_EntityRegistry).fov = 45;
+        cam->GetComponent<Components::Camera>(StaticGameObjects_EntityRegistry).near = 0.01f;
+        cam->GetComponent<Components::Camera>(StaticGameObjects_EntityRegistry).far = 100.0f;
 
-        cam->GetComponent<Components::Camera>().width = 800;
-        cam->GetComponent<Components::Camera>().height = 600;
-        cam->GetComponent<Components::Transform>().position.y = 0.5f;
-        cam->GetComponent<Components::Transform>().position.z = 25.f;
+        cam->GetComponent<Components::Camera>(StaticGameObjects_EntityRegistry).width = 800;
+        cam->GetComponent<Components::Camera>(StaticGameObjects_EntityRegistry).height = 600;
+        cam->GetComponent<Components::Transform>(StaticGameObjects_EntityRegistry).position.y = 0.5f;
+        cam->GetComponent<Components::Transform>(StaticGameObjects_EntityRegistry).position.z = 25.f;
 
-        EditorSceneCamera = &cam->GetComponent<Components::Camera>();
+        EditorSceneCamera = &cam->GetComponent<Components::Camera>(StaticGameObjects_EntityRegistry);
     }
 
     void Scene::SetSceneCameraAsMain() {
@@ -145,6 +146,8 @@ namespace Engine {
             // auto &new_gameObject = new_scene->MakeGameObject(gameObject->name, gameObject->tag);
             new_scene->GameObjects.push_back(std::make_shared<GameObject>(destination_reg, gameObject->name, gameObject->tag));
             auto &new_gameObject = new_scene->GameObjects.back();
+            new_gameObject->name = gameObject->name;
+            new_gameObject->tag = gameObject->tag;
             new_gameObject->ID = gameObject->ID;
             new_gameObject->parent = gameObject->parent;
 
@@ -161,6 +164,13 @@ namespace Engine {
         CopyComponent<SpotLight>(destination_reg, source_reg);
         CopyComponent<Text3D>(destination_reg, source_reg);
 
+        return new_scene;
+    }
+
+    DLL_API std::shared_ptr<Scene> Scene::CopyAndSetAsMain(std::shared_ptr<Scene> &other) {
+        auto new_scene = Copy(other);
+        Scene::SetMainScene(new_scene);
+        Scene::Main->SetMainCameraObject(Scene::StaticGameObjects.back(), true);
         return new_scene;
     }
 } // namespace Engine

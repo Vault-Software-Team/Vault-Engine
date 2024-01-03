@@ -30,6 +30,17 @@ namespace Engine {
         entity = registry.create();
         AddComponent<Components::Transform>(registry);
         ID = uuid::generate_uuid_v4();
+        another_registry = true;
+        other_registry = &registry;
+    }
+
+    GameObject::~GameObject() {
+        if (another_registry) {
+            if (other_registry)
+                other_registry->destroy(entity);
+        } else {
+            Scene::Main->EntityRegistry.destroy(entity);
+        }
     }
 
     void GameObject::UpdateComponents(VaultRenderer::Shader &shader) {

@@ -10,6 +10,10 @@ namespace Engine {
 
     class DLL_API Scene {
     public:
+        static DLL_API std::vector<std::shared_ptr<GameObject>> StaticGameObjects;
+        static DLL_API entt::registry StaticGameObjects_EntityRegistry;
+        static DLL_API Components::Camera *EditorSceneCamera;
+
         static DLL_API std::shared_ptr<Scene> Main;
         static DLL_API std::shared_ptr<Scene> EditorScene;
 
@@ -24,15 +28,15 @@ namespace Engine {
         static DLL_API void SetEditorScene(std::shared_ptr<Scene> &scene);
 
         static DLL_API std::shared_ptr<Scene> Copy(std::shared_ptr<Scene> &other);
+        static DLL_API std::shared_ptr<Scene> CopyAndSetAsMain(std::shared_ptr<Scene> &other);
 
-        static DLL_API Components::Camera *EditorSceneCamera;
         Components::Camera *main_camera_object = nullptr;
         entt::registry EntityRegistry;
         std::vector<std::shared_ptr<GameObject>> GameObjects;
-        static DLL_API std::vector<std::shared_ptr<GameObject>> StaticGameObjects;
+
         std::string scene_file_path;
 
-        void SetMainCameraObject(const std::shared_ptr<GameObject> &camObject);
+        void SetMainCameraObject(const std::shared_ptr<GameObject> &camObject, bool static_registry = false);
         static DLL_API void MakeSceneCamera();
         void UpdateGameObjectComponents();
         static DLL_API void UpdateStaticGameObjectComponents();

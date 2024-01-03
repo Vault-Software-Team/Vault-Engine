@@ -16,7 +16,7 @@ namespace Engine::Components {
     }
 
     void Camera::Init() {
-        transform = &Scene::Main->EntityRegistry.get<Transform>(entity);
+        transform = static_registry ? &Scene::StaticGameObjects_EntityRegistry.get<Transform>(entity) : &Scene::Main->EntityRegistry.get<Transform>(entity);
     }
 
     void Camera::BindToShader(VaultRenderer::Shader &shader) {

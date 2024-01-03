@@ -16,6 +16,9 @@ namespace Engine {
         static DLL_API Runtime *instance;
         static DLL_API VaultRenderer::Shader *default_shader;
 
+        bool isRunning = false;
+        bool isStopped = true;
+
         Runtime(VaultRenderer::Shader *default_shader);
 
         void SetDefaultShader(VaultRenderer::Shader *default_shader);
@@ -29,5 +32,8 @@ namespace Engine {
 
         void BindShadowsToShader(VaultRenderer::Shader &shader, VaultRenderer::ShadowMap &shadow_map);
         bool Paused() const;
+
+        void Scheduling_DeleteGameObjects();
+        void Scheduling_SceneChange();
     };
 } // namespace Engine

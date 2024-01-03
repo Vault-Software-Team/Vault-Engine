@@ -7,6 +7,7 @@
 #include <Renderer/Window.hpp>
 #include <ImGuizmo/ImGuizmo.h>
 #include <Engine/SceneSerialization.hpp>
+#include <Engine/Runtime.hpp>
 
 using namespace Engine;
 using namespace Engine::Components;
@@ -14,6 +15,14 @@ using namespace VaultRenderer;
 
 namespace Editor {
     void GUI::Scene() {
+        static std::string before_serialized = "";
+
+        if (!Runtime::instance)
+            return;
+
+        bool &isStopped = Runtime::instance->isStopped;
+        bool &isRunning = Runtime::instance->isRunning;
+
         static int m_GuizmoMode = ImGuizmo::OPERATION::TRANSLATE;
         static int m_GuizmoWorld = ImGuizmo::MODE::WORLD;
         static float bounds[] = {-0.5f, -0.5f, -0.5f, 0.5f, 0.5f, 0.5f};
@@ -185,6 +194,83 @@ namespace Editor {
         }
 
         ImGui::SameLine();
+
+        if (!isRunning) {
+            ImGui::SetCursorPosX(
+                (isStopped ? (ImGui::GetWindowSize().x / 2) - ((float)32 / 2) : (ImGui::GetWindowSize().x / 2) - ((float)32 / 2) - ((float)32 / 2) - 5)
+                //
+            );
+            ImGui::SetCursorPosY(34);
+
+            ImVec4 buttonColor = ImGui::GetStyle().Colors[ImGuiCol_Button];
+            ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(buttonColor.x, buttonColor.y, buttonColor.z, 0.7f));
+            if (ImGui::Button(ICON_FA_PLAY, ImVec2(32, 32))) {
+                if (isStopped) {
+                    before_serialized = Serializer::SerializeRuntime();
+                }
+                // StartWorld(listener);
+
+                isRunning = true;
+                isStopped = false;
+
+                for (auto &go : Scene::Main->GameObjects) {
+                    if (go->HasComponent<Camera>()) {
+                        auto &camera = go->GetComponent<Camera>();
+                        if (camera.main_camera) {
+                            Scene::Main->SetMainCameraObject(go);
+                            break;
+                        }
+                    }
+                }
+            }
+            ImGui::PopStyleColor();
+        } else if (!isStopped) {
+            ImGui::SetCursorPosX((ImGui::GetWindowSize().x / 2) - ((float)32 / 2) - ((float)32 / 2) - 5);
+            ImGui::SetCursorPosY(34);
+
+            ImVec4 buttonColor = ImGui::GetStyle().Colors[ImGuiCol_Button];
+            ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(buttonColor.x, buttonColor.y, buttonColor.z, 0.7f));
+
+            if (ImGui::Button(ICON_FA_PAUSE, ImVec2(32, 32))) {
+                isRunning = false;
+                // DeleteWorld();
+            }
+
+            ImGui::PopStyleColor();
+        }
+
+        if (!isStopped) {
+            ImGui::SetCursorPosX((ImGui::GetWindowSize().x / 2) -
+                                 (32 / 2) + (32 / 2) + 5);
+            ImGui::SetCursorPosY(34);
+
+            ImVec4 buttonColor =
+                ImGui::GetStyle().Colors[ImGuiCol_Button];
+            ImGui::PushStyleColor(ImGuiCol_Button,
+                                  ImVec4(buttonColor.x, buttonColor.y,
+                                         buttonColor.z, 0.7f));
+            if (ImGui::Button(ICON_FA_STOP, ImVec2(32, 32))) {
+                if (isRunning) {
+                    // DeleteWorld();
+                }
+                isRunning = false;
+                isStopped = true;
+                GUI::selected_gameObject = nullptr;
+
+                // nlohmann json to string
+                if (before_serialized != "") {
+                    Serializer::DeserializeRuntime(before_serialized);
+                    Scene::Main->SetMainCameraObject(Scene::StaticGameObjects.back(), true);
+                }
+                // std::string stateJSON = stateScene.dump(4);
+                // if (stateJSON != "[]") {
+                //     Scene::LoadScene("", stateScene);
+                // }
+                // stateScene.clear();
+                // Scene::mainCamera = camera;
+            }
+            ImGui::PopStyleColor();
+        }
 
         ImGui::End();
         style.WindowPadding = ImVec2(8.0f, 8.0f);

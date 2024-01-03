@@ -191,7 +191,20 @@ namespace Engine {
 
         emitter << yaml::EndMap;
     }
-    void Serializer::SerializeRuntime(const std::string &path) {
+    std::string Serializer::SerializeRuntime() {
+        yaml::Emitter emitter;
+        emitter << yaml::BeginMap;
+        emitter << yaml::Key << "Scene" << yaml::Value << "Untitled";
+        emitter << yaml::Key << "GameObjects" << yaml::Value << yaml::BeginSeq;
+
+        for (auto &gameObject : Scene::Main->GameObjects) {
+            EntityToYAML(emitter, gameObject);
+        }
+
+        emitter << yaml::EndSeq;
+        emitter << yaml::EndMap;
+
+        return emitter.c_str();
     }
 
     void Serializer::YAMLToEntity(yaml::Node &data, std::shared_ptr<GameObject> &gameObject) {
@@ -296,7 +309,37 @@ namespace Engine {
             YAMLToEntity(go, gameObject);
         }
     }
-    void Serializer::DeserializeRuntime(const std::string &path) {
+    void Serializer::DeserializeRuntime(const std::string &content) {
+        using namespace Components;
+        Scene::Main->GameObjects.clear();
+
+        yaml::Node data = yaml::Load(content);
+        if (!data["Scene"]) {
+            std::cout << "Invalid Scene File!\n";
+            return;
+        }
+        std::string sceneName = data["Scene"].as<std::string>();
+
+        auto gameObjects = data["GameObjects"];
+
+        if (!gameObjects)
+            return;
+
+        for (auto entity : gameObjects) {
+            auto go = entity["GameObject"];
+
+            auto m_ID = go["ID"].as<std::string>();
+            auto m_name = go["name"].as<std::string>();
+            auto m_tag = go["tag"].as<std::string>();
+            auto m_parent = go["parent"].as<std::string>();
+
+            auto gameObject = GameObject::New(m_name, m_tag);
+            gameObject->ID = m_ID;
+            gameObject->parent = m_parent;
+            gameObject->GetComponent<Transform>().ID = m_ID;
+
+            YAMLToEntity(go, gameObject);
+        }
     }
 
     void Serializer::SerializeMaterial(const std::string &path, VaultRenderer::Material &material) {

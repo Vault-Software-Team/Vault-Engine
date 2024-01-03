@@ -10,6 +10,7 @@ namespace Engine {
 
     Runtime::Runtime(VaultRenderer::Shader *default_shader) {
         Runtime::default_shader = default_shader;
+        instance = this;
     }
 
     void Runtime::SetDefaultShader(VaultRenderer::Shader *default_shader) {
