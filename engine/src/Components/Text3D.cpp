@@ -7,8 +7,10 @@
 
 namespace Engine::Components {
     void Text3D::Draw(VaultRenderer::Shader &shader) {
-        transform->UpdateModel();
-        font->Draw(shader, transform->model, text, color, glm::vec3(0, 0, 0), 0, 0, scale, y_offset);
+        if (font) {
+            transform->UpdateModel();
+            font->Draw(shader, transform->model, text, color, glm::vec3(0, 0, 0), 0, 0, scale, y_offset);
+        }
     }
 
     void Text3D::ChangeFont(const std::string &font_path) {
@@ -26,6 +28,16 @@ namespace Engine::Components {
             ImGui::DragFloat("Scale", &scale, 0.001f);
             ImGui::DragFloat("Y Offset", &y_offset, 0.01f);
             ImGui::ColorEdit3("Color", &color.x);
+            if (font) {
+                ImGui::Text("Font: %s", font->font_path.c_str());
+            } else {
+                ImGui::Text("Drag a Font File here");
+            }
+            if (ImGui::BeginDragDropTarget()) {
+                if (const ImGuiPayload *payload = ImGui::AcceptDragDropPayload("font_file")) {
+                    ChangeFont((char *)payload->Data);
+                }
+            }
             // ImGui::ColorEdit3("Color", &color.x);
 
             ImVec2 winSize = ImGui::GetWindowSize();

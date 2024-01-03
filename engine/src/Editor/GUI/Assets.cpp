@@ -33,7 +33,7 @@ void DirectoryIterator(const std::string &str, const char *filter_str) {
             std::string icon = ICON_FA_CUBE;
             std::string name = dir.path().filename();
 
-            if (name.ends_with(".ttf")) {
+            if (name.ends_with(".ttf") || name.ends_with(".otf")) {
                 icon = ICON_FA_FONT;
             }
             if (name.ends_with(".png") || name.ends_with(".tiff") || name.ends_with(".jpg") || name.ends_with(".jpeg")) {
@@ -49,7 +49,13 @@ void DirectoryIterator(const std::string &str, const char *filter_str) {
             bool pressed = ImGui::Selectable((icon + " " + dir.path().filename().string()).c_str());
             if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None)) {
                 Editor::GUI::dragPayload = fs::absolute(dir.path()).string();
-                ImGui::SetDragDropPayload("material", dir.path().string().c_str(), dir.path().string().length() + 1);
+                if (name.ends_with(".material")) {
+                    ImGui::SetDragDropPayload("material", dir.path().string().c_str(), dir.path().string().length() + 1);
+                } else if (name.ends_with(".ttf") || name.ends_with(".otf")) {
+                    ImGui::SetDragDropPayload("font_file", dir.path().string().c_str(), dir.path().string().length() + 1);
+                } else if (name.ends_with(".png") || name.ends_with(".tiff") || name.ends_with(".jpg") || name.ends_with(".jpeg")) {
+                    ImGui::SetDragDropPayload("image_file", dir.path().string().c_str(), dir.path().string().length() + 1);
+                }
                 ImGui::Text("%s %s", icon.c_str(), dir.path().filename().string().c_str());
                 ImGui::EndDragDropSource();
             }

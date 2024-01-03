@@ -36,7 +36,7 @@ namespace Editor {
                 MaterialInspector_material.diffuse = nullptr;
             }
             if (ImGui::BeginDragDropTarget()) {
-                if (const ImGuiPayload *payload = ImGui::AcceptDragDropPayload("material")) {
+                if (const ImGuiPayload *payload = ImGui::AcceptDragDropPayload("image_file")) {
                     std::string path = (char *)payload->Data;
                     std::cout << path << "\n";
                     MaterialInspector_material.SetDiffuse(path);
@@ -51,7 +51,7 @@ namespace Editor {
                 MaterialInspector_material.specular = nullptr;
             }
             if (ImGui::BeginDragDropTarget()) {
-                if (const ImGuiPayload *payload = ImGui::AcceptDragDropPayload("material")) {
+                if (const ImGuiPayload *payload = ImGui::AcceptDragDropPayload("image_file")) {
                     std::string path = (char *)payload->Data;
                     MaterialInspector_material.SetSpecular(path);
                 }
@@ -65,7 +65,7 @@ namespace Editor {
                 MaterialInspector_material.normal = nullptr;
             }
             if (ImGui::BeginDragDropTarget()) {
-                if (const ImGuiPayload *payload = ImGui::AcceptDragDropPayload("material")) {
+                if (const ImGuiPayload *payload = ImGui::AcceptDragDropPayload("image_file")) {
                     std::string path = (char *)payload->Data;
                     MaterialInspector_material.SetNormal(path);
                 }
@@ -79,7 +79,7 @@ namespace Editor {
                 MaterialInspector_material.height = nullptr;
             }
             if (ImGui::BeginDragDropTarget()) {
-                if (const ImGuiPayload *payload = ImGui::AcceptDragDropPayload("material")) {
+                if (const ImGuiPayload *payload = ImGui::AcceptDragDropPayload("image_file")) {
                     std::string path = (char *)payload->Data;
                     MaterialInspector_material.SetHeight(path);
                 }
