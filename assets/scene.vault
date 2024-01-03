@@ -20,11 +20,11 @@ GameObjects:
       tag: Default
       parent: NO_PARENT
       Transform:
-        position: [0, 0, 0]
+        position: [0, 0.922977567, 1.68919277]
         rotation: [0, 0, 0]
         scale: [1, 1, 1]
       PointLight:
-        intensity: 1
+        intensity: 1.29999995
         color: [1, 1, 1]
         enable_shadow_mapping: true
       MeshRenderer:
@@ -35,21 +35,12 @@ GameObjects:
       tag: Default
       parent: NO_PARENT
       Transform:
-        position: [0, 0, 0]
+        position: [-1.05065644, 0.146159738, 0]
         rotation: [0, 0, 0]
         scale: [1, 1, 1]
       Text3D:
-        text: Hello, World!
-        font_path: ../assets/fonts/OpenSans-Bold.ttf
+        text: Vault Engine
+        font_path: ../assets/fonts/VCR_OSD_MONO_1.001.ttf
         color: [1, 1, 1]
-        scale: 0.0199999996
+        scale: 0.00999999978
         y_offset: 1
-  - GameObject:
-      ID: a944b84e-b371-4ed1-9664-421165e9009c
-      name: Cunt
-      tag: Default
-      parent: 1785cbff-7c83-4382-9d29-f69a145e3724
-      Transform:
-        position: [0, 0, 0]
-        rotation: [0, 0, 0]
-        scale: [1, 1, 1]

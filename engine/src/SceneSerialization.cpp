@@ -65,7 +65,7 @@ namespace Engine {
         return out;
     }
 
-    void Serializer::Serialize(std::unique_ptr<Scene> &scene, const std::string &path) {
+    void Serializer::Serialize(std::shared_ptr<Scene> &scene, const std::string &path) {
         yaml::Emitter emitter;
         emitter << yaml::BeginMap;
         emitter << yaml::Key << "Scene" << yaml::Value << "Untitled";
@@ -265,6 +265,8 @@ namespace Engine {
         std::ifstream stream(path);
         std::stringstream ss;
         ss << stream.rdbuf();
+
+        Scene::Main->scene_file_path = path;
 
         yaml::Node data = yaml::Load(ss.str());
         if (!data["Scene"]) {

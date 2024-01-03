@@ -37,7 +37,6 @@ namespace Engine {
 
         GameObject(const std::string &name, const std::string &tag = "Default");
         ~GameObject() {
-            std::cout << "ermm deleting\n";
             Scene::Main->EntityRegistry.destroy(entity);
         }
 

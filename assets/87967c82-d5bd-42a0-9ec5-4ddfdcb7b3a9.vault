@@ -1,0 +1,22 @@
+Scene: Untitled
+GameObjects:
+  - GameObject:
+      ID: d3f20ebd-4dd8-409a-8e2e-3241c4a35600
+      name: Model
+      tag: Default
+      parent: NO_PARENT
+      Transform:
+        position: [0, 0, 0]
+        rotation: [0, 0, 0]
+        scale: [1, 1, 1]
+  - GameObject:
+      ID: 0f15b3c4-4b2b-4757-8c24-9fcd00630f51
+      name: Sphere_Sphere.001
+      tag: Default
+      parent: d3f20ebd-4dd8-409a-8e2e-3241c4a35600
+      Transform:
+        position: [0, 0, 0]
+        rotation: [0, 0, 0]
+        scale: [1, 1, 1]
+      MeshRenderer:
+        mesh_type: 3

@@ -10,7 +10,7 @@ namespace Engine {
     public:
         inline static std::string scheduled_scene_path = "";
 
-        static void Serialize(std::unique_ptr<Scene> &scene, const std::string &path);
+        static void Serialize(std::shared_ptr<Scene> &scene, const std::string &path);
         static void SerializeRuntime(const std::string &path);
         static void EntityToYAML(yaml::Emitter &emitter, std::shared_ptr<GameObject> &gameObject);
         static void YAMLToEntity(yaml::Node &data, std::shared_ptr<GameObject> &gameObject);

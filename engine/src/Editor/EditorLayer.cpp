@@ -16,6 +16,8 @@ namespace Editor {
     }
 
     void EditorLayer::GUI() {
+        GUI::MenuBar();
+
         GUI::Hierarchy();
         GUI::Assets();
         GUI::Console();

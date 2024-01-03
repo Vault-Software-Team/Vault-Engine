@@ -186,7 +186,6 @@ namespace Engine {
                 ++it;
         }
         // Destroy the entity from the EnTT Registry
-        Scene::Main->EntityRegistry.destroy(entity);
         // Remove the GameObject from GameObjects
         Scene::Main->GameObjects.erase(std::remove(Scene::Main->GameObjects.begin(), Scene::Main->GameObjects.end(), sharedPtr), Scene::Main->GameObjects.end());
     }

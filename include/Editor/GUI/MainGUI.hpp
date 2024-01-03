@@ -33,6 +33,7 @@ namespace Editor {
         static DLL_API void LogError(const std::string &content);
         static DLL_API void LogWarning(const std::string &content);
 
+        static DLL_API void MenuBar(); // AKA the top bar you see on applications
         static DLL_API void SetNameIcon(std::string &txt, Engine::GameObject *gameObject);
         static DLL_API void Hierarchy();
         static DLL_API void Assets();
