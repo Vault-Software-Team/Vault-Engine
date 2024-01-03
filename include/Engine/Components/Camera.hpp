@@ -7,10 +7,8 @@
 namespace Engine {
     namespace Components {
         struct DLL_API Camera : Base {
-        private:
-            bool first_click;
-
         public:
+            bool first_click;
             Transform *transform;
             void Init();
             Camera() = default;

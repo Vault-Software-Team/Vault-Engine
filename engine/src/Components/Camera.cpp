@@ -66,6 +66,11 @@ namespace Engine::Components {
         }
 
         // Mouse Input
+        if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_RELEASE) {
+            glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+            first_click = true;
+        }
+
         if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS) {
             glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 
@@ -91,11 +96,6 @@ namespace Engine::Components {
             transform->rotation = glm::rotate(transform->rotation, glm::radians(-rotation_y), up);
 
             glfwSetCursorPos(window, (float)width / 2, (float)height / 2);
-        }
-
-        if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_RELEASE) {
-            glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-            first_click = true;
         }
     }
 

@@ -6,6 +6,7 @@
 #include <icons/icons.h>
 #include <Renderer/Framebuffer.hpp>
 #include <Renderer/Bloom.hpp>
+#include <ImGuizmo/ImGuizmo.h>
 
 namespace VaultRenderer {
     DLL_API Window *Window::window;
@@ -100,6 +101,8 @@ namespace VaultRenderer {
             ImGui_ImplOpenGL3_NewFrame();
             ImGui_ImplGlfw_NewFrame();
             ImGui::NewFrame();
+            ImGuizmo::BeginFrame();
+
             // ImGui::DockSpaceOverViewport(ImGui::GetMainViewport(), ImGuiDockNodeFlags_PassthruCentralNode);
 
             gui_call();
