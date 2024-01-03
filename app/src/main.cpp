@@ -17,6 +17,8 @@
 #include <Editor/GUI/MainGUI.hpp>
 #include <Engine/Batch.hpp>
 #include <Engine/SceneSerialization.hpp>
+#include <dlfcn.h>
+#include <script_test.hpp>
 
 static VaultRenderer::Shader *default_shader;
 
@@ -61,6 +63,11 @@ void OnGUI(uint32_t smID) {
 using namespace Editor;
 int main() {
     using namespace VaultRenderer;
+
+    // dlsym test
+    // Script *(*create_obj)() = (Script * (*)()) dlsym(dlopen("../sandbox/script.so", RTLD_LAZY), "create_script");
+    // Script *script = create_obj();
+    // script->Start();
 
     Window window(1280, 720, "Vault Engine");
     Statistics::SetStats();
@@ -133,7 +140,6 @@ int main() {
     // Serializer::DeserializeMaterial("../assets/main.material", GameObject::FindGameObjectByName("My GameObject")->GetComponent<MeshRenderer>().mesh->material);
     // sceneSerializer.Serialize("../assets/scene.vault");
 
-    // auto new_scene = Scene::Copy(scene);
     // Scene::SetMainScene(new_scene);
     // Scene::MakeSceneCamera();
     // Scene::Main->SetMainCameraObject(Scene::StaticGameObjects.back());

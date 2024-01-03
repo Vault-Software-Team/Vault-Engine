@@ -127,17 +127,28 @@ namespace Engine {
         // Scene::SetEditorScene(other);
         // Scene::SetMainScene(new_scene);
 
-        auto &source_reg = other->EntityRegistry;
+        auto &source_reg = Scene::Main->EntityRegistry;
         auto &destination_reg = new_scene->EntityRegistry;
 
         auto view = source_reg.view<Transform>();
         for (auto e : view) {
-            auto &gameObject = other->FindGameObjectByEntity(e);
-            auto &new_gameObject = new_scene->MakeGameObject(gameObject->name, gameObject->tag);
+            GameObject *gameObject = nullptr;
+            for (auto pGameObject : Scene::Main->GameObjects) {
+                if (pGameObject->entity == e) {
+                    gameObject = pGameObject.get();
+                    break;
+                }
+            }
+            if (gameObject == nullptr)
+                continue;
+
+            // auto &new_gameObject = new_scene->MakeGameObject(gameObject->name, gameObject->tag);
+            new_scene->GameObjects.push_back(std::make_shared<GameObject>(destination_reg, gameObject->name, gameObject->tag));
+            auto &new_gameObject = new_scene->GameObjects.back();
             new_gameObject->ID = gameObject->ID;
             new_gameObject->parent = gameObject->parent;
 
-            auto &transform = destination_reg.get<Transform>(e);
+            auto &transform = new_gameObject->GetComponent<Transform>(destination_reg);
             transform.ID = new_gameObject->ID;
         }
 

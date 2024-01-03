@@ -36,6 +36,7 @@ namespace Engine {
         std::string parent = "NO_PARENT";
 
         GameObject(const std::string &name, const std::string &tag = "Default");
+        GameObject(entt::registry &registry, const std::string &name, const std::string &tag = "Default");
         ~GameObject() {
             Scene::Main->EntityRegistry.destroy(entity);
         }
@@ -82,6 +83,45 @@ namespace Engine {
         template <typename T>
         void RemoveComponent() {
             Scene::Main->EntityRegistry.remove<T>(entity);
+        }
+
+        template <typename T, typename... Args>
+        T &AddComponent(entt::registry &registry, Args &&...args) {
+            if (!HasComponent<T>(registry) && registry.valid(entity)) {
+                T &component = registry.emplace<T>(
+                    entity, std::forward<Args>(args)...);
+
+                auto &comp = GetComponent<T>();
+                comp.entity = entity;
+                comp.ID = ID;
+                comp.Init();
+
+                return comp;
+            }
+        }
+
+        template <typename T>
+        T &GetComponent(entt::registry &registry) {
+            if (HasComponent<T>(registry)) {
+                return registry.get<T>(entity);
+            } else {
+                T comp;
+                return comp;
+            }
+        }
+
+        template <typename T>
+        bool HasComponent(entt::registry &registry) {
+            // if (registry.valid(entity)) {
+            return registry.all_of<T>(entity);
+            // }
+
+            return false;
+        }
+
+        template <typename T>
+        void RemoveComponent(entt::registry &registry) {
+            registry.remove<T>(entity);
         }
 
         void UNSAFE_DeleteGameObject();

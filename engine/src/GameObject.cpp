@@ -26,6 +26,12 @@ namespace Engine {
         ID = uuid::generate_uuid_v4();
     }
 
+    GameObject::GameObject(entt::registry &registry, const std::string &name, const std::string &tag) {
+        entity = registry.create();
+        AddComponent<Components::Transform>(registry);
+        ID = uuid::generate_uuid_v4();
+    }
+
     void GameObject::UpdateComponents(VaultRenderer::Shader &shader) {
         using namespace Components;
         if (HasComponent<MeshRenderer>()) {
