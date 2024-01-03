@@ -45,6 +45,9 @@ void DirectoryIterator(const std::string &str, const char *filter_str) {
             if (name.ends_with(".mtl") || name.ends_with(".material")) {
                 icon = ICON_FA_PAINT_ROLLER;
             }
+            if (name.ends_with(".vault")) {
+                icon = ICON_FA_CUBES_STACKED;
+            }
 
             bool pressed = ImGui::Selectable((icon + " " + dir.path().filename().string()).c_str());
             if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None)) {
@@ -55,6 +58,8 @@ void DirectoryIterator(const std::string &str, const char *filter_str) {
                     ImGui::SetDragDropPayload("font_file", dir.path().string().c_str(), dir.path().string().length() + 1);
                 } else if (name.ends_with(".png") || name.ends_with(".tiff") || name.ends_with(".jpg") || name.ends_with(".jpeg")) {
                     ImGui::SetDragDropPayload("image_file", dir.path().string().c_str(), dir.path().string().length() + 1);
+                } else if (name.ends_with(".vault")) {
+                    ImGui::SetDragDropPayload("scene_file", dir.path().string().c_str(), dir.path().string().length() + 1);
                 }
                 ImGui::Text("%s %s", icon.c_str(), dir.path().filename().string().c_str());
                 ImGui::EndDragDropSource();

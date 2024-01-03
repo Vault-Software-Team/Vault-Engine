@@ -166,7 +166,12 @@ int main() {
 
         // Update all the GameObjects components
         runtime.UpdateGameObjects(window); //
-    },
+
+        // Scheduling
+        if(Serializer::scheduled_scene_path != "") {
+            Serializer::Deserialize(Serializer::scheduled_scene_path);
+            Serializer::scheduled_scene_path = "";
+        } },
                [&] {
                    ImGui::DockSpaceOverViewport(ImGui::GetMainViewport(), ImGuiDockNodeFlags_PassthruCentralNode);
                    editor.GUI();

@@ -3,6 +3,7 @@
 #include <string>
 #include <entt/entt.hpp>
 #include <Engine/Scene.hpp>
+#include <iostream>
 #ifdef __EMSCRIPTEN__
 #include <emscripten.h>
 #define GL_GLEXT_PROTOTYPES
@@ -35,6 +36,10 @@ namespace Engine {
         std::string parent = "NO_PARENT";
 
         GameObject(const std::string &name, const std::string &tag = "Default");
+        ~GameObject() {
+            std::cout << "ermm deleting\n";
+            Scene::Main->EntityRegistry.destroy(entity);
+        }
 
         void UpdateComponents(VaultRenderer::Shader &shader);
         void SetParent(std::shared_ptr<GameObject> &parent);

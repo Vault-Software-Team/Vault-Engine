@@ -8,6 +8,8 @@ namespace yaml = YAML;
 namespace Engine {
     class Serializer {
     public:
+        inline static std::string scheduled_scene_path = "";
+
         static void Serialize(std::unique_ptr<Scene> &scene, const std::string &path);
         static void SerializeRuntime(const std::string &path);
         static void EntityToYAML(yaml::Emitter &emitter, std::shared_ptr<GameObject> &gameObject);

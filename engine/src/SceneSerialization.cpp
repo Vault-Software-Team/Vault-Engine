@@ -261,6 +261,7 @@ namespace Engine {
 
     void Serializer::Deserialize(const std::string &path) {
         using namespace Components;
+        Scene::Main->GameObjects.clear();
         std::ifstream stream(path);
         std::stringstream ss;
         ss << stream.rdbuf();

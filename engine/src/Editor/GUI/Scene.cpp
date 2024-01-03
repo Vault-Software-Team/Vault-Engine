@@ -6,6 +6,7 @@
 #include <imgui/imgui.h>
 #include <Renderer/Window.hpp>
 #include <ImGuizmo/ImGuizmo.h>
+#include <Engine/SceneSerialization.hpp>
 
 using namespace Engine;
 using namespace Engine::Components;
@@ -29,6 +30,12 @@ namespace Editor {
         }
 
         ImGui::Image((void *)framebufferTextureID, size, ImVec2(0, 1), ImVec2(1, 0));
+        if (ImGui::BeginDragDropTarget()) {
+            if (const ImGuiPayload *payload = ImGui::AcceptDragDropPayload("scene_file")) {
+                GUI::selected_gameObject = nullptr;
+                Serializer::scheduled_scene_path = (char *)payload->Data;
+            }
+        }
         if (ImGui::IsWindowHovered()) {
             if (glfwGetMouseButton(Window::window->GetGLFWWindow(), GLFW_MOUSE_BUTTON_RIGHT) == GLFW_RELEASE) {
                 glfwSetInputMode(Window::window->GetGLFWWindow(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
