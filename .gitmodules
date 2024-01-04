@@ -7,3 +7,6 @@
 [submodule "external/yaml-cpp"]
 	path = external/yaml-cpp
 	url = https://github.com/jbeder/yaml-cpp
+[submodule "external/box2d"]
+	path = external/box2d
+	url = https://github.com/tobanteGaming/Box2D-cmake.git
