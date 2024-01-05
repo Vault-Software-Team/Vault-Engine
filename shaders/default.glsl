@@ -5,6 +5,8 @@ layout(location = 1) in vec2 vTextureUV;
 layout(location = 2) in vec3 vNormal;
 layout(location = 3) in vec3 tangent;
 layout(location = 4) in vec3 bitangent;
+layout(location = 5) in ivec4 boneIds; 
+layout(location = 6) in vec4 weights;
 
 out DATA
 {
@@ -27,10 +29,31 @@ uniform mat4 transformModel;
 uniform mat4 camera_view;
 uniform mat4 camera_projection;
 uniform mat4 light_proj;
-
+const int MAX_BONES = 100;
+const int MAX_BONE_INFLUENCE = 4;
+uniform mat4 finalBonesMatrices[MAX_BONES];
+	
+out vec2 TexCoords;
+	
 void main()
 {
-    data_out.current_position = vec3(transformModel * vec4(vPosition.x, vPosition.y, vPosition.z, 1.0));
+    // vec4 totalPosition = vec4(0.0f);
+    // vec3 totalNormal = vec3(0.0f);
+    // for(int i = 0 ; i < MAX_BONE_INFLUENCE ; i++)
+    // {
+    //     if(boneIds[i] == -1) 
+    //         continue;
+    //     if(boneIds[i] >=MAX_BONES) 
+    //     {
+    //         totalPosition = vec4(vPosition,1.0f);
+    //         break;
+    //     }
+    //     vec4 localPosition = finalBonesMatrices[boneIds[i]] * vec4(vPosition,1.0f);
+    //     totalPosition += localPosition * weights[i];
+    //     totalNormal += mat3(finalBonesMatrices[boneIds[i]]) * vNormal;
+    // }
+		
+    data_out.current_position = vec3(transformModel * vec4(vPosition, 1));
     gl_Position = vec4(data_out.current_position, 1.0);
     // Set data_out
     data_out.model = transformModel;

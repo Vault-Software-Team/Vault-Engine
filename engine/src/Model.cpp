@@ -125,16 +125,232 @@ namespace Engine {
             } else {
                 boneID = m_BoneInfoMap[boneName].id;
             }
-            assert(boneID != -1);
+
             auto weights = mesh->mBones[boneIndex]->mWeights;
             int numWeights = mesh->mBones[boneIndex]->mNumWeights;
 
             for (int weightIndex = 0; weightIndex < numWeights; ++weightIndex) {
                 int vertexId = weights[weightIndex].mVertexId;
                 float weight = weights[weightIndex].mWeight;
-                assert(vertexId <= vertices.size());
+
                 SetVertexBoneData(vertices[vertexId], boneID, weight);
             }
         }
     }
+
+    // -- BONE START
+    Bone::Bone(const std::string &name, int ID, const aiNodeAnim *channel) : name(name), id(ID), local_transform(1.0f) {
+        numPos = channel->mNumPositionKeys;
+
+        for (int positionIndex = 0; positionIndex < numPos; ++positionIndex) {
+            aiVector3D aiPosition = channel->mPositionKeys[positionIndex].mValue;
+            float timeStamp = channel->mPositionKeys[positionIndex].mTime;
+            KeyframePos data;
+            data.position = AssimpGLMHelpers::GetGLMVec(aiPosition);
+            data.timeStamp = timeStamp;
+            positions.push_back(data);
+        }
+
+        numRots = channel->mNumRotationKeys;
+        for (int rotationIndex = 0; rotationIndex < numRots; ++rotationIndex) {
+            aiQuaternion aiOrientation = channel->mRotationKeys[rotationIndex].mValue;
+            float timeStamp = channel->mRotationKeys[rotationIndex].mTime;
+            KeyframeRot data;
+            data.orientation = AssimpGLMHelpers::GetGLMQuat(aiOrientation);
+            data.timeStamp = timeStamp;
+            rotations.push_back(data);
+        }
+
+        numScales = channel->mNumScalingKeys;
+        for (int keyIndex = 0; keyIndex < numScales; ++keyIndex) {
+            aiVector3D scale = channel->mScalingKeys[keyIndex].mValue;
+            float timeStamp = channel->mScalingKeys[keyIndex].mTime;
+            KeyframeScale data;
+            data.scale = AssimpGLMHelpers::GetGLMVec(scale);
+            data.timeStamp = timeStamp;
+            scales.push_back(data);
+        }
+    }
+
+    int Bone::GetPositionIndex(float anim_time) {
+        for (int index = 0; index < numPos - 1; ++index) {
+            if (anim_time < positions[index + 1].timeStamp)
+                return index;
+        }
+        return 0;
+    }
+
+    int Bone::GetRotationIndex(float anim_time) {
+        for (int index = 0; index < numRots - 1; ++index) {
+            if (anim_time < rotations[index + 1].timeStamp)
+                return index;
+        }
+        return 0;
+    }
+
+    int Bone::GetScaleIndex(float anim_time) {
+        for (int index = 0; index < numScales - 1; ++index) {
+            if (anim_time < scales[index + 1].timeStamp)
+                return index;
+        }
+        return 0;
+    }
+
+    float Bone::scale_factor(float last, float next, float anim_time) {
+        float factor = 0.0f;
+        float midway = anim_time - last;
+        float diff = next - last;
+        factor = midway / diff;
+        return factor;
+    }
+
+    glm::mat4 Bone::InterPos(float anim_time) {
+        if (numPos == 1)
+            return glm::translate(glm::mat4(1.0f), positions[0].position);
+
+        int pos0 = GetPositionIndex(anim_time);
+        int pos1 = pos0 + 1;
+
+        float scaleFactor = scale_factor(positions[pos0].timeStamp, positions[pos1].timeStamp, anim_time);
+        glm::vec3 final = glm::mix(positions[pos0].position, positions[pos1].position, scaleFactor);
+
+        return glm::translate(glm::mat4(1.0f), final);
+    }
+
+    glm::mat4 Bone::InterRot(float anim_time) {
+        if (numRots == 1) {
+            return glm::toMat4(glm::normalize(rotations[0].orientation));
+        }
+
+        int rot0 = GetRotationIndex(anim_time);
+        int rot1 = rot0 + 1;
+
+        float factor = scale_factor(rotations[rot0].timeStamp, rotations[rot1].timeStamp, anim_time);
+        glm::quat final = glm::slerp(rotations[rot0].orientation, rotations[rot1].orientation, factor);
+
+        final = glm::normalize(final);
+        return glm::toMat4(final);
+    }
+
+    glm::mat4 Bone::InterScal(float anim_time) {
+        if (numScales == 1)
+            return glm::scale(glm::mat4(1.0f), scales[0].scale);
+
+        int scale0 = GetScaleIndex(anim_time);
+        int scale1 = scale0 + 1;
+
+        float factor = scale_factor(scales[scale0].timeStamp, scales[scale1].timeStamp, anim_time);
+        glm::vec3 final = glm::mix(scales[scale0].scale, scales[scale1].scale, factor);
+
+        return glm::scale(glm::mat4(1.0f), final);
+    }
+    // -- BONE END
+
+    // -- ANIMATION BEGIN
+    void Animation::ReadMissingBones(const aiAnimation *animation, Model &model) {
+        int size = animation->mNumChannels;
+
+        auto &modelBoneMap = model.GetBoneInfoMap();
+        int &count = model.GetBoneCount();
+
+        for (int i = 0; i < size; i++) {
+            auto channel = animation->mChannels[i];
+            std::string boneName = channel->mNodeName.data;
+
+            if (modelBoneMap.find(boneName) == modelBoneMap.end()) {
+                modelBoneMap[boneName].id = count;
+                count++;
+            }
+
+            bones.push_back(Bone(channel->mNodeName.data, modelBoneMap[channel->mNodeName.data].id, channel));
+        }
+
+        bonemap = modelBoneMap;
+    }
+
+    void Animation::ReadHeirarchyData(AssimpNodeData &dest, const aiNode *src) {
+        dest.name = src->mName.data;
+        dest.transformation = AssimpGLMHelpers::ConvertMatrixToGLMFormat(src->mTransformation);
+        dest.childrenCount = src->mNumChildren;
+
+        for (int i = 0; i < src->mNumChildren; i++) {
+            AssimpNodeData newData;
+            ReadHeirarchyData(newData, src->mChildren[i]);
+            dest.children.push_back(newData);
+        }
+    }
+
+    Bone *Animation::FindBone(const std::string &name) {
+        auto iter = std::find_if(bones.begin(), bones.end(), [&](const Bone &Bone) { return Bone.GetName() == name; });
+        return iter == bones.end() ? nullptr : &(*iter);
+    }
+
+    Animation::Animation(const std::string &animationPath, Model *model) {
+        Assimp::Importer importer;
+        const aiScene *scene = importer.ReadFile(animationPath, aiProcess_Triangulate);
+        assert(scene && scene->mRootNode);
+        auto animation = scene->mAnimations[0];
+        duration = animation->mDuration;
+        ticks_per_sec = animation->mTicksPerSecond;
+        ReadHeirarchyData(root_node, scene->mRootNode);
+        ReadMissingBones(animation, *model);
+    }
+    Animation::~Animation() {}
+    // -- ANIMATION END
+
+    // -- ANIMATOR BEGIN
+    Animator::Animator(Animation *anim) {
+        curr_time = 0.0;
+        curr_anim = anim;
+
+        finalBoneMatrices.reserve(100);
+
+        for (int i = 0; i < 100; i++) {
+            finalBoneMatrices.push_back(glm::mat4(1.0f));
+        }
+    }
+
+    void Animator::UpdateAnimation(float dt) {
+        timestep = dt;
+        if (curr_anim) {
+            curr_time += curr_anim->GetTicksPerSecond() * dt;
+            curr_time = fmod(curr_time, curr_anim->GetDuration());
+            CalculateBoneTransform(&curr_anim->GetRootNode(), glm::mat4(1.0f));
+        }
+    }
+
+    void Animator::PlayAnimation(Animation *anim) {
+        curr_anim = anim;
+        curr_time = 0.0f;
+    }
+
+    void Animator::CalculateBoneTransform(const AssimpNodeData *node, const glm::mat4 &parent) {
+        std::string nodeName = node->name;
+        glm::mat4 nodeTransform = node->transformation;
+
+        Bone *Bone = curr_anim->FindBone(nodeName);
+
+        if (Bone) {
+            Bone->Update(curr_time);
+            nodeTransform = Bone->GetLocalTransform();
+        }
+
+        glm::mat4 globalTransformation = parent * nodeTransform;
+
+        auto boneInfoMap = curr_anim->GetIDMap();
+        if (boneInfoMap.find(nodeName) != boneInfoMap.end()) {
+            int index = boneInfoMap[nodeName].id;
+            glm::mat4 offset = boneInfoMap[nodeName].offset;
+            finalBoneMatrices[index] = globalTransformation * offset;
+        }
+
+        for (int i = 0; i < node->childrenCount; i++) {
+            CalculateBoneTransform(&node->children[i], globalTransformation);
+        }
+    }
+
+    std::vector<glm::mat4> Animator::GetFinalBoneMatrices() {
+        return finalBoneMatrices;
+    }
+
 } // namespace Engine

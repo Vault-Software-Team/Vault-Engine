@@ -8,7 +8,8 @@ add_subdirectory(api)
 add_subdirectory(app)
 add_subdirectory(engine)
 add_subdirectory(external/box2d)
-add_subdirectory(external/freetype)
+add_subdirectory(vendor/imgui)
+add_subdirectory(vendor/ImGuizmo)
 if (NOT EMSCRIPTEN)
 add_subdirectory(external/glfw)
 else()
@@ -26,6 +27,10 @@ endif()
 
 add_subdirectory(external/assimp)
 add_subdirectory(external/yaml-cpp)
+
+if(WIN32)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -static-libgcc -static-libstdc++")
+endif()
 
 # file(GLOB SRC_FILES
 #     "include/*.hpp"

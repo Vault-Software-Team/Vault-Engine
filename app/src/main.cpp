@@ -144,7 +144,9 @@ int main() {
     // Scene::MakeSceneCamera();
     // Scene::Main->SetMainCameraObject(Scene::StaticGameObjects.back());
 
-    Model model("../assets/Dancing Twerk.fbx");
+    // Model model("../assets/dancing_vampie.dae");
+    // Animation danceAnimation("../assets/dancing_vampie.dae", &model);
+    // Animator animator(&danceAnimation);
 
     auto Function_GUI = [&] {
         ImGui::DockSpaceOverViewport(ImGui::GetMainViewport(), ImGuiDockNodeFlags_PassthruCentralNode);
@@ -190,8 +192,12 @@ int main() {
     runtime_function()
     gui_function()
     */
-
+    float timestep = 0;
     window.Run([&] {
+        static double lastTime = 0;
+        double now = glfwGetTime();
+        timestep = now - lastTime;
+        lastTime = now;
         // Update the Main Camera of a scene
         runtime.UpdateMainCamera(window);
         // Reset the Statistic Draw Calls
@@ -199,6 +205,8 @@ int main() {
 
         // Set the background color to RED
         window.SetClearColor(0xFF0000);
+
+        // animator.UpdateAnimation(timestep);
 
         // Render the skybox
         if (Scene::Main->main_camera_object) {
@@ -216,6 +224,11 @@ int main() {
         Scene::Main->main_camera_object->BindToShader(*Font::font_shader);
 
         // Update all the GameObjects components
+        // shader.Bind();
+        // auto transforms = animator.GetFinalBoneMatrices();
+        // for (int i = 0; i < transforms.size(); ++i)
+        // shader.SetUniformMat4(("finalBonesMatrices[" + std::to_string(i) + "]").c_str(), transforms[i]);
+
         runtime.UpdateGameObjects(window); //
 
         // Scheduling

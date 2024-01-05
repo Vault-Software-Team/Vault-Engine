@@ -4,10 +4,10 @@
 #include <sstream>
 
 namespace uuid {
-    static DLL_API std::random_device rd;
-    static DLL_API std::mt19937 gen(rd());
-    static DLL_API std::uniform_int_distribution<> dis(0, 15);
-    static DLL_API std::uniform_int_distribution<> dis2(8, 11);
+    static inline std::random_device rd;
+    static inline std::mt19937 gen(rd());
+    static inline std::uniform_int_distribution<> dis(0, 15);
+    static inline std::uniform_int_distribution<> dis2(8, 11);
 
     inline std::string generate_uuid_v4() {
         std::stringstream ss;

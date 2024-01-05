@@ -3,49 +3,43 @@
 #include <iostream>
 #include <Renderer/Window.hpp>
 
-float skyboxVertices[] =
-    {
-        //   Coordinates
-        -1.0f, -1.0f, 1.0f,  //        7--------6
-        1.0f, -1.0f, 1.0f,   //       /|       /|
-        1.0f, -1.0f, -1.0f,  //      4--------5 |
-        -1.0f, -1.0f, -1.0f, //      | |      | |
-        -1.0f, 1.0f, 1.0f,   //      | 3------|-2
-        1.0f, 1.0f, 1.0f,    //      |/       |/
-        1.0f, 1.0f, -1.0f,   //      0--------1
-        -1.0f, 1.0f, -1.0f};
+float skyboxVertices[] = {
+    //   Coordinates
+    -1.0f, -1.0f, 1.0f,
+    1.0f, -1.0f, 1.0f,
+    1.0f, -1.0f, -1.0f,
+    -1.0f, -1.0f, -1.0f,
+    -1.0f, 1.0f, 1.0f,
+    1.0f, 1.0f, 1.0f,
+    1.0f, 1.0f, -1.0f,
+    -1.0f, 1.0f, -1.0f //
+};
 
-unsigned int skyboxIndices[] =
-    {
-        // Right
-        1, 2, 6,
-        6, 5, 1,
-        // Left
-        0, 4, 7,
-        7, 3, 0,
-        // Top
-        4, 5, 6,
-        6, 7, 4,
-        // Bottom
-        0, 3, 2,
-        2, 1, 0,
-        // Back
-        0, 1, 5,
-        5, 4, 0,
-        // Front
-        3, 7, 6,
-        6, 2, 3};
+unsigned int skyboxIndices[] = {
+    // Right
+    1, 2, 6, 6, 5, 1,
+    // Left
+    0, 4, 7, 7, 3, 0,
+    // Top
+    4, 5, 6, 6, 7, 4,
+    // Bottom
+    0, 3, 2, 2, 1, 0,
+    // Back
+    0, 1, 5, 5, 4, 0,
+    // Front
+    3, 7, 6, 6, 2, 3 //
+};
 
 namespace VaultRenderer {
     Skybox::Skybox() {
-        std::string facesCubemap[6] =
-            {
-                "../assets/skybox/right.jpg",
-                "../assets/skybox/left.jpg",
-                "../assets/skybox/top.jpg",
-                "../assets/skybox/bottom.jpg",
-                "../assets/skybox/front.jpg",
-                "../assets/skybox/back.jpg"};
+        std::string facesCubemap[6] = {
+            "../assets/skybox/right.jpg",
+            "../assets/skybox/left.jpg",
+            "../assets/skybox/top.jpg",
+            "../assets/skybox/bottom.jpg",
+            "../assets/skybox/front.jpg",
+            "../assets/skybox/back.jpg" //
+        };
 
         glGenVertexArrays(1, &skyboxVAO);
         glGenBuffers(1, &skyboxVBO);

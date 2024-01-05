@@ -31,7 +31,7 @@ void DirectoryIterator(const std::string &str, const char *filter_str) {
             if (dir_filename.find(filterStr) == std::string::npos && filterStr != "")
                 continue;
             std::string icon = ICON_FA_CUBE;
-            std::string name = dir.path().filename();
+            std::string name = dir.path().filename().string();
 
             if (name.ends_with(".ttf") || name.ends_with(".otf")) {
                 icon = ICON_FA_FONT;
@@ -66,10 +66,10 @@ void DirectoryIterator(const std::string &str, const char *filter_str) {
             }
 
             if ((name.ends_with(".mtl") || name.ends_with(".material")) && (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(0))) {
-                Editor::GUI::MaterialInspector_material_path = dir.path().relative_path();
+                Editor::GUI::MaterialInspector_material_path = dir.path().relative_path().string();
                 Editor::GUI::isMaterialInspectorOpen = true;
 
-                Serializer::DeserializeMaterial(dir.path().relative_path(), Editor::GUI::MaterialInspector_material);
+                Serializer::DeserializeMaterial(dir.path().relative_path().string(), Editor::GUI::MaterialInspector_material);
             }
         }
     }
