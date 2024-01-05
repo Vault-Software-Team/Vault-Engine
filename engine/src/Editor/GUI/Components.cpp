@@ -10,104 +10,48 @@ using namespace Engine;
 using namespace Engine::Components;
 // ICON_FA_SHARE_NODES " Components"
 
+template <typename T>
+void CallComponentGUI(GameObject *gameObject) {
+    if (gameObject->HasComponent<T>()) {
+        gameObject->GetComponent<T>().OnGUI();
+    }
+}
+
 void ComponentGUI(GameObject *gameObject) {
-    if (gameObject->HasComponent<Transform>()) {
-        gameObject->GetComponent<Transform>().OnGUI();
-    }
+    CallComponentGUI<Transform>(gameObject);
+    CallComponentGUI<AmbientLight>(gameObject);
+    CallComponentGUI<DirectionalLight>(gameObject);
+    CallComponentGUI<MeshRenderer>(gameObject);
+    CallComponentGUI<Rigidbody2D>(gameObject);
+    CallComponentGUI<BoxCollider2D>(gameObject);
+    CallComponentGUI<PointLight>(gameObject);
+    CallComponentGUI<SpotLight>(gameObject);
+    CallComponentGUI<Text3D>(gameObject);
+    CallComponentGUI<Camera>(gameObject);
+}
 
-    if (gameObject->HasComponent<AmbientLight>()) {
-        gameObject->GetComponent<AmbientLight>().OnGUI();
-    }
+template <typename T>
+void DisplayAddComponentButton(GameObject *gameObject) {
+    if (ImGui::Button(T::display_name.c_str(), ImVec2(200, 0))) {
+        if (!gameObject->HasComponent<T>()) {
+            gameObject->AddComponent<T>();
+        }
 
-    if (gameObject->HasComponent<DirectionalLight>()) {
-        gameObject->GetComponent<DirectionalLight>().OnGUI();
-    }
-
-    if (gameObject->HasComponent<MeshRenderer>()) {
-        gameObject->GetComponent<MeshRenderer>().OnGUI();
-    }
-
-    if (gameObject->HasComponent<PointLight>()) {
-        gameObject->GetComponent<PointLight>().OnGUI();
-    }
-
-    if (gameObject->HasComponent<SpotLight>()) {
-        gameObject->GetComponent<SpotLight>().OnGUI();
-    }
-
-    if (gameObject->HasComponent<Text3D>()) {
-        gameObject->GetComponent<Text3D>().OnGUI();
-    }
-
-    if (gameObject->HasComponent<Camera>()) {
-        gameObject->GetComponent<Camera>().OnGUI();
+        ImGui::CloseCurrentPopup();
     }
 }
 
 void AddComponentsGUIPopup(GameObject *gameObject) {
-    if (ImGui::Button("Transform", ImVec2(200, 0))) {
-        if (!gameObject->HasComponent<Transform>()) {
-            gameObject->AddComponent<Transform>();
-        }
-
-        ImGui::CloseCurrentPopup();
-    }
-
-    if (ImGui::Button("Ambient Light", ImVec2(200, 0))) {
-        if (!gameObject->HasComponent<AmbientLight>()) {
-            gameObject->AddComponent<AmbientLight>();
-        }
-
-        ImGui::CloseCurrentPopup();
-    }
-
-    if (ImGui::Button("Directional Light", ImVec2(200, 0))) {
-        if (!gameObject->HasComponent<DirectionalLight>()) {
-            gameObject->AddComponent<DirectionalLight>();
-        }
-
-        ImGui::CloseCurrentPopup();
-    }
-
-    if (ImGui::Button("Mesh Renderer", ImVec2(200, 0))) {
-        if (!gameObject->HasComponent<MeshRenderer>()) {
-            gameObject->AddComponent<MeshRenderer>();
-        }
-
-        ImGui::CloseCurrentPopup();
-    }
-
-    if (ImGui::Button("Point Light", ImVec2(200, 0))) {
-        if (!gameObject->HasComponent<PointLight>()) {
-            gameObject->AddComponent<PointLight>();
-        }
-
-        ImGui::CloseCurrentPopup();
-    }
-
-    if (ImGui::Button("Spot Light", ImVec2(200, 0))) {
-        if (!gameObject->HasComponent<SpotLight>()) {
-            gameObject->AddComponent<SpotLight>();
-        }
-
-        ImGui::CloseCurrentPopup();
-    }
-
-    if (ImGui::Button("Text 3D", ImVec2(200, 0))) {
-        if (!gameObject->HasComponent<Text3D>()) {
-            gameObject->AddComponent<Text3D>();
-        }
-
-        ImGui::CloseCurrentPopup();
-    }
-
-    if (ImGui::Button("Camera", ImVec2(200, 0))) {
-        if (!gameObject->HasComponent<Camera>()) {
-            gameObject->AddComponent<Camera>();
-        }
-
-        ImGui::CloseCurrentPopup();
-    }
+    DisplayAddComponentButton<Transform>(gameObject);
+    DisplayAddComponentButton<AmbientLight>(gameObject);
+    DisplayAddComponentButton<DirectionalLight>(gameObject);
+    DisplayAddComponentButton<MeshRenderer>(gameObject);
+    DisplayAddComponentButton<Rigidbody2D>(gameObject);
+    DisplayAddComponentButton<BoxCollider2D>(gameObject);
+    DisplayAddComponentButton<PointLight>(gameObject);
+    DisplayAddComponentButton<SpotLight>(gameObject);
+    DisplayAddComponentButton<Text3D>(gameObject);
+    DisplayAddComponentButton<Camera>(gameObject);
 }
 
 namespace Editor {

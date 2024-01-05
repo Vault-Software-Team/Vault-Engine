@@ -9,6 +9,7 @@ namespace Engine {
     namespace Components {
         struct DLL_API AmbientLight : Base {
             AmbientLight() = default;
+            static inline const std::string display_name = "Ambient Light";
             glm::vec3 color = glm::vec3(1, 1, 1);
             float amount = 0.2f;
             void OnGUI() override;

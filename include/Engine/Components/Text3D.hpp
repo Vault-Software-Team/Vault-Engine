@@ -11,6 +11,7 @@
 namespace Engine {
     namespace Components {
         struct DLL_API Text3D : Base {
+            static inline const std::string display_name = "Text 3D";
             std::shared_ptr<VaultRenderer::Font> font = nullptr;
             Transform *transform = nullptr;
 

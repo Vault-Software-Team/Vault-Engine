@@ -8,3 +8,5 @@
 #include "DirectionalLight.hpp"
 #include "SpotLight.hpp"
 #include "Text3D.hpp"
+#include "Rigidbody2D.hpp"
+#include "BoxCollider2D.hpp"

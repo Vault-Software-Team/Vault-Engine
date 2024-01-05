@@ -6,6 +6,7 @@
 #include <memory>
 #include "Texture.hpp"
 
+#define MAX_BONE_INFLUENCE 4
 namespace VaultRenderer {
     class DLL_API Material {
     public:
@@ -24,7 +25,6 @@ namespace VaultRenderer {
 
         void BindToShader(Shader &shader);
     };
-
     struct DLL_API Vertex {
         glm::vec3 position;
         glm::vec2 texUV = glm::vec2(0, 0);
@@ -32,7 +32,13 @@ namespace VaultRenderer {
         glm::vec3 tangent = glm::vec3(0, 0, 0);
         glm::vec3 bitangent = glm::vec3(0, 0, 0);
         uint32_t EntityID;
-        int modelIndex;
+        // int modelIndex;
+        int m_BoneIDs[MAX_BONE_INFLUENCE];
+        float m_Weights[MAX_BONE_INFLUENCE];
+    };
+    struct BoneInfo {
+        int id;
+        glm::mat4 offset;
     };
 
     class DLL_API Mesh {

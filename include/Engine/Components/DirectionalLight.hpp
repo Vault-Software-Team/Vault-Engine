@@ -9,6 +9,7 @@
 namespace Engine {
     namespace Components {
         struct DLL_API DirectionalLight : Base {
+            static inline const std::string display_name = "Directional Light";
             Transform *transform;
 
             DirectionalLight() = default;

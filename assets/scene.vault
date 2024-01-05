@@ -29,6 +29,16 @@ GameObjects:
         enable_shadow_mapping: true
       MeshRenderer:
         mesh_type: 1
+      Rigidbody2D:
+        body_type: 2
+        gravity_scale: 1
+      BoxCollider2D:
+        density: 1
+        friction: 1
+        restitution: 0
+        trigger: false
+        offset: [0, 0]
+        size: [0.5, 0.5]
   - GameObject:
       ID: 1785cbff-7c83-4382-9d29-f69a145e3724
       name: Text

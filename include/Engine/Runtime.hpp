@@ -18,6 +18,7 @@ namespace Engine {
 
         bool isRunning = false;
         bool isStopped = true;
+        float timestep = 0;
 
         Runtime(VaultRenderer::Shader *default_shader);
 

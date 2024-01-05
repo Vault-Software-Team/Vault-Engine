@@ -22,7 +22,7 @@ namespace Engine {
 
         for (auto &vertex : mesh->vertices) {
             vertex.EntityID = (uint32_t)entity;
-            vertex.modelIndex = mesh_max_index;
+            // vertex.modelIndex = mesh_max_index;
         }
         entities.push_back(entity);
         vertices.insert(vertices.end(), mesh->vertices.begin(), mesh->vertices.end());
@@ -70,8 +70,8 @@ namespace Engine {
         glVertexAttribPointer(5, 1, GL_UNSIGNED_INT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, EntityID));
         glEnableVertexAttribArray(5);
 
-        glVertexAttribPointer(6, 1, GL_INT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, modelIndex));
-        glEnableVertexAttribArray(6);
+        // glVertexAttribPointer(6, 1, GL_INT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, modelIndex));
+        // glEnableVertexAttribArray(6);
 
         // EBO Setup
 
@@ -87,7 +87,7 @@ namespace Engine {
     void Batch::AddMesh(entt::entity entity, std::unique_ptr<VaultRenderer::Mesh> &mesh) {
         for (auto &vertex : mesh->vertices) {
             vertex.EntityID = (uint32_t)entity;
-            vertex.modelIndex = mesh_max_index;
+            // vertex.modelIndex = mesh_max_index;
         }
         entities.push_back(entity);
         vertices.insert(vertices.end(), mesh->vertices.begin(), mesh->vertices.end());

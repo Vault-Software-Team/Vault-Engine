@@ -9,6 +9,7 @@
 namespace Engine {
     namespace Components {
         struct DLL_API SpotLight : Base {
+            static inline const std::string display_name = "Spot Light";
             Transform *transform;
 
             SpotLight() = default;

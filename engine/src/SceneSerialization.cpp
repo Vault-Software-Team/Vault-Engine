@@ -6,6 +6,26 @@
 
 namespace YAML {
     template <>
+    struct convert<glm::vec2> {
+        static Node encode(const glm::vec2 &rhs) {
+            Node node;
+            node.push_back(rhs.x);
+            node.push_back(rhs.y);
+            return node;
+        }
+
+        static bool decode(const Node &node, glm::vec2 &rhs) {
+            if (!node.IsSequence() || node.size() != 2)
+                return false;
+
+            rhs.x = node[0].as<float>();
+            rhs.y = node[1].as<float>();
+
+            return true;
+        }
+    };
+
+    template <>
     struct convert<glm::vec3> {
         static Node encode(const glm::vec3 &rhs) {
             Node node;
@@ -53,6 +73,12 @@ namespace YAML {
 } // namespace YAML
 
 namespace Engine {
+    yaml::Emitter &operator<<(yaml::Emitter &out, const glm::vec2 &vec) {
+        out << yaml::Flow;
+        out << yaml::BeginSeq << vec.x << vec.y << yaml::EndSeq;
+        return out;
+    }
+
     yaml::Emitter &operator<<(yaml::Emitter &out, const glm::vec3 &vec) {
         out << yaml::Flow;
         out << yaml::BeginSeq << vec.x << vec.y << vec.z << yaml::EndSeq;
@@ -187,6 +213,32 @@ namespace Engine {
             emitter << yaml::EndMap;
         }
 
+        if (gameObject->HasComponent<Rigidbody2D>()) {
+            emitter << yaml::Key << "Rigidbody2D";
+            emitter << yaml::BeginMap;
+
+            auto &component = gameObject->GetComponent<Rigidbody2D>();
+            emitter << yaml::Key << "body_type" << yaml::Value << (int)component.body_type;
+            emitter << yaml::Key << "gravity_scale" << yaml::Value << component.gravity_scale;
+
+            emitter << yaml::EndMap;
+        }
+
+        if (gameObject->HasComponent<BoxCollider2D>()) {
+            emitter << yaml::Key << "BoxCollider2D";
+            emitter << yaml::BeginMap;
+
+            auto &component = gameObject->GetComponent<BoxCollider2D>();
+            emitter << yaml::Key << "density" << yaml::Value << component.density;
+            emitter << yaml::Key << "friction" << yaml::Value << component.friction;
+            emitter << yaml::Key << "restitution" << yaml::Value << component.restitution;
+            emitter << yaml::Key << "trigger" << yaml::Value << component.trigger;
+            emitter << yaml::Key << "offset" << yaml::Value << component.offset;
+            emitter << yaml::Key << "size" << yaml::Value << component.size;
+
+            emitter << yaml::EndMap;
+        }
+
         emitter << YAML::EndMap;
 
         emitter << yaml::EndMap;
@@ -269,6 +321,25 @@ namespace Engine {
             component.near = data["Camera"]["near"].as<float>();
             component.far = data["Camera"]["far"].as<float>();
             component.main_camera = data["Camera"]["main_camera"].as<bool>();
+        }
+
+        if (data["Rigidbody2D"]) {
+            gameObject->AddComponent<Rigidbody2D>();
+            auto &component = gameObject->GetComponent<Rigidbody2D>();
+            component.body_type = (Rigidbody2D::BodyType)data["Rigidbody2D"]["body_type"].as<int>();
+            std::cout << "b2r pass now";
+            component.gravity_scale = data["Rigidbody2D"]["gravity_scale"].as<float>();
+        }
+        if (data["BoxCollider2D"]) {
+            std::cout << "b2 pass now";
+            gameObject->AddComponent<BoxCollider2D>();
+            auto &component = gameObject->GetComponent<BoxCollider2D>();
+            component.density = data["BoxCollider2D"]["density"].as<float>();
+            component.friction = data["BoxCollider2D"]["friction"].as<float>();
+            component.restitution = data["BoxCollider2D"]["restitution"].as<float>();
+            component.offset = data["BoxCollider2D"]["offset"].as<glm::vec2>();
+            component.size = data["BoxCollider2D"]["size"].as<glm::vec2>();
+            component.trigger = data["BoxCollider2D"]["trigger"].as<bool>();
         }
     }
 

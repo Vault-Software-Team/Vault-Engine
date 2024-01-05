@@ -9,6 +9,7 @@
 namespace Engine {
     namespace Components {
         struct DLL_API PointLight : Base {
+            static inline const std::string display_name = "Point Light";
             uint32_t shadowMapFBO;
             uint32_t cubemap;
             Transform *transform;

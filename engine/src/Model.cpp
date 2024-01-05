@@ -44,6 +44,7 @@ namespace Engine {
 
         for (uint32_t i = 0; i < mesh->mNumVertices; i++) {
             VaultRenderer::Vertex vertex;
+            SetVertexBoneDataToDefault(vertex);
             vertex.position.x = mesh->mVertices[i].x;
             vertex.position.y = mesh->mVertices[i].y;
             vertex.position.z = mesh->mVertices[i].z;
@@ -68,8 +69,11 @@ namespace Engine {
             }
         }
 
+        ExtractBoneWeightForVertices(vertices, mesh, scene);
+
         using namespace Engine::Components;
-        auto &pChild = parent->AddChild(mesh->mName.C_Str());
+        auto &pChild = GameObject::New(parent->name);
+        pChild->parent = parent->ID;
         std::cout << pChild->name << "\n";
         pChild->AddComponent<MeshRenderer>();
 
@@ -87,5 +91,50 @@ namespace Engine {
     }
 
     std::vector<VaultRenderer::Texture> Model::loadMaterialTextures(aiMaterial *mat, aiTextureType type, const std::string &typeName) {
+    }
+
+    void Model::SetVertexBoneDataToDefault(VaultRenderer::Vertex &vertex) {
+        for (int i = 0; i < MAX_BONE_INFLUENCE; i++) {
+            vertex.m_BoneIDs[i] = -1;
+            vertex.m_Weights[i] = 0.0f;
+        }
+    }
+
+    void Model::SetVertexBoneData(VaultRenderer::Vertex &vertex, int boneID, float weight) {
+        for (int i = 0; i < MAX_BONE_INFLUENCE; ++i) {
+            if (vertex.m_BoneIDs[i] < 0) {
+                vertex.m_Weights[i] = weight;
+                vertex.m_BoneIDs[i] = boneID;
+                break;
+            }
+        }
+    }
+
+    void Model::ExtractBoneWeightForVertices(std::vector<VaultRenderer::Vertex> &vertices, aiMesh *mesh, const aiScene *scene) {
+        for (int boneIndex = 0; boneIndex < mesh->mNumBones; ++boneIndex) {
+            int boneID = -1;
+            std::string boneName = mesh->mBones[boneIndex]->mName.C_Str();
+            if (m_BoneInfoMap.find(boneName) == m_BoneInfoMap.end()) {
+                VaultRenderer::BoneInfo newBoneInfo;
+                newBoneInfo.id = m_BoneCounter;
+                newBoneInfo.offset = AssimpGLMHelpers::ConvertMatrixToGLMFormat(mesh->mBones[boneIndex]->mOffsetMatrix);
+
+                m_BoneInfoMap[boneName] = newBoneInfo;
+                boneID = m_BoneCounter;
+                m_BoneCounter++;
+            } else {
+                boneID = m_BoneInfoMap[boneName].id;
+            }
+            assert(boneID != -1);
+            auto weights = mesh->mBones[boneIndex]->mWeights;
+            int numWeights = mesh->mBones[boneIndex]->mNumWeights;
+
+            for (int weightIndex = 0; weightIndex < numWeights; ++weightIndex) {
+                int vertexId = weights[weightIndex].mVertexId;
+                float weight = weights[weightIndex].mWeight;
+                assert(vertexId <= vertices.size());
+                SetVertexBoneData(vertices[vertexId], boneID, weight);
+            }
+        }
     }
 } // namespace Engine

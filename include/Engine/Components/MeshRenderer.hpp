@@ -17,6 +17,7 @@ namespace Engine {
         };
 
         struct DLL_API MeshRenderer : Base {
+            static inline const std::string display_name = "Mesh Renderer";
             MeshType mesh_type = MESH_NONE;
             std::shared_ptr<VaultRenderer::Mesh> mesh = nullptr;
 

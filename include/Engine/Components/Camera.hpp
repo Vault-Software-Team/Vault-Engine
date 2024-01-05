@@ -8,6 +8,8 @@ namespace Engine {
     namespace Components {
         struct DLL_API Camera : Base {
         public:
+            static inline const std::string display_name = "Camera";
+
             bool first_click;
             Transform *transform;
             void Init();

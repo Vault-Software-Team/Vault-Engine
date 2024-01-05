@@ -7,6 +7,8 @@ include_directories(${CMAKE_SOURCE_DIR}/vendor)
 add_subdirectory(api)
 add_subdirectory(app)
 add_subdirectory(engine)
+add_subdirectory(external/box2d)
+add_subdirectory(external/freetype)
 if (NOT EMSCRIPTEN)
 add_subdirectory(external/glfw)
 else()
@@ -21,6 +23,7 @@ else()
         PROPERTIES SUFFIX ".html"
         LINK_FLAGS " --bind -s WASM=0 -s MIN_WEBGL_VERSION=1 -s ABORT_ON_WASM_EXCEPTIONS=1 -g2 -s USE_GLFW=3")
 endif()
+
 add_subdirectory(external/assimp)
 add_subdirectory(external/yaml-cpp)
 

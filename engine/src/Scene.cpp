@@ -163,6 +163,8 @@ namespace Engine {
         CopyComponent<DirectionalLight>(destination_reg, source_reg);
         CopyComponent<SpotLight>(destination_reg, source_reg);
         CopyComponent<Text3D>(destination_reg, source_reg);
+        CopyComponent<BoxCollider2D>(destination_reg, source_reg);
+        CopyComponent<Rigidbody2D>(destination_reg, source_reg);
 
         return new_scene;
     }
@@ -172,5 +174,73 @@ namespace Engine {
         Scene::SetMainScene(new_scene);
         Scene::Main->SetMainCameraObject(Scene::StaticGameObjects.back(), true);
         return new_scene;
+    }
+    void Scene::Setup2DPhysicsWorld() {
+        Physics2DWorld = std::make_unique<b2World>((b2Vec2){0, -9.8});
+
+        auto view = EntityRegistry.view<Components::Rigidbody2D>();
+
+        for (auto e : view) {
+            auto &transform = EntityRegistry.get<Components::Transform>(e);
+            auto &rigidbody = EntityRegistry.get<Components::Rigidbody2D>(e);
+
+            b2BodyDef def;
+            def.type = (b2BodyType)rigidbody.body_type;
+            def.position.Set(transform.position.x, transform.position.y);
+            def.angle = transform.rotation.z;
+
+            b2Body *body = Physics2DWorld->CreateBody(&def);
+            body->SetFixedRotation(rigidbody.fixed_rotation);
+            body->SetGravityScale(rigidbody.gravity_scale);
+            rigidbody.m_RuntimeBody = body;
+
+            if (EntityRegistry.all_of<Components::BoxCollider2D>(e)) {
+                auto &collider = EntityRegistry.get<Components::BoxCollider2D>(e);
+
+                b2PolygonShape shape;
+                shape.SetAsBox(collider.size.x * transform.scale.x, collider.size.y * transform.scale.y);
+
+                b2FixtureDef fixture_def;
+                fixture_def.shape = &shape;
+                fixture_def.density = collider.density;
+                fixture_def.restitution = collider.restitution;
+                fixture_def.friction = collider.friction;
+                fixture_def.isSensor = collider.trigger;
+                body->CreateFixture(&fixture_def);
+            }
+        }
+    }
+
+    void Scene::Step2DPhysicsWorld(const float ts) {
+        const int32_t velocity_iter = 6;
+        const int32_t pos_iter = 2;
+        if (!Physics2DWorld)
+            return;
+
+        Physics2DWorld->Step(ts, velocity_iter, pos_iter);
+
+        auto view = EntityRegistry.view<Components::Rigidbody2D>();
+        for (auto e : view) {
+            auto &transform = EntityRegistry.get<Components::Transform>(e);
+            auto &rigidbody = EntityRegistry.get<Components::Rigidbody2D>(e);
+
+            b2Body *body = (b2Body *)rigidbody.m_RuntimeBody;
+            const b2Vec2 &pos = body->GetPosition();
+            transform.position.x = pos.x;
+            transform.position.y = pos.y;
+            transform.rotation.z = body->GetAngle();
+        }
+    }
+
+    void Scene::OnRuntimeStart() {
+        Setup2DPhysicsWorld();
+    }
+
+    void Scene::OnRuntimeStop() {
+        Physics2DWorld.reset();
+    }
+
+    void Scene::OnRuntimeUpdate(const float ts) {
+        Step2DPhysicsWorld(ts);
     }
 } // namespace Engine

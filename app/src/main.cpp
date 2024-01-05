@@ -17,7 +17,7 @@
 #include <Editor/GUI/MainGUI.hpp>
 #include <Engine/Batch.hpp>
 #include <Engine/SceneSerialization.hpp>
-#include <dlfcn.h>
+// #include <dlfcn.h>
 #include <script_test.hpp>
 
 static VaultRenderer::Shader *default_shader;
@@ -144,7 +144,7 @@ int main() {
     // Scene::MakeSceneCamera();
     // Scene::Main->SetMainCameraObject(Scene::StaticGameObjects.back());
 
-    Model model("../assets/sphere.obj");
+    Model model("../assets/Dancing Twerk.fbx");
 
     auto Function_GUI = [&] {
         ImGui::DockSpaceOverViewport(ImGui::GetMainViewport(), ImGuiDockNodeFlags_PassthruCentralNode);

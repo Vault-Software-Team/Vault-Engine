@@ -212,6 +212,7 @@ namespace Editor {
 
                 isRunning = true;
                 isStopped = false;
+                Scene::Main->OnRuntimeStart();
 
                 for (auto &go : Scene::Main->GameObjects) {
                     if (go->HasComponent<Camera>()) {
@@ -262,6 +263,9 @@ namespace Editor {
                     Serializer::DeserializeRuntime(before_serialized);
                     Scene::Main->SetMainCameraObject(Scene::StaticGameObjects.back(), true);
                 }
+
+                Scene::Main->OnRuntimeStop();
+
                 // std::string stateJSON = stateScene.dump(4);
                 // if (stateJSON != "[]") {
                 //     Scene::LoadScene("", stateScene);

@@ -18,6 +18,11 @@ namespace Engine {
     }
 
     void Runtime::UpdateGameObjects(Window &window) {
+        static double lastTime = 0;
+        double now = glfwGetTime();
+        timestep = now - lastTime;
+        lastTime = now;
+
         // glfwGetWindowSize(VaultRenderer::Window::window->GetGLFWWindow(), &width, &height);
         // glViewport(0, 0, width, height);
         // UpdateMainCamera(window);
@@ -26,8 +31,10 @@ namespace Engine {
             return;
         if (Scene::Main == nullptr)
             return;
+
         default_shader->Bind();
         SetGlobalUniforms();
+        Scene::Main->OnRuntimeUpdate(timestep);
         Scene::Main->UpdateGameObjectComponents();
         Scene::UpdateStaticGameObjectComponents();
         glDisable(GL_BLEND);
