@@ -318,11 +318,11 @@ void main()
         total_color = vec4(texture(texture_diffuse.tex, texUV).rgb * baseColor.rgb * ambient_amount, 1);
     }
     
-    if(texture_diffuse.defined) {
-        total_color.a = texture(texture_diffuse.tex, texUV).a * baseColor.a;
-    } else {
-        total_color.a = baseColor.a;
-    }
+    // if(texture_diffuse.defined) {
+    //     total_color.a = texture(texture_diffuse.tex, texUV).a * baseColor.a;
+    // } else {
+    //     total_color.a = baseColor.a;
+    // }
     // PointLight light;
     // light.position = vec3(1.0, 0.3, 1);
     // light.color = vec3(1,1,1);
@@ -330,10 +330,7 @@ void main()
     // total_color += vec4(point_light(light), 1.0f);
 
     FragColor = total_color;
-    FragColor.a = 1;
-
-    float brightness = dot(FragColor.rgb, vec3(0.2126, 0.7152, 0.0722));
-    
+    FragColor.a = 1;    
 } 
 #shader geometry
 #version 330 core

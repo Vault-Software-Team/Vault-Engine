@@ -144,8 +144,8 @@ int main() {
     // Scene::MakeSceneCamera();
     // Scene::Main->SetMainCameraObject(Scene::StaticGameObjects.back());
 
-    // Model model("../assets/dancing_vampie.dae");
-    // Animation danceAnimation("../assets/dancing_vampie.dae", &model);
+    // Model model("../assets/anim.fbx");
+    // Animation danceAnimation("../assets/anim.fbx", &model);
     // Animator animator(&danceAnimation);
 
     auto Function_GUI = [&] {

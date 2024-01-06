@@ -1,6 +1,7 @@
 #include <Engine/Components/MeshRenderer.hpp>
 #include <Editor/GUI/MainGUI.hpp>
 #include <icons/icons.h>
+#include <Engine/SceneSerialization.hpp>
 
 namespace Engine::Components {
     void MeshRenderer::SetMeshType(const MeshType &a_mesh_type) {
@@ -69,9 +70,13 @@ namespace Engine::Components {
         }
 
         default: {
-            break;
+            return;
         }
         }
+
+        if (material_path == "")
+            return;
+        Serializer::DeserializeMaterial(material_path, mesh->material);
     }
 
     void MeshRenderer::SetCustomMeshType(std::vector<VaultRenderer::Vertex> &vertices, std::vector<uint32_t> &indices) {
@@ -120,6 +125,16 @@ namespace Engine::Components {
                 break;
             }
 
+            ImGui::Button(material_path == "" ? "Drag Material File" : material_path.c_str());
+            if (ImGui::BeginDragDropTarget()) {
+                if (const ImGuiPayload *payload = ImGui::AcceptDragDropPayload("material")) {
+                    std::string path = (char *)payload->Data;
+                    material_path = path;
+                    if (mesh)
+                        Serializer::DeserializeMaterial(path, mesh->material);
+                }
+            }
+
             ImVec2 winSize = ImGui::GetWindowSize();
             if (ImGui::Button(ICON_FA_TRASH " Delete", ImVec2(winSize.x - 50, 0))) {
                 GameObject::FindGameObjectByEntity(entity)->RemoveComponent<MeshRenderer>();
@@ -127,5 +142,11 @@ namespace Engine::Components {
 
             ImGui::TreePop();
         }
+    }
+
+    void MeshRenderer::LoadMaterial(const std::string &path) {
+        material_path = path;
+        if (mesh)
+            Serializer::DeserializeMaterial(path, mesh->material);
     }
 } // namespace Engine::Components

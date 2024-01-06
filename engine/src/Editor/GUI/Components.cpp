@@ -22,6 +22,7 @@ void ComponentGUI(GameObject *gameObject) {
     CallComponentGUI<AmbientLight>(gameObject);
     CallComponentGUI<DirectionalLight>(gameObject);
     CallComponentGUI<MeshRenderer>(gameObject);
+    CallComponentGUI<SpriteRenderer>(gameObject);
     CallComponentGUI<Rigidbody2D>(gameObject);
     CallComponentGUI<BoxCollider2D>(gameObject);
     CallComponentGUI<PointLight>(gameObject);
@@ -46,6 +47,7 @@ void AddComponentsGUIPopup(GameObject *gameObject) {
     DisplayAddComponentButton<AmbientLight>(gameObject);
     DisplayAddComponentButton<DirectionalLight>(gameObject);
     DisplayAddComponentButton<MeshRenderer>(gameObject);
+    DisplayAddComponentButton<SpriteRenderer>(gameObject);
     DisplayAddComponentButton<Rigidbody2D>(gameObject);
     DisplayAddComponentButton<BoxCollider2D>(gameObject);
     DisplayAddComponentButton<PointLight>(gameObject);

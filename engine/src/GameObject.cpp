@@ -61,6 +61,17 @@ namespace Engine {
             }
         }
 
+        if (HasComponent<SpriteRenderer>()) {
+            auto &spriteRenderer = GetComponent<SpriteRenderer>();
+            if (spriteRenderer.mesh) {
+                auto &transform = GetComponent<Transform>();
+                glDisable(GL_CULL_FACE);
+                transform.Update();
+                shader.SetUniformMat4("transformModel", transform.model);
+                spriteRenderer.Draw(shader);
+            }
+        }
+
         if (HasComponent<Text3D>()) {
             glDisable(GL_CULL_FACE);
             auto &text3D = GetComponent<Text3D>();

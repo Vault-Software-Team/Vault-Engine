@@ -196,6 +196,7 @@ namespace Engine {
 
             auto &component = gameObject->GetComponent<MeshRenderer>();
             emitter << yaml::Key << "mesh_type" << yaml::Value << component.mesh_type;
+            emitter << yaml::Key << "material_path" << yaml::Value << component.material_path;
 
             emitter << yaml::EndMap;
         }
@@ -312,6 +313,9 @@ namespace Engine {
         if (data["MeshRenderer"]) {
             gameObject->AddComponent<MeshRenderer>();
             auto &component = gameObject->GetComponent<MeshRenderer>();
+            if (data["MeshRenderer"]["material_path"]) {
+                component.material_path = data["MeshRenderer"]["material_path"].as<std::string>();
+            }
             component.SetMeshType((MeshType)data["MeshRenderer"]["mesh_type"].as<int>());
         }
         if (data["Camera"]) {
@@ -327,11 +331,9 @@ namespace Engine {
             gameObject->AddComponent<Rigidbody2D>();
             auto &component = gameObject->GetComponent<Rigidbody2D>();
             component.body_type = (Rigidbody2D::BodyType)data["Rigidbody2D"]["body_type"].as<int>();
-            std::cout << "b2r pass now";
             component.gravity_scale = data["Rigidbody2D"]["gravity_scale"].as<float>();
         }
         if (data["BoxCollider2D"]) {
-            std::cout << "b2 pass now";
             gameObject->AddComponent<BoxCollider2D>();
             auto &component = gameObject->GetComponent<BoxCollider2D>();
             component.density = data["BoxCollider2D"]["density"].as<float>();
@@ -435,15 +437,23 @@ namespace Engine {
 
         if (data["diffuse"].as<std::string>() != "nullptr") {
             material.SetDiffuse(data["diffuse"].as<std::string>());
+        } else {
+            material.diffuse.reset();
         }
         if (data["specular"].as<std::string>() != "nullptr") {
             material.SetSpecular(data["specular"].as<std::string>());
+        } else {
+            material.specular.reset();
         }
         if (data["normal"].as<std::string>() != "nullptr") {
             material.SetNormal(data["normal"].as<std::string>());
+        } else {
+            material.normal.reset();
         }
         if (data["height"].as<std::string>() != "nullptr") {
             material.SetHeight(data["height"].as<std::string>());
+        } else {
+            material.height.reset();
         }
     }
 } // namespace Engine

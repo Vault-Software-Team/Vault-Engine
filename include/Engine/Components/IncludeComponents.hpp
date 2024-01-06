@@ -10,3 +10,4 @@
 #include "Text3D.hpp"
 #include "Rigidbody2D.hpp"
 #include "BoxCollider2D.hpp"
+#include "SpriteRenderer.hpp"

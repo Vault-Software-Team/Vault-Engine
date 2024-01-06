@@ -20,10 +20,12 @@ namespace Engine {
             static inline const std::string display_name = "Mesh Renderer";
             MeshType mesh_type = MESH_NONE;
             std::shared_ptr<VaultRenderer::Mesh> mesh = nullptr;
+            std::string material_path = "";
 
             MeshRenderer() = default;
 
             void SetMeshType(const MeshType &a_mesh_type);
+            void LoadMaterial(const std::string &path);
             void SetCustomMeshType(std::vector<VaultRenderer::Vertex> &vertices, std::vector<uint32_t> &indices);
             void OnGUI() override;
         };
