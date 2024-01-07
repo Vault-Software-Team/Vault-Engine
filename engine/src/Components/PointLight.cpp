@@ -101,22 +101,11 @@ namespace Engine::Components {
     }
 
     void PointLight::OnGUI() {
-        if (ImGui::TreeNode("Point Light")) {
+        DrawComponent<PointLight>(Scene::Main->EntityRegistry, 40, [&] {
             ImGui::DragFloat("Intensity", &intensity, 0.01f, 0.0);
             ImGui::DragFloat("Shadow Far Plane", &shadow_far_plane, 0.1f, 0.0);
             ImGui::Checkbox("Shadows", &enable_shadow_mapping);
             ImGui::ColorEdit3("Color", &color.x);
-
-            // float intensity = 1.0f;
-            // float shadow_far_plane = 100.0f;
-            // bool enable_shadow_mapping = false
-
-            ImVec2 winSize = ImGui::GetWindowSize();
-            if (ImGui::Button(ICON_FA_TRASH " Delete", ImVec2(winSize.x - 50, 0))) {
-                GameObject::FindGameObjectByEntity(entity)->RemoveComponent<PointLight>();
-            }
-
-            ImGui::TreePop();
-        }
+        });
     }
 } // namespace Engine::Components

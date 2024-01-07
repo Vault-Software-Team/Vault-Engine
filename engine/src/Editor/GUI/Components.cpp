@@ -76,12 +76,11 @@ namespace Editor {
 
         ImGui::InputText("Name", &selected_gameObject->name);
         ImGui::InputText("Tag", &selected_gameObject->tag);
-
-        ComponentGUI(GUI::selected_gameObject);
-
         if (ImGui::Button(ICON_FA_PLUS " Add Component", ImVec2(win_size.x - 20, 0))) {
             ImGui::OpenPopup("Add Component");
         }
+
+        ComponentGUI(GUI::selected_gameObject);
 
         if (ImGui::BeginPopup("Add Component")) {
             AddComponentsGUIPopup(GUI::selected_gameObject);

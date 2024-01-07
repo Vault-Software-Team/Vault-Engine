@@ -27,7 +27,7 @@ namespace Engine::Components {
     }
 
     void SpriteRenderer::OnGUI() {
-        if (ImGui::TreeNode(display_name.c_str())) {
+        DrawComponent<SpriteRenderer>(Scene::Main->EntityRegistry, 40, [&] {
             ImGui::ColorEdit4("Color", &mesh->material.color.x);
 
             ImGui::Text("Sprite");
@@ -41,13 +41,6 @@ namespace Engine::Components {
                     mesh->material.SetDiffuse(path);
                 }
             }
-
-            ImVec2 winSize = ImGui::GetWindowSize();
-            if (ImGui::Button(ICON_FA_TRASH " Delete", ImVec2(winSize.x - 50, 0))) {
-                GameObject::FindGameObjectByEntity(entity)->RemoveComponent<SpriteRenderer>();
-            }
-
-            ImGui::TreePop();
-        }
+        });
     }
 } // namespace Engine::Components

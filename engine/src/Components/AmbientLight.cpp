@@ -18,17 +18,9 @@ namespace Engine::Components {
     }
 
     void AmbientLight::OnGUI() {
-        if (ImGui::TreeNode("Ambient Light")) {
+        DrawComponent<AmbientLight>(Scene::Main->EntityRegistry, 40, [&] {
             ImGui::DragFloat("Amount", &amount, 0.01f, 0.0);
-            // ImGui::ColorEdit3("Color", &color.x);
-
-            ImVec2 winSize = ImGui::GetWindowSize();
-            if (ImGui::Button(ICON_FA_TRASH " Delete", ImVec2(winSize.x - 50, 0))) {
-                GameObject::FindGameObjectByEntity(entity)->RemoveComponent<AmbientLight>();
-            }
-
-            ImGui::TreePop();
-        }
+        });
     }
 } // namespace Engine::Components
   // namespace Engine::Components

@@ -87,7 +87,7 @@ namespace Engine::Components {
     }
 
     void MeshRenderer::OnGUI() {
-        if (ImGui::TreeNode("Mesh Renderer")) {
+        DrawComponent<MeshRenderer>(Scene::Main->EntityRegistry, 40, [&] {
             if (ImGui::Button("Select Mesh Type"))
                 ImGui::OpenPopup("MeshRenderer_SelectMeshType");
 
@@ -134,14 +134,7 @@ namespace Engine::Components {
                         Serializer::DeserializeMaterial(path, mesh->material);
                 }
             }
-
-            ImVec2 winSize = ImGui::GetWindowSize();
-            if (ImGui::Button(ICON_FA_TRASH " Delete", ImVec2(winSize.x - 50, 0))) {
-                GameObject::FindGameObjectByEntity(entity)->RemoveComponent<MeshRenderer>();
-            }
-
-            ImGui::TreePop();
-        }
+        });
     }
 
     void MeshRenderer::LoadMaterial(const std::string &path) {

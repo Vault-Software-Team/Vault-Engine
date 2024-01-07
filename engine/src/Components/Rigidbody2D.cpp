@@ -8,7 +8,7 @@ namespace Engine::Components {
     }
 
     void Rigidbody2D::OnGUI() {
-        if (ImGui::TreeNode("Rigidbody 2D")) {
+        DrawComponent<Rigidbody2D>(Scene::Main->EntityRegistry, 40, [&] {
             const char *type_strings[] = {"Static", "Kinematic", "Dynamic"};
             const char *curr_type = type_strings[(int)body_type];
             if (ImGui::BeginCombo("Body Type", curr_type)) {
@@ -23,9 +23,7 @@ namespace Engine::Components {
                 ImGui::EndCombo();
             }
             ImGui::DragFloat("Gravity Scale", &gravity_scale);
-
-            ImGui::TreePop();
-        }
+        });
     }
 } // namespace Engine::Components
   // namespace Engine::Components

@@ -23,7 +23,7 @@ namespace Engine::Components {
     }
 
     void Text3D::OnGUI() {
-        if (ImGui::TreeNode("Text 3D")) {
+        DrawComponent<Text3D>(Scene::Main->EntityRegistry, 40, [&] {
             ImGui::InputTextMultiline("Text", &text);
             ImGui::DragFloat("Scale", &scale, 0.001f);
             ImGui::DragFloat("Y Offset", &y_offset, 0.01f);
@@ -38,14 +38,6 @@ namespace Engine::Components {
                     ChangeFont((char *)payload->Data);
                 }
             }
-            // ImGui::ColorEdit3("Color", &color.x);
-
-            ImVec2 winSize = ImGui::GetWindowSize();
-            if (ImGui::Button(ICON_FA_TRASH " Delete", ImVec2(winSize.x - 50, 0))) {
-                GameObject::FindGameObjectByEntity(entity)->RemoveComponent<Text3D>();
-            }
-
-            ImGui::TreePop();
-        }
+        });
     }
 } // namespace Engine::Components

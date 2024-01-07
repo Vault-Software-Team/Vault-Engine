@@ -50,6 +50,12 @@ void DirectoryIterator(const std::string &str, const char *filter_str) {
             }
 
             bool pressed = ImGui::Selectable((icon + " " + dir.path().filename().string()).c_str());
+            if (ImGui::IsMouseDoubleClicked(0) && ImGui::IsItemHovered()) {
+                if (name.ends_with(".vault")) {
+                    Editor::GUI::selected_gameObject = nullptr;
+                    Serializer::scheduled_scene_path = dir.path().string();
+                }
+            }
             if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None)) {
                 Editor::GUI::dragPayload = fs::absolute(dir.path()).string();
                 if (name.ends_with(".material")) {

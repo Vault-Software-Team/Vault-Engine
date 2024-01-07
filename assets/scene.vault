@@ -21,11 +21,11 @@ GameObjects:
       tag: Default
       parent: NO_PARENT
       Transform:
-        position: [0, 0.922977567, 1.68919277]
+        position: [0, 2.57611442, 3.42522907]
         rotation: [0, 0, 0]
         scale: [1, 1, 1]
-      PointLight:
-        intensity: 1.29999995
+      DirectionalLight:
+        intensity: 1
         color: [1, 1, 1]
         enable_shadow_mapping: true
       MeshRenderer:
@@ -47,9 +47,9 @@ GameObjects:
       tag: Default
       parent: NO_PARENT
       Transform:
-        position: [-1.05065644, 0.146159738, 0]
+        position: [-1.57347178, 1.03676271, 0]
         rotation: [0, 0, 0]
-        scale: [1, 1, 1]
+        scale: [1.5999999, 1.5999999, 1.5999999]
       Text3D:
         text: Vault Engine
         font_path: ../assets/fonts/VCR_OSD_MONO_1.001.ttf

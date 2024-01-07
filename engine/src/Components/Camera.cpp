@@ -100,7 +100,7 @@ namespace Engine::Components {
     }
 
     void Camera::OnGUI() {
-        if (ImGui::TreeNode("Camera")) {
+        DrawComponent<Camera>(Scene::Main->EntityRegistry, 40, [&] {
             ImGui::DragFloat("FOV", &fov, 0.1f, 0.1f);
             ImGui::DragFloat("Near", &near, 0.1f, 0.0f);
             ImGui::DragFloat("Far", &far, 0.1f, 0.0f);
@@ -117,13 +117,6 @@ namespace Engine::Components {
                     Scene::Main->main_camera_object = this;
                 }
             }
-
-            ImVec2 winSize = ImGui::GetWindowSize();
-            if (ImGui::Button(ICON_FA_TRASH " Delete", ImVec2(winSize.x - 50, 0))) {
-                GameObject::FindGameObjectByEntity(entity)->RemoveComponent<Camera>();
-            }
-
-            ImGui::TreePop();
-        }
+        });
     }
 } // namespace Engine::Components

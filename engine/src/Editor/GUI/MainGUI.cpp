@@ -25,7 +25,10 @@ namespace Editor {
         return in;
     }
 
-    void GUI::SetNameIcon(std::string &txt, Engine::GameObject *gameObject) {
+    void GUI::SetNameIcon(std::string &txt, ImVec4 &color, Engine::GameObject *gameObject) {
+        const ImVec4 UIColor{89, 114, 255, 1};
+        const ImVec4 LightColor{255, 178, 89, 1};
+
         if (gameObject->HasComponent<Camera>()) {
             txt = ICON_FA_CAMERA;
             return;
@@ -33,21 +36,25 @@ namespace Editor {
 
         if (gameObject->HasComponent<AmbientLight>()) {
             txt = ICON_FA_STAR;
+            color = LightColor;
             return;
         }
 
         if (gameObject->HasComponent<DirectionalLight>()) {
             txt = ICON_FA_SUN;
+            color = LightColor;
             return;
         }
 
         if (gameObject->HasComponent<PointLight>()) {
             txt = ICON_FA_LIGHTBULB;
+            color = LightColor;
             return;
         }
 
         if (gameObject->HasComponent<Text3D>()) {
             txt = ICON_FA_FONT;
+            color = UIColor;
             return;
         }
 

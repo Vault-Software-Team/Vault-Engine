@@ -33,13 +33,15 @@ namespace Engine::Components {
     }
 
     void Transform::OnGUI() {
-        if (ImGui::TreeNode("Transform")) {
+        DrawComponent<Transform>(Scene::Main->EntityRegistry, 40, [&] {
             Editor::GUI::DrawVec3Control("Position", position);
             rotation = glm::degrees(rotation);
             Editor::GUI::DrawVec3Control("Rotation", rotation);
             rotation = glm::radians(rotation);
             Editor::GUI::DrawVec3Control("Scale", scale);
-            ImGui::TreePop();
-        }
+
+            // Have to add this line so the next options thing on the next component will be on a correct place, quite stupid
+            ImGui::NewLine();
+        });
     }
 } // namespace Engine::Components

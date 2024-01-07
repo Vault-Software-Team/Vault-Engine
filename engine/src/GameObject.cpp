@@ -151,10 +151,17 @@ namespace Engine {
                 break;
             }
         }
-        Editor::GUI::SetNameIcon(icon, this);
+        ImVec4 color{255, 255, 255, 1};
+        Editor::GUI::SetNameIcon(icon, color, this);
+        color.x /= 255;
+        color.y /= 255;
+        color.z /= 255;
 
+        // ImGui::TextColored(color, icon.c_str());
+        // ImGui::SameLine();
+        ImGui::PushStyleColor(ImGuiCol_Text, color);
         if (hasChildren) {
-            bool tree_node_open = ImGui::TreeNode((icon + " " + name).c_str());
+            bool tree_node_open = ImGui::TreeNodeEx(ID.c_str(), ImGuiTreeNodeFlags_SpanAvailWidth, (icon + " " + name).c_str());
             GUI_ContextMenu();
             if (tree_node_open) {
                 for (auto &gameObject : Scene::Main->GameObjects) {
@@ -168,11 +175,15 @@ namespace Engine {
                 Editor::GUI::selected_gameObject = this;
             }
         } else {
-            if (ImGui::Selectable((icon + " " + name).c_str())) {
+            ImGui::PushID(ID.c_str());
+            if (ImGui::Selectable((icon + " " + name).c_str(), false, ImGuiSelectableFlags_SpanAvailWidth)) {
                 Editor::GUI::selected_gameObject = this;
             }
+
+            ImGui::PopID();
             GUI_ContextMenu();
         }
+        ImGui::PopStyleColor();
 
         if (ImGui::BeginPopup(("GameObject_" + ID).c_str())) {
             ImGui::Text("%s %s", icon.c_str(), name.c_str());
