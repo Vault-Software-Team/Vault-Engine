@@ -65,6 +65,8 @@ namespace Engine {
         if (HasComponent<ModelRenderer>()) {
             auto &modelRenderer = GetComponent<ModelRenderer>();
             if (modelRenderer.model) {
+                glEnable(GL_CULL_FACE);
+
                 GetComponent<Transform>().Update();
                 shader.Bind();
                 shader.SetUniformMat4("transformModel", GetComponent<Transform>().model);
