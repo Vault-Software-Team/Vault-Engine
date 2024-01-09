@@ -95,10 +95,12 @@ namespace Editor {
                 switch (m_GuizmoMode) {
                 case ImGuizmo::OPERATION::TRANSLATE: {
                     transform.position = translation;
+                    break;
                 }
                 case ImGuizmo::OPERATION::ROTATE: {
                     glm::vec3 deltaRot = rotation - originalRot;
                     transform.rotation += deltaRot;
+                    break;
                 }
                 case ImGuizmo::OPERATION::SCALE: {
                     transform.scale = glm::vec3(scale.x * 2, scale.y * 2, scale.z * 2);

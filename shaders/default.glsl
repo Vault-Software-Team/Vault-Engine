@@ -37,29 +37,34 @@ out vec2 TexCoords;
 	
 void main()
 {
-    // vec4 totalPosition = vec4(0.0f);
-    // vec3 totalNormal = vec3(0.0f);
-    // for(int i = 0 ; i < MAX_BONE_INFLUENCE ; i++)
-    // {
-    //     if(boneIds[i] == -1) 
-    //         continue;
-    //     if(boneIds[i] >=MAX_BONES) 
-    //     {
-    //         totalPosition = vec4(vPosition,1.0f);
-    //         break;
-    //     }
-    //     vec4 localPosition = finalBonesMatrices[boneIds[i]] * vec4(vPosition,1.0f);
-    //     totalPosition += localPosition * weights[i];
-    //     totalNormal += mat3(finalBonesMatrices[boneIds[i]]) * vNormal;
-    // }
+    vec4 totalPosition = vec4(0.0f);
+    vec3 totalNormal = vec3(0.0f);
+    for(int i = 0 ; i < MAX_BONE_INFLUENCE ; i++)
+    {
+        if(boneIds[i] == -1) 
+            continue;
+        if(boneIds[i] >=MAX_BONES) 
+        {
+            totalPosition = vec4(vPosition,1.0f);
+            break;
+        }
+        vec4 localPosition = finalBonesMatrices[boneIds[i]] * vec4(vPosition,1.0f);
+        totalPosition += localPosition * weights[i];
+        totalNormal += mat3(finalBonesMatrices[boneIds[i]]) * vNormal;
+    }
+    if(totalPosition.x == 0 && totalPosition.y == 0 && totalPosition.z == 0 && totalPosition.w == 0) {
+        totalPosition = vec4(vPosition, 1);
+        totalNormal = vNormal;
+    }
+
 		
-    data_out.current_position = vec3(transformModel * vec4(vPosition, 1));
+    data_out.current_position = vec3(transformModel * totalPosition);
     gl_Position = vec4(data_out.current_position, 1.0);
     // Set data_out
     data_out.model = transformModel;
     data_out.cameraCalcs = camera_projection * camera_view;
     data_out.texUV = vTextureUV;
-    data_out.normal = mat3(transpose(inverse(transformModel))) * vNormal;
+    data_out.normal = mat3(transpose(inverse(transformModel))) * totalNormal;
     data_out.normal = normalize(data_out.normal);
     // normal = vNormal;
     // model = transformModel;
@@ -314,9 +319,9 @@ void main()
             total_color += vec4(spot_light(spot_lights[i]), 1.0f);
     }
 
-    if(total_color.r == 0 && total_color.g == 0 && total_color.b == 0) {
-        total_color = vec4(texture(texture_diffuse.tex, texUV).rgb * baseColor.rgb * ambient_amount, 1);
-    }
+    // if(total_color.r == 0 && total_color.g == 0 && total_color.b == 0) {
+    //     total_color = vec4(texture(texture_diffuse.tex, texUV).rgb * baseColor.rgb * ambient_amount, 1);
+    // }
     
     // if(texture_diffuse.defined) {
     //     total_color.a = texture(texture_diffuse.tex, texUV).a * baseColor.a;

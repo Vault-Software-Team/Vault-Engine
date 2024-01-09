@@ -11,3 +11,4 @@
 #include "Rigidbody2D.hpp"
 #include "BoxCollider2D.hpp"
 #include "SpriteRenderer.hpp"
+#include "ModelRenderer.hpp"

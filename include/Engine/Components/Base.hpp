@@ -9,12 +9,6 @@ namespace Engine {
         struct DLL_API Base {
             template <typename T, typename GUI>
             void DrawComponent(entt::registry &registry, float offset, GUI uiCall) {
-                const ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_AllowItemOverlap | ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_SpanAvailWidth;
-                bool treeNodeOpen = ImGui::TreeNodeEx(typeid(T).name(), flags, T::display_name.c_str());
-                ImGui::SameLine(ImGui::GetWindowWidth() - offset);
-                if (ImGui::Button(ICON_FA_GEAR, ImVec2(20, 20))) {
-                    ImGui::OpenPopup(("ComponentSettings_" + T::display_name).c_str());
-                }
                 bool removed = false;
                 if (ImGui::BeginPopup(("ComponentSettings_" + T::display_name).c_str())) {
                     ImGui::Text("%s", (T::display_name + " Settings").c_str());
@@ -24,6 +18,13 @@ namespace Engine {
                         ImGui::CloseCurrentPopup();
                     }
                     ImGui::EndPopup();
+                }
+
+                const ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_AllowItemOverlap | ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_SpanAvailWidth;
+                bool treeNodeOpen = ImGui::TreeNodeEx(typeid(T).name(), flags, T::display_name.c_str());
+                ImGui::SameLine(ImGui::GetWindowWidth() - offset);
+                if (ImGui::Button(ICON_FA_GEAR, ImVec2(20, 20))) {
+                    ImGui::OpenPopup(("ComponentSettings_" + T::display_name).c_str());
                 }
                 if (treeNodeOpen) {
                     if (!removed)

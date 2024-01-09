@@ -3,19 +3,21 @@
 #include <iostream>
 
 namespace Engine {
-    Model::Model(const std::string &path) {
+    DLL_API std::map<std::string, Model::GlobalBoneMap> Model::GlobalBoneMaps;
+
+    Model::Model(const std::string &path) : path(path) {
         parent = GameObject::New("Model");
         loadModel(path);
     }
 
-    Model::Model(const char *path) {
+    Model::Model(const char *path) : path(path) {
         parent = GameObject::New("Model");
         loadModel(path);
     }
 
     void Model::loadModel(const std::string &path) {
         Assimp::Importer import;
-        const aiScene *scene = import.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_FixInfacingNormals);
+        const aiScene *scene = import.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_FixInfacingNormals | aiProcess_LimitBoneWeights);
 
         if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
             std::cout << "Assimp Importer Error: " << import.GetErrorString() << "\n";
@@ -24,6 +26,7 @@ namespace Engine {
         directory = path.substr(0, path.find_last_of('/'));
 
         processNode(scene->mRootNode, scene);
+        GlobalBoneMaps[path] = (GlobalBoneMap){GetBoneInfoMap(), GetBoneCount()};
     }
 
     void Model::processNode(aiNode *node, const aiScene *scene) {
@@ -72,22 +75,16 @@ namespace Engine {
         ExtractBoneWeightForVertices(vertices, mesh, scene);
 
         using namespace Engine::Components;
-        auto &pChild = GameObject::New(parent->name);
+        auto &pChild = GameObject::New(mesh->mName.C_Str());
         pChild->parent = parent->ID;
         std::cout << pChild->name << "\n";
         pChild->AddComponent<MeshRenderer>();
 
         auto &meshRenderer = pChild->GetComponent<MeshRenderer>();
         meshRenderer.SetCustomMeshType(vertices, indices);
-
-        // process indices
-        // [...]
-        //     // process material
-        //     if (mesh->mMaterialIndex >= 0) {
-        //     [...]
-        // }
-
-        // return Mesh(vertices, indices, textures);
+        meshRenderer.mesh_index = index;
+        meshRenderer.mesh_path = path;
+        index++;
     }
 
     std::vector<VaultRenderer::Texture> Model::loadMaterialTextures(aiMaterial *mat, aiTextureType type, const std::string &typeName) {
@@ -247,11 +244,11 @@ namespace Engine {
     // -- BONE END
 
     // -- ANIMATION BEGIN
-    void Animation::ReadMissingBones(const aiAnimation *animation, Model &model) {
+    void Animation::ReadMissingBones(const aiAnimation *animation) {
         int size = animation->mNumChannels;
 
-        auto &modelBoneMap = model.GetBoneInfoMap();
-        int &count = model.GetBoneCount();
+        auto &modelBoneMap = GetBoneInfoMap();
+        int &count = GetBoneCount();
 
         for (int i = 0; i < size; i++) {
             auto channel = animation->mChannels[i];
@@ -264,8 +261,6 @@ namespace Engine {
 
             bones.push_back(Bone(channel->mNodeName.data, modelBoneMap[channel->mNodeName.data].id, channel));
         }
-
-        bonemap = modelBoneMap;
     }
 
     void Animation::ReadHeirarchyData(AssimpNodeData &dest, const aiNode *src) {
@@ -285,7 +280,7 @@ namespace Engine {
         return iter == bones.end() ? nullptr : &(*iter);
     }
 
-    Animation::Animation(const std::string &animationPath, Model *model) {
+    Animation::Animation(const std::string &animationPath, Model::GlobalBoneMap &bone_map) : bonemap(bone_map) {
         Assimp::Importer importer;
         const aiScene *scene = importer.ReadFile(animationPath, aiProcess_Triangulate);
         assert(scene && scene->mRootNode);
@@ -293,7 +288,7 @@ namespace Engine {
         duration = animation->mDuration;
         ticks_per_sec = animation->mTicksPerSecond;
         ReadHeirarchyData(root_node, scene->mRootNode);
-        ReadMissingBones(animation, *model);
+        ReadMissingBones(animation);
     }
     Animation::~Animation() {}
     // -- ANIMATION END
@@ -325,7 +320,7 @@ namespace Engine {
     }
 
     void Animator::CalculateBoneTransform(const AssimpNodeData *node, const glm::mat4 &parent) {
-        std::string nodeName = node->name;
+        const std::string &nodeName = node->name;
         glm::mat4 nodeTransform = node->transformation;
 
         Bone *Bone = curr_anim->FindBone(nodeName);
@@ -337,11 +332,10 @@ namespace Engine {
 
         glm::mat4 globalTransformation = parent * nodeTransform;
 
-        auto boneInfoMap = curr_anim->GetIDMap();
+        auto &boneInfoMap = curr_anim->GetIDMap();
         if (boneInfoMap.find(nodeName) != boneInfoMap.end()) {
             int index = boneInfoMap[nodeName].id;
-            glm::mat4 offset = boneInfoMap[nodeName].offset;
-            finalBoneMatrices[index] = globalTransformation * offset;
+            finalBoneMatrices[index] = globalTransformation * boneInfoMap.at(nodeName).offset;
         }
 
         for (int i = 0; i < node->childrenCount; i++) {

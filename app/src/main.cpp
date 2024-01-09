@@ -91,6 +91,7 @@ int main() {
     Scene::SetMainScene(scene);
     Scene::MakeSceneCamera();
     Scene::Main->SetMainCameraObject(Scene::StaticGameObjects.back(), true);
+    Scene::Main->main_camera_object->far = 550;
 
     // auto gameObject = GameObject::New("My GameObject");
     // gameObject->AddComponent<Components::MeshRenderer>();
@@ -128,13 +129,15 @@ int main() {
     shadow_map.ortho_size = 20.0f;
 
     Runtime runtime(default_shader);
+    runtime.shadowMap = &shadow_map;
     EditorLayer editor;
 
     GUI::LogInfo("Hello, World!");
     GUI::framebufferTextureID = window.framebuffer->framebuffer->texture;
     window.use_imgui_size = true;
 
-    // Model model("../assets/capsule.obj");
+    // Model m_2fort("../assets/2fort/2fort.obj")
+    // 1model("../assets/capsule.obj");
 
     // Serializer::Deserialize("../assets/scene.vault");
     // Serializer::DeserializeMaterial("../assets/main.material", GameObject::FindGameObjectByName("My GameObject")->GetComponent<MeshRenderer>().mesh->material);
@@ -144,9 +147,16 @@ int main() {
     // Scene::MakeSceneCamera();
     // Scene::Main->SetMainCameraObject(Scene::StaticGameObjects.back());
 
-    // Model model("../assets/anim.fbx");
-    // Animation danceAnimation("../assets/anim.fbx", &model);
+    // -- SKELETAL ANIMATION EXAMPLE --
+    // Model model("../assets/Crouch To Stand.fbx");
+    // Animation danceAnimation("../assets/Crouch To Stand.fbx", &model);
     // Animator animator(&danceAnimation);
+    // animator.Update(timestep);
+    // auto transforms = animator.GetFinalBoneMatrices();
+    // shader.Bind();
+    // for (int i = 0; i < transforms.size(); ++i)
+    //     shader.SetUniformMat4(("finalBonesMatrices[" + std::to_string(i) + "]").c_str(), transforms[i]);
+    // -- SKELETAL ANIMATION EXAMPLE --
 
     auto Function_GUI = [&] {
         ImGui::DockSpaceOverViewport(ImGui::GetMainViewport(), ImGuiDockNodeFlags_PassthruCentralNode);
@@ -225,9 +235,6 @@ int main() {
 
         // Update all the GameObjects components
         // shader.Bind();
-        // auto transforms = animator.GetFinalBoneMatrices();
-        // for (int i = 0; i < transforms.size(); ++i)
-        // shader.SetUniformMat4(("finalBonesMatrices[" + std::to_string(i) + "]").c_str(), transforms[i]);
 
         runtime.UpdateGameObjects(window); //
 

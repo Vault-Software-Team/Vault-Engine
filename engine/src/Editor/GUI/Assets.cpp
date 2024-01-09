@@ -7,6 +7,7 @@
 #include <filesystem>
 #include <iostream>
 #include <Engine/SceneSerialization.hpp>
+#include <Engine/Model.hpp>
 
 using namespace Engine;
 using namespace Engine::Components;
@@ -39,7 +40,7 @@ void DirectoryIterator(const std::string &str, const char *filter_str) {
             if (name.ends_with(".png") || name.ends_with(".tiff") || name.ends_with(".jpg") || name.ends_with(".jpeg")) {
                 icon = ICON_FA_IMAGE;
             }
-            if (name.ends_with(".obj")) {
+            if (name.ends_with(".obj") || name.ends_with(".blender") || name.ends_with(".dae") || name.ends_with(".gltf") || name.ends_with(".fbx")) {
                 icon = ICON_FA_CUBES;
             }
             if (name.ends_with(".mtl") || name.ends_with(".material")) {
@@ -55,17 +56,24 @@ void DirectoryIterator(const std::string &str, const char *filter_str) {
                     Editor::GUI::selected_gameObject = nullptr;
                     Serializer::scheduled_scene_path = dir.path().string();
                 }
+
+                if (name.ends_with(".obj") || name.ends_with(".blender") || name.ends_with(".dae") || name.ends_with(".gltf") || name.ends_with(".fbx")) {
+                    Engine::Model model(dir.path().string());
+                }
             }
             if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None)) {
                 Editor::GUI::dragPayload = fs::absolute(dir.path()).string();
+                auto length = dir.path().string().length();
                 if (name.ends_with(".material")) {
-                    ImGui::SetDragDropPayload("material", dir.path().string().c_str(), dir.path().string().length() + 1);
+                    ImGui::SetDragDropPayload("material", dir.path().string().c_str(), length + 1);
                 } else if (name.ends_with(".ttf") || name.ends_with(".otf")) {
-                    ImGui::SetDragDropPayload("font_file", dir.path().string().c_str(), dir.path().string().length() + 1);
+                    ImGui::SetDragDropPayload("font_file", dir.path().string().c_str(), length + 1);
                 } else if (name.ends_with(".png") || name.ends_with(".tiff") || name.ends_with(".jpg") || name.ends_with(".jpeg")) {
-                    ImGui::SetDragDropPayload("image_file", dir.path().string().c_str(), dir.path().string().length() + 1);
+                    ImGui::SetDragDropPayload("image_file", dir.path().string().c_str(), length + 1);
                 } else if (name.ends_with(".vault")) {
-                    ImGui::SetDragDropPayload("scene_file", dir.path().string().c_str(), dir.path().string().length() + 1);
+                    ImGui::SetDragDropPayload("scene_file", dir.path().string().c_str(), length + 1);
+                } else if (name.ends_with(".obj") || name.ends_with(".blender") || name.ends_with(".dae") || name.ends_with(".gltf") || name.ends_with(".fbx")) {
+                    ImGui::SetDragDropPayload("model_file", dir.path().string().c_str(), length + 1);
                 }
                 ImGui::Text("%s %s", icon.c_str(), dir.path().filename().string().c_str());
                 ImGui::EndDragDropSource();

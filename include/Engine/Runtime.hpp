@@ -15,6 +15,7 @@ namespace Engine {
         int width, height;
         static DLL_API Runtime *instance;
         static DLL_API VaultRenderer::Shader *default_shader;
+        VaultRenderer::ShadowMap *shadowMap;
 
         bool isRunning = false;
         bool isStopped = true;

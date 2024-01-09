@@ -57,7 +57,20 @@ namespace Engine {
                 GetComponent<Transform>().Update();
                 shader.SetUniformMat4("transformModel", GetComponent<Transform>().model);
 
+                // meshRenderer.AnimateAndSetUniforms(shader);
                 meshRenderer.mesh->Draw(shader);
+            }
+        }
+
+        if (HasComponent<ModelRenderer>()) {
+            auto &modelRenderer = GetComponent<ModelRenderer>();
+            if (modelRenderer.model) {
+                GetComponent<Transform>().Update();
+                shader.Bind();
+                shader.SetUniformMat4("transformModel", GetComponent<Transform>().model);
+
+                modelRenderer.AnimateAndSetUniforms(shader);
+                modelRenderer.Draw(shader);
             }
         }
 

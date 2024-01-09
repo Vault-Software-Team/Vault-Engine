@@ -20,7 +20,6 @@ namespace Engine {
     public:
         static inline glm::mat4 ConvertMatrixToGLMFormat(const aiMatrix4x4 &from) {
             glm::mat4 to;
-            // the a,b,c,d in assimp is the row ; the 1,2,3,4 is the column
             to[0][0] = from.a1;
             to[1][0] = from.a2;
             to[2][0] = from.a3;
@@ -51,6 +50,14 @@ namespace Engine {
 
     class DLL_API Model {
     public:
+        struct GlobalBoneMap {
+            std::map<std::string, VaultRenderer::BoneInfo> map;
+            int bone_counter = 0;
+        };
+
+        static DLL_API std::map<std::string, GlobalBoneMap> GlobalBoneMaps;
+
+        int index = 0;
         Model(const std::string &path);
         Model(const char *path);
         auto &GetBoneInfoMap() { return m_BoneInfoMap; }
@@ -62,8 +69,36 @@ namespace Engine {
         void ExtractBoneWeightForVertices(std::vector<VaultRenderer::Vertex> &vertices, aiMesh *mesh, const aiScene *scene);
 
     private:
+        std::string path;
         std::string directory;
         std::shared_ptr<GameObject> parent;
+
+        std::map<std::string, VaultRenderer::BoneInfo> m_BoneInfoMap; //
+        int m_BoneCounter = 0;
+
+        void loadModel(const std::string &path);
+        void processNode(aiNode *node, const aiScene *scene);
+        void processMesh(aiMesh *mesh, const aiScene *scene);
+        std::vector<VaultRenderer::Texture> loadMaterialTextures(aiMaterial *mat, aiTextureType type, const std::string &typeName);
+    };
+
+    class DLL_API ModelMesh {
+    public:
+        ModelMesh(const std::string &path);
+        ModelMesh(const char *path);
+        auto &GetBoneInfoMap() { return m_BoneInfoMap; }
+        int &GetBoneCount() { return m_BoneCounter; }
+        void SetVertexBoneDataToDefault(VaultRenderer::Vertex &vertex);
+
+        void SetVertexBoneData(VaultRenderer::Vertex &vertex, int boneID, float weight);
+
+        void ExtractBoneWeightForVertices(std::vector<VaultRenderer::Vertex> &vertices, aiMesh *mesh, const aiScene *scene);
+
+        std::vector<VaultRenderer::Mesh> meshes;
+        VaultRenderer::Mesh *GetMeshValueByIndex(int index);
+
+        std::string path;
+        std::string directory;
 
         std::map<std::string, VaultRenderer::BoneInfo> m_BoneInfoMap; //
         int m_BoneCounter = 0;
@@ -134,10 +169,10 @@ namespace Engine {
         glm::mat4 InterScal(float anim_time);
     };
 
-    class Animation {
+    class DLL_API Animation {
     public:
         Animation() = default;
-        Animation(const std::string &animationPath, Model *model);
+        Animation(const std::string &animationPath, Model::GlobalBoneMap &bone_map);
         ~Animation();
 
         Bone *FindBone(const std::string &name);
@@ -145,20 +180,23 @@ namespace Engine {
         inline float GetTicksPerSecond() { return ticks_per_sec; }
         inline float GetDuration() { return duration; }
         inline const AssimpNodeData &GetRootNode() { return root_node; }
-        inline const std::map<std::string, VaultRenderer::BoneInfo> &GetIDMap() { return bonemap; }
+        inline std::map<std::string, VaultRenderer::BoneInfo> &GetIDMap() { return bonemap.map; }
+
+        inline auto &GetBoneInfoMap() { return bonemap.map; }
+        inline int &GetBoneCount() { return bonemap.bone_counter; }
 
     private:
-        void ReadMissingBones(const aiAnimation *animation, Model &model);
+        void ReadMissingBones(const aiAnimation *animation);
         void ReadHeirarchyData(AssimpNodeData &dest, const aiNode *src);
 
         float duration;
         int ticks_per_sec;
         std::vector<Bone> bones;
         AssimpNodeData root_node;
-        std::map<std::string, VaultRenderer::BoneInfo> bonemap;
+        Model::GlobalBoneMap bonemap;
     };
 
-    class Animator {
+    class DLL_API Animator {
     public:
         Animator(Animation *anim);
         void UpdateAnimation(float dt);

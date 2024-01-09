@@ -1,0 +1,25 @@
+Scene: Untitled
+GameObjects:
+  - GameObject:
+      ID: e787ad73-962e-4df1-bd33-0e8d8d3f439e
+      name: Model
+      tag: Default
+      parent: NO_PARENT
+      Transform:
+        position: [0, 0, 0]
+        rotation: [0, 0, 0]
+        scale: [1, 1, 1]
+  - GameObject:
+      ID: 8059a0f4-90b7-434b-a415-3409dfe02489
+      name: Mesh
+      tag: Default
+      parent: e787ad73-962e-4df1-bd33-0e8d8d3f439e
+      Transform:
+        position: [0, 0, 0]
+        rotation: [0, 0, 0]
+        scale: [1, 1, 1]
+      MeshRenderer:
+        mesh_type: 3
+        mesh_index: 0
+        mesh_path: ../assets/Crouch To Stand.fbx
+        material_path: ""

@@ -2,6 +2,7 @@
 #include <Editor/GUI/MainGUI.hpp>
 #include <icons/icons.h>
 #include <Engine/SceneSerialization.hpp>
+#include <Engine/Runtime.hpp>
 
 namespace Engine::Components {
     void MeshRenderer::SetMeshType(const MeshType &a_mesh_type) {
@@ -134,6 +135,18 @@ namespace Engine::Components {
                         Serializer::DeserializeMaterial(path, mesh->material);
                 }
             }
+            // if (mesh_type == MESH_CUSTOM_MODEL) {
+            //     ImGui::Separator();
+
+            //     ImGui::Button(animation_path == "" ? "Drag Animation File" : animation_path.c_str());
+            //     if (ImGui::BeginDragDropTarget()) {
+            //         if (const ImGuiPayload *payload = ImGui::AcceptDragDropPayload("model_file")) {
+            //             std::string path = (char *)payload->Data;
+            //             animation_path = path;
+            //             SetAnimation(animation_path);
+            //         }
+            //     }
+            // }
         });
     }
 
@@ -142,4 +155,37 @@ namespace Engine::Components {
         if (mesh)
             Serializer::DeserializeMaterial(path, mesh->material);
     }
+
+    // void MeshRenderer::SetAnimation(const std::string &path) {
+    //     if (this->mesh_path == "" || mesh_type != MESH_CUSTOM_MODEL)
+    //         return;
+
+    //     DeleteAnimation();
+    //     animation = new Animation(path, Model::GlobalBoneMaps[this->mesh_path]);
+    //     animator = new Animator(animation);
+    // }
+
+    // void MeshRenderer::DeleteAnimation() {
+    //     if (animation)
+    //         delete animation;
+    //     if (animator)
+    //         delete animator;
+    // }
+
+    // MeshRenderer::~MeshRenderer() {
+    //     DeleteAnimation();
+    // }
+
+    // void MeshRenderer::AnimateAndSetUniforms(VaultRenderer::Shader &shader) {
+    //     if (!animator)
+    //         return;
+
+    //     animator->UpdateAnimation(Runtime::instance->timestep);
+
+    //     auto transforms = animator->GetFinalBoneMatrices();
+    //     shader.Bind();
+    //     for (int i = 0; i < transforms.size(); ++i) {
+    //         shader.SetUniformMat4(("finalBonesMatrices[" + std::to_string(i) + "]").c_str(), transforms[i]);
+    //     }
+    // }
 } // namespace Engine::Components

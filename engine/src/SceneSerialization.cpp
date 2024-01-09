@@ -3,6 +3,7 @@
 #include <fstream>
 #include <Engine/Components/IncludeComponents.hpp>
 #include <iostream>
+#include <Engine/Model.hpp>
 
 namespace YAML {
     template <>
@@ -196,6 +197,8 @@ namespace Engine {
 
             auto &component = gameObject->GetComponent<MeshRenderer>();
             emitter << yaml::Key << "mesh_type" << yaml::Value << component.mesh_type;
+            emitter << yaml::Key << "mesh_index" << yaml::Value << component.mesh_index;
+            emitter << yaml::Key << "mesh_path" << yaml::Value << component.mesh_path;
             emitter << yaml::Key << "material_path" << yaml::Value << component.material_path;
 
             emitter << yaml::EndMap;
@@ -316,7 +319,19 @@ namespace Engine {
             if (data["MeshRenderer"]["material_path"]) {
                 component.material_path = data["MeshRenderer"]["material_path"].as<std::string>();
             }
+            if (data["MeshRenderer"]["mesh_path"]) {
+                component.mesh_path = data["MeshRenderer"]["mesh_path"].as<std::string>();
+            }
+            if (data["MeshRenderer"]["mesh_index"]) {
+                component.mesh_index = data["MeshRenderer"]["mesh_index"].as<int>();
+            }
+
             component.SetMeshType((MeshType)data["MeshRenderer"]["mesh_type"].as<int>());
+            if (component.mesh_type == Components::MESH_CUSTOM_MODEL && component.mesh_index > -1) {
+                ModelMesh model_mesh(component.mesh_path);
+                component.mesh.reset();
+                component.mesh = std::make_shared<VaultRenderer::Mesh>(model_mesh.meshes[component.mesh_index].vertices, model_mesh.meshes[component.mesh_index].indices);
+            }
         }
         if (data["Camera"]) {
             gameObject->AddComponent<Camera>();
