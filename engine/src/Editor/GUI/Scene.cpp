@@ -216,6 +216,13 @@ namespace Editor {
                 isStopped = false;
                 Scene::Main->OnRuntimeStart();
 
+                auto v = Scene::Main->EntityRegistry.view<CXXScriptComponent>();
+
+                for (auto e : v) {
+                    auto &component = Scene::Main->EntityRegistry.get<CXXScriptComponent>(e);
+                    component.OnStart();
+                }
+
                 for (auto &go : Scene::Main->GameObjects) {
                     if (go->HasComponent<Camera>()) {
                         auto &camera = go->GetComponent<Camera>();

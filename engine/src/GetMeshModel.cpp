@@ -75,6 +75,34 @@ namespace Engine {
         ExtractBoneWeightForVertices(vertices, mesh, scene);
 
         meshes.push_back(VaultRenderer::Mesh(vertices, indices));
+
+        aiString mot_name;
+        aiReturn ret;
+        aiMaterial *mot = scene->mMaterials[mesh->mMaterialIndex];
+
+        ret = mot->Get(AI_MATKEY_NAME, mot_name);
+        if (ret != AI_SUCCESS) {
+            mot_name = "";
+        }
+
+        int diffuse_count = mot->GetTextureCount(aiTextureType_DIFFUSE);
+        int specular_count = mot->GetTextureCount(aiTextureType_SPECULAR);
+        int normal_count = mot->GetTextureCount(aiTextureType_NORMALS);
+        aiString texture_name;
+
+        if (diffuse_count > 0) {
+            ret = mot->Get(AI_MATKEY_TEXTURE(aiTextureType_DIFFUSE, 0), texture_name);
+            std::cout << (directory + "/" + texture_name.C_Str()).c_str() << "\n";
+            meshes.back().material.SetDiffuse((directory + "/" + texture_name.C_Str()).c_str());
+        }
+        if (specular_count > 0) {
+            ret = mot->Get(AI_MATKEY_TEXTURE(aiTextureType_SPECULAR, 0), texture_name);
+            meshes.back().material.SetSpecular((directory + "/" + texture_name.C_Str()).c_str());
+        }
+        if (normal_count > 0) {
+            ret = mot->Get(AI_MATKEY_TEXTURE(aiTextureType_NORMALS, 0), texture_name);
+            meshes.back().material.SetNormal((directory + "/" + texture_name.C_Str()).c_str());
+        }
     }
 
     std::vector<VaultRenderer::Texture> ModelMesh::loadMaterialTextures(aiMaterial *mat, aiTextureType type, const std::string &typeName) {

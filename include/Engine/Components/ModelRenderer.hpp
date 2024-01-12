@@ -18,6 +18,7 @@ namespace Engine {
             std::unique_ptr<Animator> animator;
             std::string animation_path;
             float time_scale = 1.0;
+            bool play_animation = false;
 
             ModelRenderer() = default;
 

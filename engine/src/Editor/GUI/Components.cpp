@@ -30,6 +30,7 @@ void ComponentGUI(GameObject *gameObject) {
     CallComponentGUI<SpotLight>(gameObject);
     CallComponentGUI<Text3D>(gameObject);
     CallComponentGUI<Camera>(gameObject);
+    CallComponentGUI<CXXScriptComponent>(gameObject);
 }
 
 template <typename T>
@@ -56,6 +57,7 @@ void AddComponentsGUIPopup(GameObject *gameObject) {
     DisplayAddComponentButton<SpotLight>(gameObject);
     DisplayAddComponentButton<Text3D>(gameObject);
     DisplayAddComponentButton<Camera>(gameObject);
+    DisplayAddComponentButton<CXXScriptComponent>(gameObject);
 }
 
 namespace Editor {

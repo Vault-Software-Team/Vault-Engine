@@ -9,6 +9,8 @@
 #include <GLFW/glfw3.h>
 #include <Renderer/Stats.hpp>
 #include <iostream>
+#include <filesystem>
+namespace fs = std::filesystem;
 
 namespace VaultRenderer {
     Mesh::Mesh(std::vector<Vertex> &vertices, std::vector<uint32_t> &indices) : vertices(vertices), indices(indices), material{glm::vec4(1, 1, 1, 1)} {
@@ -123,7 +125,7 @@ namespace VaultRenderer {
 
         shader.SetUniform4f("baseColor", color.r, color.g, color.b, color.a);
 
-        if (diffuse) {
+        if (diffuse && fs::exists(diffuse ? diffuse->texture_data->texture_filepath : "")) {
             diffuse->Bind(0);
             shader.SetUniform1i("texture_diffuse.tex", 0);
             shader.SetUniform1i("texture_diffuse.defined", 1);
@@ -132,7 +134,7 @@ namespace VaultRenderer {
             shader.SetUniform1i("texture_diffuse.defined", 0);
         }
 
-        if (specular) {
+        if (specular && fs::exists(specular ? specular->texture_data->texture_filepath : "")) {
             specular->Bind(1);
             shader.SetUniform1i("texture_specular.tex", 1);
             shader.SetUniform1i("texture_specular.defined", 1);
@@ -141,7 +143,7 @@ namespace VaultRenderer {
             shader.SetUniform1i("texture_specular.defined", 0);
         }
 
-        if (normal) {
+        if (normal && fs::exists(normal ? normal->texture_data->texture_filepath : "")) {
             normal->Bind(2);
             shader.SetUniform1i("texture_normal.tex", 2);
             shader.SetUniform1i("texture_normal.defined", 1);
@@ -150,7 +152,7 @@ namespace VaultRenderer {
             shader.SetUniform1i("texture_normal.defined", 0);
         }
 
-        if (height) {
+        if (height && fs::exists(height ? height->texture_data->texture_filepath : "")) {
             height->Bind(3);
             shader.SetUniform1i("texture_height.tex", 3);
             shader.SetUniform1i("texture_height.defined", 1);

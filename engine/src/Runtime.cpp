@@ -17,6 +17,15 @@ namespace Engine {
         Runtime::default_shader = default_shader;
     }
 
+    static void UpdateCXXScripts() {
+        auto v = Scene::Main->EntityRegistry.view<CXXScriptComponent>();
+
+        for (auto e : v) {
+            auto &component = Scene::Main->EntityRegistry.get<CXXScriptComponent>(e);
+            component.Update();
+        }
+    }
+
     void Runtime::UpdateGameObjects(Window &window) {
         static double lastTime = 0;
         double now = glfwGetTime();
@@ -95,6 +104,7 @@ namespace Engine {
         shadowMap.Bind();
         glClear(GL_DEPTH_BUFFER_BIT);
         auto v = Scene::Main->EntityRegistry.view<MeshRenderer>();
+        auto v_model = Scene::Main->EntityRegistry.view<ModelRenderer>();
         auto v_text = Scene::Main->EntityRegistry.view<Text3D>();
 
         shader.Bind();
@@ -106,6 +116,17 @@ namespace Engine {
                 transform.Update();
                 shader.SetUniformMat4("transformModel", transform.model);
                 meshRenderer.mesh->Draw(shader);
+            }
+        }
+
+        for (auto e : v_model) {
+            auto &modelRenderer = Scene::Main->EntityRegistry.get<ModelRenderer>(e);
+            auto &transform = Scene::Main->EntityRegistry.get<Transform>(e);
+            if (modelRenderer.model) {
+                transform.Update();
+                shader.SetUniformMat4("transformModel", transform.model);
+                modelRenderer.AnimateAndSetUniforms(shader);
+                modelRenderer.Draw(shader);
             }
         }
 

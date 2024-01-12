@@ -1,3 +1,5 @@
 -std=c++20
 -I./include
 -I./vendor
+-I./external/angelscript/sdk/add_on
+-I./external/angelscript/sdk/angelscript/include

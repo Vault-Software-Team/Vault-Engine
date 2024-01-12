@@ -17,9 +17,10 @@
 #include <Editor/GUI/MainGUI.hpp>
 #include <Engine/Batch.hpp>
 #include <Engine/SceneSerialization.hpp>
-// #include <dlfcn.h>
+#include <Engine/Scripting/LoadScripts.hpp>
+#include <dlfcn.h>
 #include <script_test.hpp>
-
+#include <Engine/Scripting/AngelScript.hpp>
 static VaultRenderer::Shader *default_shader;
 
 using namespace Engine;
@@ -61,13 +62,23 @@ void OnGUI(uint32_t smID) {
 }
 
 using namespace Editor;
+void print(const std::string &traki) {
+    std::cout << traki << "\n";
+}
 int main() {
     using namespace VaultRenderer;
 
+    // ANGEL SCRIPT TEST
+    Scripting::AngelScript::AngelScriptEngine AsEngine;
+    AsEngine.RegisterGlobalFunction("void print(const string &in)", asFUNCTION(print), asCALL_CDECL);
+    AsEngine.LoadScript("test", "../assets/scripts/test.as");
+    AsEngine.PrepareAndExecuteFunction(AsEngine.CreateContext(), AsEngine.GetFunctionByDeclaration(AsEngine.GetModule("test"), "void main()"));
+    // ANGEL SCRIPT TEST
+
     // dlsym test
-    // Script *(*create_obj)() = (Script * (*)()) dlsym(dlopen("../sandbox/script.so", RTLD_LAZY), "create_script");
-    // Script *script = create_obj();
-    // script->Start();
+    Script *(*create_obj)() = (Script * (*)()) dlsym(dlopen("../sandbox/script.so", RTLD_LAZY), "create_script");
+    Script *script = create_obj();
+    script->Start();
 
     Window window(1280, 720, "Vault Engine");
     Statistics::SetStats();

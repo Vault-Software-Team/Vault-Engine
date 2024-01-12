@@ -139,19 +139,22 @@ namespace Engine {
         int numRots;
         int numScales;
 
-        glm::mat4 local_transform;
         std::string name;
         int id;
 
     public:
         Bone(const std::string &name, int ID, const aiNodeAnim *channel);
 
+        glm::mat4 local_transform;
+        glm::vec3 m_pos{0, 0, 0}, m_rot{0, 0, 0}, m_scal{1, 1, 1};
         void Update(float anim_time) {
             glm::mat4 translation = InterPos(anim_time);
             glm::mat4 rotation = InterRot(anim_time);
             glm::mat4 scale = InterScal(anim_time);
             local_transform = translation * rotation * scale;
         }
+
+        void SetLocalTransform();
 
         glm::mat4 GetLocalTransform() { return local_transform; }
         std::string GetName() const { return name; }
@@ -200,8 +203,10 @@ namespace Engine {
     public:
         Animator(Animation *anim);
         void UpdateAnimation(float dt);
+        void UpdateTransforms();
         void PlayAnimation(Animation *anim);
         void CalculateBoneTransform(const AssimpNodeData *node, const glm::mat4 &parent);
+        void LocalTransformCalculateBoneTransform(const AssimpNodeData *node, const glm::mat4 &parent);
         std::vector<glm::mat4> GetFinalBoneMatrices();
 
     private:

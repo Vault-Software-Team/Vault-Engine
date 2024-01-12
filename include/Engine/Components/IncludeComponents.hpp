@@ -12,3 +12,4 @@
 #include "BoxCollider2D.hpp"
 #include "SpriteRenderer.hpp"
 #include "ModelRenderer.hpp"
+#include "CXXScriptComponent.hpp"

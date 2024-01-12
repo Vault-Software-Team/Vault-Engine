@@ -241,6 +241,13 @@ namespace Engine {
 
         return glm::scale(glm::mat4(1.0f), final);
     }
+
+    void Bone::SetLocalTransform() {
+        local_transform =
+            glm::translate(glm::mat4(1.0f), m_pos) *
+            glm::toMat4(glm::quat(m_rot)) *
+            glm::scale(glm::mat4(1.0f), glm::vec3(m_scal.x * 0.5, m_scal.y * 0.5, m_scal.z * 0.5));
+    }
     // -- BONE END
 
     // -- ANIMATION BEGIN
@@ -314,6 +321,10 @@ namespace Engine {
         }
     }
 
+    void Animator::UpdateTransforms() {
+        LocalTransformCalculateBoneTransform(&curr_anim->GetRootNode(), glm::mat4(1.0f));
+    }
+
     void Animator::PlayAnimation(Animation *anim) {
         curr_anim = anim;
         curr_time = 0.0f;
@@ -340,6 +351,30 @@ namespace Engine {
 
         for (int i = 0; i < node->childrenCount; i++) {
             CalculateBoneTransform(&node->children[i], globalTransformation);
+        }
+    }
+
+    void Animator::LocalTransformCalculateBoneTransform(const AssimpNodeData *node, const glm::mat4 &parent) {
+        const std::string &nodeName = node->name;
+        glm::mat4 nodeTransform = node->transformation;
+
+        Bone *Bone = curr_anim->FindBone(nodeName);
+
+        if (Bone) {
+            Bone->SetLocalTransform();
+            nodeTransform = Bone->local_transform;
+        }
+
+        glm::mat4 globalTransformation = parent * nodeTransform;
+
+        auto &boneInfoMap = curr_anim->GetIDMap();
+        if (boneInfoMap.find(nodeName) != boneInfoMap.end()) {
+            int index = boneInfoMap[nodeName].id;
+            finalBoneMatrices[index] = globalTransformation * boneInfoMap.at(nodeName).offset;
+        }
+
+        for (int i = 0; i < node->childrenCount; i++) {
+            LocalTransformCalculateBoneTransform(&node->children[i], globalTransformation);
         }
     }
 
