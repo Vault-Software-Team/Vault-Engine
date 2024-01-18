@@ -11,6 +11,7 @@ namespace Engine::Scripting::AngelScript {
     public:
         static DLL_API AngelScriptEngine *Main;
         asIScriptEngine *m_AsEngine;
+        asIScriptContext *ctx;
 
         AngelScriptEngine();
         ~AngelScriptEngine();
@@ -21,5 +22,6 @@ namespace Engine::Scripting::AngelScript {
         asIScriptFunction *GetFunctionByDeclaration(asIScriptModule *module, const std::string &declaration);
         asIScriptContext *CreateContext();
         int PrepareAndExecuteFunction(asIScriptContext *context, asIScriptFunction *function);
+        asITypeInfo *GetTypeInfoBydeclaration(asIScriptModule *module, const std::string &declaration);
     };
 } // namespace Engine::Scripting::AngelScript

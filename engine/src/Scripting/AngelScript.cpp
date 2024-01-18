@@ -64,7 +64,8 @@ namespace Engine::Scripting::AngelScript {
     }
 
     asIScriptContext *AngelScriptEngine::CreateContext() {
-        return m_AsEngine->CreateContext();
+        ctx = m_AsEngine->CreateContext();
+        return ctx;
     }
 
     int AngelScriptEngine::PrepareAndExecuteFunction(asIScriptContext *context, asIScriptFunction *function) {
@@ -78,6 +79,28 @@ namespace Engine::Scripting::AngelScript {
             }
         }
         return r;
+    }
+    asITypeInfo *AngelScriptEngine::GetTypeInfoBydeclaration(asIScriptModule *module, const std::string &declaration) {
+        asITypeInfo *type = module->GetTypeInfoByDecl("MyClass");
+
+        asIScriptFunction *factory = type->GetFactoryByDecl("MyClass @MyClass()");
+        ctx->Prepare(factory);
+        ctx->Execute();
+
+        asIScriptObject *obj = *(asIScriptObject **)ctx->GetAddressOfReturnValue();
+
+        obj->AddRef();
+
+        asIScriptFunction *func = type->GetMethodByDecl("void DoSomething()");
+
+        // Prepare the context for calling the method
+        ctx->Prepare(func);
+
+        // Set the object pointer
+        ctx->SetObject(obj);
+
+        // Execute the call
+        // ctx->Execute();
     }
 
     // TODO: https://www.angelcode.com/angelscript/sdk/docs/manual/doc_use_script_class.html

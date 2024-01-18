@@ -9,6 +9,7 @@ include_directories(${CMAKE_SOURCE_DIR}/external/angelscript/sdk/angelscript/inc
 add_subdirectory(api)
 add_subdirectory(app)
 add_subdirectory(engine)
+add_subdirectory(hyperscript)
 add_subdirectory(external/box2d)
 add_subdirectory(vendor/imgui)
 add_subdirectory(vendor/ImGuizmo)

@@ -21,6 +21,7 @@
 #include <dlfcn.h>
 #include <script_test.hpp>
 #include <Engine/Scripting/AngelScript.hpp>
+#include <HyperScript/HyperScript.hpp>
 static VaultRenderer::Shader *default_shader;
 
 using namespace Engine;
@@ -69,16 +70,22 @@ int main() {
     using namespace VaultRenderer;
 
     // ANGEL SCRIPT TEST
-    Scripting::AngelScript::AngelScriptEngine AsEngine;
-    AsEngine.RegisterGlobalFunction("void print(const string &in)", asFUNCTION(print), asCALL_CDECL);
-    AsEngine.LoadScript("test", "../assets/scripts/test.as");
-    AsEngine.PrepareAndExecuteFunction(AsEngine.CreateContext(), AsEngine.GetFunctionByDeclaration(AsEngine.GetModule("test"), "void main()"));
+    // Scripting::AngelScript::AngelScriptEngine AsEngine;
+    // AsEngine.RegisterGlobalFunction("void print(const string &in)", asFUNCTION(print), asCALL_CDECL);
+    // AsEngine.LoadScript("test", "../assets/scripts/test.as");
+    // AsEngine.CreateContext();
+    // AsEngine.GetTypeInfoBydeclaration(AsEngine.GetModule("test"), "MyClass");
+    // AsEngine.PrepareAndExecuteFunction(AsEngine.CreateContext(), AsEngine.GetFunctionByDeclaration(AsEngine.GetModule("test"), "void main()"));
     // ANGEL SCRIPT TEST
 
     // dlsym test
-    Script *(*create_obj)() = (Script * (*)()) dlsym(dlopen("../sandbox/script.so", RTLD_LAZY), "create_script");
-    Script *script = create_obj();
-    script->Start();
+    // Script *(*create_obj)() = (Script * (*)()) dlsym(dlopen("../sandbox/script.so", RTLD_LAZY), "create_script");
+    // Script *script = create_obj();
+    // script->Start();
+
+    HyperScript::ScriptEngine SE;
+    SE.LoadScript("test", "../assets/scripts/test.hyper");
+    SE.JustRunTheScript(SE.GetModule("test"));
 
     Window window(1280, 720, "Vault Engine");
     Statistics::SetStats();
