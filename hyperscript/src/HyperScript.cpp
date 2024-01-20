@@ -9,8 +9,21 @@
 // Function Decl
 namespace HyperScript {
     void ScriptEngine::Print(Function *func) {
-        Variable v = func->arguments[0];
-        std::cout << "[print] " << v.value << "\n";
+        std::string to_print = "";
+        for (auto &arg : func->arguments) {
+            to_print += arg.value;
+        }
+        std::cout << "[print] " << to_print;
+
+        func->SetReturn("80085", GT_NUMBER);
+    }
+
+    void ScriptEngine::Println(Function *func) {
+        std::string to_print = "";
+        for (auto &arg : func->arguments) {
+            to_print += arg.value;
+        }
+        std::cout << "[print] " << to_print << "\n";
 
         func->SetReturn("80085", GT_NUMBER);
     }
@@ -204,7 +217,10 @@ namespace HyperScript {
         if (expr == "")
             return;
 
+        break_loop = false;
+
         while (s_Engine->StringToBoolExpr(expr)) {
+            if (break_loop) break;
             call(this);
         }
         arguments.clear();
@@ -240,6 +256,11 @@ namespace HyperScript {
     ScriptEngine::ScriptEngine() {
         auto f_Print = CreateFunction("print", 1, Print);
         f_Print->argument_names.push_back("content");
+        f_Print->limitless_args = true;
+
+        auto f_Println = CreateFunction("println", 1, Println);
+        f_Println->argument_names.push_back("content");
+        f_Println->limitless_args = true;
 
         auto f_CreateVariable = CreateFunction("create_var", 2, FUNC_CreateVariable);
         f_CreateVariable->argument_names.push_back("name");
@@ -580,7 +601,7 @@ namespace HyperScript {
 
     void PushArgumentToFunction(Function *func, const std::string &value) {
         func->arguments.push_back(Variable{GT_STRING, value, "content"});
-        func->arguments.back().name = func->argument_names[func->arguments.size() - 1];
+        func->arguments.back().name = func->limitless_args ? uuid::generate_uuid_v4() : func->argument_names[func->arguments.size() - 1];
         // if (func->argument_names.size() > func->arguments.size()) {
         // throw std::runtime_error("Exceeded maximum arguments!");
         // }
@@ -588,7 +609,7 @@ namespace HyperScript {
 
     void PushArgumentToFunction(Function *func, const std::string &value, GenericType type) {
         func->arguments.push_back(Variable{GT_STRING, value, "content"});
-        func->arguments.back().name = func->argument_names[func->arguments.size() - 1];
+        func->arguments.back().name = func->limitless_args ? uuid::generate_uuid_v4() : func->argument_names[func->arguments.size() - 1];
         func->arguments.back().type = type;
         // if (func->argument_names.size() > func->arguments.size()) {
         // throw std::runtime_error("Exceeded maximum arguments!");
@@ -597,7 +618,7 @@ namespace HyperScript {
 
     void PushArgumentToFunction(Function *func, Variable v) {
         func->arguments.push_back(v);
-        func->arguments.back().name = func->argument_names[func->arguments.size() - 1];
+        func->arguments.back().name = func->limitless_args ? uuid::generate_uuid_v4() : func->argument_names[func->arguments.size() - 1];
         // if (func->argument_names.size() > func->arguments.size()) {
         // throw std::runtime_error("Exceeded maximum arguments!");
         // }
@@ -853,12 +874,40 @@ namespace HyperScript {
         bool functionReturnValueOnVariable = false;
         bool functionReturnValueOnVariable_isGlobal = false;
         bool return_called = false;
+        bool break_called = false;
+        bool continue_called = false;
         bool boolean_expression_save = false;
         std::string while_expr = "";
         std::shared_ptr<Variable::Type> typeof_ToSet = nullptr;
 
         for (auto &token : s_Module.tokens) {
+            if (scope_func == state_union.func_scope_ref && scope_func != nullptr) {
+                if (scope_func->break_loop) break;
+
+                if (scope_func->continue_loop) {
+                    scope_func->continue_loop = false;
+                    break;
+                }
+            }
+
             if (return_called) {
+                if (!scope_func) break;
+                scope_func->break_loop = true;
+
+                break;
+            }
+
+            if (break_called) {
+                if (!scope_func) break;
+                scope_func->break_loop = true;
+
+                break;
+            }
+
+            if (continue_called) {
+                if (!scope_func) break;
+                scope_func->continue_loop = true;
+
                 break;
             }
 
@@ -870,6 +919,15 @@ namespace HyperScript {
             switch (token.token) {
             case SEMI: {
                 SetState(NONE);
+                break;
+            }
+            case BREAK: {
+                break_called = true;
+                break;
+            }
+            case CONTINUE: {
+                SetState(NONE);
+                continue_called = true;
                 break;
             }
             case ID: {
@@ -933,7 +991,6 @@ namespace HyperScript {
                     break;
                 }
                 case SETTING_VAR_VALUE: {
-                    SetState(NONE);
                     if (func) {
                         functionReturnValueOnVariable = true;
                         functionReturnValueOnVariable_isGlobal = func->is_global;
@@ -971,7 +1028,6 @@ namespace HyperScript {
                     break;
                 }
                 case CHANGING_VARIABLE_VALUE: {
-                    SetState(NONE);
                     if (func) {
                         functionReturnValueOnVariable = true;
 
@@ -1009,7 +1065,7 @@ namespace HyperScript {
                 case RETURN_CALLED_SET_VALUE: {
                     auto var = GetVariable(scope_variables, token.value);
                     if (var) {
-                        state_union.m_Func->SetReturn(var->value, var->type, var->custom_type);
+                        FuncReturnRef->SetReturn(var->value, var->type, var->custom_type);
                     } else {
                         throw std::runtime_error("Invalid variable name!");
                     }
@@ -1142,6 +1198,10 @@ namespace HyperScript {
                 }
                 }
 
+                if (state_union.state == NONE) {
+                    throw std::runtime_error("Invalid keyword or a function/variable \"" + token.value + "\"");
+                }
+
                 break;
             }
             case L_PAREN: {
@@ -1261,7 +1321,7 @@ namespace HyperScript {
                     break;
                 }
                 case RETURN_CALLED_SET_VALUE: {
-                    state_union.m_Func->SetReturn(token.value, GT_STRING);
+                    FuncReturnRef->SetReturn(token.value, GT_STRING);
                     return_called = true;
                     break;
                 }
@@ -1302,7 +1362,7 @@ namespace HyperScript {
                 }
                 case RETURN_CALLED_SET_VALUE: {
                     if (state_union.m_Func) {
-                        state_union.m_Func->SetReturn(token.value, GT_BOOLEAN);
+                        FuncReturnRef->SetReturn(token.value, GT_BOOLEAN);
                         return_called = true;
                     }
                     break;
@@ -1339,7 +1399,7 @@ namespace HyperScript {
                 }
                 case RETURN_CALLED_SET_VALUE: {
                     if (state_union.m_Func) {
-                        state_union.m_Func->SetReturn(token.value, GT_BOOLEAN);
+                        FuncReturnRef->SetReturn(token.value, GT_BOOLEAN);
                         return_called = true;
                     }
                     break;
@@ -1619,7 +1679,7 @@ namespace HyperScript {
                 }
 
                 if (state_union.state == RETURN_CALLED_SET_VALUE) {
-                    state_union.m_Func->SetReturn(token.value, GT_NUMBER);
+                    FuncReturnRef->SetReturn(token.value, GT_NUMBER);
                     return_called = true;
                 }
 
@@ -1717,7 +1777,10 @@ namespace HyperScript {
                     ParseToTokens(func->scope_module);
                     if (state_union.state == WHILE_CHECKED_CALL_SCOPE) {
                         func->expr = while_expr;
+                        scope_func = func.get();
+
                         func->CallWhileLoop(this);
+
                         while_expr = "";
                     } else {
                         func->Call();
@@ -1787,9 +1850,9 @@ namespace HyperScript {
                     double val = StringToMath(token.value);
                     // WHY DOESNT THIS FUCKING JUST WHY OH MY FUCKING GOD
                     if (isInt(val)) {
-                        state_union.m_Func->SetReturn(std::to_string((int)val), GT_NUMBER);
+                        FuncReturnRef->SetReturn(std::to_string((int)val), GT_NUMBER);
                     } else {
-                        state_union.m_Func->SetReturn(std::to_string(val), GT_STRING);
+                        FuncReturnRef->SetReturn(std::to_string(val), GT_STRING);
                     }
                     return_called = true;
                     break;
@@ -1892,7 +1955,7 @@ namespace HyperScript {
                 }
                 case RETURN_CALLED_SET_VALUE: {
                     bool b = StringToBoolExpr(token.value);
-                    state_union.m_Func->SetReturn(b ? "true" : "false", GT_BOOLEAN);
+                    FuncReturnRef->SetReturn(b ? "true" : "false", GT_BOOLEAN);
                     return_called = true;
                     break;
                 }
@@ -1925,7 +1988,7 @@ namespace HyperScript {
                 break;
             }
             case RETURN: {
-                if (!state_union.m_Func) {
+                if (!FuncReturnRef) {
                     return_called = true;
                     break;
                 }
@@ -1979,8 +2042,11 @@ namespace HyperScript {
         state_union.variables = &func->variables;
         state_union.state = NONE;
         state_union.m_Func = func;
+        FuncReturnRef = func;
 
+        scope_func = func;
         func->scope_module.module_name = func->name;
+        state_union.func_scope_ref = func;
 
         scope_variables.push_back(&func->variables);
         for (auto &arg : func->arguments) {
@@ -1997,12 +2063,15 @@ namespace HyperScript {
         }
         __ExecuteModuleRoot(state_union, func->scope_module);
         scope_variables.pop_back();
+
+        FuncReturnRef = nullptr;
     }
 
     void ScriptEngine::ExecuteIfScope(Function *func) {
         UnionOfState state_union;
         state_union.variables = &func->variables;
         state_union.state = NONE;
+        state_union.func_scope_ref = func;
 
         scope_variables.push_back(&func->variables);
         __ExecuteModuleRoot(state_union, func->scope_module);

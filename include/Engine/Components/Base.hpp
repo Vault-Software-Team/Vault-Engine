@@ -7,24 +7,25 @@
 namespace Engine {
     namespace Components {
         struct DLL_API Base {
+            bool component_settings_gui = false;
             template <typename T, typename GUI>
             void DrawComponent(entt::registry &registry, float offset, GUI uiCall) {
                 bool removed = false;
-                if (ImGui::BeginPopup(("ComponentSettings_" + T::display_name).c_str())) {
+                if (component_settings_gui && ImGui::Begin(T::display_name.c_str(), &component_settings_gui, ImGuiWindowFlags_NoDocking)) {
                     ImGui::Text("%s", (T::display_name + " Settings").c_str());
-                    if (ImGui::Button(ICON_FA_TRASH " Remove Component", ImVec2(200, 0))) {
+                    if (T::display_name != "Transform" && ImGui::Button(ICON_FA_TRASH " Remove Component", ImVec2(200, 0))) {
                         removed = true;
                         registry.remove<T>(entity);
-                        ImGui::CloseCurrentPopup();
+                        component_settings_gui = false;
                     }
-                    ImGui::EndPopup();
+                    ImGui::End();
                 }
 
                 const ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_AllowItemOverlap | ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_SpanAvailWidth;
                 bool treeNodeOpen = ImGui::TreeNodeEx(typeid(T).name(), flags, T::display_name.c_str());
                 ImGui::SameLine(ImGui::GetWindowWidth() - offset);
                 if (ImGui::Button(ICON_FA_GEAR, ImVec2(20, 20))) {
-                    ImGui::OpenPopup(("ComponentSettings_" + T::display_name).c_str());
+                    component_settings_gui = !component_settings_gui;
                 }
                 if (treeNodeOpen) {
                     if (!removed)

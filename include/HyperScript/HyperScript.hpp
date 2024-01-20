@@ -69,7 +69,9 @@ namespace HyperScript {
         LAMBDA,
         _NULL,
         _EOL,
-        COMMENT
+        COMMENT,
+        BREAK,
+        CONTINUE
     };
 
     struct Token {
@@ -145,6 +147,9 @@ namespace HyperScript {
 
     struct Function {
         bool is_global = true;
+        bool limitless_args = false;
+        bool break_loop = false;
+        bool continue_loop = false;
         std::string name;
         std::vector<Variable> arguments;
         std::vector<std::string> argument_names;
@@ -237,7 +242,9 @@ namespace HyperScript {
             Token *previous_bracket = nullptr;
             bool var_strict = false;
             bool var_readonly = false;
+            bool isWhile = false;
             Function *m_Func = nullptr;
+            Function *func_scope_ref = nullptr;
             std::unordered_map<uint64_t, std::shared_ptr<Variable>> *variables;
         };
 
@@ -267,7 +274,7 @@ namespace HyperScript {
             //
         };
 
-        Keyword keywords[33] = {
+        Keyword keywords[35] = {
             Keyword{"var", VAR},
             Keyword{"ptr", PTR},
             Keyword{"free", DELETE},
@@ -301,6 +308,8 @@ namespace HyperScript {
             Keyword{"template", TEMPLATE},
             Keyword{"struct", TEMPLATE},
             Keyword{"lambda", LAMBDA},
+            Keyword{"break", BREAK},
+            Keyword{"continue", CONTINUE},
 
             //
         };
@@ -311,6 +320,7 @@ namespace HyperScript {
         uint64_t current_max_address = 0x0;
 
         static void Print(Function *func);
+        static void Println(Function *func);
         static void FUNC_GetVariable(Function *func);
         static void FUNC_CreateVariable(Function *func);
         static void FUNC_array_size(Function *func);
@@ -349,6 +359,8 @@ namespace HyperScript {
         std::unordered_map<std::string, std::shared_ptr<Template>> structure_templates;
         std::vector<std::unordered_map<uint64_t, std::shared_ptr<Variable>> *> scope_variables;
         std::unordered_map<uint64_t, std::shared_ptr<Variable>> *current_scope_variables;
+        Function *scope_func = nullptr;
+        Function *FuncReturnRef = nullptr;
 
         std::shared_ptr<Template> GetTemplate(const std::string &name);
         std::shared_ptr<Template> CreateTemplate(const std::string &name, const std::string &json_data);
