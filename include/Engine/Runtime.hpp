@@ -13,6 +13,7 @@ namespace Engine {
 
     public:
         int width, height;
+        static DLL_API void AspectRatioCameraViewport();
         static DLL_API Runtime *instance;
         static DLL_API VaultRenderer::Shader *default_shader;
         VaultRenderer::ShadowMap *shadowMap;

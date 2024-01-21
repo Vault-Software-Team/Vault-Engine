@@ -11,6 +11,21 @@
 namespace VaultRenderer {
     DLL_API Window *Window::window;
 
+    void Window::AspectRatioCameraViewport() {
+        float targetAspectRatio = (float)targetWidth / (float)targetHeight;
+
+        int aspectWidth = VaultRenderer::Window::window->width;
+        int aspectHeight = (int)((float)aspectWidth / targetAspectRatio);
+        if (aspectHeight > VaultRenderer::Window::window->height) {
+            aspectHeight = VaultRenderer::Window::window->height;
+            aspectWidth = (int)((float)aspectHeight * targetAspectRatio);
+        }
+        int vpX = (int)(((float)VaultRenderer::Window::window->width / 2.0f) - ((float)aspectWidth / 2.0f));
+        int vpY = (int)(((float)VaultRenderer::Window::window->height / 2.0f) - ((float)aspectHeight / 2.0f));
+
+        glViewport(vpX, vpY, aspectWidth, aspectHeight);
+    }
+
     Window::Window(const int width, const int height, const char *title, bool draw_screen) : width(width), height(height), title(title) {
         window = this;
         glfwInit();

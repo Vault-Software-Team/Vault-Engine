@@ -15,7 +15,7 @@ namespace HyperScript {
         }
         std::cout << "[print] " << to_print;
 
-        func->SetReturn("80085", GT_NUMBER);
+        func->SetReturn("1", GT_NUMBER);
     }
 
     void ScriptEngine::Println(Function *func) {
@@ -25,7 +25,7 @@ namespace HyperScript {
         }
         std::cout << "[print] " << to_print << "\n";
 
-        func->SetReturn("80085", GT_NUMBER);
+        func->SetReturn("1", GT_NUMBER);
     }
 
     void ScriptEngine::FUNC_GetVariable(Function *func) {

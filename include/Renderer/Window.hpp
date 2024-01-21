@@ -27,6 +27,7 @@ namespace VaultRenderer {
 
         int width;
         int height;
+        const int targetWidth = 1920, targetHeight = 1080;
         float gamma = 2.2;
         std::string title;
 
@@ -36,6 +37,7 @@ namespace VaultRenderer {
         void SetClearColor(const float r, const float g, const float b);
         void SetClearColor(const uint32_t hex_color);
         void SetViewport(const int width, const int height);
+        void AspectRatioCameraViewport();
 
     private:
         static DLL_API void FramebufferSizeCallback(GLFWwindow *window, int width, int height);

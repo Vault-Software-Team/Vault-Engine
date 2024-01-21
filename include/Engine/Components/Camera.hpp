@@ -26,6 +26,7 @@ namespace Engine {
             // Camera Properties
             float fov = 45, near = 0.1, far = 100.0;
             bool main_camera = false;
+            bool is2D = false;
 
             void UpdateMatrix();
             void BindToShader(VaultRenderer::Shader &shader);

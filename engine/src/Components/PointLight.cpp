@@ -97,7 +97,7 @@ namespace Engine::Components {
         }
 
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        glViewport(0, 0, VaultRenderer::Window::window->width, VaultRenderer::Window::window->height);
+        VaultRenderer::Window::window->AspectRatioCameraViewport();
     }
 
     void PointLight::OnGUI() {

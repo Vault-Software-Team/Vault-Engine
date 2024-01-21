@@ -67,7 +67,7 @@ namespace Engine {
         default_shader->SetUniform1i("spot_light_count", Engine::Scene::Main->EntityRegistry.view<Engine::Components::SpotLight>().size());
     }
 
-    void AspectRatioCameraViewport() {
+    void Runtime::AspectRatioCameraViewport() {
         const int targetWidth = 1920, targetHeight = 1080;
         float targetAspectRatio = (float)targetWidth / (float)targetHeight;
 
@@ -137,7 +137,7 @@ namespace Engine {
         }
 
         shadowMap.Unbind();
-        glViewport(0, 0, VaultRenderer::Window::window->width, VaultRenderer::Window::window->height);
+        VaultRenderer::Window::window->AspectRatioCameraViewport();
     }
 
     void Runtime::ShadowShenanigans(VaultRenderer::ShadowMap &shadow_map) {

@@ -106,7 +106,7 @@ namespace VaultRenderer {
         framebuffer->height = height;
 
         if (draw_screen) {
-            glViewport(0, 0, VaultRenderer::Window::window->width, VaultRenderer::Window::window->height);
+            VaultRenderer::Window::window->AspectRatioCameraViewport();
             glDisable(GL_CULL_FACE);
             shader.Bind();
             Unbind();
@@ -125,7 +125,7 @@ namespace VaultRenderer {
             glClearColor(0, 0, 0, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-            glViewport(0, 0, VaultRenderer::Window::window->width, VaultRenderer::Window::window->height);
+            VaultRenderer::Window::window->AspectRatioCameraViewport();
             // Enable Depth
             glEnable(GL_DEPTH_TEST);
 
@@ -148,7 +148,7 @@ namespace VaultRenderer {
 
         Unbind();
         // glEnable(GL_CULL_FACE);
-        glViewport(0, 0, VaultRenderer::Window::window->width, VaultRenderer::Window::window->height);
+        VaultRenderer::Window::window->AspectRatioCameraViewport();
     }
 
     void Framebuffer::AddColorAttachement(uint32_t attachement) {

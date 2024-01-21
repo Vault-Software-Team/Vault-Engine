@@ -12,11 +12,21 @@
 namespace Engine::Components {
     void Camera::UpdateMatrix() {
         view = glm::lookAt(transform->position, transform->position + transform->rotation, up);
-        projection = glm::perspective(glm::radians(fov), (float)VaultRenderer::Window::window->width / VaultRenderer::Window::window->height, near, far);
+        const float aspect = (float)VaultRenderer::Window::window->targetWidth / VaultRenderer::Window::window->targetHeight;
+        if (!is2D) {
+            // Isn't 2D
+            projection = glm::perspective(glm::radians(fov), aspect, near, far);
+            projection = glm::scale(projection, glm::vec3(transform->scale.x, transform->scale.y, 1.0f));
+        } else {
+            // Is 2D
+            projection = glm::ortho(-aspect, aspect, -1.0f, 1.0f, near, far);
+            projection = glm::scale(projection, glm::vec3(transform->scale.x, transform->scale.y, 1.0f));
+        }
     }
 
     void Camera::Init() {
         transform = static_registry ? &Scene::StaticGameObjects_EntityRegistry.get<Transform>(entity) : &Scene::Main->EntityRegistry.get<Transform>(entity);
+        transform->rotation.z = -1;
     }
 
     void Camera::BindToShader(VaultRenderer::Shader &shader) {
@@ -66,6 +76,8 @@ namespace Engine::Components {
         }
 
         // Mouse Input
+        if (is2D) return;
+
         if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_RELEASE) {
             glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
             first_click = true;
@@ -105,6 +117,7 @@ namespace Engine::Components {
             ImGui::DragFloat("Near", &near, 0.1f, 0.0f);
             ImGui::DragFloat("Far", &far, 0.1f, 0.0f);
             ImGui::Checkbox("Main Camera", &main_camera);
+            ImGui::Checkbox("2D", &is2D);
 
             // if (ImGui::Button(check_scene_cam ? "Stop viewing as Scene Camera" : "View as Scene Camera"))
 
