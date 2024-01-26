@@ -20,7 +20,6 @@
 #include <Engine/Scripting/LoadScripts.hpp>
 #include <dlfcn.h>
 #include <script_test.hpp>
-#include <Engine/Scripting/AngelScript.hpp>
 #include <HyperScript/HyperScript.hpp>
 static VaultRenderer::Shader *default_shader;
 
@@ -84,8 +83,8 @@ int main() {
     // script->Start();
 
     HyperScript::ScriptEngine SE;
-    SE.LoadScript("test", "../assets/scripts/test.hyper");
-    SE.JustRunTheScript(SE.GetModule("test"));
+    // SE.LoadScript("test", "../assets/scripts/test.hyper");
+    // SE.JustRunTheScript(SE.GetModule("test"));
 
     Window window(1280, 720, "Vault Engine");
     Statistics::SetStats();

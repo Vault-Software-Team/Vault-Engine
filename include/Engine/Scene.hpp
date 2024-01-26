@@ -52,6 +52,10 @@ namespace Engine {
         void Setup2DPhysicsWorld();
         void Step2DPhysicsWorld(const float ts);
 
+        // Scripting Calls
+        void SetupHyperScript();
+        void UpdateHyperScript();
+
         Scene(const std::string &scene_file);
         ~Scene();
     };

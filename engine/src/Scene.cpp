@@ -232,8 +232,28 @@ namespace Engine {
         }
     }
 
+    void Scene::SetupHyperScript() {
+        auto view = EntityRegistry.view<Components::HyperScriptManager>();
+
+        for (auto e : view) {
+            auto &manager = EntityRegistry.get<Components::HyperScriptManager>(e);
+            manager.Scripts_OnStart();
+        }
+    }
+
+    void Scene::UpdateHyperScript() {
+        if (!Runtime::instance->isRunning) return;
+        auto view = EntityRegistry.view<Components::HyperScriptManager>();
+
+        for (auto e : view) {
+            auto &manager = EntityRegistry.get<Components::HyperScriptManager>(e);
+            manager.Update();
+        }
+    }
+
     void Scene::OnRuntimeStart() {
         Setup2DPhysicsWorld();
+        SetupHyperScript();
     }
 
     void Scene::OnRuntimeStop() {
@@ -242,5 +262,6 @@ namespace Engine {
 
     void Scene::OnRuntimeUpdate(const float ts) {
         Step2DPhysicsWorld(ts);
+        UpdateHyperScript();
     }
 } // namespace Engine

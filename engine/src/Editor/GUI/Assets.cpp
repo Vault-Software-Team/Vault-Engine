@@ -49,6 +49,9 @@ void DirectoryIterator(const std::string &str, const char *filter_str) {
             if (name.ends_with(".vault")) {
                 icon = ICON_FA_CUBES_STACKED;
             }
+            if (name.ends_with(".hyper")) {
+                icon = ICON_FA_CODE;
+            }
 
             bool pressed = ImGui::Selectable((icon + " " + dir.path().filename().string()).c_str());
             if (ImGui::IsMouseDoubleClicked(0) && ImGui::IsItemHovered()) {
@@ -74,6 +77,8 @@ void DirectoryIterator(const std::string &str, const char *filter_str) {
                     ImGui::SetDragDropPayload("scene_file", dir.path().string().c_str(), length + 1);
                 } else if (name.ends_with(".obj") || name.ends_with(".blender") || name.ends_with(".dae") || name.ends_with(".gltf") || name.ends_with(".fbx")) {
                     ImGui::SetDragDropPayload("model_file", dir.path().string().c_str(), length + 1);
+                } else if (name.ends_with(".hyper")) {
+                    ImGui::SetDragDropPayload("hyperscript_file", dir.path().string().c_str(), length + 1);
                 }
                 ImGui::Text("%s %s", icon.c_str(), dir.path().filename().string().c_str());
                 ImGui::EndDragDropSource();

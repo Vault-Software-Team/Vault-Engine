@@ -13,7 +13,7 @@ namespace HyperScript {
         for (auto &arg : func->arguments) {
             to_print += arg.value;
         }
-        std::cout << "[print] " << to_print;
+        std::cout << to_print;
 
         func->SetReturn("1", GT_NUMBER);
     }
@@ -23,7 +23,7 @@ namespace HyperScript {
         for (auto &arg : func->arguments) {
             to_print += arg.value;
         }
-        std::cout << "[print] " << to_print << "\n";
+        std::cout << to_print << "\n";
 
         func->SetReturn("1", GT_NUMBER);
     }
@@ -91,16 +91,16 @@ namespace HyperScript {
     void Variable::RemoveRef(void *engine, bool freeing_currently) {
         this->engine = engine;
         ref_count--;
-        std::cout << name << " : " << ref_count << "\n";
+        // std::cout << name << " : " << ref_count << "\n";
         if (ref != nullptr && ref != this) {
             ref->RemoveRef(engine, freeing_currently);
         }
 
-        if (ref)
-            std::cout << "COUNT: " << ref->ref_count << "\n";
+        // if (ref)
+        // std::cout << "COUNT: " << ref->ref_count << "\n";
 
         if (ref_count <= 0 && !freeing_currently) {
-            std::cout << "freeing\n";
+            // std::cout << "freeing\n";
             ((ScriptEngine *)engine)->FreeVariable(addr);
         }
     }
@@ -119,6 +119,7 @@ namespace HyperScript {
         ScriptEngine *engine = (ScriptEngine *)m_Engine;
         for (auto &[key, value] : obj.items()) {
             std::cout << parent_starter + "." + key << "\n";
+            // std::cout << parent_starter + "." + key << "\n";
             if (value.is_object()) {
                 auto var = engine->CreateVariable(*engine->current_scope_variables, GT_OBJECT, parent_starter + "." + key, nlohmann::to_string(value));
                 var->parent_json = this;
@@ -138,7 +139,7 @@ namespace HyperScript {
                 continue;
             }
 
-            std::cout << key << " -- " << value << "\n";
+            // std::cout << key << " -- " << value << "\n";
 
             if (value.is_string()) {
                 auto var = engine->CreateVariable(*engine->current_scope_variables, GT_STRING, parent_starter + "." + key, (std::string)value);
@@ -162,6 +163,7 @@ namespace HyperScript {
         for (auto addr : json_variable_tracking) {
             ((ScriptEngine *)m_Engine)->FreeVariable(addr);
         }
+        json_variable_tracking.clear();
         json_handle = nlohmann::json::parse(value);
 
         PushJSONVariables(m_Engine, json_handle, name);
@@ -734,7 +736,7 @@ namespace HyperScript {
     }
 
     void ScriptEngine::__ExecuteModuleRoot(ScriptEngine::UnionOfState &state_union, Module &s_Module) {
-        const static bool debug = true;
+        const static bool debug = false;
         auto *varBackup = state_union.variables;
         current_scope_variables = varBackup;
 
@@ -771,8 +773,10 @@ namespace HyperScript {
                             throw std::runtime_error("Variable " + var->name + " only accepts values: " + values);
                         }
 
-                        var->value = value;
                         var->type = type;
+                        if (var->setter) var->setter->call(var, var->value, value);
+                        var->value = value;
+
                     } else {
                         std::string types;
                         bool type_found = false;
@@ -788,8 +792,9 @@ namespace HyperScript {
                             throw std::runtime_error("Variable " + var->name + " only accepts types: " + types);
                         }
 
-                        var->value = value;
                         var->type = type;
+                        if (var->setter) var->setter->call(var, var->value, value);
+                        var->value = value;
                     }
                 } else {
                     if (var->readonly) {
@@ -803,6 +808,7 @@ namespace HyperScript {
                 }
 
                 var->type = type;
+                if (var->setter) var->setter->call(var, var->value, value);
                 var->value = value;
                 if (state_union.var_readonly) {
                     var->readonly = state_union.var_readonly;
@@ -964,6 +970,7 @@ namespace HyperScript {
 
                     if (typeof_ToSet) {
                         state_union.value.variable->custom_type = typeof_ToSet;
+                        state_union.value.variable->setter = typeof_ToSet->setter;
                         typeof_ToSet = nullptr;
                     }
 
@@ -1078,7 +1085,7 @@ namespace HyperScript {
                         if (var->type == GT_ARRAY) {
                             var_array_backup = var.get();
                         } else {
-                            std::cout << var->name << "\n";
+                            // std::cout << var->name << "\n";
                             PushArgumentToFunction(state_union.value.function, *var);
                         }
                     } else if (func) {
@@ -1152,7 +1159,14 @@ namespace HyperScript {
                         state_union.value.variable->readonly = state_union.var_readonly;
 
                     state_union.var_readonly = false;
-                    std::cout << token.value << "\n";
+
+                    if (isRef) {
+                        state_union.value.variable->isRef = true;
+                        state_union.value.variable->ref = state_union.value.variable;
+                        state_union.value.variable->AddRef(this);
+                        isRef = false;
+                    }
+                    // std::cout << token.value << "\n";
                     break;
                 }
                 case FUNCTION_DECLARATION: {
@@ -1436,6 +1450,14 @@ namespace HyperScript {
                 break;
             }
             case OBJ: {
+                if (state_union.state == REF_VARIABLE_SETTING) {
+                    isRef = true;
+                }
+
+                if (state_union.state == GLOBAL_VARIABLE_SETTING) {
+                    isGlobal = true;
+                }
+
                 SetState(OBJ_DECLARATION);
                 break;
             }
@@ -1534,9 +1556,10 @@ namespace HyperScript {
                     rtrim(temp);
 
                     auto s_Template = GetTemplate(temp);
-                    if (s_Template)
+                    if (s_Template) {
                         state_union.value.variable->value = s_Template->json_value;
-                    else
+                        state_union.value.variable->setter = s_Template->setter;
+                    } else
                         state_union.value.variable->value = token.value;
 
                     state_union.value.variable->LoadValueToJSONHandle(this);
@@ -2241,4 +2264,7 @@ namespace HyperScript {
         return structure_templates[name];
     }
 
+    std::shared_ptr<Variable::Type::VariableSetter> CreateVariableSetter(std::function<void(Variable *v, const std::string &old_value, const std::string &new_value)> callback) {
+        return std::make_shared<Variable::Type::VariableSetter>(callback);
+    }
 } // namespace HyperScript

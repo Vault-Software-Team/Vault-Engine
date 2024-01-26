@@ -94,19 +94,21 @@ namespace HyperScript {
         GT_ANY,
         GT_TYPEDEF,
         GT_ARRAY,
-        GT_LAMBDA
-    };
-
-    struct Template {
-        std::string json_value;
-        std::string name;
+        GT_LAMBDA,
+        GT_NONE
     };
 
     struct Variable {
         struct Type {
+            struct VariableSetter {
+                std::function<void(Variable *v, const std::string &old_value, const std::string &new_value)> call;
+            };
+
             bool value_based = false;
             std::vector<GenericType> allowed_types;
             std::vector<std::string> allowed_value;
+            // Setter
+            std::shared_ptr<VariableSetter> setter = nullptr;
         };
 
         GenericType type;
@@ -135,6 +137,9 @@ namespace HyperScript {
 
         void *engine;
 
+        // Setter
+        std::shared_ptr<Type::VariableSetter> setter = nullptr;
+
         ~Variable();
 
         void SetType(const std::string &name, void *engine);
@@ -143,6 +148,12 @@ namespace HyperScript {
         void PushToJSONArray(GenericType type, const std::string &value);
         void AddRef(void *engine);
         void RemoveRef(void *engine, bool freeing_currently = false);
+    };
+
+    struct Template {
+        std::string json_value;
+        std::string name;
+        std::shared_ptr<Variable::Type::VariableSetter> setter = nullptr;
     };
 
     struct Function {
@@ -357,10 +368,14 @@ namespace HyperScript {
     public:
         std::unordered_map<uint64_t, std::shared_ptr<Variable>> variables;
         std::unordered_map<std::string, std::shared_ptr<Template>> structure_templates;
+        std::unordered_map<std::string, std::shared_ptr<Variable::Type::VariableSetter>> variable_setters;
         std::vector<std::unordered_map<uint64_t, std::shared_ptr<Variable>> *> scope_variables;
         std::unordered_map<uint64_t, std::shared_ptr<Variable>> *current_scope_variables;
+
         Function *scope_func = nullptr;
         Function *FuncReturnRef = nullptr;
+
+        std::shared_ptr<Variable::Type::VariableSetter> CreateVariableSetter(const std::string &name, std::function<void(Variable *v, const std::string &old_value, const std::string &new_value)> callback);
 
         std::shared_ptr<Template> GetTemplate(const std::string &name);
         std::shared_ptr<Template> CreateTemplate(const std::string &name, const std::string &json_data);

@@ -1,0 +1,6 @@
+func OnStart() {
+    obj transform<Transform>;
+}
+
+func OnUpdate(ts) {
+}
