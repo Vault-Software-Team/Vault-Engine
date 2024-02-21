@@ -226,7 +226,7 @@ int main() {
     unsetenv("TERM");
 
     CSharp csharp("../mono/lib");
-    csharp.ReloadAssembly();
+    // csharp.ReloadAssembly();
 
     window.Run([&] {
         static double lastTime = 0;

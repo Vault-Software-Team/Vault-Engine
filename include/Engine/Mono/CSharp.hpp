@@ -6,6 +6,9 @@
 #include <mono/metadata/assembly.h>
 #include <string>
 
+typedef void (*OnStartType)(MonoObject *, MonoObject **);
+typedef void (*OnUpdateType)(MonoObject *, MonoObject **);
+
 namespace Engine {
     class CSharp {
     public:
@@ -23,6 +26,8 @@ namespace Engine {
         void InitRuntime();
         void InitMono();
         void ReloadAssembly();
+        void RegisterFunction(const std::string &cs_path, void *func);
+        void RegisterVaultFunctions();
         static MonoImage *GetImage(MonoAssembly *core_assembly);
     };
 
@@ -38,5 +43,18 @@ namespace Engine {
         void *GetThunkFromMethod(MonoMethod *method);
         void *GetMethodThunk(const std::string &name, int param_count);
         MonoObject *GetHandleTarget();
+    };
+
+    class ScriptClass : public CSharpClass {
+    public:
+        OnUpdateType update_thunk;
+        OnStartType start_thunk;
+        MonoMethod *update_method;
+        MonoMethod *start_method;
+
+        ScriptClass(MonoImage *image, const std::string &name_space, const std::string &name);
+
+        void OnStart(const std::string &gameObject_ID);
+        void OnUpdate();
     };
 } // namespace Engine

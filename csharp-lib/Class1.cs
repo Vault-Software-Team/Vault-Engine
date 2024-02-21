@@ -2,11 +2,12 @@
 using Vault;
 
 public class MyScript : Entity {
-    void OnStart() {
-        Console.WriteLine("Heyy!! from start");
+    void OnStart(string GameObjectID) {
+        this.ID = GameObjectID;
+        Console.WriteLine("ID: " + this.ID);
     }
 
     void OnUpdate() {
-
+        Console.WriteLine("ERMM");
     }
 }

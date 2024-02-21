@@ -1,4 +1,5 @@
 #include "mono/metadata/assembly.h"
+#include "mono/metadata/loader.h"
 #include "mono/metadata/object-forward.h"
 #include "mono/metadata/object.h"
 #include <Engine/Mono/CSharp.hpp>
@@ -7,8 +8,6 @@
 #include <mono/metadata/appdomain.h>
 #include <fstream>
 #include <filesystem>
-
-typedef void (*OnStartType)(MonoObject *, MonoObject **);
 
 namespace fs = std::filesystem;
 
@@ -107,21 +106,31 @@ namespace Engine {
         PrintAssemblyTypes(core_assembly);
 
         core_assembly_image = GetImage(core_assembly);
-        CSharpClass klass(core_assembly_image, "", "MyScript");
-        auto OnStart_Thunk = (OnStartType)klass.GetMethodThunk("OnStart", 0);
-        MonoObject *exception = nullptr;
-        OnStart_Thunk(klass.GetHandleTarget(), &exception);
+        // CSharpClass klass(core_assembly_image, "", "MyScript");
+        ScriptClass klass(core_assembly_image, "", "MyScript");
+        klass.OnStart("someid-1234");
+        klass.OnUpdate();
 
-        if (exception) {
-            MonoObject *exc = NULL;
-            MonoString *str = mono_object_to_string(exception, &exc);
-            if (exc) {
-                mono_print_unhandled_exception(exc);
-            } else {
-                std::cout << mono_string_to_utf8(str) << "\n";
-                // Log log(mono_string_to_utf8(str), LOG_ERROR);
-            }
-        }
+        // // MonoObject *__exception = nullptr;
+        // // void *params = mono_string_new(app_domain, "someid");
+        // // mono_runtime_invoke(klass.GetMethod("Init", 1), klass.GetHandleTarget(), &params, &__exception);
+        // // auto SetObjectID_Thunk = (SetObjectIDType)klass.GetMethodThunk("SetObjectID", 1);
+        // // SetObjectID_Thunk(klass.GetHandleTarget(), &params, &__exception);
+
+        // // auto OnStart_Thunk = (OnStartType)klass.GetMethodThunk("OnStart", 0);
+        // // MonoObject *exception = nullptr;
+        // // OnStart_Thunk(klass.GetHandleTarget(), &exception);
+
+        // // if (exception) {
+        // //     MonoObject *exc = NULL;
+        // //     MonoString *str = mono_object_to_string(exception, &exc);
+        // //     if (exc) {
+        // //         mono_print_unhandled_exception(exc);
+        // //     } else {
+        // //         std::cout << mono_string_to_utf8(str) << "\n";
+        // //         // Log log(mono_string_to_utf8(str), LOG_ERROR);
+        // //     }
+        // // }
     }
 
     void CSharp::ReloadAssembly() {
@@ -133,6 +142,18 @@ namespace Engine {
 
         InitMono();
     }
+
+    void func() {
+    }
+
+    void CSharp::RegisterVaultFunctions() {
+        RegisterFunction("Raah", (void *(*))func);
+    }
+
+    void CSharp::RegisterFunction(const std::string &cs_path, void *func) {
+        mono_add_internal_call(cs_path.c_str(), func);
+    }
+
     CSharp::CSharp(const std::string &lib_path, const std::string &runtime_name, const std::string &appdomain_name) : runtime_name(runtime_name), appdomain_name(appdomain_name) {
         instance = this;
         InitMono();
@@ -165,5 +186,46 @@ namespace Engine {
 
     MonoObject *CSharpClass::GetHandleTarget() {
         return mono_gchandle_get_target(gc_handle);
+    }
+
+    ScriptClass::ScriptClass(MonoImage *image, const std::string &name_space, const std::string &name) : CSharpClass(image, name_space, name) {
+        update_method = GetMethod("OnUpdate", 0);
+        update_thunk = (OnUpdateType)GetMethodThunk("OnUpdate", 0);
+
+        start_method = GetMethod("OnStart", 1);
+        start_thunk = (OnStartType)GetThunkFromMethod(start_method);
+    }
+
+    void ScriptClass::OnStart(const std::string &gameObject_ID) {
+        MonoObject *exception = nullptr;
+        void *p = mono_string_new(CSharp::instance->app_domain, gameObject_ID.c_str());
+        mono_runtime_invoke(start_method, GetHandleTarget(), &p, &exception);
+
+        if (exception) {
+            MonoObject *exc = NULL;
+            MonoString *str = mono_object_to_string(exception, &exc);
+            if (exc) {
+                mono_print_unhandled_exception(exc);
+            } else {
+                std::cout << mono_string_to_utf8(str) << "\n";
+                // Log log(mono_string_to_utf8(str), LOG_ERROR);
+            }
+        }
+    }
+
+    void ScriptClass::OnUpdate() {
+        MonoObject *exception = nullptr;
+        mono_runtime_invoke(update_method, GetHandleTarget(), nullptr, &exception);
+
+        if (exception) {
+            MonoObject *exc = NULL;
+            MonoString *str = mono_object_to_string(exception, &exc);
+            if (exc) {
+                mono_print_unhandled_exception(exc);
+            } else {
+                std::cout << mono_string_to_utf8(str) << "\n";
+                // Log log(mono_string_to_utf8(str), LOG_ERROR);
+            }
+        }
     }
 } // namespace Engine
