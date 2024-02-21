@@ -1,5 +1,26 @@
+typedef MyType<number>;
+
+lambda MySetter = (address, value) {
+    println("Setting: " address " " value);
+    return 69420;
+    println("ERMM");
+}
+
+func GetSomething() {
+    return 420;
+}
+
+lambda MyGetter = (_) {
+    var smth = GetSomething();
+    return smth;
+}
+
+getter("MyType", MyGetter);
+
 func OnStart() {
-    obj transform<Transform>;
+    typeof<MyType> var myNumber = 15;
+    var myOtherVar = myNumber;
+    println("MyOtherVar: " myOtherVar);
 }
 
 func OnUpdate(ts) {

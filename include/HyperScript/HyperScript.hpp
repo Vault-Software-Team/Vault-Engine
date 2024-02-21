@@ -105,6 +105,7 @@ namespace HyperScript {
             };
 
             bool value_based = false;
+            std::string name;
             std::vector<GenericType> allowed_types;
             std::vector<std::string> allowed_value;
             // Setter
@@ -337,6 +338,9 @@ namespace HyperScript {
         static void FUNC_array_size(Function *func);
         static void FUNC_push_back(Function *func);
         static void FUNC_ref_count(Function *func);
+        static void FUNC_ptr_to_ref(Function *func);
+        static void FUNC_setter(Function *func);
+        static void FUNC_getter(Function *func);
 
         // Module name as key
         std::unordered_map<std::string, Module> modules;
@@ -367,6 +371,8 @@ namespace HyperScript {
 
     public:
         std::unordered_map<uint64_t, std::shared_ptr<Variable>> variables;
+        std::unordered_map<std::string, Variable> setters;
+        std::unordered_map<std::string, Variable> getters;
         std::unordered_map<std::string, std::shared_ptr<Template>> structure_templates;
         std::unordered_map<std::string, std::shared_ptr<Variable::Type::VariableSetter>> variable_setters;
         std::vector<std::unordered_map<uint64_t, std::shared_ptr<Variable>> *> scope_variables;
@@ -374,6 +380,8 @@ namespace HyperScript {
 
         Function *scope_func = nullptr;
         Function *FuncReturnRef = nullptr;
+        Function *PrevFuncReturnRef = nullptr;
+        std::vector<Function*> prev_returns = {};
 
         std::shared_ptr<Variable::Type::VariableSetter> CreateVariableSetter(const std::string &name, std::function<void(Variable *v, const std::string &old_value, const std::string &new_value)> callback);
 

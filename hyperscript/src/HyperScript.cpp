@@ -65,6 +65,35 @@ namespace HyperScript {
         Variable arg_val = func->arguments[0];
         func->SetReturn(std::to_string(arg_val.ref_count), GT_NUMBER);
     }
+
+    void ScriptEngine::FUNC_setter(Function *func) {
+        Variable &type_name = func->arguments[0];
+        Variable &lambda = func->arguments[1];
+
+        std::cout << "FUNC_setter: " << type_name.value << "\n"; 
+        // lambda.CallLambda();        
+        ((ScriptEngine*)func->engine)->setters[type_name.value] = lambda;
+    }
+
+    void ScriptEngine::FUNC_getter(Function *func) {
+        Variable &type_name = func->arguments[0];
+        Variable &lambda = func->arguments[1];
+
+        std::cout << "FUNC_getter: " << type_name.value << "\n"; 
+        // lambda.CallLambda();        
+        ((ScriptEngine*)func->engine)->getters[type_name.value] = lambda;
+    }
+
+    void ScriptEngine::FUNC_ptr_to_ref(Function *func){
+        ScriptEngine *engine = (ScriptEngine*)func->engine;
+        Variable &address = func->arguments[0];
+        
+        std::shared_ptr<Variable> addr_var = engine->GetVariable(std::atoi(address.value.c_str()));
+        func->SetReturn(addr_var->value, addr_var->type, addr_var->custom_type);
+        func->return_value.isRef = true;
+        func->return_value.ref = addr_var.get();
+        func->return_value.AddRef(engine);
+    }
 } // namespace HyperScript
 
 namespace HyperScript {
@@ -280,6 +309,17 @@ namespace HyperScript {
 
         auto f_RefCount = CreateFunction("ref_count", 1, FUNC_ref_count);
         f_RefCount->argument_names.push_back("ref_var");
+
+        auto f_Setter = CreateFunction("setter", 2, FUNC_setter);
+        f_Setter->argument_names.push_back("type_name");
+        f_Setter->argument_names.push_back("_lambda");
+
+        auto f_Getter = CreateFunction("getter", 2, FUNC_getter);
+        f_Getter->argument_names.push_back("type_name");
+        f_Getter->argument_names.push_back("_lambda");
+
+        auto f_PtrToRef = CreateFunction("ptr_to_ref", 1, FUNC_ptr_to_ref);
+        f_PtrToRef->argument_names.push_back("addr");
     }
 
     Module &ScriptEngine::LoadScript(const std::string &module_name, const std::string &script_path) {
@@ -640,8 +680,21 @@ namespace HyperScript {
             auto v = GetVariable(line);
             if (v) {
                 if (v->type == GT_NUMBER) {
-                    symbols[v->name] = std::atoi(v->value.c_str());
-                    symbol_table.add_variable(v->name, symbols[v->name]);
+                    Variable *_v = nullptr;
+                    if(v->custom_type) {
+                        auto f_getter = getters.find(v->custom_type->name);
+                        if(f_getter != getters.end()) {
+                            PushArgumentToFunction((Function*)f_getter->second.func_lambda.get(), *v);
+                            f_getter->second.CallLambda();
+                            _v = &((Function *)f_getter->second.func_lambda.get())->return_value;
+                            // SetVariableValue(((Function *)f_getter->second.func_lambda.get())->return_value.type, ((Function *)f_getter->second.func_lambda.get())->return_value.value, "679");
+                        }
+                    } 
+
+                    if(!_v) _v = v.get();
+
+                    symbols[v->name] = std::atoi(_v->value.c_str());
+                    symbol_table.add_variable(_v->name, symbols[_v->name]);
                 }
             }
         }
@@ -666,17 +719,29 @@ namespace HyperScript {
         while (std::getline(ss, line, ' ')) {
             auto v = GetVariable(scope_variables, line);
             if (v) {
-                switch (v->type) {
+                Variable *_v = nullptr;
+                if(v->custom_type) {
+                    auto f_getter = getters.find(v->custom_type->name);
+                    if(f_getter != getters.end()) {
+                        PushArgumentToFunction((Function*)f_getter->second.func_lambda.get(), *v);
+                        f_getter->second.CallLambda();
+                        _v = &((Function *)f_getter->second.func_lambda.get())->return_value;
+                        // SetVariableValue(((Function *)f_getter->second.func_lambda.get())->return_value.type, ((Function *)f_getter->second.func_lambda.get())->return_value.value, "679");
+                    }
+                }
+                if(!_v) _v = v.get();
+                
+                switch (_v->type) {
                 case GT_NUMBER: {
-                    vars[v->name] = std::atoi(v->value.c_str());
+                    vars[_v->name] = std::atoi(_v->value.c_str());
                     break;
                 }
                 case GT_BOOLEAN: {
-                    vars[v->name] = v->value == "true" ? true : false;
+                    vars[_v->name] = _v->value == "true" ? true : false;
                     break;
                 }
                 default: {
-                    vars[v->name] = v->value;
+                    vars[_v->name] = _v->value;
                     break;
                 }
                 }
@@ -744,7 +809,7 @@ namespace HyperScript {
             state_union.state = state;
         };
 
-        auto SetVariableValue = [&](GenericType type, const std::string &value, std::string line, Variable *var = nullptr) {
+        auto SetVariableValue = [&](GenericType type, const std::string &value, std::string line, Variable *var = nullptr, bool use_setter = true) {
             if (var == nullptr)
                 var = state_union.value.variable;
 
@@ -774,8 +839,10 @@ namespace HyperScript {
                         }
 
                         var->type = type;
-                        if (var->setter) var->setter->call(var, var->value, value);
+                        // if (var->setter) var->setter->call(var, var->value, value);
                         var->value = value;
+
+                        // Variable &setter = setters[var->custom_type.]
 
                     } else {
                         std::string types;
@@ -810,6 +877,19 @@ namespace HyperScript {
                 var->type = type;
                 if (var->setter) var->setter->call(var, var->value, value);
                 var->value = value;
+
+                if(use_setter) {
+                    auto f_setter = setters.find(var->custom_type->name);
+                    if(f_setter != setters.end()) {
+                        PushArgumentToFunction((Function*)f_setter->second.func_lambda.get(), std::to_string(var->addr));
+                        PushArgumentToFunction((Function*)f_setter->second.func_lambda.get(), value);
+                        f_setter->second.CallLambda();
+                        Function *fn = (Function*)f_setter->second.func_lambda.get();
+                        std::cout << "VALUE IS: \"" << fn->return_value.value << "\"\n";
+                        var->value = fn->return_value.value;
+                    }
+                }
+
                 if (state_union.var_readonly) {
                     var->readonly = state_union.var_readonly;
                 }
@@ -1021,8 +1101,18 @@ namespace HyperScript {
                                 //     }
                                 // }
                             }
-
-                            SetVariableValue(var->type, var->value, "679");
+                            if(var->custom_type) {
+                                auto f_getter = getters.find(var->custom_type->name);
+                                if(f_getter != getters.end()) {
+                                    PushArgumentToFunction((Function*)f_getter->second.func_lambda.get(), *var);
+                                    f_getter->second.CallLambda();
+                                    SetVariableValue(((Function *)f_getter->second.func_lambda.get())->return_value.type, ((Function *)f_getter->second.func_lambda.get())->return_value.value, "679");
+                                } else {
+                                    SetVariableValue(var->type, var->value, "679");
+                                }
+                            } else {
+                                SetVariableValue(var->type, var->value, "679");
+                            }
                         } else {
                             throw std::runtime_error("Invalid variable!");
                         }
@@ -1072,7 +1162,18 @@ namespace HyperScript {
                 case RETURN_CALLED_SET_VALUE: {
                     auto var = GetVariable(scope_variables, token.value);
                     if (var) {
-                        FuncReturnRef->SetReturn(var->value, var->type, var->custom_type);
+                        if(var->custom_type) {
+                            auto f_getter = getters.find(var->custom_type->name);
+                            if(f_getter != getters.end()) {
+                                PushArgumentToFunction((Function*)f_getter->second.func_lambda.get(), *var);
+                                f_getter->second.CallLambda();
+                                FuncReturnRef->SetReturn(((Function *)f_getter->second.func_lambda.get())->return_value.value, ((Function *)f_getter->second.func_lambda.get())->return_value.type, ((Function *)f_getter->second.func_lambda.get())->return_value.custom_type);
+                            } else {
+                                FuncReturnRef->SetReturn(var->value, var->type, var->custom_type);
+                            }
+                        } else {
+                            FuncReturnRef->SetReturn(var->value, var->type, var->custom_type);
+                        }
                     } else {
                         throw std::runtime_error("Invalid variable name!");
                     }
@@ -1086,7 +1187,18 @@ namespace HyperScript {
                             var_array_backup = var.get();
                         } else {
                             // std::cout << var->name << "\n";
-                            PushArgumentToFunction(state_union.value.function, *var);
+                            if(var->custom_type) {
+                                auto f_getter = getters.find(var->custom_type->name);
+                                if(f_getter != getters.end()) {
+                                    PushArgumentToFunction((Function*)f_getter->second.func_lambda.get(), *var);
+                                    f_getter->second.CallLambda();
+                                    PushArgumentToFunction(state_union.value.function, ((Function *)f_getter->second.func_lambda.get())->return_value);
+                                } else {
+                                    PushArgumentToFunction(state_union.value.function, *var);
+                                }
+                            } else {
+                                PushArgumentToFunction(state_union.value.function, *var);
+                            }
                         }
                     } else if (func) {
 
@@ -1097,7 +1209,18 @@ namespace HyperScript {
                 case PUSHING_TO_ARRAY_DEF: {
                     auto var = GetVariable(scope_variables, token.value);
                     if (var) {
-                        state_union.value.variable->PushToJSONArray(var->type, var->value);
+                        if(var->custom_type) {
+                            auto f_getter = getters.find(var->custom_type->name);
+                            if(f_getter != getters.end()) {
+                                PushArgumentToFunction((Function*)f_getter->second.func_lambda.get(), *var);
+                                f_getter->second.CallLambda();
+                                state_union.value.variable->PushToJSONArray(((Function *)f_getter->second.func_lambda.get())->return_value.type, ((Function *)f_getter->second.func_lambda.get())->return_value.value);
+                            } else {
+                                state_union.value.variable->PushToJSONArray(var->type, var->value);
+                            }
+                        } else {
+                            state_union.value.variable->PushToJSONArray(var->type, var->value);
+                        }
                     } else {
                         throw std::runtime_error("Invalid variable name!");
                     }
@@ -1702,6 +1825,7 @@ namespace HyperScript {
                 }
 
                 if (state_union.state == RETURN_CALLED_SET_VALUE) {
+                    std::cout << "Returning number: " << token.value << "\n";
                     FuncReturnRef->SetReturn(token.value, GT_NUMBER);
                     return_called = true;
                 }
@@ -2066,6 +2190,7 @@ namespace HyperScript {
         state_union.state = NONE;
         state_union.m_Func = func;
         FuncReturnRef = func;
+        prev_returns.push_back(FuncReturnRef);
 
         scope_func = func;
         func->scope_module.module_name = func->name;
@@ -2086,8 +2211,8 @@ namespace HyperScript {
         }
         __ExecuteModuleRoot(state_union, func->scope_module);
         scope_variables.pop_back();
-
-        FuncReturnRef = nullptr;
+        prev_returns.pop_back();
+        FuncReturnRef =  prev_returns.size() > 0 ? prev_returns.back() : nullptr;
     }
 
     void ScriptEngine::ExecuteIfScope(Function *func) {
@@ -2239,12 +2364,14 @@ namespace HyperScript {
         typedefs[name] = std::make_shared<Variable::Type>();
         typedefs[name]->value_based = true;
         typedefs[name]->allowed_value = accepted_values;
+        typedefs[name]->name = name;
         return typedefs[name];
     }
 
     std::shared_ptr<Variable::Type> &ScriptEngine::CreateTypeBasedType(const std::string &name, std::vector<GenericType> &accepted_types) {
         typedefs[name] = std::make_shared<Variable::Type>();
         typedefs[name]->value_based = false;
+        typedefs[name]->name = name;
         typedefs[name]->allowed_types = accepted_types;
         return typedefs[name];
     }

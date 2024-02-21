@@ -27,6 +27,8 @@ using namespace Engine;
 using namespace VaultRenderer;
 using namespace Engine::Components;
 
+#include <Engine/Mono/CSharp.hpp>
+
 void AspectRatioCameraViewport() {
     const int targetWidth = 1920, targetHeight = 1080;
     float targetAspectRatio = (float)targetWidth / (float)targetHeight;
@@ -220,6 +222,11 @@ int main() {
     gui_function()
     */
     float timestep = 0;
+
+    unsetenv("TERM");
+
+    CSharp csharp("../mono/lib");
+
     window.Run([&] {
         static double lastTime = 0;
         double now = glfwGetTime();
