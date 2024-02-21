@@ -1,6 +1,7 @@
 #include <Engine/Model.hpp>
 #include <Engine/Components/MeshRenderer.hpp>
 #include <iostream>
+#include <fstream>
 
 namespace Engine {
     DLL_API std::map<std::string, Model::GlobalBoneMap> Model::GlobalBoneMaps;
@@ -64,6 +65,12 @@ namespace Engine {
             }
             vertices.push_back(vertex);
         }
+
+        // size_t size = vertices.size();
+        // std::ofstream file("../assets/raw_vector", std::ios::binary);
+        // file.write(reinterpret_cast<const char *>(&size), sizeof(size));
+        // file.write(reinterpret_cast<const char *>(vertices.data()), sizeof(vertices[0]) * size);
+        // file.close();
 
         for (uint32_t i = 0; i < mesh->mNumFaces; i++) {
             aiFace face = mesh->mFaces[i];

@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "FwgZWQjDJ/L4n+p0dRVPO6C5IzIKWGYVZSnewM+xMDNKP6gxKeUuCM3xtkU1aNIvHRXdcla3VfS2HZkVIC+5QQ==",
+  "success": true,
+  "projectFilePath": "/home/poww/Desktop/Programming Projects/Vault-Engine/assets/assets.csproj",
+  "expectedPackageFiles": [
+    "/home/poww/.nuget/packages/microsoft.aspnetcore.app.ref/8.0.1/microsoft.aspnetcore.app.ref.8.0.1.nupkg.sha512"
+  ],
+  "logs": []
+}

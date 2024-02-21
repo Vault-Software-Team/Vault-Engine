@@ -1,12 +1,20 @@
+#include "mono/metadata/assembly.h"
+#include "mono/metadata/object-forward.h"
+#include "mono/metadata/object.h"
 #include <Engine/Mono/CSharp.hpp>
 #include <iostream>
 #include <mono/jit/jit.h>
 #include <mono/metadata/appdomain.h>
 #include <fstream>
+#include <filesystem>
 
 typedef void (*OnStartType)(MonoObject *, MonoObject **);
 
+namespace fs = std::filesystem;
+
 namespace Engine {
+    CSharp *CSharp::instance;
+
     char *ReadBytes(const std::string &filepath, uint32_t *outSize) {
         std::ifstream stream(filepath, std::ios::binary | std::ios::ate);
 
@@ -83,28 +91,26 @@ namespace Engine {
         return klass;
     }
 
-    CSharp::CSharp(const std::string &lib_path, const std::string &runtime_name, const std::string &appdomain_name) {
+    void CSharp::InitRuntime() {
+        if (root_domain != nullptr) return;
+        root_domain = mono_jit_init((char *)runtime_name.c_str());
+    }
+
+    void CSharp::InitMono() {
         mono_set_assemblies_path("../mono/lib");
-        MonoDomain *root_domain = mono_jit_init((char *)runtime_name.c_str());
+        InitRuntime();
 
-        if (root_domain == nullptr) {
-            return;
-        }
-
-        MonoDomain *app_domain = mono_domain_create_appdomain((char *)appdomain_name.c_str(), nullptr);
+        app_domain = mono_domain_create_appdomain((char *)appdomain_name.c_str(), nullptr);
         mono_domain_set(app_domain, true);
 
         core_assembly = LoadCSharpAssembly("../csharp-lib/bin/Debug/net8.0/csharp-lib.dll");
         PrintAssemblyTypes(core_assembly);
 
-        MonoImage *image = mono_assembly_get_image(core_assembly);
-        MonoClass *klass = mono_class_from_name(image, "", "MyScript");
-        MonoObject *instance = mono_object_new(app_domain, klass);
-        uint32_t gc_handle = mono_gchandle_new(instance, false);
-
-        auto OnStart_Thunk = (OnStartType)mono_method_get_unmanaged_thunk(mono_class_get_method_from_name(klass, "OnStart", 0));
+        core_assembly_image = GetImage(core_assembly);
+        CSharpClass klass(core_assembly_image, "", "MyScript");
+        auto OnStart_Thunk = (OnStartType)klass.GetMethodThunk("OnStart", 0);
         MonoObject *exception = nullptr;
-        OnStart_Thunk(mono_gchandle_get_target(gc_handle), &exception);
+        OnStart_Thunk(klass.GetHandleTarget(), &exception);
 
         if (exception) {
             MonoObject *exc = NULL;
@@ -118,7 +124,46 @@ namespace Engine {
         }
     }
 
+    void CSharp::ReloadAssembly() {
+        // if (!fs::exists("assets/VAULT_OUT/cs-assembly.dll"))
+        //     return;
+
+        mono_domain_set(mono_get_root_domain(), false);
+        mono_domain_unload(app_domain);
+
+        InitMono();
+    }
+    CSharp::CSharp(const std::string &lib_path, const std::string &runtime_name, const std::string &appdomain_name) : runtime_name(runtime_name), appdomain_name(appdomain_name) {
+        instance = this;
+        InitMono();
+    }
+
     CSharp::~CSharp() {
     }
 
+    MonoImage *CSharp::GetImage(MonoAssembly *core_assembly) {
+        return mono_assembly_get_image(core_assembly);
+    }
+
+    CSharpClass::CSharpClass(MonoImage *image, const std::string &name_space, const std::string &name) {
+        klass = mono_class_from_name(image, name_space.c_str(), name.c_str());
+        instance = mono_object_new(CSharp::instance->app_domain, klass);
+        gc_handle = mono_gchandle_new(instance, false);
+    }
+
+    MonoMethod *CSharpClass::GetMethod(const std::string &name, int param_count) {
+        return mono_class_get_method_from_name(klass, name.c_str(), param_count);
+    }
+
+    void *CSharpClass::GetThunkFromMethod(MonoMethod *method) {
+        return mono_method_get_unmanaged_thunk(method);
+    }
+
+    void *CSharpClass::GetMethodThunk(const std::string &name, int param_count) {
+        return mono_method_get_unmanaged_thunk(mono_class_get_method_from_name(klass, name.c_str(), param_count));
+    }
+
+    MonoObject *CSharpClass::GetHandleTarget() {
+        return mono_gchandle_get_target(gc_handle);
+    }
 } // namespace Engine
