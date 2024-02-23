@@ -3,6 +3,7 @@
 #include <entt/entt.hpp>
 #include <icons/icons.h>
 #include <imgui/imgui_stdlib.h>
+#include <iostream>
 
 namespace Engine {
     namespace Components {
@@ -30,7 +31,11 @@ namespace Engine {
                 if (treeNodeOpen) {
                     if (!removed)
                         uiCall();
-                    ImGui::TreePop();
+                    try {
+                        ImGui::TreePop();
+                    } catch (std::exception &e) {
+                        std::cout << e.what() << "\n";
+                    }
                 }
             }
 

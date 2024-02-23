@@ -13,7 +13,7 @@ namespace Engine {
             static inline const std::string display_name = "C# Scripts";
 
             std::map<std::string, std::shared_ptr<ScriptClass>> script_instances;
-            std::unordered_map<std::string, std::string> selected_scripts;
+            std::unordered_map<std::string, std::pair<std::string, std::string>> selected_scripts;
 
             CSharpScriptComponent() = default;
             void Init() override;
