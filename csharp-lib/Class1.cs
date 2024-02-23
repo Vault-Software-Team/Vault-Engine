@@ -1,13 +1,14 @@
-﻿using System;
-using Vault;
+﻿using Vault;
 
-public class MyScript : Entity {
-    void OnStart(string GameObjectID) {
-        this.ID = GameObjectID;
-        Console.WriteLine("ID: " + this.ID);
+public class MyScript : Entity
+{
+    private void OnStart(string ID)
+    {
+        SetObjectID(ID);
     }
 
-    void OnUpdate() {
-        Console.WriteLine("ERMM!");
+    private void OnUpdate()
+    {
+        transform.rotation.y += Time.deltaTime;
     }
 }

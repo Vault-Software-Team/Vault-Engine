@@ -1,3 +1,8 @@
+#include "Engine/GameObject.hpp"
+#include "Engine/Mono/Format/Functions.hpp"
+#include "Engine/Mono/Time/Functions.hpp"
+#include "Engine/Mono/Transform/Functions.hpp"
+#include "Engine/Mono/GameObject/Functions.hpp"
 #include "mono/metadata/assembly.h"
 #include "mono/metadata/loader.h"
 #include "mono/metadata/object-forward.h"
@@ -8,6 +13,7 @@
 #include <mono/metadata/appdomain.h>
 #include <fstream>
 #include <filesystem>
+#include <glm/ext.hpp>
 
 namespace fs = std::filesystem;
 
@@ -109,7 +115,9 @@ namespace Engine {
         app_domain = mono_domain_create_appdomain((char *)appdomain_name.c_str(), nullptr);
         mono_domain_set(app_domain, true);
 
-        core_assembly = LoadCSharpAssembly("../csharp-lib/bin/Debug/net8.0/csharp-lib.dll");
+        RegisterVaultFunctions();
+
+        core_assembly = LoadCSharpAssembly("../csharp-lib/bin/Debug/net6.0/csharp-lib.dll");
         LoadSubClasses(core_assembly);
 
         core_assembly_image = GetImage(core_assembly);
@@ -125,11 +133,26 @@ namespace Engine {
         InitMono();
     }
 
-    void func() {
-    }
-
     void CSharp::RegisterVaultFunctions() {
-        RegisterFunction("Raah", (void *(*))func);
+        using namespace CSharpInternalFunctions;
+
+        // GameObject
+        VAULT_REGISTER_FUNCTION(GameObject_GetName);
+        VAULT_REGISTER_FUNCTION(GameObject_GetTag);
+
+        // Transform
+        VAULT_REGISTER_FUNCTION(Transform_GetPosition);
+        VAULT_REGISTER_FUNCTION(Transform_GetRotation);
+        VAULT_REGISTER_FUNCTION(Transform_GetScale);
+        VAULT_REGISTER_FUNCTION(Transform_SetField);
+
+        // Format
+        VAULT_REGISTER_FUNCTION(float_ToString);
+        VAULT_REGISTER_FUNCTION(double_ToString);
+        VAULT_REGISTER_FUNCTION(int_ToString);
+
+        // Time
+        VAULT_REGISTER_FUNCTION(Time_GetDeltaTime);
     }
 
     void CSharp::RegisterFunction(const std::string &cs_path, void *func) {
