@@ -1,3 +1,4 @@
+#include "Engine/Components/CSharpScriptComponent.hpp"
 #include <Engine/Scene.hpp>
 #include <iostream>
 #include <Engine/GameObject.hpp>
@@ -251,9 +252,29 @@ namespace Engine {
         }
     }
 
+    void Scene::SetupCSharp() {
+        auto view = EntityRegistry.view<Components::CSharpScriptComponent>();
+
+        for (auto e : view) {
+            auto &manager = EntityRegistry.get<Components::CSharpScriptComponent>(e);
+            manager.OnStart();
+        }
+    }
+
+    void Scene::UpdateCSharp() {
+        if (!Runtime::instance->isRunning) return;
+        auto view = EntityRegistry.view<Components::CSharpScriptComponent>();
+
+        for (auto e : view) {
+            auto &manager = EntityRegistry.get<Components::CSharpScriptComponent>(e);
+            manager.Update();
+        }
+    }
+
     void Scene::OnRuntimeStart() {
         Setup2DPhysicsWorld();
         SetupHyperScript();
+        SetupCSharp();
     }
 
     void Scene::OnRuntimeStop() {
@@ -263,5 +284,6 @@ namespace Engine {
     void Scene::OnRuntimeUpdate(const float ts) {
         Step2DPhysicsWorld(ts);
         UpdateHyperScript();
+        UpdateCSharp();
     }
 } // namespace Engine

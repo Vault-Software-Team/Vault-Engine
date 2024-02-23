@@ -14,3 +14,4 @@
 #include "ModelRenderer.hpp"
 #include "CXXScriptComponent.hpp"
 #include "HyperScriptManager.hpp"
+#include "CSharpScriptComponent.hpp"

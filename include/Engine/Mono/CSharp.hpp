@@ -5,32 +5,15 @@
 #include <mono/jit/jit.h>
 #include <mono/metadata/assembly.h>
 #include <string>
+#include <dllapi.hpp>
+#include <memory>
+#include <unordered_map>
+#include <utility>
 
 typedef void (*OnStartType)(MonoObject *, MonoObject **);
 typedef void (*OnUpdateType)(MonoObject *, MonoObject **);
 
 namespace Engine {
-    class CSharp {
-    public:
-        const std::string runtime_name, appdomain_name;
-        static CSharp *instance;
-
-        MonoDomain *root_domain;
-        MonoDomain *app_domain;
-        MonoAssembly *core_assembly;
-        MonoImage *core_assembly_image;
-
-        CSharp(const std::string &lib_path, const std::string &runtime_name = "VaultScriptRuntime", const std::string &appdomain_name = "VaultAppDomain");
-        ~CSharp();
-
-        void InitRuntime();
-        void InitMono();
-        void ReloadAssembly();
-        void RegisterFunction(const std::string &cs_path, void *func);
-        void RegisterVaultFunctions();
-        static MonoImage *GetImage(MonoAssembly *core_assembly);
-    };
-
     class CSharpClass {
     public:
         MonoClass *klass;
@@ -56,5 +39,27 @@ namespace Engine {
 
         void OnStart(const std::string &gameObject_ID);
         void OnUpdate();
+    };
+
+    class CSharp {
+    public:
+        const std::string runtime_name, appdomain_name;
+        static CSharp *instance;
+
+        DLL_API MonoDomain *root_domain;
+        DLL_API MonoDomain *app_domain;
+        DLL_API MonoAssembly *core_assembly;
+        DLL_API MonoImage *core_assembly_image;
+        DLL_API std::unordered_map<std::string, std::pair<std::string, std::string>> entity_classes;
+
+        CSharp(const std::string &lib_path, const std::string &runtime_name = "VaultScriptRuntime", const std::string &appdomain_name = "VaultAppDomain");
+        ~CSharp();
+
+        void InitRuntime();
+        void InitMono();
+        void ReloadAssembly();
+        void RegisterFunction(const std::string &cs_path, void *func);
+        void RegisterVaultFunctions();
+        static MonoImage *GetImage(MonoAssembly *core_assembly);
     };
 } // namespace Engine

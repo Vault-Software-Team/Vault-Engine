@@ -55,6 +55,8 @@ namespace Engine {
         // Scripting Calls
         void SetupHyperScript();
         void UpdateHyperScript();
+        void SetupCSharp();
+        void UpdateCSharp();
 
         Scene(const std::string &scene_file);
         ~Scene();

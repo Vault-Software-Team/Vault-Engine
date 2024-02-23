@@ -62,10 +62,11 @@ namespace Engine {
         return assembly;
     }
 
-    void PrintAssemblyTypes(MonoAssembly *assembly) {
+    void LoadSubClasses(MonoAssembly *assembly) {
         MonoImage *image = mono_assembly_get_image(assembly);
         const MonoTableInfo *typeDefinitionsTable = mono_image_get_table_info(image, MONO_TABLE_TYPEDEF);
         int32_t numTypes = mono_table_info_get_rows(typeDefinitionsTable);
+        MonoClass *vault_script_class = mono_class_from_name(image, "Vault", "Entity");
 
         for (int32_t i = 0; i < numTypes; i++) {
             uint32_t cols[MONO_TYPEDEF_SIZE];
@@ -73,6 +74,16 @@ namespace Engine {
 
             const char *nameSpace = mono_metadata_string_heap(image, cols[MONO_TYPEDEF_NAMESPACE]);
             const char *name = mono_metadata_string_heap(image, cols[MONO_TYPEDEF_NAME]);
+
+            MonoClass *entity_class = mono_class_from_name(image, nameSpace, name);
+            bool isSubclass = mono_class_is_subclass_of(entity_class, vault_script_class, false);
+
+            if (entity_class == vault_script_class)
+                continue;
+
+            if (isSubclass) {
+                CSharp::instance->entity_classes[std::string(std::string(nameSpace) + "." + name)] = std::pair(nameSpace, name);
+            }
 
             printf("%s.%s\n", nameSpace, name);
         }
@@ -103,7 +114,7 @@ namespace Engine {
         mono_domain_set(app_domain, true);
 
         core_assembly = LoadCSharpAssembly("../csharp-lib/bin/Debug/net8.0/csharp-lib.dll");
-        PrintAssemblyTypes(core_assembly);
+        LoadSubClasses(core_assembly);
 
         core_assembly_image = GetImage(core_assembly);
         // CSharpClass klass(core_assembly_image, "", "MyScript");
@@ -190,7 +201,7 @@ namespace Engine {
 
     ScriptClass::ScriptClass(MonoImage *image, const std::string &name_space, const std::string &name) : CSharpClass(image, name_space, name) {
         update_method = GetMethod("OnUpdate", 0);
-        update_thunk = (OnUpdateType)GetMethodThunk("OnUpdate", 0);
+        update_thunk = (OnUpdateType)GetThunkFromMethod(update_method);
 
         start_method = GetMethod("OnStart", 1);
         start_thunk = (OnStartType)GetThunkFromMethod(start_method);
@@ -215,7 +226,7 @@ namespace Engine {
 
     void ScriptClass::OnUpdate() {
         MonoObject *exception = nullptr;
-        mono_runtime_invoke(update_method, GetHandleTarget(), nullptr, &exception);
+        update_thunk(GetHandleTarget(), &exception);
 
         if (exception) {
             MonoObject *exc = NULL;
