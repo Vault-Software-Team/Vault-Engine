@@ -1,3 +1,4 @@
+#include "Engine/Mono/CSharp.hpp"
 #include <Editor/GUI/MainGUI.hpp>
 #include <Engine/Scene.hpp>
 #include <Engine/GameObject.hpp>
@@ -81,6 +82,13 @@ namespace Editor {
                         open = true;
                     }
                     ImGui::EndMenu();
+                }
+                ImGui::EndMenu();
+            }
+
+            if (ImGui::BeginMenu("C#")) {
+                if (ImGui::MenuItem("Reload Assembly")) {
+                    CSharp::instance->ReloadAssembly();
                 }
                 ImGui::EndMenu();
             }

@@ -8,5 +8,6 @@ public class MyScript : Entity {
     }
 
     void OnUpdate() {
+        Console.WriteLine("ERMM!");
     }
 }

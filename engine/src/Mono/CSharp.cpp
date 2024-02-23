@@ -40,24 +40,21 @@ namespace Engine {
     }
 
     MonoAssembly *LoadCSharpAssembly(const std::string &assemblyPath) {
-        uint32_t fileSize = 0;
-        char *fileData = ReadBytes(assemblyPath, &fileSize);
+        uint32_t file_size = 0;
+        char *file_data = ReadBytes(assemblyPath, &file_size);
 
-        // NOTE: We can't use this image for anything other than loading the assembly because this image doesn't have a reference to the assembly
         MonoImageOpenStatus status;
-        MonoImage *image = mono_image_open_from_data_full(fileData, fileSize, 1, &status, 0);
+        MonoImage *image = mono_image_open_from_data_full(file_data, file_size, 1, &status, 0);
 
         if (status != MONO_IMAGE_OK) {
             const char *errorMessage = mono_image_strerror(status);
-            // Log some error message using the errorMessage data
             return nullptr;
         }
 
         MonoAssembly *assembly = mono_assembly_load_from_full(image, assemblyPath.c_str(), &status, 0);
         mono_image_close(image);
 
-        // Don't forget to free the file data
-        delete[] fileData;
+        delete[] file_data;
 
         return assembly;
     }
@@ -65,10 +62,10 @@ namespace Engine {
     void LoadSubClasses(MonoAssembly *assembly) {
         MonoImage *image = mono_assembly_get_image(assembly);
         const MonoTableInfo *typeDefinitionsTable = mono_image_get_table_info(image, MONO_TABLE_TYPEDEF);
-        int32_t numTypes = mono_table_info_get_rows(typeDefinitionsTable);
+        int32_t type_count = mono_table_info_get_rows(typeDefinitionsTable);
         MonoClass *vault_script_class = mono_class_from_name(image, "Vault", "Entity");
 
-        for (int32_t i = 0; i < numTypes; i++) {
+        for (int32_t i = 0; i < type_count; i++) {
             uint32_t cols[MONO_TYPEDEF_SIZE];
             mono_metadata_decode_row(typeDefinitionsTable, i, cols, MONO_TYPEDEF_SIZE);
 
@@ -94,7 +91,6 @@ namespace Engine {
         MonoClass *klass = mono_class_from_name(image, namespaceName, className);
 
         if (klass == nullptr) {
-            // Log error here
             return nullptr;
         }
 
@@ -117,31 +113,6 @@ namespace Engine {
         LoadSubClasses(core_assembly);
 
         core_assembly_image = GetImage(core_assembly);
-        // CSharpClass klass(core_assembly_image, "", "MyScript");
-        ScriptClass klass(core_assembly_image, "", "MyScript");
-        klass.OnStart("someid-1234");
-        klass.OnUpdate();
-
-        // // MonoObject *__exception = nullptr;
-        // // void *params = mono_string_new(app_domain, "someid");
-        // // mono_runtime_invoke(klass.GetMethod("Init", 1), klass.GetHandleTarget(), &params, &__exception);
-        // // auto SetObjectID_Thunk = (SetObjectIDType)klass.GetMethodThunk("SetObjectID", 1);
-        // // SetObjectID_Thunk(klass.GetHandleTarget(), &params, &__exception);
-
-        // // auto OnStart_Thunk = (OnStartType)klass.GetMethodThunk("OnStart", 0);
-        // // MonoObject *exception = nullptr;
-        // // OnStart_Thunk(klass.GetHandleTarget(), &exception);
-
-        // // if (exception) {
-        // //     MonoObject *exc = NULL;
-        // //     MonoString *str = mono_object_to_string(exception, &exc);
-        // //     if (exc) {
-        // //         mono_print_unhandled_exception(exc);
-        // //     } else {
-        // //         std::cout << mono_string_to_utf8(str) << "\n";
-        // //         // Log log(mono_string_to_utf8(str), LOG_ERROR);
-        // //     }
-        // // }
     }
 
     void CSharp::ReloadAssembly() {
