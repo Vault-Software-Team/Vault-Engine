@@ -23,7 +23,7 @@ namespace Engine {
                 }
 
                 const ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_AllowItemOverlap | ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_SpanAvailWidth;
-                bool treeNodeOpen = ImGui::TreeNodeEx(typeid(T).name(), flags, T::display_name.c_str());
+                bool treeNodeOpen = ImGui::TreeNodeEx(typeid(T).name(), flags, "%s", T::display_name.c_str());
                 ImGui::SameLine(ImGui::GetWindowWidth() - offset);
                 if (ImGui::Button(ICON_FA_GEAR, ImVec2(20, 20))) {
                     component_settings_gui = !component_settings_gui;

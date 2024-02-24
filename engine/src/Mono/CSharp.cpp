@@ -115,10 +115,11 @@ namespace Engine {
         app_domain = mono_domain_create_appdomain((char *)appdomain_name.c_str(), nullptr);
         mono_domain_set(app_domain, true);
 
-        RegisterVaultFunctions();
-
         core_assembly = LoadCSharpAssembly("../csharp-lib/bin/Debug/net6.0/csharp-lib.dll");
+
         LoadSubClasses(core_assembly);
+
+        RegisterVaultFunctions();
 
         core_assembly_image = GetImage(core_assembly);
     }

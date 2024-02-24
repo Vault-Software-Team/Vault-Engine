@@ -234,22 +234,22 @@ namespace Engine {
     }
 
     void Scene::SetupHyperScript() {
-        auto view = EntityRegistry.view<Components::HyperScriptManager>();
+        // auto view = EntityRegistry.view<Components::HyperScriptManager>();
 
-        for (auto e : view) {
-            auto &manager = EntityRegistry.get<Components::HyperScriptManager>(e);
-            manager.Scripts_OnStart();
-        }
+        // for (auto e : view) {
+        //     auto &manager = EntityRegistry.get<Components::HyperScriptManager>(e);
+        //     manager.Scripts_OnStart();
+        // }
     }
 
     void Scene::UpdateHyperScript() {
-        if (!Runtime::instance->isRunning) return;
-        auto view = EntityRegistry.view<Components::HyperScriptManager>();
+        // if (!Runtime::instance->isRunning) return;
+        // auto view = EntityRegistry.view<Components::HyperScriptManager>();
 
-        for (auto e : view) {
-            auto &manager = EntityRegistry.get<Components::HyperScriptManager>(e);
-            manager.Update();
-        }
+        // for (auto e : view) {
+        //     auto &manager = EntityRegistry.get<Components::HyperScriptManager>(e);
+        //     manager.Update();
+        // }
     }
 
     void Scene::SetupCSharp() {

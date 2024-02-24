@@ -176,7 +176,7 @@ namespace Engine {
         // ImGui::SameLine();
         ImGui::PushStyleColor(ImGuiCol_Text, color);
         if (hasChildren) {
-            bool tree_node_open = ImGui::TreeNodeEx(ID.c_str(), ImGuiTreeNodeFlags_SpanAvailWidth, (icon + " " + name).c_str());
+            bool tree_node_open = ImGui::TreeNodeEx(ID.c_str(), ImGuiTreeNodeFlags_SpanAvailWidth, "%s", (icon + " " + name).c_str());
             GUI_ContextMenu();
             if (tree_node_open) {
                 for (auto &gameObject : Scene::Main->GameObjects) {

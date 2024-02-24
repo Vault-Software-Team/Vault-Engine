@@ -59,7 +59,7 @@ void AddComponentsGUIPopup(GameObject *gameObject) {
     DisplayAddComponentButton<Text3D>(gameObject);
     DisplayAddComponentButton<Camera>(gameObject);
     DisplayAddComponentButton<CSharpScriptComponent>(gameObject);
-    DisplayAddComponentButton<HyperScriptManager>(gameObject);
+    // DisplayAddComponentButton<HyperScriptManager>(gameObject);
 }
 
 namespace Editor {

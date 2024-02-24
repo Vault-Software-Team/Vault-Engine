@@ -7,7 +7,7 @@ include_directories(${CMAKE_SOURCE_DIR}/vendor)
 add_subdirectory(api)
 add_subdirectory(app)
 add_subdirectory(engine)
-add_subdirectory(hyperscript)
+# add_subdirectory(hyperscript)
 add_subdirectory(external/box2d)
 add_subdirectory(vendor/imgui)
 add_subdirectory(vendor/ImGuizmo)
@@ -30,7 +30,7 @@ add_subdirectory(external/assimp)
 add_subdirectory(external/yaml-cpp)
 
 if(WIN32)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -static-libgcc -static-libstdc++")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -static-libgcc -static-libstdc++ -w ")
 endif()
 
 # file(GLOB SRC_FILES

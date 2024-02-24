@@ -54,20 +54,14 @@ namespace Engine::CSharpInternalFunctions {
     void Transform_SetField(MonoString *ID, MonoString *key, float x, float y, float z) {
         const std::string id = CSharpHelper::MonoStrToString(ID);
         const std::string _key = CSharpHelper::MonoStrToString(key);
-        std::cout << "Setfield1\n";
-        std::cout << id << "\n";
-        std::cout << _key << "\n";
         auto gameObject = GameObject::FindGameObjectByID(id);
-        std::cout << "Setfield2\n";
 
         if (!gameObject) {
             std::cout << "C# Error: GameObject not found!\n";
             return;
         }
-        std::cout << "Setfield3\n";
 
         auto &transform = gameObject->GetComponent<Components::Transform>();
-        std::cout << "Setfield4\n";
 
         if (_key == "position") {
             transform.position.x = x;

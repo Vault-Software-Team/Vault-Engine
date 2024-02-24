@@ -381,7 +381,7 @@ namespace HyperScript {
         Function *scope_func = nullptr;
         Function *FuncReturnRef = nullptr;
         Function *PrevFuncReturnRef = nullptr;
-        std::vector<Function*> prev_returns = {};
+        std::vector<Function *> prev_returns = {};
 
         std::shared_ptr<Variable::Type::VariableSetter> CreateVariableSetter(const std::string &name, std::function<void(Variable *v, const std::string &old_value, const std::string &new_value)> callback);
 

@@ -48,10 +48,10 @@ namespace Engine {
         const std::string runtime_name, appdomain_name;
         static CSharp *instance;
 
-        DLL_API MonoDomain *root_domain;
-        DLL_API MonoDomain *app_domain;
-        DLL_API MonoAssembly *core_assembly;
-        DLL_API MonoImage *core_assembly_image;
+        DLL_API MonoDomain *root_domain = nullptr;
+        DLL_API MonoDomain *app_domain = nullptr;
+        DLL_API MonoAssembly *core_assembly = nullptr;
+        DLL_API MonoImage *core_assembly_image = nullptr;
         DLL_API std::unordered_map<std::string, std::pair<std::string, std::string>> entity_classes;
 
         CSharp(const std::string &lib_path, const std::string &runtime_name = "VaultScriptRuntime", const std::string &appdomain_name = "VaultAppDomain");

@@ -1,9 +1,12 @@
+#include "Engine/Components/CSharpScriptComponent.hpp"
+#include "yaml-cpp/emittermanip.h"
 #include <Engine/SceneSerialization.hpp>
 #include <Engine/GameObject.hpp>
 #include <fstream>
 #include <Engine/Components/IncludeComponents.hpp>
 #include <iostream>
 #include <Engine/Model.hpp>
+#include <sstream>
 
 namespace YAML {
     template <>
@@ -243,6 +246,23 @@ namespace Engine {
             emitter << yaml::EndMap;
         }
 
+        if (gameObject->HasComponent<CSharpScriptComponent>()) {
+            emitter << yaml::Key << "CSharpScriptComponent";
+            emitter << yaml::BeginMap;
+
+            auto &component = gameObject->GetComponent<CSharpScriptComponent>();
+            emitter << yaml::Key << "selected_scripts";
+            emitter << yaml::BeginMap;
+
+            for (auto s : component.selected_scripts) {
+                emitter << yaml::Key << s.first << yaml::Value << (s.second.first == "" ? std::string("THIS_IS_EMPTY_FUCK_YOU_LOL") : "") + "." + s.second.second;
+            }
+
+            emitter << yaml::EndMap;
+
+            emitter << yaml::EndMap;
+        }
+
         emitter << YAML::EndMap;
 
         emitter << yaml::EndMap;
@@ -357,6 +377,31 @@ namespace Engine {
             component.offset = data["BoxCollider2D"]["offset"].as<glm::vec2>();
             component.size = data["BoxCollider2D"]["size"].as<glm::vec2>();
             component.trigger = data["BoxCollider2D"]["trigger"].as<bool>();
+        }
+        if (data["CSharpScriptComponent"]) {
+            gameObject->AddComponent<CSharpScriptComponent>();
+            auto &component = gameObject->GetComponent<CSharpScriptComponent>();
+            for (auto s : data["CSharpScriptComponent"]["selected_scripts"]) {
+                const std::string key = s.first.as<std::string>();
+                const std::string str = s.second.as<std::string>();
+
+                std::pair<std::string, std::string> keyVal;
+                std::stringstream ss(str);
+                std::string line;
+                int ss_index = 0;
+                while (getline(ss, line, '.')) {
+                    if (ss_index == 0)
+                        keyVal.first = line;
+                    else
+                        keyVal.second = line;
+
+                    ss_index++;
+                }
+
+                if (keyVal.first == "THIS_IS_EMPTY_FUCK_YOU_LOL") keyVal.first = "";
+
+                component.selected_scripts[key] = keyVal;
+            }
         }
     }
 
