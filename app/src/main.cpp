@@ -1,5 +1,6 @@
 #include "Engine/GameObject.hpp"
 #include "Engine/Model.hpp"
+#include "HyperScript/HyperScript.hpp"
 #include <filesystem>
 #include <iostream>
 #include <Renderer/Window.hpp>
@@ -83,6 +84,7 @@ int main() {
     // Script *script = create_obj();
     // script->Start();
 
+    // HyperScript::ScriptEngine SE;
     // SE.LoadScript("test", "../assets/scripts/test.hyper");
     // SE.JustRunTheScript(SE.GetModule("test"));
 

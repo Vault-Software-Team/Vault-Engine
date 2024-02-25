@@ -6,6 +6,7 @@
 #include "Engine/Mono/Time/Functions.hpp"
 #include "Engine/Mono/Transform/Functions.hpp"
 #include "Engine/Mono/GameObject/Functions.hpp"
+#include "Engine/Mono/SpriteRenderer/Functions.hpp"
 #include "mono/metadata/assembly.h"
 #include "mono/metadata/loader.h"
 #include "mono/metadata/object-forward.h"
@@ -195,6 +196,12 @@ namespace Engine {
         VAULT_REGISTER_FUNCTION_NAME("Vault.Text3D::Text3D_SetColor", Text3D_SetColor);
         VAULT_REGISTER_FUNCTION_NAME("Vault.Text3D::Text3D_SetScale", Text3D_SetScale);
         VAULT_REGISTER_FUNCTION_NAME("Vault.Text3D::Text3D_SetYOffset", Text3D_SetYOffset);
+
+        // SpriteRenderer
+        VAULT_REGISTER_FUNCTION_NAME("Vault.SpriteRenderer::SpriteRenderer_GetTexture", SpriteRenderer_GetTexture);
+        VAULT_REGISTER_FUNCTION_NAME("Vault.SpriteRenderer::SpriteRenderer_SetTexture", SpriteRenderer_SetTexture);
+        VAULT_REGISTER_FUNCTION_NAME("Vault.SpriteRenderer::SpriteRenderer_GetColor", SpriteRenderer_GetColor);
+        VAULT_REGISTER_FUNCTION_NAME("Vault.SpriteRenderer::SpriteRenderer_SetColor", SpriteRenderer_SetColor);
     }
 
     void CSharp::RegisterFunction(const std::string &cs_path, void *func) {

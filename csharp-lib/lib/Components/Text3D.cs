@@ -56,7 +56,7 @@ namespace Vault
                 Text3D_SetYOffset(Entity.ID, value);
             }
         }
-        Vector3 color
+        public Vector3 color
         {
             get
             {

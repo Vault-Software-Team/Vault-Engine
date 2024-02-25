@@ -47,6 +47,26 @@ namespace Vault
         {
             return InternalCalls.int_ToString(value);
         }
+
+        public static Vector2 StringToVector2(string value)
+        {
+            string[] split = value.Split(" ");
+            return new Vector2(float.Parse(split[0]), float.Parse(split[1]));
+        }
+
+        public static Vector3 StringToVector3(string value)
+        {
+            string[] split = value.Split(" ");
+            return new Vector3(float.Parse(split[0]), float.Parse(split[1]), float.Parse(split[2]));
+        }
+
+
+        public static Vector4 StringToVector4(string value)
+        {
+            string[] split = value.Split(" ");
+            return new Vector4(float.Parse(split[0]), float.Parse(split[1]), float.Parse(split[2]), float.Parse(split[3]));
+        }
+
     }
 
     public class Entity

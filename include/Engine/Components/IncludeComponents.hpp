@@ -14,3 +14,4 @@
 #include "ModelRenderer.hpp"
 #include "CXXScriptComponent.hpp"
 #include "CSharpScriptComponent.hpp"
+#include "SpritesheetRenderer.hpp"

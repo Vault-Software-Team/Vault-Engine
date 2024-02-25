@@ -42,10 +42,8 @@ namespace VaultRenderer {
     };
 
     class DLL_API Mesh {
-    private:
-        uint32_t VBO, VAO, EBO;
-
     public:
+        uint32_t VBO, VAO, EBO;
         Mesh(std::vector<Vertex> &vertices, std::vector<uint32_t> &indices);
 
         void Draw(Shader &shader);

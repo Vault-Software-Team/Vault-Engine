@@ -1,27 +1,5 @@
-typedef MyType<number>;
+func Stack() {
+    global var myVar = "hello, world";
 
-lambda MySetter = (address, value) {
-    println("Setting: " address " " value);
-    return 69420;
-    println("ERMM");
-}
-
-func GetSomething() {
-    return 420;
-}
-
-lambda MyGetter = (_) {
-    var smth = GetSomething();
-    return smth;
-}
-
-getter("MyType", MyGetter);
-
-func OnStart() {
-    typeof<MyType> var myNumber = 15;
-    var myOtherVar = myNumber;
-    println("MyOtherVar: " myOtherVar);
-}
-
-func OnUpdate(ts) {
+    delete myVar;
 }

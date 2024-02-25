@@ -2,24 +2,19 @@
 
 public class MyScript : Entity
 {
-    Text3D text;
+    SpriteRenderer sprite;
 
     private void OnStart(string ID)
     {
         SetObjectID(ID);
-        text = GetComponent<Text3D>();
+        sprite = GetComponent<SpriteRenderer>();
     }
 
     private void OnUpdate()
     {
         if (Input.IsKeyDown(Input.KEY_Q))
         {
-            text.text = "Q Pressed!";
-        }
-
-        if (Input.IsKeyDown(Input.KEY_W))
-        {
-            text.text = "W Pressed!";
+            sprite.texture = "../assets/k7.png";
         }
     }
 }
