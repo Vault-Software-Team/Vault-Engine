@@ -14,6 +14,7 @@
 #include <fstream>
 #include <filesystem>
 #include <glm/ext.hpp>
+#include <Engine/Input/Input.hpp>
 
 namespace fs = std::filesystem;
 
@@ -154,6 +155,12 @@ namespace Engine {
 
         // Time
         VAULT_REGISTER_FUNCTION(Time_GetDeltaTime);
+
+        // Input
+        VAULT_REGISTER_FUNCTION_NAME("Vault.Input::IsKeyPressed", Input::IsKeyPressed);
+        VAULT_REGISTER_FUNCTION_NAME("Vault.Input::IsKeyReleased", Input::IsKeyReleased);
+        VAULT_REGISTER_FUNCTION_NAME("Vault.Input::IsKeyDown", Input::IsKeyDown);
+        VAULT_REGISTER_FUNCTION_NAME("Vault.Input::IsKeyUp", Input::IsKeyUp);
     }
 
     void CSharp::RegisterFunction(const std::string &cs_path, void *func) {

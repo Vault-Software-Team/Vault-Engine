@@ -14,6 +14,7 @@ typedef void (*OnStartType)(MonoObject *, MonoObject **);
 typedef void (*OnUpdateType)(MonoObject *, MonoObject **);
 
 #define VAULT_REGISTER_FUNCTION(Func) mono_add_internal_call("Vault.InternalCalls::" #Func, (void *(*))Func)
+#define VAULT_REGISTER_FUNCTION_NAME(Name, Func) mono_add_internal_call(Name, (void *(*))Func)
 
 namespace Engine {
     class CSharpClass {

@@ -9,6 +9,9 @@ public class MyScript : Entity
 
     private void OnUpdate()
     {
-        transform.rotation.y += Time.deltaTime;
+        if (Input.IsKeyDown(Input.KEY_Q))
+        {
+            Console.WriteLine("Key is DOWN!");
+        }
     }
 }

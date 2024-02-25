@@ -1,5 +1,6 @@
 #include "Engine/GameObject.hpp"
 #include "Engine/Model.hpp"
+#include <filesystem>
 #include <iostream>
 #include <Renderer/Window.hpp>
 #include <Renderer/Mesh.hpp>
