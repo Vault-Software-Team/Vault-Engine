@@ -1,5 +1,7 @@
+#include "Editor/GUI/MainGUI.hpp"
 #include "Engine/GameObject.hpp"
 #include "Engine/Mono/Format/Functions.hpp"
+#include "Engine/Mono/HelperFunctions.hpp"
 #include "Engine/Mono/Time/Functions.hpp"
 #include "Engine/Mono/Transform/Functions.hpp"
 #include "Engine/Mono/GameObject/Functions.hpp"
@@ -15,6 +17,7 @@
 #include <filesystem>
 #include <glm/ext.hpp>
 #include <Engine/Input/Input.hpp>
+#include <Engine/Mono/HelperFunctions.hpp>
 
 namespace fs = std::filesystem;
 
@@ -135,6 +138,21 @@ namespace Engine {
         InitMono();
     }
 
+    void CSharp_EditorConsole_Log(MonoString *str) {
+        const std::string content = CSharpHelper::MonoStrToString(str);
+        Editor::GUI::LogInfo(content);
+    }
+
+    void CSharp_EditorConsole_LogError(MonoString *str) {
+        const std::string content = CSharpHelper::MonoStrToString(str);
+        Editor::GUI::LogError(content);
+    }
+
+    void CSharp_EditorConsole_LogWarning(MonoString *str) {
+        const std::string content = CSharpHelper::MonoStrToString(str);
+        Editor::GUI::LogWarning(content);
+    }
+
     void CSharp::RegisterVaultFunctions() {
         using namespace CSharpInternalFunctions;
 
@@ -161,6 +179,11 @@ namespace Engine {
         VAULT_REGISTER_FUNCTION_NAME("Vault.Input::IsKeyReleased", Input::IsKeyReleased);
         VAULT_REGISTER_FUNCTION_NAME("Vault.Input::IsKeyDown", Input::IsKeyDown);
         VAULT_REGISTER_FUNCTION_NAME("Vault.Input::IsKeyUp", Input::IsKeyUp);
+
+        // Log
+        VAULT_REGISTER_FUNCTION_NAME("Vault.Debug::Log", CSharp_EditorConsole_Log);
+        VAULT_REGISTER_FUNCTION_NAME("Vault.Debug::Error", CSharp_EditorConsole_LogError);
+        VAULT_REGISTER_FUNCTION_NAME("Vault.Debug::Warning", CSharp_EditorConsole_LogWarning);
     }
 
     void CSharp::RegisterFunction(const std::string &cs_path, void *func) {

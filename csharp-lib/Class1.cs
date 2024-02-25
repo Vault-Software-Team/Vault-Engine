@@ -11,7 +11,7 @@ public class MyScript : Entity
     {
         if (Input.IsKeyDown(Input.KEY_Q))
         {
-            Console.WriteLine("Key is DOWN!");
+            Debug.Error("Q Pressed!");
         }
     }
 }
