@@ -2,6 +2,7 @@
 #include "Engine/GameObject.hpp"
 #include "Engine/Mono/Format/Functions.hpp"
 #include "Engine/Mono/HelperFunctions.hpp"
+#include "Engine/Mono/Text3D/Functions.hpp"
 #include "Engine/Mono/Time/Functions.hpp"
 #include "Engine/Mono/Transform/Functions.hpp"
 #include "Engine/Mono/GameObject/Functions.hpp"
@@ -184,6 +185,16 @@ namespace Engine {
         VAULT_REGISTER_FUNCTION_NAME("Vault.Debug::Log", CSharp_EditorConsole_Log);
         VAULT_REGISTER_FUNCTION_NAME("Vault.Debug::Error", CSharp_EditorConsole_LogError);
         VAULT_REGISTER_FUNCTION_NAME("Vault.Debug::Warning", CSharp_EditorConsole_LogWarning);
+
+        // Text
+        VAULT_REGISTER_FUNCTION_NAME("Vault.Text3D::Text3D_GetText", Text3D_GetText);
+        VAULT_REGISTER_FUNCTION_NAME("Vault.Text3D::Text3D_GetScale", Text3D_GetScale);
+        VAULT_REGISTER_FUNCTION_NAME("Vault.Text3D::Text3D_GetYOffset", Text3D_GetYOffset);
+        VAULT_REGISTER_FUNCTION_NAME("Vault.Text3D::Text3D_GetColor", Text3D_GetColor);
+        VAULT_REGISTER_FUNCTION_NAME("Vault.Text3D::Text3D_SetText", Text3D_SetText);
+        VAULT_REGISTER_FUNCTION_NAME("Vault.Text3D::Text3D_SetColor", Text3D_SetColor);
+        VAULT_REGISTER_FUNCTION_NAME("Vault.Text3D::Text3D_SetScale", Text3D_SetScale);
+        VAULT_REGISTER_FUNCTION_NAME("Vault.Text3D::Text3D_SetYOffset", Text3D_SetYOffset);
     }
 
     void CSharp::RegisterFunction(const std::string &cs_path, void *func) {
