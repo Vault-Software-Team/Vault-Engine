@@ -169,6 +169,13 @@ namespace Engine {
         }
     }
 
+    std::shared_ptr<GameObject> &GameObject::FindGameObjectByTag(const std::string &tag) {
+        for (auto &pGameObject : Scene::Main->GameObjects) {
+            if (pGameObject->tag == tag)
+                return pGameObject;
+        }
+    }
+
     void GameObject::GUI() {
         bool hasChildren = false;
         for (auto &gameObject : Scene::Main->GameObjects) {

@@ -20,4 +20,19 @@ namespace Engine::CSharpInternalFunctions {
         }
         return CSharpHelper::StrToMonoString(gameObject->tag);
     }
+
+    MonoString *GameObject_GetIDByName(MonoString *name) {
+        auto gameObject = GameObject::FindGameObjectByName(CSharpHelper::MonoStrToString(name));
+        if (!gameObject) {
+            return CSharpHelper::StrToMonoString("GAMEOBJECT_NOT_FOUND");
+        }
+        return CSharpHelper::StrToMonoString(gameObject->ID);
+    }
+    MonoString *GameObject_GetIDByTag(MonoString *tag) {
+        auto gameObject = GameObject::FindGameObjectByTag(CSharpHelper::MonoStrToString(tag));
+        if (!gameObject) {
+            return CSharpHelper::StrToMonoString("GAMEOBJECT_NOT_FOUND");
+        }
+        return CSharpHelper::StrToMonoString(gameObject->ID);
+    }
 } // namespace Engine::CSharpInternalFunctions

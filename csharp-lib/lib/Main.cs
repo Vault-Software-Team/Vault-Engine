@@ -12,6 +12,10 @@ namespace Vault
         [MethodImpl(MethodImplOptions.InternalCall)]
         internal static extern string GameObject_GetTag(string ID);
         [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern string GameObject_GetIDByName(string name);
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern string GameObject_GetIDByTag(string tag);
+        [MethodImpl(MethodImplOptions.InternalCall)]
         internal static extern void Transform_GetPosition(string ID, out string result);
         [MethodImpl(MethodImplOptions.InternalCall)]
         internal static extern void Transform_GetRotation(string ID, out string result);

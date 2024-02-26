@@ -157,6 +157,8 @@ namespace Engine {
         // GameObject
         VAULT_REGISTER_FUNCTION(GameObject_GetName);
         VAULT_REGISTER_FUNCTION(GameObject_GetTag);
+        VAULT_REGISTER_FUNCTION(GameObject_GetIDByName);
+        VAULT_REGISTER_FUNCTION(GameObject_GetIDByTag);
 
         // Transform
         VAULT_REGISTER_FUNCTION(Transform_GetPosition);
