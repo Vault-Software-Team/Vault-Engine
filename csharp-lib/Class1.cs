@@ -17,4 +17,9 @@ public class MyScript : Entity
             sprite.texture = "../assets/k7.png";
         }
     }
+
+    private void OnCollisionEnter2D(string ID)
+    {
+        Debug.Log($"{name} collided with {ID}");
+    }
 }

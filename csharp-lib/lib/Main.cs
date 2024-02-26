@@ -85,6 +85,15 @@ namespace Vault
             transform = GetComponent<Transform>();
         }
 
+        public static Entity GetByID(string id)
+        {
+            return new Entity { ID = id };
+        }
+
+        protected virtual void OnCollisionEnter2D(string ID) { }
+
+        protected virtual void OnCollisionExit2D(string ID) { }
+
         public T GetComponent<T>() where T : Component, new()
         {
             T component = new T() { Entity = this };

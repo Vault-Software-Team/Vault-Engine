@@ -1,5 +1,6 @@
 #include "Box2D/Collision/Shapes/b2PolygonShape.h"
 #include "Engine/Components/CSharpScriptComponent.hpp"
+#include "mono/metadata/object-forward.h"
 #include <Engine/Scene.hpp>
 #include <iostream>
 #include <Engine/GameObject.hpp>
@@ -22,17 +23,114 @@ namespace Engine {
         auto &gameObjectA = GameObject::FindGameObjectByID(ID_A);
         auto &gameObjectB = GameObject::FindGameObjectByID(ID_B);
 
+        if (gameObjectA->HasComponent<Components::CSharpScriptComponent>()) {
+            auto &component = gameObjectA->GetComponent<Components::CSharpScriptComponent>();
+            for (auto s : component.script_instances) {
+                auto &script = s.second;
+
+                MonoObject *exception = nullptr;
+                void *p = mono_string_new(CSharp::instance->app_domain, gameObjectB->ID.c_str());
+                MonoMethod *method = script->GetMethod("OnCollisionEnter2D", 1);
+                if (method) {
+                    mono_runtime_invoke(method, script->GetHandleTarget(), &p, &exception);
+
+                    if (exception) {
+                        MonoObject *exc = NULL;
+                        MonoString *str = mono_object_to_string(exception, &exc);
+                        if (exc) {
+                            mono_print_unhandled_exception(exc);
+                        } else {
+                            std::cout << mono_string_to_utf8(str) << "\n";
+                            // Log log(mono_string_to_utf8(str), LOG_ERROR);
+                        }
+                    }
+                }
+            }
+        }
+
+        if (gameObjectB->HasComponent<Components::CSharpScriptComponent>()) {
+            auto &component = gameObjectB->GetComponent<Components::CSharpScriptComponent>();
+            for (auto s : component.script_instances) {
+                auto &script = s.second;
+
+                MonoObject *exception = nullptr;
+                void *p = mono_string_new(CSharp::instance->app_domain, gameObjectA->ID.c_str());
+                MonoMethod *method = script->GetMethod("OnCollisionEnter2D", 1);
+                if (method) {
+                    mono_runtime_invoke(method, script->GetHandleTarget(), &p, &exception);
+
+                    if (exception) {
+                        MonoObject *exc = NULL;
+                        MonoString *str = mono_object_to_string(exception, &exc);
+                        if (exc) {
+                            mono_print_unhandled_exception(exc);
+                        } else {
+                            std::cout << mono_string_to_utf8(str) << "\n";
+                            // Log log(mono_string_to_utf8(str), LOG_ERROR);
+                        }
+                    }
+                }
+            }
+        }
+
         std::cout << gameObjectA->name << " Collided with " << gameObjectB->name << "\n";
     }
 
     void PhysisContactListener::EndContact(b2Contact *contact) {
-
         const std::string &ID_A = *(std::string *)contact->GetFixtureA()->GetBody()->GetUserData();
         const std::string &ID_B = *(std::string *)contact->GetFixtureB()->GetBody()->GetUserData();
         auto &gameObjectA = GameObject::FindGameObjectByID(ID_A);
         auto &gameObjectB = GameObject::FindGameObjectByID(ID_B);
 
-        std::cout << gameObjectA->name << " Ended contact with " << gameObjectB->name << "\n";
+        if (gameObjectA->HasComponent<Components::CSharpScriptComponent>()) {
+            auto &component = gameObjectA->GetComponent<Components::CSharpScriptComponent>();
+            for (auto s : component.script_instances) {
+                auto &script = s.second;
+
+                MonoObject *exception = nullptr;
+                void *p = mono_string_new(CSharp::instance->app_domain, gameObjectB->ID.c_str());
+                MonoMethod *method = script->GetMethod("OnCollisionExit2D", 1);
+                if (method) {
+                    mono_runtime_invoke(method, script->GetHandleTarget(), &p, &exception);
+
+                    if (exception) {
+                        MonoObject *exc = NULL;
+                        MonoString *str = mono_object_to_string(exception, &exc);
+                        if (exc) {
+                            mono_print_unhandled_exception(exc);
+                        } else {
+                            std::cout << mono_string_to_utf8(str) << "\n";
+                            // Log log(mono_string_to_utf8(str), LOG_ERROR);
+                        }
+                    }
+                }
+            }
+        }
+
+        if (gameObjectB->HasComponent<Components::CSharpScriptComponent>()) {
+            auto &component = gameObjectB->GetComponent<Components::CSharpScriptComponent>();
+            for (auto s : component.script_instances) {
+                auto &script = s.second;
+
+                MonoObject *exception = nullptr;
+                void *p = mono_string_new(CSharp::instance->app_domain, gameObjectA->ID.c_str());
+                MonoMethod *method = script->GetMethod("OnCollisionExit2D", 1);
+                if (method) {
+                    mono_runtime_invoke(method, script->GetHandleTarget(), &p, &exception);
+
+                    if (exception) {
+                        MonoObject *exc = NULL;
+                        MonoString *str = mono_object_to_string(exception, &exc);
+                        if (exc) {
+                            mono_print_unhandled_exception(exc);
+                        } else {
+                            std::cout << mono_string_to_utf8(str) << "\n";
+                            // Log log(mono_string_to_utf8(str), LOG_ERROR);
+                        }
+                    }
+                }
+            }
+        }
     }
 
     Scene::Scene(const std::string &scene_file) : scene_file_path(scene_file) {}

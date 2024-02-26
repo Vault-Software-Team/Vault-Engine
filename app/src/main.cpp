@@ -1,3 +1,4 @@
+#include "Engine/Components/Transform.hpp"
 #include "Engine/GameObject.hpp"
 #include "Engine/Model.hpp"
 #include "HyperScript/HyperScript.hpp"
@@ -223,6 +224,30 @@ int main() {
     */
     float timestep = 0;
 
+    // -- WORKER MESHES --
+    // Shader worker_shader("../shaders/worker.glsl");
+    // std::vector<Vertex> planeVertices = {
+    //     Vertex{glm::vec3(-0.5f, -0.5f, 0.0f), glm::vec2(0.0f, 0.0f),
+    //            glm::vec3(0, 1, 0)},
+    //     Vertex{glm::vec3(0.5f, -0.5f, 0.0f), glm::vec2(1.0f, 0.0f),
+    //            glm::vec3(0, 1, 0)},
+    //     Vertex{glm::vec3(0.5f, 0.5f, 0.0f), glm::vec2(1.0f, 1.0f),
+    //            glm::vec3(0, 1, 0)},
+    //     Vertex{glm::vec3(-0.5f, 0.5f, 0.0f), glm::vec2(0.0f, 1.0f), glm::vec3(0, 1, 0)}
+    //     //
+    // };
+
+    // std::vector<uint32_t> planeIndices = {0, 1, 2, 0, 2, 3};
+
+    // Material material(glm::vec4(1, 0, 0, 1));
+    // bool mesh_BoxCollider2D_active = false;
+    // Mesh mesh_BoxCollider2D(planeVertices, planeIndices);
+    // mesh_BoxCollider2D.material.color = glm::vec4(0, 1, 0, 1);
+    // glm::vec3 bc2dPos = glm::vec3(0, 0, 0);
+    // glm::vec3 bc2dScale = glm::vec3(1, 1, 1);
+    glm::vec3 bc2dRotation = glm::vec3(0, 0, 0);
+    // -- WORKER MESHES --
+
 #ifndef _WIN32
     unsetenv("TERM");
 #endif
@@ -263,6 +288,31 @@ int main() {
         // Update all the GameObjects components
         // shader.Bind();
 
+        // if (GUI::selected_gameObject) {
+        //     if (GUI::selected_gameObject->HasComponent<BoxCollider2D>()) {
+        //         auto &component = GUI::selected_gameObject->GetComponent<BoxCollider2D>();
+        //         auto &transform = GUI::selected_gameObject->GetComponent<Transform>();
+        //         bc2dPos = transform.position;
+        //         bc2dRotation = transform.rotation;
+        //         bc2dScale = glm::vec3(component.size.x, component.size.y, 1);
+
+        //         glClear(GL_DEPTH_BUFFER_BIT);
+        //         glDepthFunc(GL_LEQUAL);
+        //         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        //         glDisable(GL_CULL_FACE);
+        //         glm::mat4 model = glm::mat4(1.0f);
+        //         model = glm::translate(model, bc2dPos) *
+        //                 glm::toMat4(glm::quat(bc2dRotation)) *
+        //                 glm::scale(model, glm::vec3(bc2dScale.x / 2, bc2dScale.y / 2, 1.0f));
+
+        //         worker_shader.Bind();
+        //         worker_shader.SetUniformMat4("transformModel", model);
+        //         mesh_BoxCollider2D.Draw(worker_shader);
+        //         std::cout << "Drawn!\n";
+        //         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        //         glEnable(GL_CULL_FACE);
+        //     }
+        // }
         runtime.UpdateGameObjects(window); //
 
         // Scheduling
