@@ -102,10 +102,6 @@ namespace Engine {
         MonoImage *image = mono_assembly_get_image(assembly);
         MonoClass *klass = mono_class_from_name(image, namespaceName, className);
 
-        if (klass == nullptr) {
-            return nullptr;
-        }
-
         return klass;
     }
 

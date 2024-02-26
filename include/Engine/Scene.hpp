@@ -9,6 +9,11 @@
 namespace Engine {
     class GameObject;
 
+    class PhysisContactListener : public b2ContactListener {
+        void BeginContact(b2Contact *contact);
+        void EndContact(b2Contact *contact);
+    };
+
     class DLL_API Scene {
     public:
         static DLL_API std::vector<std::shared_ptr<GameObject>> StaticGameObjects;
@@ -34,8 +39,10 @@ namespace Engine {
         std::vector<std::shared_ptr<GameObject>> GameObjects;
         entt::registry EntityRegistry;
         std::unique_ptr<b2World> Physics2DWorld;
+        std::unique_ptr<PhysisContactListener> b2_contact_listener;
 
-        void SetMainCameraObject(const std::shared_ptr<GameObject> &camObject, bool static_registry = false);
+        void
+        SetMainCameraObject(const std::shared_ptr<GameObject> &camObject, bool static_registry = false);
         static DLL_API void MakeSceneCamera();
         void UpdateGameObjectComponents();
         static DLL_API void UpdateStaticGameObjectComponents();

@@ -1,3 +1,4 @@
+#include "Box2D/Collision/Shapes/b2PolygonShape.h"
 #include "Engine/Components/CSharpScriptComponent.hpp"
 #include <Engine/Scene.hpp>
 #include <iostream>
@@ -5,6 +6,7 @@
 #include <Engine/Runtime.hpp>
 #include <Editor/GUI/MainGUI.hpp>
 #include <Engine/Components/IncludeComponents.hpp>
+#include <memory>
 
 namespace Engine {
     DLL_API std::shared_ptr<Scene> Scene::Main;
@@ -13,6 +15,25 @@ namespace Engine {
 
     Components::Camera *Scene::EditorSceneCamera = nullptr;
     std::vector<std::shared_ptr<GameObject>> Scene::StaticGameObjects;
+
+    void PhysisContactListener::BeginContact(b2Contact *contact) {
+        const std::string &ID_A = *(std::string *)contact->GetFixtureA()->GetBody()->GetUserData();
+        const std::string &ID_B = *(std::string *)contact->GetFixtureB()->GetBody()->GetUserData();
+        auto &gameObjectA = GameObject::FindGameObjectByID(ID_A);
+        auto &gameObjectB = GameObject::FindGameObjectByID(ID_B);
+
+        std::cout << gameObjectA->name << " Collided with " << gameObjectB->name << "\n";
+    }
+
+    void PhysisContactListener::EndContact(b2Contact *contact) {
+
+        const std::string &ID_A = *(std::string *)contact->GetFixtureA()->GetBody()->GetUserData();
+        const std::string &ID_B = *(std::string *)contact->GetFixtureB()->GetBody()->GetUserData();
+        auto &gameObjectA = GameObject::FindGameObjectByID(ID_A);
+        auto &gameObjectB = GameObject::FindGameObjectByID(ID_B);
+
+        std::cout << gameObjectA->name << " Ended contact with " << gameObjectB->name << "\n";
+    }
 
     Scene::Scene(const std::string &scene_file) : scene_file_path(scene_file) {}
 
@@ -177,7 +198,12 @@ namespace Engine {
         return new_scene;
     }
     void Scene::Setup2DPhysicsWorld() {
+        Physics2DWorld.reset();
         Physics2DWorld = std::make_unique<b2World>((b2Vec2){0, -9.8});
+
+        b2_contact_listener.reset();
+        b2_contact_listener = std::make_unique<PhysisContactListener>();
+        Physics2DWorld->SetContactListener(b2_contact_listener.get());
 
         auto view = EntityRegistry.view<Components::Rigidbody2D>();
 
@@ -193,13 +219,13 @@ namespace Engine {
             b2Body *body = Physics2DWorld->CreateBody(&def);
             body->SetFixedRotation(rigidbody.fixed_rotation);
             body->SetGravityScale(rigidbody.gravity_scale);
+            body->SetUserData(&rigidbody.ID);
             rigidbody.m_RuntimeBody = body;
 
             if (EntityRegistry.all_of<Components::BoxCollider2D>(e)) {
                 auto &collider = EntityRegistry.get<Components::BoxCollider2D>(e);
-
                 b2PolygonShape shape;
-                shape.SetAsBox(collider.size.x * transform.scale.x, collider.size.y * transform.scale.y);
+                shape.SetAsBox((((collider.size.x) / 2) - 0.02) / 2, (((collider.size.y) / 2) - 0.02) / 2);
 
                 b2FixtureDef fixture_def;
                 fixture_def.shape = &shape;

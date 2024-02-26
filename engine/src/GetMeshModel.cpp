@@ -66,17 +66,17 @@ namespace Engine {
             vertices.push_back(vertex);
         }
 
-        size_t size = vertices.size();
-        // Open Binary file, to write out data
-        std::ofstream file("../assets/raw_vector", std::ios::binary);
-        if (!file)
-            std::cout << "Something went wrong" << std::endl;
-        // Store/Write the vector size
-        file.write(reinterpret_cast<const char *>(&size), sizeof(size));
-        // Store/Write the data of the vector out
-        file.write(reinterpret_cast<const char *>(vertices.data()), sizeof(vertices[0]) * size);
-        // Close binary file
-        file.close();
+        // size_t size = vertices.size();
+        // // Open Binary file, to write out data
+        // std::ofstream file("../assets/raw_vector", std::ios::binary);
+        // if (!file)
+        //     std::cout << "Something went wrong" << std::endl;
+        // // Store/Write the vector size
+        // file.write(reinterpret_cast<const char *>(&size), sizeof(size));
+        // // Store/Write the data of the vector out
+        // file.write(reinterpret_cast<const char *>(vertices.data()), sizeof(vertices[0]) * size);
+        // // Close binary file
+        // file.close();
 
         for (uint32_t i = 0; i < mesh->mNumFaces; i++) {
             aiFace face = mesh->mFaces[i];

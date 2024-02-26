@@ -1,4 +1,5 @@
 #include "Engine/Components/CSharpScriptComponent.hpp"
+#include "Engine/Components/SpriteRenderer.hpp"
 #include "yaml-cpp/emittermanip.h"
 #include <Engine/SceneSerialization.hpp>
 #include <Engine/GameObject.hpp>
@@ -207,6 +208,44 @@ namespace Engine {
             emitter << yaml::EndMap;
         }
 
+        if (gameObject->HasComponent<ModelRenderer>()) {
+            emitter << yaml::Key << "ModelRenderer";
+            emitter << yaml::BeginMap;
+
+            auto &component = gameObject->GetComponent<ModelRenderer>();
+            emitter << yaml::Key << "model_path" << yaml::Value << (component.model == nullptr ? "nullptr" : component.model->path);
+            emitter << yaml::Key << "time_scale" << yaml::Value << component.time_scale;
+            emitter << yaml::Key << "play_animation" << yaml::Value << component.play_animation;
+            emitter << yaml::Key << "animation_path" << yaml::Value << component.animation_path;
+
+            emitter << yaml::EndMap;
+        }
+
+        if (gameObject->HasComponent<SpriteRenderer>()) {
+            emitter << yaml::Key << "SpriteRenderer";
+            emitter << yaml::BeginMap;
+
+            auto &component = gameObject->GetComponent<SpriteRenderer>();
+            emitter << yaml::Key << "color" << yaml::Value << component.mesh->material.color;
+            emitter << yaml::Key << "texture" << yaml::Value << (component.mesh->material.diffuse == nullptr ? "nullptr" : component.mesh->material.diffuse->texture_data->texture_filepath);
+
+            emitter << yaml::EndMap;
+        }
+
+        if (gameObject->HasComponent<SpritesheetRenderer>()) {
+            emitter << yaml::Key << "SpritesheetRenderer";
+            emitter << yaml::BeginMap;
+
+            auto &component = gameObject->GetComponent<SpritesheetRenderer>();
+            emitter << yaml::Key << "color" << yaml::Value << component.mesh->material.color;
+            emitter << yaml::Key << "texture" << yaml::Value << (component.mesh->material.diffuse == nullptr ? "nullptr" : component.mesh->material.diffuse->texture_data->texture_filepath);
+            emitter << yaml::Key << "spritesheet_size" << yaml::Value << component.spritesheetSize;
+            emitter << yaml::Key << "sprite_size" << yaml::Value << component.spriteSize;
+            emitter << yaml::Key << "sprite_offset" << yaml::Value << component.spriteOffset;
+
+            emitter << yaml::EndMap;
+        }
+
         if (gameObject->HasComponent<Camera>()) {
             emitter << yaml::Key << "Camera";
             emitter << yaml::BeginMap;
@@ -353,6 +392,64 @@ namespace Engine {
                 component.mesh = std::make_shared<VaultRenderer::Mesh>(model_mesh.meshes[component.mesh_index].vertices, model_mesh.meshes[component.mesh_index].indices);
             }
         }
+
+        if (data["ModelRenderer"]) {
+            gameObject->AddComponent<ModelRenderer>();
+            auto &component = gameObject->GetComponent<ModelRenderer>();
+            if (data["ModelRenderer"]["model_path"]) {
+                component.model.reset();
+                component.model = std::make_unique<ModelMesh>(data["ModelRenderer"]["model_path"].as<std::string>());
+            }
+            if (data["ModelRenderer"]["time_scale"]) {
+                component.time_scale = data["ModelRenderer"]["time_scale"].as<float>();
+            }
+            if (data["ModelRenderer"]["play_animation"]) {
+                component.play_animation = data["ModelRenderer"]["play_animation"].as<bool>();
+            }
+
+            if (data["ModelRenderer"]["animation_path"]) {
+                const auto path = data["ModelRenderer"]["animation_path"].as<std::string>();
+                component.animation_path = path;
+                component.SetAnimation(component.animation_path);
+            }
+        }
+
+        if (data["SpriteRenderer"]) {
+            gameObject->AddComponent<SpriteRenderer>();
+            auto &component = gameObject->GetComponent<SpriteRenderer>();
+            if (data["SpriteRenderer"]["texture"] && data["SpriteRenderer"]["texture"].as<std::string>() != "nullptr") {
+                component.mesh->material.SetDiffuse(data["SpriteRenderer"]["texture"].as<std::string>());
+            }
+
+            if (data["SpriteRenderer"]["color"]) {
+                component.mesh->material.color = data["SpriteRenderer"]["color"].as<glm::vec4>();
+            }
+        }
+
+        if (data["SpritesheetRenderer"]) {
+            gameObject->AddComponent<SpritesheetRenderer>();
+            auto &component = gameObject->GetComponent<SpritesheetRenderer>();
+            if (data["SpriteRenderer"]["texture"] && data["SpriteRenderer"]["texture"].as<std::string>() != "nullptr") {
+                component.mesh->material.SetDiffuse(data["SpriteRenderer"]["texture"].as<std::string>());
+            }
+
+            if (data["SpriteRenderer"]["color"]) {
+                component.mesh->material.color = data["SpriteRenderer"]["color"].as<glm::vec4>();
+            }
+
+            if (data["SpriteRenderer"]["spritesheet_size"]) {
+                component.spritesheetSize = data["SpriteRenderer"]["spritesheet_size"].as<glm::vec2>();
+            }
+
+            if (data["SpriteRenderer"]["sprite_size"]) {
+                component.spriteSize = data["SpriteRenderer"]["sprite_size"].as<glm::vec2>();
+            }
+
+            if (data["SpriteRenderer"]["sprite_offset"]) {
+                component.spriteOffset = data["SpriteRenderer"]["sprite_offset"].as<glm::vec2>();
+            }
+        }
+
         if (data["Camera"]) {
             gameObject->AddComponent<Camera>();
             auto &component = gameObject->GetComponent<Camera>();

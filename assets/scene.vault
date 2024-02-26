@@ -6,7 +6,7 @@ GameObjects:
       tag: Default
       parent: NO_PARENT
       Transform:
-        position: [0, 0, 0]
+        position: [0, 0, -0.737656355]
         rotation: [0, 0, 0]
         scale: [10, 10, 10]
       AmbientLight:
@@ -14,6 +14,8 @@ GameObjects:
         color: [1, 1, 1]
       MeshRenderer:
         mesh_type: 0
+        mesh_index: -1
+        mesh_path: ""
         material_path: ../assets/hi.material
   - GameObject:
       ID: 911d2394-4b94-4800-b147-26d0d175326e
@@ -21,7 +23,7 @@ GameObjects:
       tag: Default
       parent: NO_PARENT
       Transform:
-        position: [0, 2.57611442, 3.42522907]
+        position: [-1.65191591, 4.64929104, 2.78228784]
         rotation: [0, 0, 0]
         scale: [1, 1, 1]
       DirectionalLight:
@@ -30,7 +32,47 @@ GameObjects:
         enable_shadow_mapping: true
       MeshRenderer:
         mesh_type: 1
+        mesh_index: -1
+        mesh_path: ""
         material_path: ""
+  - GameObject:
+      ID: 13923df9-734b-44a6-a9b9-efffd754b7bf
+      name: GameObject
+      tag: Default
+      parent: NO_PARENT
+      Transform:
+        position: [-0.0202252939, 0.581003428, 0.0544014275]
+        rotation: [0, 0, 0]
+        scale: [0.0200000387, 0.0200000387, 0.0200000387]
+      ModelRenderer:
+        model_path: ../assets/Character.fbx
+        time_scale: 1
+        play_animation: true
+        animation_path: ../assets/SaluteAnimation.fbx
+  - GameObject:
+      ID: 74f6bc7c-bf62-4634-af66-7c11f918dc44
+      name: Sprite Sheet
+      tag: Default
+      parent: NO_PARENT
+      Transform:
+        position: [-1.45041275, 1.1538136, -1.50072289]
+        rotation: [0, 0, 0]
+        scale: [1, 1, 1]
+      SpriteRenderer:
+        color: [1, 1, 1, 1]
+        texture: ../assets/k7.png
+  - GameObject:
+      ID: 31380078-ac5f-45b5-a032-9ab7af5f300a
+      name: Physics object
+      tag: Default
+      parent: NO_PARENT
+      Transform:
+        position: [0, 2.04193616, 1.27300692]
+        rotation: [0, 0, 0]
+        scale: [1, 1, 1]
+      SpriteRenderer:
+        color: [1, 1, 1, 1]
+        texture: nullptr
       Rigidbody2D:
         body_type: 2
         gravity_scale: 1
@@ -40,19 +82,26 @@ GameObjects:
         restitution: 0
         trigger: false
         offset: [0, 0]
-        size: [0.5, 0.5]
+        size: [1, 1]
   - GameObject:
-      ID: 1785cbff-7c83-4382-9d29-f69a145e3724
-      name: Text
+      ID: 1aeef27d-8cdf-4bd8-90e5-35bcaa22be53
+      name: floor
       tag: Default
       parent: NO_PARENT
       Transform:
-        position: [-1.57347178, 1.03676271, 0]
+        position: [0, 0.855276108, 1.34966421]
         rotation: [0, 0, 0]
-        scale: [1.5999999, 1.5999999, 1.5999999]
-      Text3D:
-        text: Vault Engine
-        font_path: ../assets/fonts/VCR_OSD_MONO_1.001.ttf
-        color: [1, 1, 1]
-        scale: 0.00999999978
-        y_offset: 1
+        scale: [6.84425926, 1, 1]
+      SpriteRenderer:
+        color: [1, 1, 1, 1]
+        texture: nullptr
+      Rigidbody2D:
+        body_type: 0
+        gravity_scale: 1
+      BoxCollider2D:
+        density: 1
+        friction: 1
+        restitution: 0
+        trigger: false
+        offset: [0, 0]
+        size: [1, 1]

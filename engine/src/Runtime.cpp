@@ -1,3 +1,5 @@
+#include "Engine/Components/SpriteRenderer.hpp"
+#include "Engine/Components/SpritesheetRenderer.hpp"
 #include <Engine/Runtime.hpp>
 #include <Engine/Components/IncludeComponents.hpp>
 #include <iostream>
@@ -106,6 +108,8 @@ namespace Engine {
         auto v = Scene::Main->EntityRegistry.view<MeshRenderer>();
         auto v_model = Scene::Main->EntityRegistry.view<ModelRenderer>();
         auto v_text = Scene::Main->EntityRegistry.view<Text3D>();
+        auto v_sprite = Scene::Main->EntityRegistry.view<SpriteRenderer>();
+        auto v_spritesheet = Scene::Main->EntityRegistry.view<SpritesheetRenderer>();
 
         shader.Bind();
 
@@ -134,6 +138,18 @@ namespace Engine {
             auto &text3D = Scene::Main->EntityRegistry.get<Text3D>(e);
             auto &transform = Scene::Main->EntityRegistry.get<Transform>(e);
             text3D.Draw(shader);
+        }
+
+        for (auto e : v_sprite) {
+            auto &sprite = Scene::Main->EntityRegistry.get<SpriteRenderer>(e);
+            auto &transform = Scene::Main->EntityRegistry.get<Transform>(e);
+            sprite.Draw(shader);
+        }
+
+        for (auto e : v_spritesheet) {
+            auto &sprite = Scene::Main->EntityRegistry.get<SpritesheetRenderer>(e);
+            auto &transform = Scene::Main->EntityRegistry.get<Transform>(e);
+            sprite.Draw(shader);
         }
 
         shadowMap.Unbind();

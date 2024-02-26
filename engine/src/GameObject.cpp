@@ -35,9 +35,8 @@ namespace Engine {
     }
 
     GameObject::~GameObject() {
-        if (another_registry) {
-            if (other_registry)
-                other_registry->destroy(entity);
+        if (another_registry && other_registry) {
+            other_registry->destroy(entity);
         } else {
             Scene::Main->EntityRegistry.destroy(entity);
         }
