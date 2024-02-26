@@ -20,6 +20,13 @@ public class MyScript : Entity
 
     private void OnCollisionEnter2D(string ID)
     {
-        Debug.Log($"{name} collided with {ID}");
+        Entity e = GetByID(ID);
+        Debug.Log($"{name} collided with {e.name}");
+    }
+
+    private void OnCollisionExit2D(string ID)
+    {
+        Entity e = GetByID(ID);
+        Debug.Log($"{name} exited with {e.name}");
     }
 }

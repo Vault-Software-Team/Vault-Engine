@@ -87,7 +87,15 @@ namespace Vault
 
         public static Entity GetByID(string id)
         {
-            return new Entity { ID = id };
+            Entity e = new()
+            {
+                ID = id,
+                name = InternalCalls.GameObject_GetName(id),
+                tag = InternalCalls.GameObject_GetTag(id),
+            };
+            e.transform = e.GetComponent<Transform>();
+
+            return e;
         }
 
         protected virtual void OnCollisionEnter2D(string ID) { }
