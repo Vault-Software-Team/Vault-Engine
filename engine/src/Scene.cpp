@@ -40,7 +40,7 @@ namespace Engine {
                         if (exc) {
                             mono_print_unhandled_exception(exc);
                         } else {
-                            std::cout << mono_string_to_utf8(str) << "\n";
+                            Editor::GUI::LogError(mono_string_to_utf8(str));
                             // Log log(mono_string_to_utf8(str), LOG_ERROR);
                         }
                     }
@@ -65,8 +65,7 @@ namespace Engine {
                         if (exc) {
                             mono_print_unhandled_exception(exc);
                         } else {
-                            std::cout << mono_string_to_utf8(str) << "\n";
-                            // Log log(mono_string_to_utf8(str), LOG_ERROR);
+                            Editor::GUI::LogError(mono_string_to_utf8(str)); // Log log(mono_string_to_utf8(str), LOG_ERROR);
                         }
                     }
                 }
@@ -99,8 +98,7 @@ namespace Engine {
                         if (exc) {
                             mono_print_unhandled_exception(exc);
                         } else {
-                            std::cout << mono_string_to_utf8(str) << "\n";
-                            // Log log(mono_string_to_utf8(str), LOG_ERROR);
+                            Editor::GUI::LogError(mono_string_to_utf8(str)); // Log log(mono_string_to_utf8(str), LOG_ERROR);
                         }
                     }
                 }
@@ -124,8 +122,7 @@ namespace Engine {
                         if (exc) {
                             mono_print_unhandled_exception(exc);
                         } else {
-                            std::cout << mono_string_to_utf8(str) << "\n";
-                            // Log log(mono_string_to_utf8(str), LOG_ERROR);
+                            Editor::GUI::LogError(mono_string_to_utf8(str)); // Log log(mono_string_to_utf8(str), LOG_ERROR);
                         }
                     }
                 }

@@ -159,6 +159,7 @@ namespace Engine {
         VAULT_REGISTER_FUNCTION(GameObject_GetTag);
         VAULT_REGISTER_FUNCTION(GameObject_GetIDByName);
         VAULT_REGISTER_FUNCTION(GameObject_GetIDByTag);
+        VAULT_REGISTER_FUNCTION(Scene_LoadScene);
 
         // Transform
         VAULT_REGISTER_FUNCTION(Transform_GetPosition);
@@ -259,8 +260,7 @@ namespace Engine {
             if (exc) {
                 mono_print_unhandled_exception(exc);
             } else {
-                std::cout << mono_string_to_utf8(str) << "\n";
-                // Log log(mono_string_to_utf8(str), LOG_ERROR);
+                Editor::GUI::LogError(mono_string_to_utf8(str)); // Log log(mono_string_to_utf8(str), LOG_ERROR);
             }
         }
     }
@@ -275,8 +275,7 @@ namespace Engine {
             if (exc) {
                 mono_print_unhandled_exception(exc);
             } else {
-                std::cout << mono_string_to_utf8(str) << "\n";
-                // Log log(mono_string_to_utf8(str), LOG_ERROR);
+                Editor::GUI::LogError(mono_string_to_utf8(str)); // Log log(mono_string_to_utf8(str), LOG_ERROR);
             }
         }
     }

@@ -4,6 +4,7 @@
 #include <Engine/Mono/Transform/Functions.hpp>
 #include <string>
 #include <Engine/Mono/HelperFunctions.hpp>
+#include <Editor/GUI/MainGUI.hpp>
 
 namespace Engine::CSharpInternalFunctions {
     void Transform_GetPosition(MonoString *ID, MonoString **out) {
@@ -13,7 +14,7 @@ namespace Engine::CSharpInternalFunctions {
 
         if (!gameObject) {
             *out = CSharpHelper::StrToMonoString("0 0 0");
-            std::cout << "C# Error: GameObject not found!\n";
+            Editor::GUI::LogError("C# Error: GameObject not found!\n");
             return;
         }
 
@@ -28,7 +29,7 @@ namespace Engine::CSharpInternalFunctions {
 
         if (!gameObject) {
             *out = CSharpHelper::StrToMonoString("0 0 0");
-            std::cout << "C# Error: GameObject not found!\n";
+            Editor::GUI::LogError("C# Error: GameObject not found!\n");
             return;
         }
 
@@ -43,7 +44,7 @@ namespace Engine::CSharpInternalFunctions {
 
         if (!gameObject) {
             *out = CSharpHelper::StrToMonoString("0 0 0");
-            std::cout << "C# Error: GameObject not found!\n";
+            Editor::GUI::LogError("C# Error: GameObject not found!\n");
             return;
         }
 
@@ -57,7 +58,7 @@ namespace Engine::CSharpInternalFunctions {
         auto gameObject = GameObject::FindGameObjectByID(id);
 
         if (!gameObject) {
-            std::cout << "C# Error: GameObject not found!\n";
+            Editor::GUI::LogError("C# Error: GameObject not found!\n");
             return;
         }
 

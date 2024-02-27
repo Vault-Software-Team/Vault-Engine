@@ -1,3 +1,4 @@
+#include "Engine/SceneSerialization.hpp"
 #include <Editor/GUI/MainGUI.hpp>
 #include <Engine/Scene.hpp>
 #include <Engine/GameObject.hpp>
@@ -25,6 +26,16 @@ namespace Editor {
 
         ImGui::PushItemWidth(ImGui::GetWindowSize().x - 20);
         ImGui::InputText("##HierarhcySearch", search, search_size);
+
+        ImVec2 cursor_pos = ImGui::GetCursorPos();
+        ImGui::Dummy(ImGui::GetContentRegionAvail());
+        if (ImGui::BeginDragDropTarget()) {
+            if (const ImGuiPayload *payload = ImGui::AcceptDragDropPayload("prefab")) {
+                Serializer::LoadPrefab((char *)payload->Data);
+            }
+            ImGui::EndDragDropTarget();
+        }
+        ImGui::SetCursorPos(cursor_pos);
 
         for (auto &gameObject : Scene::Main->GameObjects) {
             if (!gameObject)

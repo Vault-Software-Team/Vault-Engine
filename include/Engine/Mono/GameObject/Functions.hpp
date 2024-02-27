@@ -10,5 +10,6 @@ namespace Engine {
         MonoString *GameObject_GetTag(MonoString *ID);
         MonoString *GameObject_GetIDByName(MonoString *name);
         MonoString *GameObject_GetIDByTag(MonoString *tag);
+        void Scene_LoadScene(MonoString *path);
     } // namespace CSharpInternalFunctions
 } // namespace Engine

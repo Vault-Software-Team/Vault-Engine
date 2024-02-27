@@ -18,5 +18,7 @@ namespace Engine {
         static void DeserializeRuntime(const std::string &content);
         static void SerializeMaterial(const std::string &path, VaultRenderer::Material &material);
         static void DeserializeMaterial(const std::string &path, VaultRenderer::Material &material);
+        static void CreatePrefab(const std::string &path, std::shared_ptr<GameObject> &gameObject);
+        static void LoadPrefab(const std::string &path);
     };
 } // namespace Engine

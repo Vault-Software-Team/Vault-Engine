@@ -3,6 +3,7 @@
 public class MyScript : Entity
 {
     SpriteRenderer sprite;
+    float speed;
 
     private void OnStart(string ID)
     {

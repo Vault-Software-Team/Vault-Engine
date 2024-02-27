@@ -1,6 +1,7 @@
 #include "Engine/GameObject.hpp"
 #include "Engine/Mono/HelperFunctions.hpp"
 #include "Engine/Mono/GameObject/Functions.hpp"
+#include "Engine/SceneSerialization.hpp"
 #include "glm/fwd.hpp"
 #include <mono/metadata/assembly.h>
 #include <mono/jit/jit.h>
@@ -34,5 +35,8 @@ namespace Engine::CSharpInternalFunctions {
             return CSharpHelper::StrToMonoString("GAMEOBJECT_NOT_FOUND");
         }
         return CSharpHelper::StrToMonoString(gameObject->ID);
+    }
+    void Scene_LoadScene(MonoString *path) {
+        Serializer::scheduled_scene_path = CSharpHelper::MonoStrToString(path);
     }
 } // namespace Engine::CSharpInternalFunctions

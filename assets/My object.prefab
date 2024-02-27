@@ -1,0 +1,14 @@
+Prefab: 5f4ad225-96e6-4b34-9609-cf123fb6599b
+GameObjects:
+  - GameObject:
+      ID: 5f4ad225-96e6-4b34-9609-cf123fb6599b
+      name: My object
+      tag: Default
+      parent: NO_PARENT
+      Transform:
+        position: [0, 0, 0]
+        rotation: [0, 0, 0]
+        scale: [1, 1, 1]
+      SpriteRenderer:
+        color: [1, 1, 1, 1]
+        texture: ../assets/k7.png

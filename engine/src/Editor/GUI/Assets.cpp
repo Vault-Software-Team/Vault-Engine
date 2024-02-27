@@ -19,6 +19,24 @@ void DirectoryIterator(const std::string &str, const char *filter_str) {
     std::string filterStr = filter_str;
     std::transform(filterStr.begin(), filterStr.end(), filterStr.begin(), Editor::asciitolower);
 
+    ImVec2 win_size = ImGui::GetWindowSize();
+    ImVec2 cursor_pos = ImGui::GetCursorPos();
+    ImGui::Dummy(ImGui::GetContentRegionAvail());
+    if (ImGui::BeginDragDropTarget()) {
+        if (const ImGuiPayload *payload = ImGui::AcceptDragDropPayload("gameobject")) {
+            const std::string id((char *)payload->Data);
+            auto &gameObject = GameObject::FindGameObjectByID(id);
+
+            if (!gameObject) goto skip_if;
+
+            Serializer::CreatePrefab(std::string("../assets/") + gameObject->name + ".prefab", gameObject);
+        }
+
+    skip_if:
+        ImGui::EndDragDropTarget();
+    }
+    ImGui::SetCursorPos(cursor_pos);
+
     for (auto &dir : iter) {
 
         if (dir.is_directory()) {
@@ -31,7 +49,7 @@ void DirectoryIterator(const std::string &str, const char *filter_str) {
             std::transform(dir_filename.begin(), dir_filename.end(), dir_filename.begin(), Editor::asciitolower);
             if (dir_filename.find(filterStr) == std::string::npos && filterStr != "")
                 continue;
-            std::string icon = ICON_FA_CUBE;
+            std::string icon = ICON_FA_FILE;
             std::string name = dir.path().filename().string();
 
             if (name.ends_with(".ttf") || name.ends_with(".otf")) {
@@ -49,8 +67,11 @@ void DirectoryIterator(const std::string &str, const char *filter_str) {
             if (name.ends_with(".vault")) {
                 icon = ICON_FA_CUBES_STACKED;
             }
-            if (name.ends_with(".hyper")) {
+            if (name.ends_with(".hyper") || name.ends_with(".cs")) {
                 icon = ICON_FA_CODE;
+            }
+            if (name.ends_with(".prefab")) {
+                icon = ICON_FA_CUBE;
             }
 
             bool pressed = ImGui::Selectable((icon + " " + dir.path().filename().string()).c_str());
@@ -58,6 +79,10 @@ void DirectoryIterator(const std::string &str, const char *filter_str) {
                 if (name.ends_with(".vault")) {
                     Editor::GUI::selected_gameObject = nullptr;
                     Serializer::scheduled_scene_path = dir.path().string();
+                }
+
+                if (name.ends_with(".prefab")) {
+                    Serializer::LoadPrefab(dir.path().string());
                 }
 
                 if (name.ends_with(".obj") || name.ends_with(".blender") || name.ends_with(".dae") || name.ends_with(".gltf") || name.ends_with(".fbx")) {
@@ -79,6 +104,8 @@ void DirectoryIterator(const std::string &str, const char *filter_str) {
                     ImGui::SetDragDropPayload("model_file", dir.path().string().c_str(), length + 1);
                 } else if (name.ends_with(".hyper")) {
                     ImGui::SetDragDropPayload("hyperscript_file", dir.path().string().c_str(), length + 1);
+                } else if (name.ends_with(".prefab")) {
+                    ImGui::SetDragDropPayload("prefab", dir.path().string().c_str(), length + 1);
                 }
                 ImGui::Text("%s %s", icon.c_str(), dir.path().filename().string().c_str());
                 ImGui::EndDragDropSource();

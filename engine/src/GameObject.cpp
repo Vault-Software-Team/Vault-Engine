@@ -195,6 +195,11 @@ namespace Engine {
         ImGui::PushStyleColor(ImGuiCol_Text, color);
         if (hasChildren) {
             bool tree_node_open = ImGui::TreeNodeEx(ID.c_str(), ImGuiTreeNodeFlags_SpanAvailWidth, "%s", (icon + " " + name).c_str());
+            if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None)) {
+                Editor::GUI::dragPayload = ID.c_str();
+                ImGui::SetDragDropPayload("gameobject", ID.c_str(), ID.length() + 1);
+                ImGui::EndDragDropSource();
+            }
             GUI_ContextMenu();
             if (tree_node_open) {
                 for (auto &gameObject : Scene::Main->GameObjects) {
@@ -211,6 +216,12 @@ namespace Engine {
             ImGui::PushID(ID.c_str());
             if (ImGui::Selectable((icon + " " + name).c_str(), false, ImGuiSelectableFlags_SpanAvailWidth)) {
                 Editor::GUI::selected_gameObject = this;
+            }
+            if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None)) {
+                Editor::GUI::dragPayload = ID.c_str();
+                ImGui::SetDragDropPayload("gameobject", ID.c_str(), ID.length() + 1);
+                ImGui::Text("%s %s", ICON_FA_CUBE, ID.c_str());
+                ImGui::EndDragDropSource();
             }
 
             ImGui::PopID();

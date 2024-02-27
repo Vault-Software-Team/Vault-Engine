@@ -8,6 +8,7 @@
 #include <iostream>
 #include <Engine/Model.hpp>
 #include <sstream>
+#include <uuid.hpp>
 
 namespace YAML {
     template <>
@@ -611,6 +612,62 @@ namespace Engine {
             material.SetHeight(data["height"].as<std::string>());
         } else {
             material.height.reset();
+        }
+    }
+
+    void Serializer::CreatePrefab(const std::string &path, std::shared_ptr<GameObject> &gameObject) {
+        yaml::Emitter emitter;
+        emitter << yaml::BeginMap;
+        emitter << yaml::Key << "Prefab" << yaml::Value << gameObject->ID;
+        emitter << yaml::Key << "GameObjects" << yaml::Value << yaml::BeginSeq;
+
+        EntityToYAML(emitter, gameObject);
+
+        emitter << yaml::EndSeq;
+        emitter << yaml::EndMap;
+
+        std::ofstream file(path);
+        file << emitter.c_str();
+    }
+
+    void Serializer::LoadPrefab(const std::string &path) {
+        using namespace Components;
+        std::ifstream stream(path);
+        std::stringstream ss;
+        ss << stream.rdbuf();
+
+        yaml::Node data = yaml::Load(ss.str());
+        if (!data["Prefab"]) {
+            std::cout << "Invalid Prefab File!\n";
+            return;
+        }
+        std::string parent_id = data["Prefab"].as<std::string>();
+
+        auto gameObjects = data["GameObjects"];
+
+        if (!gameObjects)
+            return;
+
+        std::string new_parent_id = uuid::generate_uuid_v4();
+        for (auto entity : gameObjects) {
+            auto go = entity["GameObject"];
+
+            auto m_ID = go["ID"].as<std::string>();
+            auto m_name = go["name"].as<std::string>();
+            auto m_tag = go["tag"].as<std::string>();
+            auto m_parent = go["parent"].as<std::string>();
+            bool is_parent = false;
+
+            if (m_ID == parent_id) {
+                is_parent = true;
+            }
+
+            auto gameObject = GameObject::New(m_name, m_tag);
+            gameObject->ID = is_parent ? new_parent_id : uuid::generate_uuid_v4();
+            gameObject->parent = is_parent ? "NO_PARENT" : new_parent_id;
+            gameObject->GetComponent<Transform>().ID = gameObject->ID;
+
+            YAMLToEntity(go, gameObject);
         }
     }
 } // namespace Engine

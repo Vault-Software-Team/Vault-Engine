@@ -2,6 +2,7 @@
 #include "Engine/GameObject.hpp"
 #include "Engine/Mono/HelperFunctions.hpp"
 #include <Engine/Mono/SpriteRenderer/Functions.hpp>
+#include <Editor/GUI/MainGUI.hpp>
 
 namespace Engine {
     namespace CSharpInternalFunctions {
@@ -11,7 +12,7 @@ namespace Engine {
             auto gameObject = GameObject::FindGameObjectByID(id);
 
             if (!gameObject) {
-                std::cout << "C# Error: GameObject not found!\n";
+                Editor::GUI::LogError("C# Error: GameObject not found!\n");
                 return CSharpHelper::StrToMonoString("");
             }
 
@@ -25,7 +26,7 @@ namespace Engine {
             auto gameObject = GameObject::FindGameObjectByID(id);
 
             if (!gameObject) {
-                std::cout << "C# Error: GameObject not found!\n";
+                Editor::GUI::LogError("C# Error: GameObject not found!\n");
                 return 0;
             }
 
@@ -40,7 +41,7 @@ namespace Engine {
             auto gameObject = GameObject::FindGameObjectByID(id);
 
             if (!gameObject) {
-                std::cout << "C# Error: GameObject not found!\n";
+                Editor::GUI::LogError("C# Error: GameObject not found!\n");
                 return;
             }
 
@@ -54,7 +55,7 @@ namespace Engine {
             auto gameObject = GameObject::FindGameObjectByID(id);
 
             if (!gameObject) {
-                std::cout << "C# Error: GameObject not found!\n";
+                Editor::GUI::LogError("C# Error: GameObject not found!\n");
                 return;
             }
 
