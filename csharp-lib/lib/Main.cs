@@ -57,6 +57,18 @@ namespace Vault
         {
             return InternalCalls.int_ToString(value);
         }
+        public static string ToString(Vector2 vec)
+        {
+            return InternalCalls.float_ToString(vec.x) + " " + InternalCalls.float_ToString(vec.y);
+        }
+        public static string ToString(Vector3 vec)
+        {
+            return InternalCalls.float_ToString(vec.x) + " " + InternalCalls.float_ToString(vec.y) + " " + InternalCalls.float_ToString(vec.z);
+        }
+        public static string ToString(Vector4 vec)
+        {
+            return InternalCalls.float_ToString(vec.x) + " " + InternalCalls.float_ToString(vec.y) + " " + InternalCalls.float_ToString(vec.z) + " " + InternalCalls.float_ToString(vec.w);
+        }
 
         public static Vector2 StringToVector2(string value)
         {

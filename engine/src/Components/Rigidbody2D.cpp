@@ -25,5 +25,40 @@ namespace Engine::Components {
             ImGui::DragFloat("Gravity Scale", &gravity_scale);
         });
     }
+
+    void Rigidbody2D::SetVelocity(float x, float y) {
+        if (m_RuntimeBody == nullptr)
+            return;
+        b2Body *b = (b2Body *)m_RuntimeBody;
+        b->SetLinearVelocity(b2Vec2(x, y));
+    }
+
+    void Rigidbody2D::SetAngularVelocity(float velocity) {
+        if (m_RuntimeBody == nullptr)
+            return;
+        b2Body *b = (b2Body *)m_RuntimeBody;
+        b->SetAngularVelocity(velocity);
+    }
+
+    void Rigidbody2D::SetPosition(float x, float y) {
+        if (m_RuntimeBody == nullptr)
+            return;
+        b2Body *b = (b2Body *)m_RuntimeBody;
+        b->SetTransform(b2Vec2(x, y), b->GetAngle());
+    }
+
+    void Rigidbody2D::Force(float x, float y) {
+        if (m_RuntimeBody == nullptr)
+            return;
+        b2Body *b = (b2Body *)m_RuntimeBody;
+        b->ApplyForceToCenter(b2Vec2(x, y), true);
+    }
+
+    void Rigidbody2D::Torque(float torque) {
+        if (m_RuntimeBody == nullptr)
+            return;
+        b2Body *b = (b2Body *)m_RuntimeBody;
+        b->ApplyTorque(torque, true);
+    }
 } // namespace Engine::Components
   // namespace Engine::Components

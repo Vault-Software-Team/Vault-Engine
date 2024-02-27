@@ -24,6 +24,12 @@ namespace Engine {
             Rigidbody2D() = default;
             void Init() override;
             void OnGUI() override;
+
+            void SetVelocity(float x, float y);
+            void SetAngularVelocity(float velocity);
+            void SetPosition(float x, float y);
+            void Force(float x, float y);
+            void Torque(float torque);
         };
     } // namespace Components
 } // namespace Engine

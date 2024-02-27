@@ -7,6 +7,7 @@
 #include "Engine/Mono/Transform/Functions.hpp"
 #include "Engine/Mono/GameObject/Functions.hpp"
 #include "Engine/Mono/SpriteRenderer/Functions.hpp"
+#include "Engine/Mono/Rigidbody2D/Functions.hpp"
 #include "mono/metadata/assembly.h"
 #include "mono/metadata/loader.h"
 #include "mono/metadata/object-forward.h"
@@ -203,6 +204,15 @@ namespace Engine {
         VAULT_REGISTER_FUNCTION_NAME("Vault.SpriteRenderer::SpriteRenderer_SetTexture", SpriteRenderer_SetTexture);
         VAULT_REGISTER_FUNCTION_NAME("Vault.SpriteRenderer::SpriteRenderer_GetColor", SpriteRenderer_GetColor);
         VAULT_REGISTER_FUNCTION_NAME("Vault.SpriteRenderer::SpriteRenderer_SetColor", SpriteRenderer_SetColor);
+
+        // Rigidbody2D
+        VAULT_REGISTER_FUNCTION_NAME("Vault.Rigidbody2D::Rigidbody2D_GetKey", Rigidbody2D_GetKey);
+        VAULT_REGISTER_FUNCTION_PREFIX("Vault.Rigidbody2D::", Rigidbody2D_SetVelocity);
+        VAULT_REGISTER_FUNCTION_PREFIX("Vault.Rigidbody2D::", Rigidbody2D_SetAngularVelocity);
+        VAULT_REGISTER_FUNCTION_PREFIX("Vault.Rigidbody2D::", Rigidbody2D_SetPosition);
+        VAULT_REGISTER_FUNCTION_PREFIX("Vault.Rigidbody2D::", Rigidbody2D_Force);
+        VAULT_REGISTER_FUNCTION_PREFIX("Vault.Rigidbody2D::", Rigidbody2D_Torque);
+        VAULT_REGISTER_FUNCTION_PREFIX("Vault.Rigidbody2D::", Rigidbody2D_SetType);
     }
 
     void CSharp::RegisterFunction(const std::string &cs_path, void *func) {

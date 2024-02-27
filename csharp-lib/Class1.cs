@@ -2,18 +2,15 @@
 
 public class MyScript : Entity
 {
+    Rigidbody2D rigidbody;
     private void OnStart(string ID)
     {
         SetObjectID(ID);
+        rigidbody = GetComponent<Rigidbody2D>();
     }
 
     private void OnUpdate()
     {
-        if (Input.IsKeyPressed(Input.KEY_Q))
-        {
-            Debug.Log("Adding prefab");
-            Entity e = GameObject.InstantiatePrefab("../assets/sprite.prefab");
-            Debug.Log("Prefab added: " + e.name + " " + e.ID);
-        }
+        Debug.Log("Velocity: " + Format.ToString(rigidbody.velocity));
     }
 }

@@ -13,7 +13,7 @@ else()
     target_link_libraries(engine api glfw yaml-cpp tobanteGaming::Box2D ImGui ImGuizmo)
 endif()
  
-target_link_libraries(engine ${CMAKE_SOURCE_DIR}/windows/lib/libmono-2.0.dll.a ${CMAKE_SOURCE_DIR}/windows/lib/libmonosgen-2.0.dll.a api glfw yaml-cpp tobanteGaming::Box2D ImGui ImGuizmo)
+target_link_libraries(engine ${CMAKE_SOURCE_DIR}/windows/lib/libmono-2.0.dll.a ${CMAKE_SOURCE_DIR}/windows/lib/libmonosgen-2.0.dll.a api glfw SDL_mixer yaml-cpp tobanteGaming::Box2D ImGui ImGuizmo)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -std=c++20")
 
  
