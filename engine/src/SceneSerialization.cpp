@@ -630,7 +630,7 @@ namespace Engine {
         file << emitter.c_str();
     }
 
-    void Serializer::LoadPrefab(const std::string &path) {
+    std::shared_ptr<GameObject> Serializer::LoadPrefab(const std::string &path) {
         using namespace Components;
         std::ifstream stream(path);
         std::stringstream ss;
@@ -639,16 +639,16 @@ namespace Engine {
         yaml::Node data = yaml::Load(ss.str());
         if (!data["Prefab"]) {
             std::cout << "Invalid Prefab File!\n";
-            return;
+            return nullptr;
         }
         std::string parent_id = data["Prefab"].as<std::string>();
-
         auto gameObjects = data["GameObjects"];
 
         if (!gameObjects)
-            return;
+            return nullptr;
 
         std::string new_parent_id = uuid::generate_uuid_v4();
+        std::shared_ptr<GameObject> parent_obj = nullptr;
         for (auto entity : gameObjects) {
             auto go = entity["GameObject"];
 
@@ -666,8 +666,11 @@ namespace Engine {
             gameObject->ID = is_parent ? new_parent_id : uuid::generate_uuid_v4();
             gameObject->parent = is_parent ? "NO_PARENT" : new_parent_id;
             gameObject->GetComponent<Transform>().ID = gameObject->ID;
+            if (is_parent) parent_obj = gameObject;
 
             YAMLToEntity(go, gameObject);
         }
+
+        return parent_obj;
     }
 } // namespace Engine

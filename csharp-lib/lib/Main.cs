@@ -16,6 +16,12 @@ namespace Vault
         [MethodImpl(MethodImplOptions.InternalCall)]
         internal static extern string GameObject_GetIDByTag(string tag);
         [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern void Scene_LoadScene(string path);
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern string GameObject_InstantiatePrefab(string path, string name = "__VAULT_DEFAULT_NAME__", string tag = "__VAULT_DEFAULT_TAG__", string id = "DEFAULT");
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern string GameObject_InstantiatePrefabWithProps(string path, float px, float py, float pz, float rx, float ry, float rz, float sx, float sy, float sz, string name = "__VAULT_DEFAULT_NAME__", string tag = "__VAULT_DEFAULT_TAG__", string id = "DEFAULT");
+        [MethodImpl(MethodImplOptions.InternalCall)]
         internal static extern void Transform_GetPosition(string ID, out string result);
         [MethodImpl(MethodImplOptions.InternalCall)]
         internal static extern void Transform_GetRotation(string ID, out string result);
@@ -72,6 +78,16 @@ namespace Vault
         }
 
     }
+
+    public class Scene
+    {
+        public static void LoadScene(string path)
+        {
+            InternalCalls.Scene_LoadScene(path);
+        }
+
+    }
+
 
     public class Entity
     {

@@ -160,6 +160,8 @@ namespace Engine {
         VAULT_REGISTER_FUNCTION(GameObject_GetIDByName);
         VAULT_REGISTER_FUNCTION(GameObject_GetIDByTag);
         VAULT_REGISTER_FUNCTION(Scene_LoadScene);
+        VAULT_REGISTER_FUNCTION(GameObject_InstantiatePrefab);
+        VAULT_REGISTER_FUNCTION(GameObject_InstantiatePrefabWithProps);
 
         // Transform
         VAULT_REGISTER_FUNCTION(Transform_GetPosition);
