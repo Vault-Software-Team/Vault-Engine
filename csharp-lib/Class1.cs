@@ -20,6 +20,5 @@ public class MyScript : Entity
         {
             Audio2D.StopMusic();
         }
-        transform.position.x = Mathf.Lerp(transform.position.x, 15, Time.deltaTime * 5);
     }
 }

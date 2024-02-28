@@ -70,7 +70,7 @@ namespace Vault
             }
             set
             {
-                InternalCalls.Transform_SetField(Entity.ID, "position", Math.ToRadians(value.x), Math.ToRadians(value.y), Math.ToRadians(value.z));
+                InternalCalls.Transform_SetField(Entity.ID, "position", value.x, value.y, value.z);
             }
         }
         public TVector3 rotation
@@ -83,7 +83,7 @@ namespace Vault
             }
             set
             {
-                InternalCalls.Transform_SetField(Entity.ID, "rotation", Math.ToRadians(value.x), Math.ToRadians(value.y), Math.ToRadians(value.z));
+                InternalCalls.Transform_SetField(Entity.ID, "rotation", value.x, value.y, value.z);
             }
         }
         public TVector3 scale

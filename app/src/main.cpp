@@ -321,8 +321,40 @@ int main() {
 
         // Scheduling
         if (Serializer::scheduled_scene_path != "") {
+            GUI::selected_gameObject = nullptr;
+            bool runtime_was_running = false;
+            if (Runtime::instance->isRunning) runtime_was_running = true;
+
+            if (runtime_was_running) {
+                Runtime::instance->isRunning = false;
+                Runtime::instance->isStopped = true;
+
+                Scene::Main->OnRuntimeStop();
+            }
+
             Serializer::Deserialize(Serializer::scheduled_scene_path);
             Serializer::scheduled_scene_path = "";
+
+            if (runtime_was_running) {
+                Scene::Main->OnRuntimeStart();
+
+                auto v = Scene::Main->EntityRegistry.view<CXXScriptComponent>();
+
+                for (auto e : v) {
+                    auto &component = Scene::Main->EntityRegistry.get<CXXScriptComponent>(e);
+                    component.OnStart();
+                }
+
+                for (auto &go : Scene::Main->GameObjects) {
+                    if (go->HasComponent<Camera>()) {
+                        auto &camera = go->GetComponent<Camera>();
+                        if (camera.main_camera) {
+                            Scene::Main->SetMainCameraObject(go);
+                            break;
+                        }
+                    }
+                }
+            }
         } // clang-format off
     }, Function_GUI, Function_ShadowMapRendering);
     // clang-format on
