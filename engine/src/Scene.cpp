@@ -1,4 +1,5 @@
 #include "Box2D/Collision/Shapes/b2PolygonShape.h"
+#include "Engine/Audio.hpp"
 #include "Engine/Components/CSharpScriptComponent.hpp"
 #include "mono/metadata/object-forward.h"
 #include <Engine/Scene.hpp>
@@ -6,6 +7,7 @@
 #include <Engine/GameObject.hpp>
 #include <Engine/Runtime.hpp>
 #include <Editor/GUI/MainGUI.hpp>
+#include <Engine/Audio.hpp>
 #include <Engine/Components/IncludeComponents.hpp>
 #include <memory>
 
@@ -400,6 +402,8 @@ namespace Engine {
 
     void Scene::OnRuntimeStop() {
         Physics2DWorld.reset();
+        Audio2D::StopSound();
+        Audio2D::StopMusic();
     }
 
     void Scene::OnRuntimeUpdate(const float ts) {

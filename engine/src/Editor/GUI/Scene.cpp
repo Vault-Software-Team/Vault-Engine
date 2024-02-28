@@ -8,6 +8,7 @@
 #include <ImGuizmo/ImGuizmo.h>
 #include <Engine/SceneSerialization.hpp>
 #include <Engine/Runtime.hpp>
+#include <Engine/Audio.hpp>
 
 using namespace Engine;
 using namespace Engine::Components;
@@ -243,6 +244,8 @@ namespace Editor {
 
             if (ImGui::Button(ICON_FA_PAUSE, ImVec2(32, 32))) {
                 isRunning = false;
+                Audio2D::StopSound();
+                Audio2D::StopMusic();
                 // DeleteWorld();
             }
 
