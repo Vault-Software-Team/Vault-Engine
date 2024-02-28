@@ -1,0 +1,14 @@
+Prefab: c45b05e2-b328-4a1f-8c58-245d71c7f775
+GameObjects:
+  - GameObject:
+      ID: c45b05e2-b328-4a1f-8c58-245d71c7f775
+      name: music_prefab
+      tag: Default
+      parent: NO_PARENT
+      Transform:
+        position: [0, 0, 0]
+        rotation: [0, 0, 0]
+        scale: [1, 1, 1]
+      CSharpScriptComponent:
+        selected_scripts:
+          .MyScript: THIS_IS_EMPTY_FUCK_YOU_LOL.MyScript

@@ -13,5 +13,10 @@ public class MainMenu : Entity
         {
             Scene.LoadScene("../assets/scene.vault");
         }
+
+        if (Input.IsKeyDown(Input.KEY_T))
+        {
+            GameObject.InstantiatePrefab("../assets/music_prefab.prefab");
+        }
     }
 }

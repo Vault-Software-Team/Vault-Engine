@@ -1,3 +1,4 @@
+#include "Engine/Components/CSharpScriptComponent.hpp"
 #include "Engine/Components/Transform.hpp"
 #include "Engine/GameObject.hpp"
 #include "Engine/Mono/HelperFunctions.hpp"
@@ -54,6 +55,11 @@ namespace Engine::CSharpInternalFunctions {
         gameObject->name = name == "__VAULT_DEFAULT_NAME__" ? gameObject->name : name;
         gameObject->tag = tag == "__VAULT_DEFAULT_TAG__" ? gameObject->tag : tag;
 
+        if (gameObject->HasComponent<Components::CSharpScriptComponent>()) {
+            auto &manager = gameObject->GetComponent<Components::CSharpScriptComponent>();
+            manager.OnStart();
+        }
+
         return CSharpHelper::StrToMonoString(gameObject->ID);
     }
     // have to do this fucked up traumatizing shenanigan and fuckery cause idk why Vector3 (C#) doesn't convert to glm::vec3
@@ -71,6 +77,11 @@ namespace Engine::CSharpInternalFunctions {
         transform.position = glm::vec3(px, py, pz);
         transform.rotation = glm::vec3(rx, ry, rz);
         transform.scale = glm::vec3(sx, sy, sz);
+
+        if (gameObject->HasComponent<Components::CSharpScriptComponent>()) {
+            auto &manager = gameObject->GetComponent<Components::CSharpScriptComponent>();
+            manager.OnStart();
+        }
 
         return CSharpHelper::StrToMonoString(gameObject->ID);
     }
