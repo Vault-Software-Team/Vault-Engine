@@ -322,6 +322,7 @@ int main() {
         // Scheduling
         if (Serializer::scheduled_scene_path != "") {
             GUI::selected_gameObject = nullptr;
+            Scene::Main->SetSceneCameraAsMain();
             bool runtime_was_running = false;
             if (Runtime::instance->isRunning) runtime_was_running = true;
 
@@ -354,7 +355,12 @@ int main() {
                         }
                     }
                 }
+
+                Runtime::instance->isRunning = true;
+                Runtime::instance->isStopped = false;
             }
+
+            if (!Scene::Main->main_camera_object) Scene::Main->SetSceneCameraAsMain();
         } // clang-format off
     }, Function_GUI, Function_ShadowMapRendering);
     // clang-format on

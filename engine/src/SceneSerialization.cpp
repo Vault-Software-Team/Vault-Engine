@@ -256,6 +256,7 @@ namespace Engine {
             emitter << yaml::Key << "near" << yaml::Value << component.near;
             emitter << yaml::Key << "far" << yaml::Value << component.far;
             emitter << yaml::Key << "main_camera" << yaml::Value << component.main_camera;
+            emitter << yaml::Key << "is2D" << yaml::Value << component.is2D;
 
             emitter << yaml::EndMap;
         }
@@ -458,6 +459,8 @@ namespace Engine {
             component.near = data["Camera"]["near"].as<float>();
             component.far = data["Camera"]["far"].as<float>();
             component.main_camera = data["Camera"]["main_camera"].as<bool>();
+            if (data["Camera"]["is2D"])
+                component.is2D = data["Camera"]["is2D"].as<bool>();
         }
 
         if (data["Rigidbody2D"]) {
