@@ -30,7 +30,7 @@ namespace Vault
             get { return base.x; }
             set
             {
-                InternalCalls.Transform_SetField(ID, what_is, Math.ToRadians(value), Math.ToRadians(y), Math.ToRadians(z));
+                InternalCalls.Transform_SetField(ID, what_is, value, y, z);
                 base.x = value;
             }
         }
@@ -40,7 +40,7 @@ namespace Vault
             get { return base.y; }
             set
             {
-                InternalCalls.Transform_SetField(ID, what_is, Math.ToRadians(x), Math.ToRadians(value), Math.ToRadians(z));
+                InternalCalls.Transform_SetField(ID, what_is, x, value, z);
                 base.y = value;
             }
         }
@@ -50,7 +50,7 @@ namespace Vault
             get { return base.z; }
             set
             {
-                InternalCalls.Transform_SetField(ID, what_is, Math.ToRadians(x), Math.ToRadians(y), Math.ToRadians(value));
+                InternalCalls.Transform_SetField(ID, what_is, x, y, value);
                 base.z = value;
             }
         }
@@ -66,7 +66,7 @@ namespace Vault
             {
                 InternalCalls.Transform_GetPosition(Entity.ID, out string result);
                 string[] split = result.Split(" ");
-                return new TVector3(Math.ToDegrees(float.Parse(split[0])), Math.ToDegrees(float.Parse(split[1])), Math.ToDegrees(float.Parse(split[2])), Entity.ID, "position");
+                return new TVector3(float.Parse(split[0]), float.Parse(split[1]), float.Parse(split[2]), Entity.ID, "position");
             }
             set
             {
@@ -79,7 +79,7 @@ namespace Vault
             {
                 InternalCalls.Transform_GetRotation(Entity.ID, out string result);
                 string[] split = result.Split(" ");
-                return new TVector3(Math.ToDegrees(float.Parse(split[0])), Math.ToDegrees(float.Parse(split[1])), Math.ToDegrees(float.Parse(split[2])), Entity.ID, "rotation");
+                return new TVector3(float.Parse(split[0]), float.Parse(split[1]), float.Parse(split[2]), Entity.ID, "rotation");
             }
             set
             {
@@ -92,11 +92,11 @@ namespace Vault
             {
                 InternalCalls.Transform_GetScale(Entity.ID, out string result);
                 string[] split = result.Split(" ");
-                return new TVector3(Math.ToDegrees(float.Parse(split[0])), Math.ToDegrees(float.Parse(split[1])), Math.ToDegrees(float.Parse(split[2])), Entity.ID, "scale");
+                return new TVector3(float.Parse(split[0]), float.Parse(split[1]), float.Parse(split[2]), Entity.ID, "scale");
             }
             set
             {
-                InternalCalls.Transform_SetField(Entity.ID, "scale", Math.ToRadians(value.x), Math.ToRadians(value.y), Math.ToRadians(value.z));
+                InternalCalls.Transform_SetField(Entity.ID, "scale", value.x, value.y, value.z);
             }
         }
     }

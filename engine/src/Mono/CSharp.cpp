@@ -9,6 +9,7 @@
 #include "Engine/Mono/SpriteRenderer/Functions.hpp"
 #include "Engine/Mono/Rigidbody2D/Functions.hpp"
 #include "Engine/Mono/Audio/Functions.hpp"
+#include "Engine/Mono/Mathf/Functions.hpp"
 #include "mono/metadata/assembly.h"
 #include "mono/metadata/loader.h"
 #include "mono/metadata/object-forward.h"
@@ -220,6 +221,30 @@ namespace Engine {
         VAULT_REGISTER_FUNCTION_PREFIX("Vault.Rigidbody2D::", Rigidbody2D_Force);
         VAULT_REGISTER_FUNCTION_PREFIX("Vault.Rigidbody2D::", Rigidbody2D_Torque);
         VAULT_REGISTER_FUNCTION_PREFIX("Vault.Rigidbody2D::", Rigidbody2D_SetType);
+
+        // Mathf
+        using namespace Mathf;
+        VAULT_REGISTER_FUNCTION_PREFIX("Vault.Mathf::", Deg2Rad);
+        VAULT_REGISTER_FUNCTION_PREFIX("Vault.Mathf::", Rad2Deg);
+        VAULT_REGISTER_FUNCTION_PREFIX("Vault.Mathf::", Abs);
+        VAULT_REGISTER_FUNCTION_PREFIX("Vault.Mathf::", Acos);
+        VAULT_REGISTER_FUNCTION_PREFIX("Vault.Mathf::", Asin);
+        VAULT_REGISTER_FUNCTION_PREFIX("Vault.Mathf::", Atan);
+        VAULT_REGISTER_FUNCTION_PREFIX("Vault.Mathf::", Atan2);
+        VAULT_REGISTER_FUNCTION_PREFIX("Vault.Mathf::", Ceil);
+        VAULT_REGISTER_FUNCTION_PREFIX("Vault.Mathf::", Clamp);
+        VAULT_REGISTER_FUNCTION_PREFIX("Vault.Mathf::", Cos);
+        VAULT_REGISTER_FUNCTION_PREFIX("Vault.Mathf::", Sin);
+        VAULT_REGISTER_FUNCTION_PREFIX("Vault.Mathf::", Sqrt);
+        VAULT_REGISTER_FUNCTION_PREFIX("Vault.Mathf::", Tan);
+        VAULT_REGISTER_FUNCTION_PREFIX("Vault.Mathf::", Round);
+        VAULT_REGISTER_FUNCTION_PREFIX("Vault.Mathf::", Pow);
+        VAULT_REGISTER_FUNCTION_PREFIX("Vault.Mathf::", Log);
+        VAULT_REGISTER_FUNCTION_PREFIX("Vault.Mathf::", Log10);
+        VAULT_REGISTER_FUNCTION_PREFIX("Vault.Mathf::", Max);
+        VAULT_REGISTER_FUNCTION_PREFIX("Vault.Mathf::", Min);
+        VAULT_REGISTER_FUNCTION_PREFIX("Vault.Mathf::", Exp);
+        VAULT_REGISTER_FUNCTION_PREFIX("Vault.Mathf::", Lerp);
     }
 
     void CSharp::RegisterFunction(const std::string &cs_path, void *func) {
