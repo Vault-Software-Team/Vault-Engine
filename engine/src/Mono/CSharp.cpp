@@ -8,6 +8,7 @@
 #include "Engine/Mono/GameObject/Functions.hpp"
 #include "Engine/Mono/SpriteRenderer/Functions.hpp"
 #include "Engine/Mono/Rigidbody2D/Functions.hpp"
+#include "Engine/Mono/Audio/Functions.hpp"
 #include "mono/metadata/assembly.h"
 #include "mono/metadata/loader.h"
 #include "mono/metadata/object-forward.h"
@@ -177,6 +178,12 @@ namespace Engine {
 
         // Time
         VAULT_REGISTER_FUNCTION(Time_GetDeltaTime);
+
+        // Audio
+        VAULT_REGISTER_FUNCTION(Audio2D_PlayMusic);
+        VAULT_REGISTER_FUNCTION(Audio2D_StopMusic);
+        VAULT_REGISTER_FUNCTION(Audio2D_PlaySound);
+        VAULT_REGISTER_FUNCTION(Audio2D_StopSound);
 
         // Input
         VAULT_REGISTER_FUNCTION_NAME("Vault.Input::IsKeyPressed", Input::IsKeyPressed);

@@ -2,10 +2,12 @@
 
 #include <string>
 namespace Engine {
-    namespace Audio2D {
-        void PlaySound(const std::string &path, float volume = 1.0f, bool loop = false, int channel = -1);
-        void StopSound(int channel = -1);
-        void PlayMusic(const std::string &path, float volume = 1.0f, bool loop = false);
-        void StopMusic();
-    } // namespace Audio2D
+    class Audio2D {
+    public:
+        static void PlaySound(const std::string &path, float volume = 1.0f, bool loop = false, int channel = -1);
+        static void StopSound(int channel = -1);
+        static void PlayMusic(const std::string &path, float volume = 1.0f, bool loop = false);
+        static void StopMusic();
+        static void InitAudio();
+    };
 } // namespace Engine

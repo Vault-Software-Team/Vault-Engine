@@ -11,6 +11,14 @@ public class MyScript : Entity
 
     private void OnUpdate()
     {
-        Debug.Log("Velocity: " + Format.ToString(rigidbody.velocity));
+        if (Input.IsKeyDown(Input.KEY_Q))
+        {
+            Audio2D.PlayMusic("../assets/yam.mp3", 1, true);
+        }
+
+        if (Input.IsKeyDown(Input.KEY_E))
+        {
+            Audio2D.StopMusic();
+        }
     }
 }

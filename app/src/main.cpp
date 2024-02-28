@@ -1,3 +1,4 @@
+#include "Engine/Audio.hpp"
 #include "Engine/Components/Transform.hpp"
 #include "Engine/GameObject.hpp"
 #include "Engine/Model.hpp"
@@ -254,6 +255,9 @@ int main() {
 
     CSharp csharp("../mono/lib");
     // csharp.ReloadAssembly();
+
+    // Audio
+    Audio2D::InitAudio();
 
     window.Run([&] {
         static double lastTime = 0;
