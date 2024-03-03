@@ -245,6 +245,8 @@ namespace Engine {
         VAULT_REGISTER_FUNCTION_PREFIX("Vault.Mathf::", Min);
         VAULT_REGISTER_FUNCTION_PREFIX("Vault.Mathf::", Exp);
         VAULT_REGISTER_FUNCTION_PREFIX("Vault.Mathf::", Lerp);
+        VAULT_REGISTER_FUNCTION_PREFIX("Vault.Mathf::", RandomRange);
+        VAULT_REGISTER_FUNCTION_PREFIX("Vault.Mathf::", FloatRandomRange);
     }
 
     void CSharp::RegisterFunction(const std::string &cs_path, void *func) {
@@ -294,6 +296,7 @@ namespace Engine {
     }
 
     void ScriptClass::OnStart(const std::string &gameObject_ID) {
+        mono_runtime_object_init(GetHandleTarget());
         MonoObject *exception = nullptr;
         void *p = mono_string_new(CSharp::instance->app_domain, gameObject_ID.c_str());
         mono_runtime_invoke(start_method, GetHandleTarget(), &p, &exception);

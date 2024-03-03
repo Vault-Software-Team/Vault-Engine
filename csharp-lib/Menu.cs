@@ -11,7 +11,7 @@ public class MainMenu : Entity
     {
         if (Input.IsKeyDown(Input.KEY_ENTER))
         {
-            Scene.LoadScene("../assets/scene.vault");
+            Scene.LoadScene("../assets/scenes/Game.vault");
         }
 
         if (Input.IsKeyDown(Input.KEY_T))

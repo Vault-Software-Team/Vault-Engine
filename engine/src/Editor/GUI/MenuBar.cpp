@@ -40,9 +40,9 @@ namespace Editor {
                 // remove cwd from filePathName
                 std::string filePath = ImGuiFileDialog::Instance()->GetCurrentPath();
 
-                if (std::filesystem::exists(std::filesystem::path(filePath))) {
-                    Serializer::Serialize(Scene::Main, filePath);
-                }
+                std::cout << filePathName << "\n";
+                Scene::Main->scene_file_path = filePathName;
+                Serializer::Serialize(Scene::Main, filePathName);
             }
 
             ImGuiFileDialog::Instance()->Close();

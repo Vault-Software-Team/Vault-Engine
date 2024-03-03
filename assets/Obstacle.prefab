@@ -1,0 +1,27 @@
+Prefab: a80e2c69-101f-4799-a038-a524f9d9e8d7
+GameObjects:
+  - GameObject:
+      ID: a80e2c69-101f-4799-a038-a524f9d9e8d7
+      name: Obstacle
+      tag: Default
+      parent: NO_PARENT
+      Transform:
+        position: [0, 2.20923042, 0]
+        rotation: [0, 0, 0]
+        scale: [0.411785066, 7.11540937, 1]
+      SpriteRenderer:
+        color: [1, 0, 0, 1]
+        texture: nullptr
+      Rigidbody2D:
+        body_type: 2
+        gravity_scale: 0
+      BoxCollider2D:
+        density: 1
+        friction: 1
+        restitution: 0
+        trigger: true
+        offset: [0, 0]
+        size: [0.409999996, 7.11999989]
+      CSharpScriptComponent:
+        selected_scripts:
+          .Obstacle: THIS_IS_EMPTY_FUCK_YOU_LOL.Obstacle

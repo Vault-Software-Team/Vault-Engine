@@ -1,8 +1,11 @@
+#include "Engine/Components/BoxCollider2D.hpp"
 #include "Engine/Components/CSharpScriptComponent.hpp"
+#include "Engine/Components/Rigidbody2D.hpp"
 #include "Engine/Components/Transform.hpp"
 #include "Engine/GameObject.hpp"
 #include "Engine/Mono/HelperFunctions.hpp"
 #include "Engine/Mono/GameObject/Functions.hpp"
+#include "Engine/Runtime.hpp"
 #include "Engine/Scene.hpp"
 #include "Engine/SceneSerialization.hpp"
 #include "glm/fwd.hpp"
@@ -55,9 +58,41 @@ namespace Engine::CSharpInternalFunctions {
         gameObject->name = name == "__VAULT_DEFAULT_NAME__" ? gameObject->name : name;
         gameObject->tag = tag == "__VAULT_DEFAULT_TAG__" ? gameObject->tag : tag;
 
+        if (!Runtime::instance->isRunning) return CSharpHelper::StrToMonoString(gameObject->ID);
+
         if (gameObject->HasComponent<Components::CSharpScriptComponent>()) {
             auto &manager = gameObject->GetComponent<Components::CSharpScriptComponent>();
             manager.OnStart();
+        }
+
+        if (gameObject->HasComponent<Components::Rigidbody2D>()) {
+            auto &transform = gameObject->GetComponent<Components::Transform>();
+            auto &rigidbody = gameObject->GetComponent<Components::Rigidbody2D>();
+
+            b2BodyDef def;
+            def.type = (b2BodyType)rigidbody.body_type;
+            def.position.Set(transform.position.x, transform.position.y);
+            def.angle = transform.rotation.z;
+
+            b2Body *body = Scene::Main->Physics2DWorld->CreateBody(&def);
+            body->SetFixedRotation(rigidbody.fixed_rotation);
+            body->SetGravityScale(rigidbody.gravity_scale);
+            body->SetUserData(&rigidbody.ID);
+            rigidbody.m_RuntimeBody = body;
+
+            if (gameObject->HasComponent<Components::BoxCollider2D>()) {
+                auto &collider = gameObject->GetComponent<Components::BoxCollider2D>();
+                b2PolygonShape shape;
+                shape.SetAsBox((((collider.size.x) / 2) - 0.02) / 2, (((collider.size.y) / 2) - 0.02) / 2);
+
+                b2FixtureDef fixture_def;
+                fixture_def.shape = &shape;
+                fixture_def.density = collider.density;
+                fixture_def.restitution = collider.restitution;
+                fixture_def.friction = collider.friction;
+                fixture_def.isSensor = collider.trigger;
+                body->CreateFixture(&fixture_def);
+            }
         }
 
         return CSharpHelper::StrToMonoString(gameObject->ID);
@@ -78,9 +113,40 @@ namespace Engine::CSharpInternalFunctions {
         transform.rotation = glm::vec3(rx, ry, rz);
         transform.scale = glm::vec3(sx, sy, sz);
 
+        if (!Runtime::instance->isRunning) return CSharpHelper::StrToMonoString(gameObject->ID);
+
         if (gameObject->HasComponent<Components::CSharpScriptComponent>()) {
             auto &manager = gameObject->GetComponent<Components::CSharpScriptComponent>();
             manager.OnStart();
+        }
+
+        if (gameObject->HasComponent<Components::Rigidbody2D>()) {
+            auto &rigidbody = gameObject->GetComponent<Components::Rigidbody2D>();
+
+            b2BodyDef def;
+            def.type = (b2BodyType)rigidbody.body_type;
+            def.position.Set(transform.position.x, transform.position.y);
+            def.angle = transform.rotation.z;
+
+            b2Body *body = Scene::Main->Physics2DWorld->CreateBody(&def);
+            body->SetFixedRotation(rigidbody.fixed_rotation);
+            body->SetGravityScale(rigidbody.gravity_scale);
+            body->SetUserData(&rigidbody.ID);
+            rigidbody.m_RuntimeBody = body;
+
+            if (gameObject->HasComponent<Components::BoxCollider2D>()) {
+                auto &collider = gameObject->GetComponent<Components::BoxCollider2D>();
+                b2PolygonShape shape;
+                shape.SetAsBox((((collider.size.x) / 2) - 0.02) / 2, (((collider.size.y) / 2) - 0.02) / 2);
+
+                b2FixtureDef fixture_def;
+                fixture_def.shape = &shape;
+                fixture_def.density = collider.density;
+                fixture_def.restitution = collider.restitution;
+                fixture_def.friction = collider.friction;
+                fixture_def.isSensor = collider.trigger;
+                body->CreateFixture(&fixture_def);
+            }
         }
 
         return CSharpHelper::StrToMonoString(gameObject->ID);
