@@ -11,3 +11,8 @@ CTestTestfile.cmake
 _deps
 build
 windows/build
+windows/assets
+windows/csharp-lib
+windows/Game
+windows/mono
+windows/shaders

@@ -40,9 +40,11 @@ namespace Editor {
         static DLL_API void Console();
         static DLL_API void Scene();
         static DLL_API void Components();
+        static DLL_API void Config();
         static DLL_API void BottomLogCounter();
 
         static DLL_API bool isMaterialInspectorOpen;
+        static DLL_API bool isConfigurationOpen;
         static DLL_API VaultRenderer::Material MaterialInspector_material;
         static DLL_API std::string MaterialInspector_material_path;
         static DLL_API void MaterialInspector();

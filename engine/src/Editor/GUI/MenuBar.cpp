@@ -73,6 +73,11 @@ namespace Editor {
                         Serializer::Serialize(Scene::Main, "../assets/" + uuid::generate_uuid_v4() + ".vault");
                     }
                 }
+
+                if (ImGui::MenuItem("Config")) {
+                    Editor::GUI::isConfigurationOpen = true;
+                }
+
                 ImGui::EndMenu();
             }
 

@@ -4,7 +4,7 @@
 #include <iostream>
 
 #ifndef _WIN32
-#include <dlfcn.h>
+    #include <dlfcn.h>
 #endif
 namespace fs = std::filesystem;
 
@@ -24,8 +24,8 @@ namespace Engine::Scripting::CXX {
 
         //     std::string objFile = dirEntry.path().string();
         //     objFile = std::regex_replace(objFile, std::regex("\\.cpp"), ".o");
-        //     std::string CompileToObject_Command = (linuxCompiler + " -c -g -fPIC " + dirEntry.path().string() + " " + include_flags + " -rdynamic -o " + objFile).c_str();
-        //     std::string CompileToSharedObject_Command = (linuxCompiler + " -g -shared " + objFile + " -o " + file);
+        //     std::string CompileToObject_Command = (linuxCompiler + " -c  -fPIC " + dirEntry.path().string() + " " + include_flags + " -rdynamic -o " + objFile).c_str();
+        //     std::string CompileToSharedObject_Command = (linuxCompiler + "  -shared " + objFile + " -o " + file);
         //     /*
         //     CompileToObject_Command:
         //         g++ -c -fPIC script_file.cpp -Iinclude_directory -rdynamic -o script_file.o

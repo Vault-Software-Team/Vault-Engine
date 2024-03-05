@@ -23,6 +23,9 @@
 #include <Engine/SceneSerialization.hpp>
 #include <Engine/Scripting/LoadScripts.hpp>
 #include <script_test.hpp>
+#include <experimental/filesystem>
+
+namespace fs = std::filesystem;
 static VaultRenderer::Shader *default_shader;
 
 using namespace Engine;
@@ -90,7 +93,12 @@ int main() {
     // SE.LoadScript("test", "../assets/scripts/test.hyper");
     // SE.JustRunTheScript(SE.GetModule("test"));
 
+    Serializer::LoadConfigFile("../assets/config.yaml");
+#ifdef GAME_BUILD
+    Window window(1280, 720, Serializer::config.title == "" ? "Vault Engine" : Serializer::config.title.c_str());
+#else
     Window window(1280, 720, "Vault Engine");
+#endif
     Statistics::SetStats();
 
     Shader shader("../shaders/default.glsl");
@@ -293,7 +301,9 @@ int main() {
     // Audio
     Audio2D::InitAudio();
 
-    Serializer::LoadConfigFile("../assets/config.yaml");
+    if (fs::exists(Serializer::config.main_scene)) {
+        Serializer::Deserialize(Serializer::config.main_scene);
+    }
 
     window.Run([&] {
         static double lastTime = 0;

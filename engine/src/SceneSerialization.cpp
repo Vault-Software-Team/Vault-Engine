@@ -686,6 +686,7 @@ namespace Engine {
         emitter << yaml::BeginMap;
 
         emitter << yaml::Key << "main_scene" << yaml::Value << "../assets/scenes/main.vault";
+        emitter << yaml::Key << "title" << yaml::Value << "Vault Engine";
 
         std::ofstream file(path);
         file << emitter.c_str();
@@ -704,8 +705,8 @@ namespace Engine {
             config.main_scene = data["main_scene"].as<std::string>();
         }
 
-        if (fs::exists(config.main_scene)) {
-            Deserialize(config.main_scene);
+        if (data["title"]) {
+            config.title = data["title"].as<std::string>();
         }
     }
 
@@ -714,6 +715,7 @@ namespace Engine {
         emitter << yaml::BeginMap;
 
         emitter << yaml::Key << "main_scene" << yaml::Value << config.main_scene;
+        emitter << yaml::Key << "title" << yaml::Value << config.title;
 
         std::ofstream file(path);
         file << emitter.c_str();

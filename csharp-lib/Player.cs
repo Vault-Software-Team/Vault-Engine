@@ -35,11 +35,18 @@ public class Player : Entity
             rigidbody.SetVelocity(rigidbody.velocity.x, 3);
         }
 
+        if (transform.position.y < -3 || transform.position.y > 3)
+        {
+            // Debug.Log("You fucking died loser");
+
+            Scene.LoadScene("../assets/scenes/Game.vault");
+        }
+
     }
 
     private void OnCollisionEnter2D(string ID)
     {
-        Debug.Log("You fucking died loser");
+        // Debug.Log("You fucking died loser");
 
         Scene.LoadScene("../assets/scenes/Game.vault");
     }

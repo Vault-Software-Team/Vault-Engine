@@ -25,6 +25,7 @@ namespace Editor {
         GUI::Components();
         GUI::MaterialInspector();
         GUI::BottomLogCounter();
+        GUI::Config();
 
         ImGui::Begin("Statistics");
         ImGui::Text("Draw Calls: %d", VaultRenderer::Statistics::GetDrawCalls());

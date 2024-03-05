@@ -8,6 +8,7 @@ namespace yaml = YAML;
 namespace Engine {
     struct Config {
         std::string main_scene = "";
+        std::string title = "";
     };
 
     class Serializer {
