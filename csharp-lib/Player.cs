@@ -6,12 +6,12 @@ public class Player : Entity
     SpriteRenderer bg;
 
     string[] sprites = {
-        "../assets/textures/meme1.jpg",
-        "../assets/textures/meme2.png",
-        "../assets/textures/meme3.png",
-        "../assets/textures/meme4.png",
-        "../assets/textures/meme5.png",
-        "../assets/textures/meme5.png"
+        "./assets/textures/meme1.jpg",
+        "./assets/textures/meme2.png",
+        "./assets/textures/meme3.png",
+        "./assets/textures/meme4.png",
+        "./assets/textures/meme5.png",
+        "./assets/textures/meme5.png"
     };
 
     private void OnStart(string ID)
@@ -25,7 +25,7 @@ public class Player : Entity
     {
         if (Input.IsKeyDown(Input.KEY_SPACE))
         {
-            Audio2D.PlaySound("../assets/music/splash.mp3");
+            Audio2D.PlaySound("./assets/music/splash.mp3");
             bg.texture = sprites[Mathf.RandomRange(0, sprites.Length - 1)];
             bg.color = new Vector3(1, 1, 1);
         }
@@ -39,7 +39,7 @@ public class Player : Entity
         {
             // Debug.Log("You fucking died loser");
 
-            Scene.LoadScene("../assets/scenes/Game.vault");
+            Scene.LoadScene("./assets/scenes/Game.vault");
         }
 
     }
@@ -48,6 +48,6 @@ public class Player : Entity
     {
         // Debug.Log("You fucking died loser");
 
-        Scene.LoadScene("../assets/scenes/Game.vault");
+        Scene.LoadScene("./assets/scenes/Game.vault");
     }
 }

@@ -78,22 +78,22 @@ int main() {
     // ANGEL SCRIPT TEST
     // Scripting::AngelScript::AngelScriptEngine AsEngine;
     // AsEngine.RegisterGlobalFunction("void print(const string &in)", asFUNCTION(print), asCALL_CDECL);
-    // AsEngine.LoadScript("test", "../assets/scripts/test.as");
+    // AsEngine.LoadScript("test", "./scripts/test.as");
     // AsEngine.CreateContext();
     // AsEngine.GetTypeInfoBydeclaration(AsEngine.GetModule("test"), "MyClass");
     // AsEngine.PrepareAndExecuteFunction(AsEngine.CreateContext(), AsEngine.GetFunctionByDeclaration(AsEngine.GetModule("test"), "void main()"));
     // ANGEL SCRIPT TEST
 
     // dlsym test
-    // Script *(*create_obj)() = (Script * (*)()) dlsym(dlopen("../sandbox/script.so", RTLD_LAZY), "create_script");
+    // Script *(*create_obj)() = (Script * (*)()) dlsym(dlopen("./sandbox/script.so", RTLD_LAZY), "create_script");
     // Script *script = create_obj();
     // script->Start();
 
     // HyperScript::ScriptEngine SE;
-    // SE.LoadScript("test", "../assets/scripts/test.hyper");
+    // SE.LoadScript("test", "./scripts/test.hyper");
     // SE.JustRunTheScript(SE.GetModule("test"));
 
-    Serializer::LoadConfigFile("../assets/config.yaml");
+    Serializer::LoadConfigFile("./assets/config.yaml");
 #ifdef GAME_BUILD
     Window window(1280, 720, Serializer::config.title == "" ? "Vault Engine" : Serializer::config.title.c_str());
 #else
@@ -101,10 +101,10 @@ int main() {
 #endif
     Statistics::SetStats();
 
-    Shader shader("../shaders/default.glsl");
-    Shader skybox_shader("../shaders/skybox.glsl");
-    Shader shadow_map_shader("../shaders/shadow_map.glsl");
-    Shader shadow_cubemap_shader("../shaders/shadow_map_point.glsl");
+    Shader shader("./shaders/default.glsl");
+    Shader skybox_shader("./shaders/skybox.glsl");
+    Shader shadow_map_shader("./shaders/shadow_map.glsl");
+    Shader shadow_cubemap_shader("./shaders/shadow_map_point.glsl");
     Font::InitFT();
     default_shader = &shader;
 
@@ -116,7 +116,7 @@ int main() {
     double previousTime = glfwGetTime();
 
     using namespace Engine;
-    auto scene = Scene::New("../assets/main.vault");
+    auto scene = Scene::New("./main.vault");
     Scene::SetMainScene(scene);
     Scene::MakeSceneCamera();
     Scene::Main->SetMainCameraObject(Scene::StaticGameObjects.back(), true);
@@ -128,10 +128,10 @@ int main() {
     // auto &meshRenderer = gameObject->GetComponent<Components::MeshRenderer>();
     // gameObject->GetComponent<Components::AmbientLight>().amount = 0.2f;
     // meshRenderer.SetMeshType(Components::MESH_PLANE);
-    // meshRenderer.mesh->material.SetDiffuse("../assets/diffuse.png");
-    // meshRenderer.mesh->material.SetSpecular("../assets/diffuse.png");
-    // meshRenderer.mesh->material.SetNormal("../assets/normal.png");
-    // meshRenderer.mesh->material.SetHeight("../assets/displacement.png");
+    // meshRenderer.mesh->material.SetDiffuse("./diffuse.png");
+    // meshRenderer.mesh->material.SetSpecular("./diffuse.png");
+    // meshRenderer.mesh->material.SetNormal("./normal.png");
+    // meshRenderer.mesh->material.SetHeight("./displacement.png");
 
     // auto lightObject = GameObject::New("PointLight");
     // lightObject->AddComponent<Components::PointLight>();
@@ -143,7 +143,7 @@ int main() {
     // emptyObject->AddComponent<Text3D>();
     // emptyObject->GetComponent<Text3D>().text = "Hello, World!";
     // emptyObject->GetComponent<Text3D>().scale = 0.02;
-    // emptyObject->GetComponent<Text3D>().ChangeFont("../assets/fonts/OpenSans-Bold.ttf");
+    // emptyObject->GetComponent<Text3D>().ChangeFont("./fonts/OpenSans-Bold.ttf");
     // auto &empty_transform = emptyObject->GetComponent<Transform>();
 
     // using namespace Engine::Components;
@@ -164,20 +164,20 @@ int main() {
     GUI::framebufferTextureID = window.framebuffer->framebuffer->texture;
     window.use_imgui_size = true;
 
-    // Model m_2fort("../assets/2fort/2fort.obj")
-    // 1model("../assets/capsule.obj");
+    // Model m_2fort("./2fort/2fort.obj")
+    // 1model("./capsule.obj");
 
-    // Serializer::Deserialize("../assets/scene.vault");
-    // Serializer::DeserializeMaterial("../assets/main.material", GameObject::FindGameObjectByName("My GameObject")->GetComponent<MeshRenderer>().mesh->material);
-    // sceneSerializer.Serialize("../assets/scene.vault");
+    // Serializer::Deserialize("./scene.vault");
+    // Serializer::DeserializeMaterial("./main.material", GameObject::FindGameObjectByName("My GameObject")->GetComponent<MeshRenderer>().mesh->material);
+    // sceneSerializer.Serialize("./scene.vault");
 
     // Scene::SetMainScene(new_scene);
     // Scene::MakeSceneCamera();
     // Scene::Main->SetMainCameraObject(Scene::StaticGameObjects.back());
 
     // -- SKELETAL ANIMATION EXAMPLE --
-    // Model model("../assets/Crouch To Stand.fbx");
-    // Animation danceAnimation("../assets/Crouch To Stand.fbx", &model);
+    // Model model("./Crouch To Stand.fbx");
+    // Animation danceAnimation("./Crouch To Stand.fbx", &model);
     // Animator animator(&danceAnimation);
     // animator.Update(timestep);
     // auto transforms = animator.GetFinalBoneMatrices();
@@ -268,7 +268,7 @@ int main() {
     float timestep = 0;
 
     // -- WORKER MESHES --
-    // Shader worker_shader("../shaders/worker.glsl");
+    // Shader worker_shader("./shaders/worker.glsl");
     // std::vector<Vertex> planeVertices = {
     //     Vertex{glm::vec3(-0.5f, -0.5f, 0.0f), glm::vec2(0.0f, 0.0f),
     //            glm::vec3(0, 1, 0)},
@@ -295,7 +295,7 @@ int main() {
     unsetenv("TERM");
 #endif
 
-    CSharp csharp("../mono/lib");
+    CSharp csharp("./mono/lib");
     // csharp.ReloadAssembly();
 
     // Audio

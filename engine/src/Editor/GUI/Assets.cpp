@@ -29,7 +29,7 @@ void DirectoryIterator(const std::string &str, const char *filter_str) {
 
             if (!gameObject) goto skip_if;
 
-            Serializer::CreatePrefab(std::string("../assets/") + gameObject->name + ".prefab", gameObject);
+            Serializer::CreatePrefab(std::string("./") + gameObject->name + ".prefab", gameObject);
         }
 
     skip_if:
@@ -131,7 +131,7 @@ namespace Editor {
         ImGui::InputText("##AssetsFilterString", filter_str, filter_str_size);
         std::string icon = ICON_FA_CUBE;
 
-        DirectoryIterator("../assets", filter_str);
+        DirectoryIterator("./assets", filter_str);
 
         ImGui::End();
     }

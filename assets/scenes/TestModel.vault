@@ -1,0 +1,46 @@
+Scene: Untitled
+GameObjects:
+  - GameObject:
+      ID: 72a2a838-159a-46c2-8245-a8d4e29eefcf
+      name: Floor
+      tag: Default
+      parent: NO_PARENT
+      Transform:
+        position: [0, 0, 0]
+        rotation: [0, 0, 0]
+        scale: [29.4811382, 29.4811382, 29.4811382]
+      MeshRenderer:
+        mesh_type: 0
+        mesh_index: -1
+        mesh_path: ""
+        material_path: ./assets/main.material
+  - GameObject:
+      ID: e9aceace-0e18-42c4-aa11-e0885c7678ad
+      name: Light
+      tag: Default
+      parent: NO_PARENT
+      Transform:
+        position: [-9.52962494, 31.7999992, 11.6999998]
+        rotation: [0, 0, 0]
+        scale: [1, 1, 1]
+      AmbientLight:
+        amount: 0.200000003
+        color: [1, 1, 1]
+      DirectionalLight:
+        intensity: 1
+        color: [1, 1, 1]
+        enable_shadow_mapping: true
+  - GameObject:
+      ID: 12b51820-e494-46f9-b4e8-54180b5788bf
+      name: Model
+      tag: Default
+      parent: NO_PARENT
+      Transform:
+        position: [0, 0, 0]
+        rotation: [0, 0, 0]
+        scale: [0.0900000334, 0.0900000334, 0.0900000334]
+      ModelRenderer:
+        model_path: ./assets/Character.fbx
+        time_scale: 1
+        play_animation: true
+        animation_path: ./assets/SaluteAnimation.fbx

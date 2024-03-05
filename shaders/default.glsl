@@ -328,7 +328,11 @@ void main() {
     // total_color += vec4(point_light(light), 1.0f);
 
     FragColor = total_color;
-    FragColor.a = 1;
+    if (texture_diffuse.defined) {
+        FragColor.a = texture(texture_diffuse.tex, texUV).a * baseColor.a;
+    } else {
+        FragColor.a = baseColor.a;
+    }
 }
 #shader geometry
 #version 330 core

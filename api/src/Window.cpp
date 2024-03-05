@@ -74,7 +74,7 @@ namespace VaultRenderer {
 
     void Window::Run(std::function<void()> update_call, std::function<void()> gui_call, std::function<void()> shadow_render_call) {
         static int before_width, before_height;
-        Shader framebuffer_shader("../shaders/framebuffer.glsl");
+        Shader framebuffer_shader("./shaders/framebuffer.glsl");
         ImGuiIO &io = ImGui::GetIO();
 
         // framebuffer->bloomRenderer.Init(width, height);
@@ -174,13 +174,13 @@ namespace VaultRenderer {
             io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
 
             io.FontDefault = io.Fonts->AddFontFromFileTTF(
-                "../assets/fonts/OpenSans-Semibold.ttf", 18.f);
+                "./fonts/OpenSans-Semibold.ttf", 18.f);
             static const ImWchar icons_ranges[] = {ICON_MIN_FA, ICON_MAX_16_FA,
                                                    0};
             ImFontConfig icons_config;
             icons_config.MergeMode = true;
             icons_config.PixelSnapH = true;
-            io.Fonts->AddFontFromFileTTF("../assets/fonts/fa-solid-900.ttf", 16.0f,
+            io.Fonts->AddFontFromFileTTF("./fonts/fa-solid-900.ttf", 16.0f,
                                          &icons_config, icons_ranges);
 
             ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 2.0f);

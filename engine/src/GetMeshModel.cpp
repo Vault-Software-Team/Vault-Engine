@@ -68,7 +68,7 @@ namespace Engine {
 
         // size_t size = vertices.size();
         // // Open Binary file, to write out data
-        // std::ofstream file("../assets/raw_vector", std::ios::binary);
+        // std::ofstream file("./raw_vector", std::ios::binary);
         // if (!file)
         //     std::cout << "Something went wrong" << std::endl;
         // // Store/Write the vector size

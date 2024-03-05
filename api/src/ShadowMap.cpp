@@ -2,7 +2,7 @@
 
 namespace VaultRenderer {
     ShadowMap::ShadowMap() {
-        shader = std::make_unique<Shader>("../shaders/shadow_map.glsl");
+        shader = std::make_unique<Shader>("./shaders/shadow_map.glsl");
     }
 
     void ShadowMap::RenderSpace(std::function<void(std::unique_ptr<Shader> &)> shadow_render_call) {

@@ -15,7 +15,7 @@ namespace Engine::Scripting::CXX {
         // static const std::string include_flags = "-I../include -I../vendor";
         // static const std::string linuxCompiler = "g++";
 
-        // fs::recursive_directory_iterator iter("../assets");
+        // fs::recursive_directory_iterator iter("./");
         // for (auto &dirEntry : iter) {
         //     if (!dirEntry.path().string().ends_with(".cpp"))
         //         continue;
@@ -52,7 +52,7 @@ namespace Engine::Scripting::CXX {
     }
 
     void CXXScripting::LoadScripts() {
-        // fs::recursive_directory_iterator iter("../assets");
+        // fs::recursive_directory_iterator iter("./");
 
         // for (auto &dirEntry : iter) {
         //     if (dirEntry.path().string().ends_with(".cpp")) {

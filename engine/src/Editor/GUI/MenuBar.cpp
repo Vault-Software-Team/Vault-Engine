@@ -58,7 +58,7 @@ namespace Editor {
                     if (std::filesystem::exists(std::filesystem::path(Scene::Main->scene_file_path))) {
                         Serializer::Serialize(Scene::Main, Scene::Main->scene_file_path);
                     } else {
-                        Serializer::Serialize(Scene::Main, "../assets/" + uuid::generate_uuid_v4() + ".vault");
+                        Serializer::Serialize(Scene::Main, "./" + uuid::generate_uuid_v4() + ".vault");
                     }
                 }
 
@@ -70,7 +70,7 @@ namespace Editor {
                     if (std::filesystem::exists(std::filesystem::path(Scene::Main->scene_file_path))) {
                         Serializer::Serialize(Scene::Main, Scene::Main->scene_file_path);
                     } else {
-                        Serializer::Serialize(Scene::Main, "../assets/" + uuid::generate_uuid_v4() + ".vault");
+                        Serializer::Serialize(Scene::Main, "./" + uuid::generate_uuid_v4() + ".vault");
                     }
                 }
 

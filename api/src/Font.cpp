@@ -8,7 +8,7 @@ namespace VaultRenderer {
     DLL_API std::unique_ptr<Shader> Font::font_shader;
 
     int Font::InitFT() {
-        font_shader = std::make_unique<Shader>("../shaders/text_shader.glsl");
+        font_shader = std::make_unique<Shader>("./shaders/text_shader.glsl");
         if (FT_Init_FreeType(&ft)) {
             std::cout << "ERROR: Couldn't init FreeType Library\n";
             return -1;

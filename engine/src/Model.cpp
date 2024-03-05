@@ -67,7 +67,7 @@ namespace Engine {
         }
 
         // size_t size = vertices.size();
-        // std::ofstream file("../assets/raw_vector", std::ios::binary);
+        // std::ofstream file("./raw_vector", std::ios::binary);
         // file.write(reinterpret_cast<const char *>(&size), sizeof(size));
         // file.write(reinterpret_cast<const char *>(vertices.data()), sizeof(vertices[0]) * size);
         // file.close();

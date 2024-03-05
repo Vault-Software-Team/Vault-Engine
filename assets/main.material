@@ -1,5 +1,5 @@
 color: [1, 1, 1, 1]
-diffuse: ../assets/faggot.png
-specular: ../assets/faggot.png
+diffuse: ./assets/planks.png
+specular: ./assets/planksSpec.png
 normal: nullptr
-height: ../assets/displacement.png
+height: ./assets/displacement.png

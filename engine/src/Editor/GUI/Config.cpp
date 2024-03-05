@@ -27,7 +27,7 @@ namespace Editor {
             ImGui::InputText("Game Title", &Engine::Serializer::config.title);
 
             if (ImGui::Button(ICON_FA_FLOPPY_DISK " Save Configuration")) {
-                Engine::Serializer::SaveConfigFile("../assets/config.yaml");
+                Engine::Serializer::SaveConfigFile("./assets/config.yaml");
             }
             ImGui::NewLine();
 

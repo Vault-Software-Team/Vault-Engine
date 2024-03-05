@@ -114,13 +114,13 @@ namespace Engine {
     }
 
     void CSharp::InitMono() {
-        mono_set_assemblies_path("../mono/lib");
+        mono_set_assemblies_path("./mono/lib");
         InitRuntime();
 
         app_domain = mono_domain_create_appdomain((char *)appdomain_name.c_str(), nullptr);
         mono_domain_set(app_domain, true);
 
-        core_assembly = LoadCSharpAssembly("../csharp-lib/bin/Debug/net6.0/csharp-lib.dll");
+        core_assembly = LoadCSharpAssembly("./csharp-lib/bin/Debug/net6.0/csharp-lib.dll");
 
         LoadSubClasses(core_assembly);
 

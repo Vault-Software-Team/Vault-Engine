@@ -33,12 +33,12 @@ unsigned int skyboxIndices[] = {
 namespace VaultRenderer {
     Skybox::Skybox() {
         std::string facesCubemap[6] = {
-            "../assets/skybox/right.jpg",
-            "../assets/skybox/left.jpg",
-            "../assets/skybox/top.jpg",
-            "../assets/skybox/bottom.jpg",
-            "../assets/skybox/front.jpg",
-            "../assets/skybox/back.jpg" //
+            "./assets/skybox/right.jpg",
+            "./assets/skybox/left.jpg",
+            "./assets/skybox/top.jpg",
+            "./assets/skybox/bottom.jpg",
+            "./assets/skybox/front.jpg",
+            "./assets/skybox/back.jpg" //
         };
 
         glGenVertexArrays(1, &skyboxVAO);

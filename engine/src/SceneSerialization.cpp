@@ -685,7 +685,7 @@ namespace Engine {
         yaml::Emitter emitter;
         emitter << yaml::BeginMap;
 
-        emitter << yaml::Key << "main_scene" << yaml::Value << "../assets/scenes/main.vault";
+        emitter << yaml::Key << "main_scene" << yaml::Value << "./assets/scenes/main.vault";
         emitter << yaml::Key << "title" << yaml::Value << "Vault Engine";
 
         std::ofstream file(path);

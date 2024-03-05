@@ -97,8 +97,8 @@ namespace VaultRenderer {
         }
 
         // Shaders
-        m_DownsampleShader = new Shader("../shaders/downsample.glsl");
-        m_UpsampleShader = new Shader("../shaders/upsample.glsl");
+        m_DownsampleShader = new Shader("./shaders/downsample.glsl");
+        m_UpsampleShader = new Shader("./shaders/upsample.glsl");
 
         // Downsample
         m_DownsampleShader->Bind();
