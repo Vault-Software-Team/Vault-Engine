@@ -34,4 +34,8 @@ namespace Editor {
         ImGui::Text("Shading Language: %s", VaultRenderer::Statistics::shading_language.c_str());
         ImGui::End();
     }
+
+    void EditorLayer::GameGUI() {
+        GUI::Game_Scene();
+    }
 } // namespace Editor

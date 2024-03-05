@@ -153,7 +153,6 @@ int main() {
     runtime.shadowMap = &shadow_map;
     EditorLayer editor;
 
-    GUI::LogInfo("Hello, World!");
     GUI::framebufferTextureID = window.framebuffer->framebuffer->texture;
     window.use_imgui_size = true;
 
@@ -179,9 +178,44 @@ int main() {
     //     shader.SetUniformMat4(("finalBonesMatrices[" + std::to_string(i) + "]").c_str(), transforms[i]);
     // -- SKELETAL ANIMATION EXAMPLE --
 
+    // GAME BUILD
+    bool GAME_BUILD_called_once = false;
+
     auto Function_GUI = [&] {
         ImGui::DockSpaceOverViewport(ImGui::GetMainViewport(), ImGuiDockNodeFlags_PassthruCentralNode);
+
+#ifdef GAME_BUILD
+        bool &isStopped = Runtime::instance->isStopped;
+        bool &isRunning = Runtime::instance->isRunning;
+
+        if (!GAME_BUILD_called_once) {
+            isRunning = true;
+            isStopped = false;
+            Scene::Main->OnRuntimeStart();
+
+            auto v = Scene::Main->EntityRegistry.view<CXXScriptComponent>();
+
+            for (auto e : v) {
+                auto &component = Scene::Main->EntityRegistry.get<CXXScriptComponent>(e);
+                component.OnStart();
+            }
+
+            for (auto &go : Scene::Main->GameObjects) {
+                if (go->HasComponent<Camera>()) {
+                    auto &camera = go->GetComponent<Camera>();
+                    if (camera.main_camera) {
+                        Scene::Main->SetMainCameraObject(go);
+                        break;
+                    }
+                }
+            }
+
+            GAME_BUILD_called_once = true;
+        }
+        editor.GameGUI();
+#else
         editor.GUI();
+#endif
 
         for (auto &pointer : GameObject::scheduled_deletions) {
             pointer->UNSAFE_DeleteGameObject();
@@ -258,6 +292,8 @@ int main() {
 
     // Audio
     Audio2D::InitAudio();
+
+    Serializer::LoadConfigFile("../assets/config.yaml");
 
     window.Run([&] {
         static double lastTime = 0;

@@ -8,5 +8,6 @@ namespace Editor {
 
         EditorLayer();
         void GUI();
+        void GameGUI();
     };
 } // namespace Editor

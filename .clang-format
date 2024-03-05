@@ -4,5 +4,5 @@ IndentAccessModifiers: false
 AccessModifierOffset: -4
 SortIncludes: false
 ColumnLimit: 0
-IndentPPDirectives: None
 AllowShortIfStatementsOnASingleLine: true
+IndentPPDirectives: BeforeHash

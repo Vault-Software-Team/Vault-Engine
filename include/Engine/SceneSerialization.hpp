@@ -6,6 +6,10 @@
 namespace yaml = YAML;
 
 namespace Engine {
+    struct Config {
+        std::string main_scene = "";
+    };
+
     class Serializer {
     public:
         inline static std::string scheduled_scene_path = "";
@@ -20,5 +24,12 @@ namespace Engine {
         static void DeserializeMaterial(const std::string &path, VaultRenderer::Material &material);
         static void CreatePrefab(const std::string &path, std::shared_ptr<GameObject> &gameObject);
         static std::shared_ptr<GameObject> LoadPrefab(const std::string &path);
+
+        // Config
+        inline static Config config;
+
+        static void LoadConfigFile(const std::string &path);
+        static void SaveConfigFile(const std::string &path);
+        static void DefaultConfigFile(const std::string &path);
     };
 } // namespace Engine

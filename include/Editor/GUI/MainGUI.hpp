@@ -53,5 +53,8 @@ namespace Editor {
         static DLL_API bool IsImage(const std::string &file_path);
 
         static DLL_API bool DecomposeTransform(const glm::mat4 &transform, glm::vec3 &translation, glm::vec3 &rotation, glm::vec3 &scale);
+
+        // GAME GUI
+        static DLL_API void Game_Scene();
     };
 } // namespace Editor

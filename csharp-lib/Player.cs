@@ -39,7 +39,7 @@ public class Player : Entity
 
     private void OnCollisionEnter2D(string ID)
     {
-        Debug.Log("You fucking died faggot");
+        Debug.Log("You fucking died loser");
 
         Scene.LoadScene("../assets/scenes/Game.vault");
     }

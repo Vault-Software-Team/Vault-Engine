@@ -3,12 +3,16 @@
 #include "yaml-cpp/emittermanip.h"
 #include <Engine/SceneSerialization.hpp>
 #include <Engine/GameObject.hpp>
+#include <filesystem>
 #include <fstream>
 #include <Engine/Components/IncludeComponents.hpp>
 #include <iostream>
 #include <Engine/Model.hpp>
 #include <sstream>
 #include <uuid.hpp>
+#include <experimental/filesystem>
+
+namespace fs = std::filesystem;
 
 namespace YAML {
     template <>
@@ -675,5 +679,43 @@ namespace Engine {
         }
 
         return parent_obj;
+    }
+
+    void Serializer::DefaultConfigFile(const std::string &path) {
+        yaml::Emitter emitter;
+        emitter << yaml::BeginMap;
+
+        emitter << yaml::Key << "main_scene" << yaml::Value << "../assets/scenes/main.vault";
+
+        std::ofstream file(path);
+        file << emitter.c_str();
+    }
+
+    void Serializer::LoadConfigFile(const std::string &path) {
+        if (!fs::exists(path)) DefaultConfigFile(path);
+
+        std::ifstream stream(path);
+        std::stringstream ss;
+        ss << stream.rdbuf();
+
+        yaml::Node data = yaml::Load(ss.str());
+
+        if (data["main_scene"]) {
+            config.main_scene = data["main_scene"].as<std::string>();
+        }
+
+        if (fs::exists(config.main_scene)) {
+            Deserialize(config.main_scene);
+        }
+    }
+
+    void Serializer::SaveConfigFile(const std::string &path) {
+        yaml::Emitter emitter;
+        emitter << yaml::BeginMap;
+
+        emitter << yaml::Key << "main_scene" << yaml::Value << config.main_scene;
+
+        std::ofstream file(path);
+        file << emitter.c_str();
     }
 } // namespace Engine
