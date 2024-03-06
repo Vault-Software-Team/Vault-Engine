@@ -13,3 +13,6 @@
 [submodule "external/angelscript"]
 	path = external/angelscript
 	url = https://github.com/IngwiePhoenix/AngelScript
+[submodule "external/efsw"]
+	path = external/efsw
+	url = https://github.com/SpartanJ/efsw
