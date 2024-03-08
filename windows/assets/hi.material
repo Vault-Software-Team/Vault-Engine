@@ -1,5 +1,0 @@
-color: [1, 1, 1, 1]
-diffuse: ../assets/diffuse.png
-specular: ../assets/diffuse.png
-normal: ../assets/normal.png
-height: ../assets/displacement.png

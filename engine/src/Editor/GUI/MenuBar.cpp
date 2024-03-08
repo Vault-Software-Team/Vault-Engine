@@ -95,6 +95,10 @@ namespace Editor {
                 if (ImGui::MenuItem("Reload Assembly")) {
                     CSharp::instance->ReloadAssembly();
                 }
+
+                if (ImGui::MenuItem("Compile Assembly")) {
+                    CSharp::instance->CompileAssemblies();
+                }
                 ImGui::EndMenu();
             }
 

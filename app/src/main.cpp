@@ -3,6 +3,7 @@
 #include "Engine/GameObject.hpp"
 #include "Engine/Model.hpp"
 #include "HyperScript/HyperScript.hpp"
+#include "imgui/TextEditor.hpp"
 #include <filesystem>
 #include <iostream>
 #include <Renderer/Window.hpp>
@@ -72,6 +73,7 @@ using namespace Editor;
 void print(const std::string &traki) {
     std::cout << traki << "\n";
 }
+
 int main() {
     using namespace VaultRenderer;
 
@@ -189,6 +191,16 @@ int main() {
     // GAME BUILD
     bool GAME_BUILD_called_once = false;
 
+    // GUI
+    auto teLangDef = TextEditor::LanguageDefinition::C();
+    GUI::InitTextEditor();
+    GUI::text_editor->SetLanguageDefinition(teLangDef);
+    GUI::text_editor->SetTabSize(4);
+    GUI::text_editor->SetPalette(TextEditor::GetDarkPalette());
+    GUI::text_editor->SetShowWhitespaces(false);
+
+    bool editingText = false;
+    auto *fontCascadia = ImGui::GetIO().Fonts->AddFontFromFileTTF("assets/fonts/CascadiaMono.ttf", 16.0f);
     auto Function_GUI = [&] {
         ImGui::DockSpaceOverViewport(ImGui::GetMainViewport(), ImGuiDockNodeFlags_PassthruCentralNode);
 
@@ -223,6 +235,32 @@ int main() {
         editor.GameGUI();
 #else
         editor.GUI();
+
+        if (ImGui::Begin(ICON_FA_CODE " Text Editor")) {
+
+            ImVec2 size = ImGui::GetWindowSize();
+            ImVec2 pos = ImGui::GetWindowPos();
+
+            ImVec2 cursor = ImGui::GetMousePos();
+            cursor.x -= pos.x;
+            cursor.y -= pos.y;
+
+            editingText = (cursor.x > -1 && cursor.x <= size.x) && (cursor.y > -1 && cursor.y <= size.y);
+
+            ImGui::PushFont(fontCascadia);
+
+            GUI::text_editor->Render("Text Editor");
+
+            if (editingText && ImGui::IsKeyDown(ImGuiKey_LeftCtrl) && ImGui::IsKeyPressed(ImGuiKey_S)) {
+                std::ofstream file(GUI::TextEditor_path);
+                file << GUI::text_editor->GetText();
+                GUI::LogTick("File \"" + GUI::TextEditor_path + +"\" has been saved.");
+            }
+            ImGui::PopFont();
+        }
+
+        ImGui::End();
+
 #endif
 
         for (auto &pointer : GameObject::scheduled_deletions) {

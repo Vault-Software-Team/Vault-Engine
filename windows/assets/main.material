@@ -1,5 +1,0 @@
-color: [1, 1, 1, 1]
-diffuse: ../assets/faggot.png
-specular: ../assets/faggot.png
-normal: nullptr
-height: ../assets/displacement.png

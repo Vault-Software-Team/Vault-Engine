@@ -1,3 +1,4 @@
+#include "Engine/Components/Camera.hpp"
 #include "Engine/Components/SpriteRenderer.hpp"
 #include "Engine/Components/SpritesheetRenderer.hpp"
 #include <Engine/Runtime.hpp>
@@ -48,7 +49,46 @@ namespace Engine {
         Scene::Main->OnRuntimeUpdate(timestep);
         Scene::Main->UpdateGameObjectComponents();
         Scene::UpdateStaticGameObjectComponents();
+
+        // Depth camera rendering !!
+        std::vector<Camera *> depth_cameras = {};
+        auto v = Scene::Main->EntityRegistry.view<Camera>();
+
+        for (auto &e : v) {
+            auto &camera = Scene::Main->EntityRegistry.get<Camera>(e);
+
+            if (camera.depth_camera) depth_cameras.push_back(&camera);
+        }
+
+        if (depth_cameras.size() > 0 && Scene::Main->main_camera_object != Scene::Main->EditorSceneCamera) {
+            glClear(GL_DEPTH_BUFFER_BIT);
+
+            for (auto *camera : depth_cameras) {
+                camera->UpdateMatrix();
+                camera->BindToShader(*default_shader);
+                camera->BindToShader(*Font::font_shader);
+                camera->width = VaultRenderer::Window::window->width;
+                camera->height = VaultRenderer::Window::window->height;
+
+                std::cout << " maan wtf \n";
+                for (auto gameObject : Scene::Main->GameObjects) {
+                    gameObject->UpdateRendering(*Runtime::default_shader, true);
+                }
+            }
+        }
+
         glDisable(GL_BLEND);
+
+        std::vector<int> to_remove;
+        for (int i = 0; i < main_thread_calls.size(); i++) {
+            main_thread_calls[i]();
+            to_remove.push_back(i);
+        }
+
+        for (int i : to_remove) {
+            main_thread_calls.erase(main_thread_calls.begin() + i);
+        }
+        to_remove.clear();
     }
 
     void Runtime::Pause() {

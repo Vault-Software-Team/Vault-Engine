@@ -5,11 +5,11 @@
 #include <Engine/Scene.hpp>
 #include <iostream>
 #ifdef __EMSCRIPTEN__
-#include <emscripten.h>
-#define GL_GLEXT_PROTOTYPES
-#define EGL_EGLEXT_PROTOTYPES
+    #include <emscripten.h>
+    #define GL_GLEXT_PROTOTYPES
+    #define EGL_EGLEXT_PROTOTYPES
 #else
-#include <glad/glad.h>
+    #include <glad/glad.h>
 #endif
 #include <GLFW/glfw3.h>
 #include <Renderer/Shader.hpp>
@@ -42,6 +42,7 @@ namespace Engine {
         ~GameObject();
 
         void UpdateComponents(VaultRenderer::Shader &shader);
+        void UpdateRendering(VaultRenderer::Shader &shader, bool update_children = false);
         void SetParent(std::shared_ptr<GameObject> &parent);
         std::shared_ptr<GameObject> &AddChild(const std::string &name, const std::string &tag = "Default");
         std::shared_ptr<GameObject> &AddChild(std::shared_ptr<GameObject> &child);

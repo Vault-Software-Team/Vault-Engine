@@ -5,6 +5,7 @@
 #include <Renderer/Framebuffer.hpp>
 #include <Renderer/Window.hpp>
 #include <Renderer/ShadowMap.hpp>
+#include <functional>
 
 namespace Engine {
     class DLL_API Runtime {
@@ -17,6 +18,8 @@ namespace Engine {
         static DLL_API Runtime *instance;
         static DLL_API VaultRenderer::Shader *default_shader;
         VaultRenderer::ShadowMap *shadowMap;
+
+        std::vector<std::function<void()>> main_thread_calls;
 
         bool isRunning = false;
         bool isStopped = true;

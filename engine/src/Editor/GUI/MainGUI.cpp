@@ -6,10 +6,16 @@
 #include "../vendor/glm/gtc/matrix_transform.hpp"
 #include "../vendor/glm/gtc/type_ptr.hpp"
 #include "../vendor/glm/gtx/quaternion.hpp"
+#include "Engine/Mono/CSharp.hpp"
+#include "Engine/Runtime.hpp"
+#include "efsw/efsw.hpp"
+#include "imgui/TextEditor.hpp"
 #define GLM_ENABLE_EXPERIMENTAL
 #include "../vendor/glm/gtx/matrix_decompose.hpp"
 #include "../vendor/glm/gtx/rotate_vector.hpp"
 #include "../vendor/glm/gtx/vector_angle.hpp"
+#include <mono/metadata/threads.h>
+#include <Engine/Runtime.hpp>
 
 using namespace Engine::Components;
 
@@ -18,11 +24,96 @@ namespace Editor {
     DLL_API uint32_t GUI::framebufferTextureID;
     DLL_API Engine::GameObject *GUI::selected_gameObject;
     DLL_API std::string GUI::dragPayload;
+    DLL_API TextEditor *GUI::text_editor;
+    DLL_API std::string GUI::TextEditor_text;
+    DLL_API std::string GUI::TextEditor_path;
 
     char asciitolower(char in) {
         if (in <= 'Z' && in >= 'A')
             return in - ('Z' - 'z');
         return in;
+    }
+
+    class UpdateListener : public efsw::FileWatchListener {
+    public:
+        int counter = 0;
+
+        void handleFileAction(efsw::WatchID watchid, const std::string &dir, const std::string &filename, efsw::Action action, std::string oldFilename) override {
+            switch (action) {
+            case efsw::Actions::Add:
+                std::cout << "DIR (" << dir << ") FILE (" << filename << ") has event Added"
+                          << std::endl;
+                break;
+            case efsw::Actions::Delete:
+                std::cout << "DIR (" << dir << ") FILE (" << filename << ") has event Delete"
+                          << std::endl;
+                break;
+            case efsw::Actions::Modified: {
+                if (counter <= 0) {
+                    std::cout << "DIR (" << dir << ") FILE (" << filename << ") has event Modified" << std::endl;
+
+                    std::array<char, 1000> buffer;
+                    std::string result;
+                    std::string build_command = "cd assets";
+                    build_command += " && \"";
+                    build_command += "dotnet"; // custom dotnet path here in the future maybe??
+                    build_command += "\" build --property WarningLevel=0 -o VAULT_OUT";
+                    std::unique_ptr<FILE, decltype(&pclose)> pipe(popen(build_command.c_str(), "r"), pclose);
+
+                    if (!pipe) {
+                        throw std::runtime_error("popen() failed!");
+                    }
+
+                    while (fgets(buffer.data(), buffer.size(), pipe.get()) != nullptr) {
+                        const std::string output = buffer.data();
+
+                        if (output.find("error") != std::string::npos) {
+                            Editor::GUI::LogError(output);
+                        } else if (output.find("warning") != std::string::npos) {
+                            Editor::GUI::LogWarning(output);
+                        } else if (output.find("no warning") != std::string::npos) {
+                            Editor::GUI::LogInfo(output);
+                        } else {
+                            Editor::GUI::LogInfo(output);
+                        }
+
+                        if (output.find("Build succeeded.") != std::string::npos) {
+                            Editor::GUI::LogTick(output);
+                            Editor::GUI::LogTick("Please reload assembly!");
+                        }
+                    }
+
+                    Engine::Runtime::instance->main_thread_calls.push_back([]() {
+                        Engine::CSharp::instance->ReloadAssembly();
+                    });
+                }
+                if (++counter >= 3) counter = 0;
+
+                break;
+            }
+            case efsw::Actions::Moved:
+                std::cout << "DIR (" << dir << ") FILE (" << filename << ") has event Moved from ("
+                          << oldFilename << ")" << std::endl;
+                break;
+            default:
+                std::cout << "Should never happen!" << std::endl;
+            }
+        }
+    };
+
+    void GUI::InitTextEditor() {
+        text_editor = new TextEditor();
+
+        efsw::FileWatcher *fileWatcher = new efsw::FileWatcher();
+
+        // Create the instance of your efsw::FileWatcherListener implementation
+        UpdateListener *listener = new UpdateListener();
+
+        // Add a folder to watch, and get the efsw::WatchID
+        // It will watch the /tmp folder recursively ( the third parameter indicates that is recursive )
+        // Reporting the files and directories changes to the instance of the listener
+        efsw::WatchID watchID = fileWatcher->addWatch("./assets/scripts", listener, true);
+        fileWatcher->watch();
     }
 
     void GUI::SetNameIcon(std::string &txt, ImVec4 &color, Engine::GameObject *gameObject) {

@@ -64,6 +64,7 @@ namespace Engine {
         void ReloadAssembly();
         void RegisterFunction(const std::string &cs_path, void *func);
         void RegisterVaultFunctions();
+        void CompileAssemblies();
         static MonoImage *GetImage(MonoAssembly *core_assembly);
     };
 } // namespace Engine

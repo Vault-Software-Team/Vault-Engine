@@ -16,3 +16,7 @@ windows/csharp-lib
 windows/Game
 windows/mono
 windows/shaders
+windows/bin
+windows/assets2
+windows/fonts
+windows/shader

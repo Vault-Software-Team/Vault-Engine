@@ -1,4 +1,5 @@
 #include "Editor/GUI/MainGUI.hpp"
+#include "Engine/Components/CSharpScriptComponent.hpp"
 #include "Engine/GameObject.hpp"
 #include "Engine/Mono/Format/Functions.hpp"
 #include "Engine/Mono/HelperFunctions.hpp"
@@ -23,6 +24,8 @@
 #include <glm/ext.hpp>
 #include <Engine/Input/Input.hpp>
 #include <Engine/Mono/HelperFunctions.hpp>
+#include <thread>
+#include <Engine/Runtime.hpp>
 
 namespace fs = std::filesystem;
 
@@ -120,7 +123,8 @@ namespace Engine {
         app_domain = mono_domain_create_appdomain((char *)appdomain_name.c_str(), nullptr);
         mono_domain_set(app_domain, true);
 
-        core_assembly = LoadCSharpAssembly("./csharp-lib/bin/Debug/net6.0/csharp-lib.dll");
+        if (!fs::exists("./assets/VAULT_OUT/csharp-lib.dll")) return;
+        core_assembly = LoadCSharpAssembly("./assets/VAULT_OUT/csharp-lib.dll");
 
         LoadSubClasses(core_assembly);
 
@@ -137,6 +141,16 @@ namespace Engine {
         mono_domain_unload(app_domain);
 
         InitMono();
+
+        if (!Runtime::instance->isRunning) return;
+
+        auto view = Scene::Main->EntityRegistry.view<Components::CSharpScriptComponent>();
+
+        for (auto e : view) {
+            auto &manager = Scene::Main->EntityRegistry.get<Components::CSharpScriptComponent>(e);
+            manager.script_instances.clear();
+            manager.OnStart();
+        }
     }
 
     void CSharp_EditorConsole_Log(MonoString *str) {
@@ -263,6 +277,45 @@ namespace Engine {
 
     MonoImage *CSharp::GetImage(MonoAssembly *core_assembly) {
         return mono_assembly_get_image(core_assembly);
+    }
+
+    void CSharp::CompileAssemblies() {
+        std::thread *compilerThread = new std::thread([&] {
+            std::array<char, 1000> buffer;
+            std::string result;
+            std::string build_command = "cd assets";
+            build_command += " && \"";
+            build_command += "dotnet"; // custom dotnet path here in the future maybe??
+            build_command += "\" build --property WarningLevel=0 -o VAULT_OUT";
+            std::unique_ptr<FILE, decltype(&pclose)> pipe(popen(build_command.c_str(), "r"), pclose);
+
+            if (!pipe) {
+                throw std::runtime_error("popen() failed!");
+            }
+
+            while (fgets(buffer.data(), buffer.size(), pipe.get()) != nullptr) {
+                const std::string output = buffer.data();
+
+                if (output.find("error") != std::string::npos) {
+                    Editor::GUI::LogError(output);
+                } else if (output.find("warning") != std::string::npos) {
+                    Editor::GUI::LogWarning(output);
+                } else if (output.find("no warning") != std::string::npos) {
+                    Editor::GUI::LogInfo(output);
+                } else {
+                    Editor::GUI::LogInfo(output);
+                }
+
+                if (output.find("Build succeeded.") != std::string::npos) {
+                    Editor::GUI::LogTick(output);
+                    Editor::GUI::LogTick("Please reload assembly!");
+                }
+            }
+
+            Engine::Runtime::instance->main_thread_calls.push_back([]() {
+                Engine::CSharp::instance->ReloadAssembly();
+            });
+        });
     }
 
     CSharpClass::CSharpClass(MonoImage *image, const std::string &name_space, const std::string &name) {

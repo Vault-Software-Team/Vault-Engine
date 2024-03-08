@@ -1,4 +1,5 @@
 #pragma once
+#include "imgui/TextEditor.hpp"
 #include <dllapi.hpp>
 #include <Engine/GameObject.hpp>
 #include <string>
@@ -16,6 +17,7 @@ namespace Editor {
             LOG_INFO,
             LOG_WARNING,
             LOG_ERROR,
+            LOG_TICK
         } type;
         std::string content;
     };
@@ -26,10 +28,14 @@ namespace Editor {
 
     public:
         static DLL_API std::string dragPayload;
+        static DLL_API std::string TextEditor_text;
+        static DLL_API std::string TextEditor_path;
+        static DLL_API TextEditor *text_editor;
 
         static DLL_API Engine::GameObject *selected_gameObject;
         static DLL_API uint32_t framebufferTextureID;
         static DLL_API void LogInfo(const std::string &content);
+        static DLL_API void LogTick(const std::string &content);
         static DLL_API void LogError(const std::string &content);
         static DLL_API void LogWarning(const std::string &content);
 
@@ -58,5 +64,6 @@ namespace Editor {
 
         // GAME GUI
         static DLL_API void Game_Scene();
+        static DLL_API void InitTextEditor();
     };
 } // namespace Editor

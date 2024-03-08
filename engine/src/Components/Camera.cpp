@@ -116,8 +116,13 @@ namespace Engine::Components {
             ImGui::DragFloat("FOV", &fov, 0.1f, 0.1f);
             ImGui::DragFloat("Near", &near, 0.1f, 0.0f);
             ImGui::DragFloat("Far", &far, 0.1f, 0.0f);
-            ImGui::Checkbox("Main Camera", &main_camera);
+            if (!depth_camera) {
+                ImGui::Checkbox("Main Camera", &main_camera);
+            } else {
+                main_camera = false;
+            }
             ImGui::Checkbox("2D", &is2D);
+            ImGui::Checkbox("Overlay", &depth_camera);
 
             // if (ImGui::Button(check_scene_cam ? "Stop viewing as Scene Camera" : "View as Scene Camera"))
 

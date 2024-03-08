@@ -15,6 +15,7 @@ GameObjects:
         far: 100
         main_camera: true
         is2D: true
+        depth_camera: false
       CSharpScriptComponent:
         selected_scripts:
           .GameManager: THIS_IS_EMPTY_FUCK_YOU_LOL.GameManager
@@ -132,4 +133,35 @@ GameObjects:
         font_path: ./assets/fonts/VCR_OSD_MONO_1.001.ttf
         color: [1, 1, 1]
         scale: 0.00400000019
+        y_offset: 1
+  - GameObject:
+      ID: c7c12e70-c081-4f77-bc66-3a09e7799cf4
+      name: Depth Cam
+      tag: Default
+      parent: NO_PARENT
+      Transform:
+        position: [-10.1058998, 7.61113214, 0]
+        rotation: [0, 0, -1]
+        scale: [1, 1, 1]
+      Camera:
+        fov: 45
+        near: 0.100000001
+        far: 100
+        main_camera: false
+        is2D: true
+        depth_camera: true
+  - GameObject:
+      ID: 56a6683b-5b4a-4f1d-bb82-8cda0c972ff5
+      name: text
+      tag: Default
+      parent: NO_PARENT
+      Transform:
+        position: [-10.1099997, 7.61000013, -1.39999998]
+        rotation: [0, 0, 0]
+        scale: [1, 1, 1]
+      Text3D:
+        text: Hello, World!
+        font_path: ./assets/fonts/CascadiaCode.ttf
+        color: [1, 1, 1]
+        scale: 0.00600000005
         y_offset: 1

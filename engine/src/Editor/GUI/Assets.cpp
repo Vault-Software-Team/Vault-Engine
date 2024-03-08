@@ -8,6 +8,8 @@
 #include <iostream>
 #include <Engine/SceneSerialization.hpp>
 #include <Engine/Model.hpp>
+#include <fstream>
+#include <set>
 
 using namespace Engine;
 using namespace Engine::Components;
@@ -37,7 +39,23 @@ void DirectoryIterator(const std::string &str, const char *filter_str) {
     }
     ImGui::SetCursorPos(cursor_pos);
 
-    for (auto &dir : iter) {
+    std::set<std::filesystem::directory_entry> sorted_by_name;
+
+    for (auto &entry : iter)
+        sorted_by_name.insert(entry);
+
+    for (auto &dir : sorted_by_name) {
+        if (dir.path().string().find("VAULT_API", 0) != std::string::npos) {
+            continue;
+        }
+
+        if (dir.path().string().find("VAULT_OUT", 0) != std::string::npos) {
+            continue;
+        }
+
+        if (dir.path().string().find("csharp-lib.csproj", 0) != std::string::npos) {
+            continue;
+        }
 
         if (dir.is_directory()) {
             if (ImGui::TreeNode((std::string(ICON_FA_FOLDER) + " " + dir.path().filename().string()).c_str())) {
@@ -83,6 +101,16 @@ void DirectoryIterator(const std::string &str, const char *filter_str) {
 
                 if (name.ends_with(".prefab")) {
                     Serializer::LoadPrefab(dir.path().string());
+                }
+
+                if (name.ends_with(".cs") || name.ends_with(".hyper")) {
+                    std::ifstream stream(dir.path().string());
+                    std::stringstream ss;
+                    ss << stream.rdbuf();
+                    Editor::GUI::TextEditor_text = ss.str();
+                    Editor::GUI::TextEditor_path = dir.path().string();
+                    Editor::GUI::text_editor->SetText(Editor::GUI::TextEditor_text);
+                    stream.close();
                 }
 
                 if (name.ends_with(".obj") || name.ends_with(".blender") || name.ends_with(".dae") || name.ends_with(".gltf") || name.ends_with(".fbx")) {

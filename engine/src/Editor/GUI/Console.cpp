@@ -1,3 +1,4 @@
+#include "Engine/Runtime.hpp"
 #include <Editor/GUI/MainGUI.hpp>
 #include <Engine/Scene.hpp>
 #include <Engine/GameObject.hpp>
@@ -11,6 +12,9 @@ using namespace Engine::Components;
 namespace Editor {
     void GUI::LogInfo(const std::string &content) {
         logs.push_back({Log::LOG_INFO, content});
+    }
+    void GUI::LogTick(const std::string &content) {
+        logs.push_back({Log::LOG_TICK, content});
     }
     void GUI::LogError(const std::string &content) {
         logs.push_back({Log::LOG_ERROR, content});
@@ -52,7 +56,19 @@ namespace Editor {
                 ImGui::TextWrapped("%s",
                                    (std::string("  ") + log.content).c_str());
                 break;
+            case Log::LOG_TICK:
+                ImGui::TextColored(ImVec4(0.019f, 0.988f, 0.08627f, 1),
+                                   ICON_FA_CIRCLE_CHECK);
+                // same line
+                ImGui::SameLine();
+                ImGui::TextWrapped("%s",
+                                   (std::string("  ") + log.content).c_str());
+                break;
             }
+        }
+
+        if (Runtime::instance->isRunning) {
+            ImGui::SetScrollHereY(0.999f);
         }
 
         ImGui::End();

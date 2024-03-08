@@ -1,3 +1,4 @@
+#include "Renderer/Shader.hpp"
 #include <Engine/GameObject.hpp>
 #include <Engine/Scene.hpp>
 #include <Engine/Components/IncludeComponents.hpp>
@@ -42,8 +43,9 @@ namespace Engine {
         }
     }
 
-    void GameObject::UpdateComponents(VaultRenderer::Shader &shader) {
+    void GameObject::UpdateRendering(VaultRenderer::Shader &shader, bool update_children) {
         using namespace Components;
+
         if (HasComponent<MeshRenderer>()) {
             auto &meshRenderer = GetComponent<MeshRenderer>();
             if (meshRenderer.mesh) {
@@ -107,6 +109,18 @@ namespace Engine {
             glEnable(GL_CULL_FACE);
         }
 
+        if (!update_children) return;
+
+        for (auto &pChild : Scene::Main->GameObjects) {
+            if (pChild->parent == ID && pChild->ID != ID) pChild->UpdateRendering(shader);
+        }
+    }
+
+    void GameObject::UpdateComponents(VaultRenderer::Shader &shader) {
+        using namespace Components;
+
+        UpdateRendering(shader);
+
         if (HasComponent<AmbientLight>()) {
             auto &light = GetComponent<AmbientLight>();
             light.AttachToShader(shader);
@@ -128,8 +142,7 @@ namespace Engine {
         }
 
         for (auto &pChild : Scene::Main->GameObjects) {
-            if (pChild->parent == ID && pChild->ID != ID)
-                pChild->UpdateComponents(shader);
+            if (pChild->parent == ID && pChild->ID != ID) pChild->UpdateComponents(shader);
         }
     }
 

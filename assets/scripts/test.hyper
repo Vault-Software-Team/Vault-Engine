@@ -1,5 +1,0 @@
-func Stack() {
-    global var myVar = "hello, world";
-
-    delete myVar;
-}
