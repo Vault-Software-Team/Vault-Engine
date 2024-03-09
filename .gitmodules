@@ -16,3 +16,6 @@
 [submodule "external/efsw"]
 	path = external/efsw
 	url = https://github.com/SpartanJ/efsw
+[submodule "external/cegui"]
+	path = external/cegui
+	url = https://github.com/cegui/cegui
