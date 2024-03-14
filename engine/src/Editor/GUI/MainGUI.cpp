@@ -16,6 +16,7 @@
 #include "../vendor/glm/gtx/vector_angle.hpp"
 #include <mono/metadata/threads.h>
 #include <Engine/Runtime.hpp>
+#include "imgui/ImGuiNotify.hpp"
 
 using namespace Engine::Components;
 
@@ -49,6 +50,7 @@ namespace Editor {
                           << std::endl;
                 break;
             case efsw::Actions::Modified: {
+                if (!filename.ends_with(".cs")) break;
                 if (counter <= 0) {
                     std::cout << "DIR (" << dir << ") FILE (" << filename << ") has event Modified" << std::endl;
 
@@ -85,6 +87,7 @@ namespace Editor {
 
                     Engine::Runtime::instance->main_thread_calls.push_back([]() {
                         Engine::CSharp::instance->ReloadAssembly();
+                        ImGui::InsertNotification({ImGuiToastType::Success, 3000, "C# Assembly compiled & reloaded successfully."});
                     });
                 }
                 if (++counter >= 3) counter = 0;
@@ -112,7 +115,7 @@ namespace Editor {
         // Add a folder to watch, and get the efsw::WatchID
         // It will watch the /tmp folder recursively ( the third parameter indicates that is recursive )
         // Reporting the files and directories changes to the instance of the listener
-        efsw::WatchID watchID = fileWatcher->addWatch("./assets/scripts", listener, true);
+        efsw::WatchID watchID = fileWatcher->addWatch("./assets", listener, true);
         fileWatcher->watch();
     }
 

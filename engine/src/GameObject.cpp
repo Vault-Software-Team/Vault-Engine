@@ -1,3 +1,4 @@
+#include "Engine/Components/MeshRenderer.hpp"
 #include "Renderer/Shader.hpp"
 #include <Engine/GameObject.hpp>
 #include <Engine/Scene.hpp>
@@ -59,6 +60,7 @@ namespace Engine {
                 shader.SetUniformMat4("transformModel", GetComponent<Transform>().model);
 
                 // meshRenderer.AnimateAndSetUniforms(shader);
+                if (meshRenderer.mesh_type == MESH_PLANE) shader.SetUniform1i("mesh_isFlat", true);
                 meshRenderer.mesh->Draw(shader);
             }
         }
@@ -71,6 +73,7 @@ namespace Engine {
                 GetComponent<Transform>().Update();
                 shader.Bind();
                 shader.SetUniformMat4("transformModel", GetComponent<Transform>().model);
+                shader.SetUniform1ui("u_EntityID", (uint32_t)entity);
 
                 modelRenderer.AnimateAndSetUniforms(shader);
                 modelRenderer.Draw(shader);
@@ -84,6 +87,8 @@ namespace Engine {
                 glDisable(GL_CULL_FACE);
                 transform.Update();
                 shader.SetUniformMat4("transformModel", transform.model);
+                shader.SetUniform1ui("u_EntityID", (uint32_t)entity);
+                shader.SetUniform1i("mesh_isFlat", true);
                 spriteRenderer.Draw(shader);
             }
         }
@@ -96,6 +101,7 @@ namespace Engine {
                 glDisable(GL_CULL_FACE);
                 transform.Update();
                 shader.SetUniformMat4("transformModel", transform.model);
+                shader.SetUniform1ui("u_EntityID", (uint32_t)entity);
                 spritesheetRenderer.Draw(shader);
             }
         }
@@ -104,6 +110,7 @@ namespace Engine {
             glDisable(GL_CULL_FACE);
             auto &text3D = GetComponent<Text3D>();
             if (VaultRenderer::Font::font_shader != nullptr) {
+                VaultRenderer::Font::font_shader->SetUniform1ui("u_EntityID", (uint32_t)entity);
                 text3D.Draw(*VaultRenderer::Font::font_shader);
             }
             glEnable(GL_CULL_FACE);

@@ -3,11 +3,11 @@
 #include <cstdint>
 #include <string>
 #ifdef __EMSCRIPTEN__
-#include <emscripten.h>
-#define GL_GLEXT_PROTOTYPES
-#define EGL_EGLEXT_PROTOTYPES
+    #include <emscripten.h>
+    #define GL_GLEXT_PROTOTYPES
+    #define EGL_EGLEXT_PROTOTYPES
 #else
-#include <glad/glad.h>
+    #include <glad/glad.h>
 #endif
 #include <GLFW/glfw3.h>
 #include <Renderer/Framebuffer.hpp>
@@ -34,7 +34,7 @@ namespace VaultRenderer {
         void RenderSpace(std::function<void(std::unique_ptr<Shader> &)> shadow_render_call);
         void ChangeShadowMapSize(const uint32_t width, const uint32_t height);
         void BindTexture(int slot = 10);
-        void CalculateMatrices(const glm::vec3 &light_position);
+        void CalculateMatrices(const glm::vec3 &light_position, const glm::vec3 &cam_pos, const glm::vec3 &cam_front);
         DepthFramebuffer &GetDepthBuffer();
         void SetLightProjection(Shader &shader);
         uint32_t &GetTextureID();

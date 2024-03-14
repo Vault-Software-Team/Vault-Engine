@@ -1,3 +1,4 @@
+#include "Renderer/Stats.hpp"
 #include <Editor/GUI/MainGUI.hpp>
 #include <Engine/Scene.hpp>
 #include <Engine/GameObject.hpp>
@@ -46,6 +47,10 @@ namespace Editor {
             }
 
             ImGui::Image((void *)framebufferTextureID, size, ImVec2(0, 1), ImVec2(1, 0));
+
+            ImGui::SetCursorPos(ImVec2(5, 5));
+            ImGui::Text("FPS: %d", Statistics::fps);
+
             ImGui::End();
         }
 

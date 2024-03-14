@@ -55,6 +55,7 @@ namespace Engine {
         DLL_API MonoAssembly *core_assembly = nullptr;
         DLL_API MonoImage *core_assembly_image = nullptr;
         DLL_API std::unordered_map<std::string, std::pair<std::string, std::string>> entity_classes;
+        DLL_API std::unordered_map<std::string, std::unique_ptr<CSharpClass>> command_classes;
 
         CSharp(const std::string &lib_path, const std::string &runtime_name = "VaultScriptRuntime", const std::string &appdomain_name = "VaultAppDomain");
         ~CSharp();
@@ -65,6 +66,7 @@ namespace Engine {
         void RegisterFunction(const std::string &cs_path, void *func);
         void RegisterVaultFunctions();
         void CompileAssemblies();
+        void DevConsoleSetup(MonoAssembly *core_assembly);
         static MonoImage *GetImage(MonoAssembly *core_assembly);
     };
 } // namespace Engine

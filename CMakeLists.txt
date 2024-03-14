@@ -31,7 +31,7 @@ add_subdirectory(external/assimp)
 add_subdirectory(external/yaml-cpp)
 
 if(WIN32)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -static-libgcc -static-libstdc++ -w ")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -static-libgcc -static-libstdc++ -w")
 endif()
 
 # file(GLOB SRC_FILES

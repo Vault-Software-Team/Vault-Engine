@@ -3,11 +3,11 @@
 #include <cstdint>
 #include <string>
 #ifdef __EMSCRIPTEN__
-#include <emscripten.h>
-#define GL_GLEXT_PROTOTYPES
-#define EGL_EGLEXT_PROTOTYPES
+    #include <emscripten.h>
+    #define GL_GLEXT_PROTOTYPES
+    #define EGL_EGLEXT_PROTOTYPES
 #else
-#include <glad/glad.h>
+    #include <glad/glad.h>
 #endif
 #include <GLFW/glfw3.h>
 #include <Renderer/Shader.hpp>
@@ -44,6 +44,7 @@ namespace VaultRenderer {
         void DeleteFramebuffer();
         void RegenerateFramebuffer();
         void AddColorAttachement(uint32_t attachement);
+        void AddColorAttachement(uint32_t attachement, GLint internal_format, GLenum format, GLenum type);
         void Bind();
         void Unbind();
         void UnbindAndDrawOnScreen(Shader &shader);

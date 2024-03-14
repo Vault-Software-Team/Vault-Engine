@@ -5,4 +5,5 @@ cp ../imgui.ini ./app/imgui.ini
 cp ../imgui.ini ./imgui.ini
 # mangohud --dlsym ./app/app
 cd ../
-gdb ./build/app/app -x ./.gdbinit
+# gdb ./build/app/app -x ./.gdbinit
+./build/app/app

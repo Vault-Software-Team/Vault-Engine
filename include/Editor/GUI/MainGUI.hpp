@@ -23,14 +23,14 @@ namespace Editor {
     };
 
     class DLL_API GUI {
-    private:
-        static DLL_API DLL_API std::vector<Log> logs;
 
     public:
+        static DLL_API DLL_API std::vector<Log> logs;
         static DLL_API std::string dragPayload;
         static DLL_API std::string TextEditor_text;
         static DLL_API std::string TextEditor_path;
         static DLL_API TextEditor *text_editor;
+        static DLL_API bool isDevConOpen;
 
         static DLL_API Engine::GameObject *selected_gameObject;
         static DLL_API uint32_t framebufferTextureID;
@@ -48,6 +48,7 @@ namespace Editor {
         static DLL_API void Components();
         static DLL_API void Config();
         static DLL_API void BottomLogCounter();
+        static DLL_API void DeveloperConsole();
 
         static DLL_API bool isMaterialInspectorOpen;
         static DLL_API bool isConfigurationOpen;

@@ -30,17 +30,3 @@ GameObjects:
         intensity: 1
         color: [1, 1, 1]
         enable_shadow_mapping: true
-  - GameObject:
-      ID: 12b51820-e494-46f9-b4e8-54180b5788bf
-      name: Model
-      tag: Default
-      parent: NO_PARENT
-      Transform:
-        position: [0, 0, 0]
-        rotation: [0, 0, 0]
-        scale: [0.0900000334, 0.0900000334, 0.0900000334]
-      ModelRenderer:
-        model_path: ./assets/Character.fbx
-        time_scale: 1
-        play_animation: true
-        animation_path: ./assets/SaluteAnimation.fbx

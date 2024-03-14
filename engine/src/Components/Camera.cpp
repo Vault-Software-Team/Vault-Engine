@@ -22,6 +22,9 @@ namespace Engine::Components {
             projection = glm::ortho(-aspect, aspect, -1.0f, 1.0f, near, far);
             projection = glm::scale(projection, glm::vec3(transform->scale.x, transform->scale.y, 1.0f));
         }
+
+        front = glm::rotate(glm::inverse(glm::quat(transform->rotation)), glm::vec3(0.0, 0.0, -1.0));
+        // glm::lookAt(cam_pos + lightPos, cam_pos + Scene::mainCamera->Front, lightUpThing);
     }
 
     void Camera::Init() {

@@ -77,6 +77,8 @@ void print(const std::string &traki) {
 int main() {
     using namespace VaultRenderer;
 
+    chdir("/home/poww/Desktop/Programming Projects/Vault-Engine");
+
     // ANGEL SCRIPT TEST
     // Scripting::AngelScript::AngelScriptEngine AsEngine;
     // AsEngine.RegisterGlobalFunction("void print(const string &in)", asFUNCTION(print), asCALL_CDECL);
@@ -244,6 +246,7 @@ int main() {
             ImVec2 cursor = ImGui::GetMousePos();
             cursor.x -= pos.x;
             cursor.y -= pos.y;
+            // window.SetMousePos(cursor.x, cursor.y)
 
             editingText = (cursor.x > -1 && cursor.x <= size.x) && (cursor.y > -1 && cursor.y <= size.y);
 

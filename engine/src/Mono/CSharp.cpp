@@ -12,6 +12,7 @@
 #include "Engine/Mono/Audio/Functions.hpp"
 #include "Engine/Mono/Mathf/Functions.hpp"
 #include "mono/metadata/assembly.h"
+#include "mono/metadata/image.h"
 #include "mono/metadata/loader.h"
 #include "mono/metadata/object-forward.h"
 #include "mono/metadata/object.h"
@@ -26,6 +27,7 @@
 #include <Engine/Mono/HelperFunctions.hpp>
 #include <thread>
 #include <Engine/Runtime.hpp>
+#include <imgui/ImGuiNotify.hpp>
 
 namespace fs = std::filesystem;
 
@@ -125,12 +127,59 @@ namespace Engine {
 
         if (!fs::exists("./assets/VAULT_OUT/csharp-lib.dll")) return;
         core_assembly = LoadCSharpAssembly("./assets/VAULT_OUT/csharp-lib.dll");
+        core_assembly_image = GetImage(core_assembly);
 
         LoadSubClasses(core_assembly);
 
         RegisterVaultFunctions();
+        // DevConsoleSetup(core_assembly);
+    }
 
-        core_assembly_image = GetImage(core_assembly);
+    void CSharp::DevConsoleSetup(MonoAssembly *core_assembly) {
+        MonoImage *image = mono_assembly_get_image(core_assembly);
+        const MonoTableInfo *typeDefinitionsTable = mono_image_get_table_info(image, MONO_TABLE_TYPEDEF);
+        int32_t type_count = mono_table_info_get_rows(typeDefinitionsTable);
+        MonoClass *vault_script_class = mono_class_from_name(image, "DevConsole", "Command");
+
+        CSharp::instance->command_classes.clear();
+
+        for (int32_t i = 0; i < type_count; i++) {
+            uint32_t cols[MONO_TYPEDEF_SIZE];
+            mono_metadata_decode_row(typeDefinitionsTable, i, cols, MONO_TYPEDEF_SIZE);
+
+            const char *nameSpace = mono_metadata_string_heap(image, cols[MONO_TYPEDEF_NAMESPACE]);
+            const char *name = mono_metadata_string_heap(image, cols[MONO_TYPEDEF_NAME]);
+
+            MonoClass *entity_class = mono_class_from_name(image, nameSpace, name);
+            bool isSubclass = mono_class_is_subclass_of(entity_class, vault_script_class, false);
+
+            if (entity_class == vault_script_class)
+                continue;
+
+            if (isSubclass) {
+                CSharp::instance->command_classes[std::string(std::string(nameSpace) + "." + name)] = std::make_unique<CSharpClass>(image, std::string(nameSpace), std::string(name));
+
+                void *__args[] = {};
+
+                MonoObject *exception = nullptr;
+                mono_runtime_invoke(CSharp::instance->command_classes[std::string(std::string(nameSpace) + "." + name)]->GetMethod("Register", 0), CSharp::instance->command_classes[std::string(std::string(nameSpace) + "." + name)]->GetHandleTarget(), __args, &exception);
+
+                if (exception) {
+                    MonoObject *exc = NULL;
+                    MonoString *str = mono_object_to_string(exception, &exc);
+                    if (exc) {
+                        mono_print_unhandled_exception(exc);
+                    } else {
+                        Editor::GUI::LogError(mono_string_to_utf8(str)); // Log log(mono_string_to_utf8(str), LOG_ERROR);
+                    }
+                }
+                // mono_runtime_object_init(CSharp::instance->command_classes[std::string(std::string(nameSpace) + "." + name)]->GetHandleTarget());
+
+                printf("Command: %s.%s\n", nameSpace, name);
+            }
+        }
+
+        CSharp::instance->command_classes["DevConsole.CommandRegistry"] = std::make_unique<CSharpClass>(image, "DevConsole", "CommandRegistry");
     }
 
     void CSharp::ReloadAssembly() {
@@ -280,6 +329,7 @@ namespace Engine {
     }
 
     void CSharp::CompileAssemblies() {
+        Editor::GUI::logs.clear();
         std::thread *compilerThread = new std::thread([&] {
             std::array<char, 1000> buffer;
             std::string result;
@@ -314,6 +364,7 @@ namespace Engine {
 
             Engine::Runtime::instance->main_thread_calls.push_back([]() {
                 Engine::CSharp::instance->ReloadAssembly();
+                ImGui::InsertNotification({ImGuiToastType::Success, 3000, "C# Assembly compiled & reloaded successfully."});
             });
         });
     }

@@ -1,4 +1,5 @@
 #include "Engine/Mono/CSharp.hpp"
+#include "imgui/ImGuiNotify.hpp"
 #include <Editor/GUI/MainGUI.hpp>
 #include <Engine/Scene.hpp>
 #include <Engine/GameObject.hpp>
@@ -40,9 +41,9 @@ namespace Editor {
                 // remove cwd from filePathName
                 std::string filePath = ImGuiFileDialog::Instance()->GetCurrentPath();
 
-                std::cout << filePathName << "\n";
                 Scene::Main->scene_file_path = filePathName;
                 Serializer::Serialize(Scene::Main, filePathName);
+                ImGui::InsertNotification({ImGuiToastType::Success, 3000, "Saved scene as \"%s\"", filePathName.c_str()});
             }
 
             ImGuiFileDialog::Instance()->Close();
@@ -60,18 +61,12 @@ namespace Editor {
                     } else {
                         Serializer::Serialize(Scene::Main, "./" + uuid::generate_uuid_v4() + ".vault");
                     }
+
+                    ImGui::InsertNotification({ImGuiToastType::Success, 3000, "Saved scene \"%s\"", Scene::Main->scene_file_path.c_str()});
                 }
 
                 if (ImGui::MenuItem("Save Scene As...")) {
                     ImGuiFileDialog::Instance()->OpenDialog("SaveSceneAsDialog", "Save Scene As...", ".vault", ".");
-                }
-
-                if (ImGui::MenuItem("Open Scene")) {
-                    if (std::filesystem::exists(std::filesystem::path(Scene::Main->scene_file_path))) {
-                        Serializer::Serialize(Scene::Main, Scene::Main->scene_file_path);
-                    } else {
-                        Serializer::Serialize(Scene::Main, "./" + uuid::generate_uuid_v4() + ".vault");
-                    }
                 }
 
                 if (ImGui::MenuItem("Config")) {

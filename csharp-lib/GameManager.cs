@@ -27,6 +27,8 @@ public class GameManager : Entity
         score_text = score.GetComponent<Text3D>();
 
         Audio2D.PlayMusic("./assets/music/fchiptune.wav", 0.5f, true);
+
+        listener.Start();
     }
 
     private void OnUpdate()

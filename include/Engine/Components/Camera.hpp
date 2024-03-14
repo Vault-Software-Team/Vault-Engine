@@ -22,6 +22,7 @@ namespace Engine {
             float sensitivity = 100.0f;
 
             glm::mat4 view, projection;
+            glm::vec3 front;
 
             // Camera Properties
             float fov = 45, near = 0.1, far = 100.0;

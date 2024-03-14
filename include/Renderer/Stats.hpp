@@ -10,12 +10,14 @@ namespace VaultRenderer {
         static DLL_API std::string renderer;
         static DLL_API std::string version;
         static DLL_API std::string shading_language;
+        static DLL_API int fps_count;
         static DLL_API int fps;
 
         static DLL_API void SetStats();
         static DLL_API void ResetDrawCalls();
         static DLL_API void DrawCall();
         static DLL_API int GetDrawCalls();
+        static DLL_API void CalculateFPS(double &previous_time);
 
         // ImGui::Text("Vendor: %s", glGetString(GL_VENDOR));
         // ImGui::Text("Renderer: %s", glGetString(GL_RENDERER));

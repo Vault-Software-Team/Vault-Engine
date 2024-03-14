@@ -14,7 +14,7 @@ namespace Engine {
 
     void ModelMesh::loadModel(const std::string &path) {
         Assimp::Importer import;
-        const aiScene *scene = import.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_FixInfacingNormals | aiProcess_LimitBoneWeights);
+        const aiScene *scene = import.ReadFile(path, aiProcess_Triangulate | aiProcess_FixInfacingNormals | aiProcess_LimitBoneWeights);
 
         if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
             std::cout << "Assimp Importer Error: " << import.GetErrorString() << "\n";
@@ -105,16 +105,22 @@ namespace Engine {
 
         if (diffuse_count > 0) {
             ret = mot->Get(AI_MATKEY_TEXTURE(aiTextureType_DIFFUSE, 0), texture_name);
-            std::cout << (directory + "/" + texture_name.C_Str()).c_str() << "\n";
-            meshes.back().material.SetDiffuse((directory + "/" + texture_name.C_Str()).c_str());
+            std::string sTexName = texture_name.C_Str();
+            std::replace(sTexName.begin(), sTexName.end(), '\\', '/');
+            std::cout << (directory + "/" + sTexName).c_str() << "\n";
+            meshes.back().material.SetDiffuse((directory + "/" + sTexName).c_str());
         }
         if (specular_count > 0) {
             ret = mot->Get(AI_MATKEY_TEXTURE(aiTextureType_SPECULAR, 0), texture_name);
-            meshes.back().material.SetSpecular((directory + "/" + texture_name.C_Str()).c_str());
+            std::string sTexName = texture_name.C_Str();
+            std::replace(sTexName.begin(), sTexName.end(), '\\', '/');
+            meshes.back().material.SetSpecular((directory + "/" + sTexName).c_str());
         }
         if (normal_count > 0) {
             ret = mot->Get(AI_MATKEY_TEXTURE(aiTextureType_NORMALS, 0), texture_name);
-            meshes.back().material.SetNormal((directory + "/" + texture_name.C_Str()).c_str());
+            std::string sTexName = texture_name.C_Str();
+            std::replace(sTexName.begin(), sTexName.end(), '\\', '/');
+            meshes.back().material.SetNormal((directory + "/" + sTexName).c_str());
         }
     }
 

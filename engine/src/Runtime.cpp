@@ -201,7 +201,7 @@ namespace Engine {
         if (Scene::Main->EntityRegistry.valid(Scene::Main->EntityRegistry.view<DirectionalLight>().back())) { // Check if the last element of DirLights is a valid entity and not a deleteed one
             auto &light = Scene::Main->EntityRegistry.get<DirectionalLight>(Scene::Main->EntityRegistry.view<DirectionalLight>().back());
             if (light.enable_shadow_mapping) {
-                shadow_map.CalculateMatrices(light.transform->position);
+                shadow_map.CalculateMatrices(light.transform->position, Scene::Main->main_camera_object->transform->position, Scene::Main->main_camera_object->front);
                 shadow_map.SetLightProjection(*default_shader);
             }
         }
@@ -254,6 +254,7 @@ namespace Engine {
             shader.SetUniform1f("shadowCubemapFarPlane", mainPointLight->shadow_far_plane);
             shader.SetUniform1i("shadow_cubemap_mapping", 1);
         } else {
+            shader.SetUniform1i("shadowCubemap", 11);
             shader.SetUniform1i("shadow_cubemap_mapping", 0);
         }
     }

@@ -29,6 +29,7 @@ uniform mat4 transformModel;
 uniform mat4 camera_view;
 uniform mat4 camera_projection;
 uniform mat4 light_proj;
+uniform bool mesh_isFlat;
 const int MAX_BONES = 100;
 const int MAX_BONE_INFLUENCE = 4;
 uniform mat4 finalBonesMatrices[MAX_BONES];
@@ -60,7 +61,7 @@ void main() {
     data_out.model = transformModel;
     data_out.cameraCalcs = camera_projection * camera_view;
     data_out.texUV = vTextureUV;
-    data_out.normal = mat3(transpose(inverse(transformModel))) * totalNormal;
+    data_out.normal = mesh_isFlat ? totalNormal : mat3(transpose(inverse(transformModel))) * totalNormal;
     data_out.normal = normalize(data_out.normal);
     // normal = vNormal;
     // model = transformModel;
@@ -72,7 +73,8 @@ void main() {
 
 #shader fragment
 #version 330 core
-out vec4 FragColor;
+layout(location = 0) out vec4 FragColor;
+layout(location = 1) out uint EntityID;
 
 in vec2 texUV;
 in vec3 normal;
@@ -99,6 +101,7 @@ uniform samplerCube shadowCubemap;
 uniform bool shadow_cubemap_mapping;
 uniform bool shadow_mapping;
 uniform float shadowCubemapFarPlane;
+uniform uint u_EntityID;
 
 // Lights
 struct PointLight {
@@ -171,25 +174,25 @@ vec3 point_light(PointLight light) {
     spec *= inten;
 
     float shadow = 0.0;
-    // if(shadow_cubemap_mapping) {
-    //     vec3 fragToLight = current_position - (lightPos);
-    //     float current_depth = length(fragToLight);
-    //     float bias = max(0.5 * (1.0 - dot(normal, light_dir)), 0.0005);
+    if (shadow_cubemap_mapping) {
+        vec3 fragToLight = current_position - (lightPos);
+        float current_depth = length(fragToLight);
+        float bias = max(0.5 * (1.0 - dot(normal, light_dir)), 0.0005);
 
-    //     int sampleRadius = 2;
-    //     float pixelSize = 1.0 / 1024;
+        int sampleRadius = 2;
+        float pixelSize = 1.0 / 1024;
 
-    //     for(int z = -sampleRadius; z <= sampleRadius; z++) {
-    //         for (int y = -sampleRadius; y <= sampleRadius; y++) {
-    //             for (int x = -sampleRadius; x <= sampleRadius; x++) {
-    //                 float closestDepth = texture(shadowCubemap, fragToLight + vec3(x,y,z) * pixelSize).r;
-    //                 closestDepth *= shadowCubemapFarPlane;
-    //                 if(current_depth > closestDepth + bias) shadow += 1.0;
-    //             }
-    //         }
-    //     }
-    //     shadow /= pow((sampleRadius * 2 + 1), 3);
-    // }
+        for (int z = -sampleRadius; z <= sampleRadius; z++) {
+            for (int y = -sampleRadius; y <= sampleRadius; y++) {
+                for (int x = -sampleRadius; x <= sampleRadius; x++) {
+                    float closestDepth = texture(shadowCubemap, fragToLight + vec3(x, y, z) * pixelSize).r;
+                    closestDepth *= shadowCubemapFarPlane;
+                    if (current_depth > closestDepth + bias) shadow += 1.0;
+                }
+            }
+        }
+        shadow /= pow((sampleRadius * 2 + 1), 3);
+    }
     vec3 light_calc = light.color * (diffuse * (1.0 - shadow) * inten + ambient_amount) + (spec * (1.0 - shadow));
 
     if (texture_diffuse.defined) {
@@ -206,15 +209,44 @@ vec3 directional_light(DirectionalLight light) {
     vec3 m_normal = normal;
 
     vec2 UVs = texUV;
+    vec3 view_dir = normalize((camera_position) - (current_position));
+
+    if (texture_height.defined) {
+        float height_scale = 0.05;
+        const float min_layers = 8.0;
+        const float max_layers = 64.0;
+        float num_layers = mix(max_layers, min_layers, abs(dot(vec3(0.0, 0.0, 1.0), view_dir)));
+        float layer_depth = 1.0 / num_layers;
+        float current_layer_depth = 0.0;
+
+        vec2 S = view_dir.xy / view_dir.z * height_scale;
+        vec2 deltaUVs = S / num_layers;
+
+        float current_depth_map_value = 1.0 - texture(texture_height.tex, UVs).r;
+
+        while (current_layer_depth < current_depth_map_value) {
+            UVs -= deltaUVs;
+            current_depth_map_value = 1.0 - texture(texture_height.tex, UVs).r;
+            current_layer_depth += layer_depth;
+        }
+
+        vec2 prev_tex_coords = UVs + deltaUVs;
+        float after_depth = current_depth_map_value - current_layer_depth;
+        float before_depth = 1.0 - texture(texture_height.tex, prev_tex_coords).r - current_layer_depth + layer_depth;
+        float weight = after_depth / (after_depth - before_depth);
+        UVs = prev_tex_coords * weight + UVs * (1.0 - weight);
+
+        // if (UVs.x > 1.0 || UVs.y > 1.0 || UVs.x < 0.0 || UVs.y < 0.0) discard;
+    }
     if (texture_normal.defined) {
-        m_normal = normalize(TBN * (texture(texture_normal.tex, UVs).xyz * 2.0 - 1.0));
+        m_normal = normalize(TBN * (texture(texture_normal.tex, UVs).xyz * 2.0 -
+                                    1.0));
     }
 
     float diffuse = max(dot(m_normal, light_dir), 0.0f);
 
     float specular_light = 0.5;
 
-    vec3 view_dir = normalize(camera_position - current_position);
     vec3 reflection_dir = reflect(-light_dir, m_normal);
     float specular_amount = pow(max(dot(view_dir, reflection_dir), 0.0), 16);
 
@@ -222,7 +254,7 @@ vec3 directional_light(DirectionalLight light) {
 
     float spec = 0;
     if (texture_specular.defined) {
-        spec = texture(texture_specular.tex, texUV).r * specular;
+        spec = texture(texture_specular.tex, UVs).r * specular;
     } else {
         spec = specular;
     }
@@ -253,7 +285,7 @@ vec3 directional_light(DirectionalLight light) {
     }
 
     if (texture_diffuse.defined) {
-        return ((texture(texture_diffuse.tex, texUV).rgb * baseColor.rgb) * light.color * (diffuse * (1.0f - shadow) * inten + ambient_amount) + (spec * (1.0f - shadow))).rgb;
+        return ((texture(texture_diffuse.tex, UVs).rgb * baseColor.rgb) * light.color * (diffuse * (1.0f - shadow) * inten + ambient_amount) + (spec * (1.0f - shadow))).rgb;
     } else {
         return ((baseColor.rgb) * light.color * (diffuse * (1.0f - shadow) * inten + ambient_amount) + (spec * (1.0f - shadow))).rgb;
     }
@@ -296,6 +328,8 @@ vec3 spot_light(SpotLight light) {
 }
 
 void main() {
+    EntityID = u_EntityID;
+
     vec4 total_color = vec4(0);
     for (int i = 0; i < point_light_count; i++) {
         if (point_lights[i].intensity > 0)
@@ -333,6 +367,7 @@ void main() {
     } else {
         FragColor.a = baseColor.a;
     }
+    EntityID = u_EntityID;
 }
 #shader geometry
 #version 330 core
@@ -370,7 +405,7 @@ void main() {
 
     vec3 T = normalize(vec3(data_in[0].model * vec4(tangent, 0.0)));
     vec3 B = normalize(vec3(data_in[0].model * vec4(bitangent, 0.0)));
-    vec3 N = normalize(vec3(data_in[0].model * vec4(cross(edge1, edge0), 0.0)));
+    vec3 N = normalize(vec3(data_in[0].model * vec4(data_in[1].normal, 0.0)));
 
     // T = normalize(T - dot(T, N) * N);
     // then retrieve perpendicular vector B with the cross product of T and N

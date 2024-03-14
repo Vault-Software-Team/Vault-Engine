@@ -10,3 +10,7 @@
 /home/poww/Desktop/Programming Projects/Vault-Engine/assets/obj/Debug/net6.0/refint/csharp-lib.dll
 /home/poww/Desktop/Programming Projects/Vault-Engine/assets/obj/Debug/net6.0/csharp-lib.pdb
 /home/poww/Desktop/Programming Projects/Vault-Engine/assets/obj/Debug/net6.0/ref/csharp-lib.dll
+/home/poww/Desktop/Programming Projects/Vault-Engine/assets/obj/Debug/net6.0/csharp-lib.csproj.AssemblyReference.cache
+/home/poww/Desktop/Programming Projects/Vault-Engine/assets/bin/Debug/net6.0/csharp-lib.deps.json
+/home/poww/Desktop/Programming Projects/Vault-Engine/assets/bin/Debug/net6.0/csharp-lib.dll
+/home/poww/Desktop/Programming Projects/Vault-Engine/assets/bin/Debug/net6.0/csharp-lib.pdb

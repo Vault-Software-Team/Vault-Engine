@@ -39,6 +39,14 @@ namespace Editor {
             // glViewport(0, 0, size.x, size.y);
         }
 
+        ImVec2 mousePos = ImGui::GetMousePos();
+        ImVec2 windowPos = ImGui::GetWindowPos();
+        ImVec2 windowSize = ImGui::GetWindowSize();
+        mousePos.x -= windowPos.x;
+        mousePos.y -= windowPos.y;
+        mousePos.y = windowSize.y - mousePos.y;
+        Window::window->SetMousePos(mousePos.x, mousePos.y);
+
         ImGui::Image((void *)framebufferTextureID, size, ImVec2(0, 1), ImVec2(1, 0));
         if (ImGui::BeginDragDropTarget()) {
             if (const ImGuiPayload *payload = ImGui::AcceptDragDropPayload("scene_file")) {

@@ -1,10 +1,10 @@
 #include <Renderer/Stats.hpp>
 #ifdef __EMSCRIPTEN__
-#include <emscripten.h>
-#define GL_GLEXT_PROTOTYPES
-#define EGL_EGLEXT_PROTOTYPES
+    #include <emscripten.h>
+    #define GL_GLEXT_PROTOTYPES
+    #define EGL_EGLEXT_PROTOTYPES
 #else
-#include <glad/glad.h>
+    #include <glad/glad.h>
 #endif
 #include <GLFW/glfw3.h>
 
@@ -14,7 +14,8 @@ namespace VaultRenderer {
     DLL_API std::string Statistics::renderer;
     DLL_API std::string Statistics::version;
     DLL_API std::string Statistics::shading_language;
-    DLL_API int fps;
+    DLL_API int Statistics::fps;
+    DLL_API int Statistics::fps_count;
 
     void Statistics::SetStats() {
         vendor = (char *)glGetString(GL_VENDOR);
@@ -34,5 +35,16 @@ namespace VaultRenderer {
 
     int Statistics::GetDrawCalls() {
         return draw_calls;
+    }
+
+    void Statistics::CalculateFPS(double &previous_time) {
+        double current_time = glfwGetTime();
+        fps_count++;
+
+        if (current_time - previous_time >= 1.0) {
+            fps = fps_count;
+            previous_time = current_time;
+            fps_count = 0;
+        }
     }
 } // namespace VaultRenderer

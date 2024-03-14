@@ -19,9 +19,10 @@ namespace VaultRenderer {
         depth_buffer.RegenerateFramebuffer();
     }
 
-    void ShadowMap::CalculateMatrices(const glm::vec3 &light_position) {
+    void ShadowMap::CalculateMatrices(const glm::vec3 &light_position, const glm::vec3 &cam_pos, const glm::vec3 &cam_front) {
         ortho_proj = glm::ortho(-ortho_size, ortho_size, -ortho_size, ortho_size, near, far);
-        light_view = glm::lookAt(light_position, glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
+        // light_view = glm::lookAt(light_position, glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
+        light_view = glm::lookAt(cam_pos + light_position, cam_pos + cam_front, glm::vec3(0, 1, 0));
         light_proj = ortho_proj * light_view;
     }
 

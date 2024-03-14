@@ -1,0 +1,136 @@
+Scene: Untitled
+GameObjects:
+  - GameObject:
+      ID: a8c85833-9da5-4578-867d-1a7ca45df5b6
+      name: Camera
+      tag: Default
+      parent: NO_PARENT
+      Transform:
+        position: [0, 0, 15]
+        rotation: [0, 0, -1]
+        scale: [0.5, 0.5, 1]
+      Camera:
+        fov: 45
+        near: 0.100000001
+        far: 100
+        main_camera: true
+        is2D: true
+        depth_camera: false
+      CSharpScriptComponent:
+        selected_scripts:
+          .GameManager: THIS_IS_EMPTY_FUCK_YOU_LOL.GameManager
+  - GameObject:
+      ID: fd456de2-08fc-43ec-a647-a42978701ec5
+      name: Background
+      tag: Default
+      parent: NO_PARENT
+      Transform:
+        position: [0, 0, -0.800000012]
+        rotation: [0, 0, 0]
+        scale: [14.8999996, 8.19999981, 1]
+      SpriteRenderer:
+        color: [0, 0, 0, 1]
+        texture: nullptr
+  - GameObject:
+      ID: 56ce1f95-7dff-4340-a1db-7f83f1da829e
+      name: Light
+      tag: Default
+      parent: NO_PARENT
+      Transform:
+        position: [0, 4.4000001, 0]
+        rotation: [0, 0, 0]
+        scale: [1, 1, 1]
+      DirectionalLight:
+        intensity: 1
+        color: [1, 1, 1]
+        enable_shadow_mapping: false
+  - GameObject:
+      ID: 1abfc26f-47b2-424a-9c88-6f2e998c3838
+      name: Player
+      tag: Default
+      parent: NO_PARENT
+      Transform:
+        position: [-3, 0, 0]
+        rotation: [0, 0, 0]
+        scale: [1.10000002, 0.699999988, 1]
+      SpriteRenderer:
+        color: [1, 1, 1, 1]
+        texture: ./assets/textures/ufo_squirel_main_guy_thing.png
+      Rigidbody2D:
+        body_type: 2
+        gravity_scale: 1.20000005
+      BoxCollider2D:
+        density: 1
+        friction: 1
+        restitution: 0
+        trigger: true
+        offset: [0, 0]
+        size: [1, 0.629999995]
+      CSharpScriptComponent:
+        selected_scripts:
+          .Player: THIS_IS_EMPTY_FUCK_YOU_LOL.Player
+  - GameObject:
+      ID: a80e2c69-101f-4799-a038-a524f9d9e8d7
+      name: Obstacle
+      tag: Default
+      parent: NO_PARENT
+      Transform:
+        position: [4.01999998, 2.20923042, 0]
+        rotation: [0, 0, 0]
+        scale: [1.90999997, 7.11540937, 1]
+      SpriteRenderer:
+        color: [1, 0, 0, 1]
+        texture: ./assets/textures/tree_defaulty.png
+      Rigidbody2D:
+        body_type: 2
+        gravity_scale: 0
+      BoxCollider2D:
+        density: 1
+        friction: 1
+        restitution: 0
+        trigger: true
+        offset: [0, 0]
+        size: [1.88999999, 7.11999989]
+      CSharpScriptComponent:
+        selected_scripts:
+          .Obstacle: THIS_IS_EMPTY_FUCK_YOU_LOL.Obstacle
+  - GameObject:
+      ID: 2ea8dec5-aa56-4af6-bf70-298f850cc0b7
+      name: Obstacle Bottom
+      tag: Default
+      parent: NO_PARENT
+      Transform:
+        position: [4.01999998, -2.21000004, 0]
+        rotation: [0, 0, 0]
+        scale: [1.90999997, 7.11540937, 1]
+      SpriteRenderer:
+        color: [1, 0, 0, 1]
+        texture: ./assets/textures/tree_defaulty.png
+      Rigidbody2D:
+        body_type: 2
+        gravity_scale: 0
+      BoxCollider2D:
+        density: 1
+        friction: 1
+        restitution: 0
+        trigger: true
+        offset: [0, 0]
+        size: [1.88999999, 7.11999989]
+      CSharpScriptComponent:
+        selected_scripts:
+          .Obstacle: THIS_IS_EMPTY_FUCK_YOU_LOL.Obstacle
+  - GameObject:
+      ID: 07b61af7-2e10-4e9c-a990-340f4cff6e71
+      name: Score Text
+      tag: Default
+      parent: NO_PARENT
+      Transform:
+        position: [-3.5, -1.80999994, 1.79999995]
+        rotation: [0, 0, 0]
+        scale: [1, 1, 1]
+      Text3D:
+        text: "Score: 0"
+        font_path: ./assets/fonts/VCR_OSD_MONO_1.001.ttf
+        color: [1, 1, 1]
+        scale: 0.00400000019
+        y_offset: 1
