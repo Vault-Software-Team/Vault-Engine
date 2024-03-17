@@ -1,44 +1,59 @@
 Scene: Untitled
 GameObjects:
   - GameObject:
-      ID: 4986a206-828c-4dc7-b598-cdbb1f594d48
-      name: Light
-      tag: Default
-      parent: NO_PARENT
-      Transform:
-        position: [0.19213748, 10.6387529, -10.9214478]
-        rotation: [0, 0, 0]
-        scale: [1, 1, 1]
-      AmbientLight:
-        amount: 0.200000003
-        color: [1, 1, 1]
-      DirectionalLight:
-        intensity: 1
-        color: [1, 1, 1]
-        enable_shadow_mapping: true
-  - GameObject:
-      ID: 27d1c409-ef51-4ed0-baaf-ae323252bb6f
+      ID: 72a2a838-159a-46c2-8245-a8d4e29eefcf
       name: Floor
       tag: Default
       parent: NO_PARENT
       Transform:
         position: [0, 0, 0]
-        rotation: [0, 0, 0]
-        scale: [41.0199966, 41.0199966, 41.0199966]
+        rotation: [-3.14159226, 0, 0]
+        scale: [48.2452965, 48.2452965, 48.2452965]
       MeshRenderer:
         mesh_type: 0
         mesh_index: -1
         mesh_path: ""
         material_path: ./assets/main.material
   - GameObject:
-      ID: bda36290-8112-4284-8542-18534cce6665
-      name: GameObject
+      ID: e9aceace-0e18-42c4-aa11-e0885c7678ad
+      name: Light
       tag: Default
       parent: NO_PARENT
       Transform:
-        position: [0, 4.24978638, 0]
+        position: [-1.03601873, 5.42378569, 0]
         rotation: [0, 0, 0]
-        scale: [11.811801, 11.811801, 11.811801]
+        scale: [1, 1, 1]
+      AmbientLight:
+        amount: 0.200000003
+        color: [1, 1, 1]
+      PointLight:
+        intensity: 15.5200005
+        color: [1, 1, 1]
+        enable_shadow_mapping: true
+  - GameObject:
+      ID: 812a99d9-6d0d-4c49-888b-06342c335d4f
+      name: Text
+      tag: Default
+      parent: NO_PARENT
+      Transform:
+        position: [-7.57233763, 2.31085062, -1.54256392]
+        rotation: [0, 0, 0]
+        scale: [3.93999982, 3.93999982, 3.93999982]
+      Text3D:
+        text: Hello, World!
+        font_path: ./assets/fonts/CascadiaCodeItalic.ttf
+        color: [1, 1, 1]
+        scale: 0.0199999996
+        y_offset: 1
+  - GameObject:
+      ID: acb72126-52d6-4d7c-839c-4a31ea1d0aee
+      name: TF2 Logo
+      tag: Default
+      parent: NO_PARENT
+      Transform:
+        position: [-4.12994623, 5.72162104, -4.75571775]
+        rotation: [0, 0, 0]
+        scale: [14.9026003, 14.9026003, 14.9026003]
       SpriteRenderer:
         color: [1, 1, 1, 1]
         texture: ./assets/1024px-Team_Fortress_2_style_logo.svg.png

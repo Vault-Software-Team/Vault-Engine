@@ -25,25 +25,24 @@ struct Texture {
     bool defined;
 };
 uniform Texture texture_diffuse;
+uniform bool isText;
 
 void main() {
-    if(texture(texture_diffuse.tex, texCoords).r < 0.1) discard;  
-    // if(texture(texture_diffuse.tex, texCoords).r < 1.0) discard;  
     gl_FragDepth = length(FragPos.xyz - light_position) / far;
 }
 
 #shader geometry
 #version 330 core
 layout(triangles) in;
-layout(triangle_strip, max_vertices=18) out;
+layout(triangle_strip, max_vertices = 18) out;
 
 uniform mat4 shadow_matrices[6];
 out vec4 FragPos;
 
 void main() {
-    for(int f = 0; f < 6; ++f) {
+    for (int f = 0; f < 6; ++f) {
         gl_Layer = f;
-        for(int i = 0; i < 3; i++) {
+        for (int i = 0; i < 3; i++) {
             FragPos = gl_in[i].gl_Position;
             gl_Position = shadow_matrices[f] * FragPos;
             EmitVertex();

@@ -47,13 +47,13 @@ GameObjects:
         y_offset: 1
   - GameObject:
       ID: acb72126-52d6-4d7c-839c-4a31ea1d0aee
-      name: GameObject
+      name: TF2 Logo
       tag: Default
       parent: NO_PARENT
       Transform:
-        position: [7.76600218, 0, 0]
+        position: [-4.12994623, 5.72162104, -4.75571775]
         rotation: [0, 0, 0]
-        scale: [1, 1, 1]
+        scale: [14.9026003, 14.9026003, 14.9026003]
       SpriteRenderer:
         color: [1, 1, 1, 1]
         texture: ./assets/1024px-Team_Fortress_2_style_logo.svg.png

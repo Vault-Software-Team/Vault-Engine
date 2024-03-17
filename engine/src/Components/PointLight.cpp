@@ -92,6 +92,7 @@ namespace Engine::Components {
             auto &meshRenderer = Scene::Main->EntityRegistry.get<Text3D>(e);
             auto &transform = Scene::Main->EntityRegistry.get<Transform>(e);
             transform.Update();
+            shader.SetUniform1i("isText", 1);
             shader.SetUniformMat4("transformModel", transform.model);
             meshRenderer.Draw(shader);
         }

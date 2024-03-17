@@ -9,7 +9,6 @@ namespace Engine::Components {
     void Text3D::Draw(VaultRenderer::Shader &shader) {
         if (font) {
             transform->UpdateModel();
-            std::cout << transform->position.x << " " << transform->position.y << " " << transform->position.z << "\n";
             font->Draw(shader, transform->model, text, color, glm::vec3(0, 0, 0), 0, 0, scale, y_offset);
         }
     }
