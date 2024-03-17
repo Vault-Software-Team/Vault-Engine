@@ -54,28 +54,28 @@ namespace Engine {
         std::vector<Camera *> depth_cameras = {};
         auto v = Scene::Main->EntityRegistry.view<Camera>();
 
-        for (auto &e : v) {
-            auto &camera = Scene::Main->EntityRegistry.get<Camera>(e);
+        // for (auto &e : v) {
+        //     auto &camera = Scene::Main->EntityRegistry.get<Camera>(e);
 
-            if (camera.depth_camera) depth_cameras.push_back(&camera);
-        }
+        //     if (camera.depth_camera) depth_cameras.push_back(&camera);
+        // }
 
-        if (depth_cameras.size() > 0 && Scene::Main->main_camera_object != Scene::Main->EditorSceneCamera) {
-            glClear(GL_DEPTH_BUFFER_BIT);
+        // if (depth_cameras.size() > 0 && Scene::Main->main_camera_object != Scene::Main->EditorSceneCamera) {
+        //     glClear(GL_DEPTH_BUFFER_BIT);
 
-            for (auto *camera : depth_cameras) {
-                camera->UpdateMatrix();
-                camera->BindToShader(*default_shader);
-                camera->BindToShader(*Font::font_shader);
-                camera->width = VaultRenderer::Window::window->width;
-                camera->height = VaultRenderer::Window::window->height;
+        //     for (auto *camera : depth_cameras) {
+        //         camera->UpdateMatrix();
+        //         camera->BindToShader(*default_shader);
+        //         camera->BindToShader(*Font::font_shader);
+        //         camera->width = VaultRenderer::Window::window->width;
+        //         camera->height = VaultRenderer::Window::window->height;
 
-                std::cout << " maan wtf \n";
-                for (auto gameObject : Scene::Main->GameObjects) {
-                    gameObject->UpdateRendering(*Runtime::default_shader, true);
-                }
-            }
-        }
+        //         std::cout << " maan wtf \n";
+        //         for (auto gameObject : Scene::Main->GameObjects) {
+        //             gameObject->UpdateRendering(*Runtime::default_shader, true);
+        //         }
+        //     }
+        // }
 
         glDisable(GL_BLEND);
 
@@ -177,18 +177,23 @@ namespace Engine {
         for (auto e : v_text) {
             auto &text3D = Scene::Main->EntityRegistry.get<Text3D>(e);
             auto &transform = Scene::Main->EntityRegistry.get<Transform>(e);
+            shader.SetUniform1i("isText", 1);
             text3D.Draw(shader);
         }
 
         for (auto e : v_sprite) {
             auto &sprite = Scene::Main->EntityRegistry.get<SpriteRenderer>(e);
             auto &transform = Scene::Main->EntityRegistry.get<Transform>(e);
+            transform.Update();
+            shader.SetUniformMat4("transformModel", transform.model);
             sprite.Draw(shader);
         }
 
         for (auto e : v_spritesheet) {
             auto &sprite = Scene::Main->EntityRegistry.get<SpritesheetRenderer>(e);
             auto &transform = Scene::Main->EntityRegistry.get<Transform>(e);
+            transform.Update();
+            shader.SetUniformMat4("transformModel", transform.model);
             sprite.Draw(shader);
         }
 

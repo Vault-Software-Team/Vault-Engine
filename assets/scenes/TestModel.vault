@@ -7,8 +7,8 @@ GameObjects:
       parent: NO_PARENT
       Transform:
         position: [0, 0, 0]
-        rotation: [0, 0, 0]
-        scale: [29.4811382, 29.4811382, 29.4811382]
+        rotation: [-3.14159226, 0, 0]
+        scale: [48.2452965, 48.2452965, 48.2452965]
       MeshRenderer:
         mesh_type: 0
         mesh_index: -1
@@ -20,7 +20,7 @@ GameObjects:
       tag: Default
       parent: NO_PARENT
       Transform:
-        position: [-9.52962494, 31.7999992, 11.6999998]
+        position: [20.1599998, 61.2599983, 52.8031082]
         rotation: [0, 0, 0]
         scale: [1, 1, 1]
       AmbientLight:
@@ -30,3 +30,30 @@ GameObjects:
         intensity: 1
         color: [1, 1, 1]
         enable_shadow_mapping: true
+  - GameObject:
+      ID: 812a99d9-6d0d-4c49-888b-06342c335d4f
+      name: Text
+      tag: Default
+      parent: NO_PARENT
+      Transform:
+        position: [-7.57233763, 2.31085062, -1.54256392]
+        rotation: [0, 0, 0]
+        scale: [3.93999982, 3.93999982, 3.93999982]
+      Text3D:
+        text: Hello, World!
+        font_path: ./assets/fonts/CascadiaCodeItalic.ttf
+        color: [1, 1, 1]
+        scale: 0.0199999996
+        y_offset: 1
+  - GameObject:
+      ID: acb72126-52d6-4d7c-839c-4a31ea1d0aee
+      name: GameObject
+      tag: Default
+      parent: NO_PARENT
+      Transform:
+        position: [7.76600218, 0, 0]
+        rotation: [0, 0, 0]
+        scale: [1, 1, 1]
+      SpriteRenderer:
+        color: [1, 1, 1, 1]
+        texture: ./assets/1024px-Team_Fortress_2_style_logo.svg.png

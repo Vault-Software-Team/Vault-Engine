@@ -61,7 +61,7 @@ void main() {
     data_out.model = transformModel;
     data_out.cameraCalcs = camera_projection * camera_view;
     data_out.texUV = vTextureUV;
-    data_out.normal = mesh_isFlat ? totalNormal : mat3(transpose(inverse(transformModel))) * totalNormal;
+    data_out.normal = mat3(transpose(inverse(transformModel))) * totalNormal;
     data_out.normal = normalize(data_out.normal);
     // normal = vNormal;
     // model = transformModel;

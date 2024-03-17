@@ -1,0 +1,44 @@
+Scene: Untitled
+GameObjects:
+  - GameObject:
+      ID: 4986a206-828c-4dc7-b598-cdbb1f594d48
+      name: Light
+      tag: Default
+      parent: NO_PARENT
+      Transform:
+        position: [0.19213748, 10.6387529, -10.9214478]
+        rotation: [0, 0, 0]
+        scale: [1, 1, 1]
+      AmbientLight:
+        amount: 0.200000003
+        color: [1, 1, 1]
+      DirectionalLight:
+        intensity: 1
+        color: [1, 1, 1]
+        enable_shadow_mapping: true
+  - GameObject:
+      ID: 27d1c409-ef51-4ed0-baaf-ae323252bb6f
+      name: Floor
+      tag: Default
+      parent: NO_PARENT
+      Transform:
+        position: [0, 0, 0]
+        rotation: [0, 0, 0]
+        scale: [41.0199966, 41.0199966, 41.0199966]
+      MeshRenderer:
+        mesh_type: 0
+        mesh_index: -1
+        mesh_path: ""
+        material_path: ./assets/main.material
+  - GameObject:
+      ID: bda36290-8112-4284-8542-18534cce6665
+      name: GameObject
+      tag: Default
+      parent: NO_PARENT
+      Transform:
+        position: [0, 4.24978638, 0]
+        rotation: [0, 0, 0]
+        scale: [11.811801, 11.811801, 11.811801]
+      SpriteRenderer:
+        color: [1, 1, 1, 1]
+        texture: ./assets/1024px-Team_Fortress_2_style_logo.svg.png

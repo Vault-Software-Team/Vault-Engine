@@ -86,6 +86,7 @@ namespace Engine {
                 auto &transform = GetComponent<Transform>();
                 glDisable(GL_CULL_FACE);
                 transform.Update();
+                shader.Bind();
                 shader.SetUniformMat4("transformModel", transform.model);
                 shader.SetUniform1ui("u_EntityID", (uint32_t)entity);
                 shader.SetUniform1i("mesh_isFlat", true);
@@ -100,6 +101,7 @@ namespace Engine {
                 auto &transform = GetComponent<Transform>();
                 glDisable(GL_CULL_FACE);
                 transform.Update();
+                shader.Bind();
                 shader.SetUniformMat4("transformModel", transform.model);
                 shader.SetUniform1ui("u_EntityID", (uint32_t)entity);
                 spritesheetRenderer.Draw(shader);
