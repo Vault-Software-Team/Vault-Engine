@@ -22,7 +22,10 @@ namespace VaultRenderer {
 
         struct ColorAttachement {
             uint32_t ID;
-            uint32_t attachement;
+            GLenum attachement;
+            GLint internal_format;
+            GLenum format;
+            GLenum type;
         };
 
         BloomRenderer bloomRenderer;
@@ -43,8 +46,8 @@ namespace VaultRenderer {
         void GenerateFramebuffer();
         void DeleteFramebuffer();
         void RegenerateFramebuffer();
-        void AddColorAttachement(uint32_t attachement);
-        void AddColorAttachement(uint32_t attachement, GLint internal_format, GLenum format, GLenum type);
+        void AddColorAttachement(GLenum attachement);
+        void AddColorAttachement(GLenum attachement, GLint internal_format, GLenum format, GLenum type);
         void Bind();
         void Unbind();
         void UnbindAndDrawOnScreen(Shader &shader);

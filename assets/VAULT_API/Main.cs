@@ -67,12 +67,19 @@ namespace Vault
     {
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         extern public static object cpp_GetClassInstance(string id, string type);
-    
+
         public string ID, name, tag;
+
+
         protected virtual void OnStart(string ID) { }
         protected virtual void OnUpdate() { }
 
         public Transform transform;
+
+        protected void OnInit(string ID)
+        {
+            SetObjectID(ID);
+        }
 
         protected void SetObjectID(string ID)
         {
@@ -106,12 +113,12 @@ namespace Vault
 
             return null;
         }
-        
-        public T? As<T>() where T : Entity, new()  
+
+        public T? As<T>() where T : Entity, new()
         {
-           object instance = cpp_GetClassInstance(ID, typeof(T).Name);
-           if (instance == null) return null;
-           return instance as T;
+            object instance = cpp_GetClassInstance(ID, typeof(T).Name);
+            if (instance == null) return null;
+            return instance as T;
         }
     }
 }

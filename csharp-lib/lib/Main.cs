@@ -65,7 +65,13 @@ namespace Vault
 
     public class Entity
     {
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        extern public static object cpp_GetClassInstance(string id, string type);
+    
         public string ID, name, tag;
+        public void VAULT_ENGINE_ScriptInstanceInit(string ID) {
+            SetObjectID(ID);
+        }
         protected virtual void OnStart(string ID) { }
         protected virtual void OnUpdate() { }
 
@@ -102,6 +108,13 @@ namespace Vault
             return (T)(object)component;
 
             return null;
+        }
+        
+        public T? As<T>() where T : Entity, new()   
+        {
+           object instance = cpp_GetClassInstance(ID, typeof(T).Name);
+           if (instance == null) return null;
+           return instance as T;
         }
     }
 }

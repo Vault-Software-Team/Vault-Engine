@@ -1,10 +1,14 @@
 using Vault;
 
-public class EntityGet : Entity
+public class OtherEntity : Entity
 {
-    private void OnStart(string ID)
+    void OnInit(string ID)
     {
         SetObjectID(ID);
+    }
+
+    private void OnStart(string ID)
+    {
     }
 
     private void OnUpdate()
@@ -18,6 +22,11 @@ public class EntityGet : Entity
         {
             GameObject.InstantiatePrefab("./assets/music_prefab.prefab");
         }
+    }
+
+    public void PrintMyName()
+    {
+        Debug.Log("My name is " + name);
     }
 }
 

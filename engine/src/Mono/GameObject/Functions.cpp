@@ -62,6 +62,7 @@ namespace Engine::CSharpInternalFunctions {
 
         if (gameObject->HasComponent<Components::CSharpScriptComponent>()) {
             auto &manager = gameObject->GetComponent<Components::CSharpScriptComponent>();
+            manager.Init();
             manager.OnStart();
         }
 
@@ -117,6 +118,7 @@ namespace Engine::CSharpInternalFunctions {
 
         if (gameObject->HasComponent<Components::CSharpScriptComponent>()) {
             auto &manager = gameObject->GetComponent<Components::CSharpScriptComponent>();
+            manager.Init();
             manager.OnStart();
         }
 

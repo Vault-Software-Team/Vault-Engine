@@ -4,6 +4,7 @@ public class GameManager : Entity
 {
     public static GameManager instance = null;
 
+
     Vector2[] obstacle_positions = {
         new Vector2(2.87f, -1.60f),
         new Vector2(1.65f, -2.90f),

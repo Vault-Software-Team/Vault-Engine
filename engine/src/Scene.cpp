@@ -380,6 +380,15 @@ namespace Engine {
 
         for (auto e : view) {
             auto &manager = EntityRegistry.get<Components::CSharpScriptComponent>(e);
+            manager.Init();
+        }
+    }
+
+    void Scene::SetupCSharpOnStart() {
+        auto view = EntityRegistry.view<Components::CSharpScriptComponent>();
+
+        for (auto e : view) {
+            auto &manager = EntityRegistry.get<Components::CSharpScriptComponent>(e);
             manager.OnStart();
         }
     }
@@ -398,6 +407,7 @@ namespace Engine {
         Setup2DPhysicsWorld();
         SetupHyperScript();
         SetupCSharp();
+        SetupCSharpOnStart();
     }
 
     void Scene::OnRuntimeStop() {

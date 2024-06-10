@@ -20,3 +20,4 @@ windows/bin
 windows/assets2
 windows/fonts
 windows/shader
+cmake-build-debug

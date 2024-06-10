@@ -11,6 +11,7 @@
 #include "Engine/Mono/Rigidbody2D/Functions.hpp"
 #include "Engine/Mono/Audio/Functions.hpp"
 #include "Engine/Mono/Mathf/Functions.hpp"
+#include "Engine/Mono/Entity/Functions.hpp"
 #include "mono/metadata/assembly.h"
 #include "mono/metadata/image.h"
 #include "mono/metadata/loader.h"
@@ -198,6 +199,7 @@ namespace Engine {
         for (auto e : view) {
             auto &manager = Scene::Main->EntityRegistry.get<Components::CSharpScriptComponent>(e);
             manager.script_instances.clear();
+            manager.Init();
             manager.OnStart();
         }
     }
@@ -219,6 +221,9 @@ namespace Engine {
 
     void CSharp::RegisterVaultFunctions() {
         using namespace CSharpInternalFunctions;
+
+        // Entity
+        VAULT_REGISTER_FUNCTION_NAME("Vault.Entity::cpp_GetClassInstance", Entity_GetClassInstance);
 
         // GameObject
         VAULT_REGISTER_FUNCTION(GameObject_GetName);
@@ -396,11 +401,37 @@ namespace Engine {
         update_thunk = (OnUpdateType)GetThunkFromMethod(update_method);
 
         start_method = GetMethod("OnStart", 1);
+        init_method = GetMethod("OnInit", 1);
         start_thunk = (OnStartType)GetThunkFromMethod(start_method);
     }
 
+    void ScriptClass::InitInstance(const std::string &gameObject_ID) {
+        if (!inited) {
+            mono_runtime_object_init(GetHandleTarget());
+            inited = true;
+        }
+
+        MonoObject *exception = nullptr;
+        void *p = mono_string_new(CSharp::instance->app_domain, gameObject_ID.c_str());
+        mono_runtime_invoke(init_method, GetHandleTarget(), &p, &exception);
+
+        if (exception) {
+            MonoObject *exc = NULL;
+            MonoString *str = mono_object_to_string(exception, &exc);
+            if (exc) {
+                mono_print_unhandled_exception(exc);
+            } else {
+                Editor::GUI::LogError(mono_string_to_utf8(str)); // Log log(mono_string_to_utf8(str), LOG_ERROR);
+            }
+        }
+    }
+
     void ScriptClass::OnStart(const std::string &gameObject_ID) {
-        mono_runtime_object_init(GetHandleTarget());
+        if (!inited) {
+            mono_runtime_object_init(GetHandleTarget());
+            inited = true;
+        }
+
         MonoObject *exception = nullptr;
         void *p = mono_string_new(CSharp::instance->app_domain, gameObject_ID.c_str());
         mono_runtime_invoke(start_method, GetHandleTarget(), &p, &exception);

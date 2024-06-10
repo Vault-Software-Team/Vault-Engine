@@ -2,6 +2,8 @@
 
 public class Player : Entity
 {
+
+
     Rigidbody2D rigidbody;
     SpriteRenderer bg;
 

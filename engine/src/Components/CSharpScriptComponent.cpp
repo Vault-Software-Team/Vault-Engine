@@ -9,7 +9,13 @@
 #include <memory>
 
 namespace Engine::Components {
-    void CSharpScriptComponent::Init() {}
+    void CSharpScriptComponent::Init() {
+        for (auto klass : selected_scripts) {
+            std::cout << klass.second.first << "." << klass.second.second << "\n";
+            script_instances[klass.first] = std::make_shared<ScriptClass>(CSharp::instance->core_assembly_image, klass.second.first, klass.second.second);
+            script_instances[klass.first]->InitInstance(ID);
+        }
+    }
 
     void CSharpScriptComponent::Update() {
         for (auto script : script_instances) {
@@ -18,9 +24,10 @@ namespace Engine::Components {
     }
 
     void CSharpScriptComponent::OnStart() {
+        std::cout << "Initing script component! " << ID << "\n";
         for (auto klass : selected_scripts) {
             std::cout << klass.second.first << "." << klass.second.second << "\n";
-            script_instances[klass.first] = std::make_shared<ScriptClass>(CSharp::instance->core_assembly_image, klass.second.first, klass.second.second);
+            // script_instances[klass.first] = std::make_shared<ScriptClass>(CSharp::instance->core_assembly_image, klass.second.first, klass.second.second);
             script_instances[klass.first]->OnStart(ID);
         }
     }

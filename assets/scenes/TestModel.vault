@@ -45,6 +45,9 @@ GameObjects:
         color: [1, 1, 1]
         scale: 0.0199999996
         y_offset: 1
+      CSharpScriptComponent:
+        selected_scripts:
+          .OtherEntity: THIS_IS_EMPTY_FUCK_YOU_LOL.OtherEntity
   - GameObject:
       ID: acb72126-52d6-4d7c-839c-4a31ea1d0aee
       name: TF2 Logo
@@ -57,3 +60,6 @@ GameObjects:
       SpriteRenderer:
         color: [1, 1, 1, 1]
         texture: ./assets/1024px-Team_Fortress_2_style_logo.svg.png
+      CSharpScriptComponent:
+        selected_scripts:
+          .EntityGet: THIS_IS_EMPTY_FUCK_YOU_LOL.EntityGet

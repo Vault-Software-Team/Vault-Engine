@@ -12,7 +12,8 @@ void main() {
 
 #shader fragment
 #version 330 core
-out vec4 FragColor;
+layout(location = 0) out vec4 FragColor;
+layout(location = 1) out vec4 EntityID;
 in vec2 texCoords;
 
 uniform sampler2D screen_texture;
@@ -20,6 +21,7 @@ uniform sampler2D screen_texture;
 uniform float gamma;
 
 void main() {
+    EntityID = vec4(1, 0, 0, 1);
     vec4 frag = texture(screen_texture, texCoords);
     // vec3 bloomColor = texture(bloomTexture, texCoords).rgb;
     // FragColor.rgb = pow(frag.rgb, vec3(1.0 / gamma));

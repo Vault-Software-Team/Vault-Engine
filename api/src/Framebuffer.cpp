@@ -80,18 +80,18 @@ namespace VaultRenderer {
         // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
         // glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, entityTexture, 0);
         // std::cout << entityTexture << " entity texture \n";
-        // for (auto &a : color_attachements) {
-        //     std::cout << a.attachement << " Regenerated attachement.\n";
-        //     glGenTextures(1, &a.ID);
-        //     glBindTexture(GL_TEXTURE_2D, a.ID);
+         for (auto &a : color_attachements) {
+             std::cout << a.attachement << " Regenerated attachement.\n";
+             glGenTextures(1, &a.ID);
+             glBindTexture(GL_TEXTURE_2D, a.ID);
 
-        //     glTexImage2D(GL_TEXTURE_2D, 0, GL_R32I, width, height, 0, GL_RED_INTEGER, GL_UNSIGNED_BYTE, nullptr);
-        //     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        //     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        //     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-        //     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-        //     glFramebufferTexture2D(GL_FRAMEBUFFER, a.attachement, GL_TEXTURE_2D, a.ID, 0);
-        // }
+             glTexImage2D(GL_TEXTURE_2D, 0, a.internal_format, width, height, 0, a.format, a.type, nullptr);
+             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+             glFramebufferTexture2D(GL_FRAMEBUFFER, a.attachement, GL_TEXTURE_2D, a.ID, 0);
+         }
 
         // RBO
         glGenRenderbuffers(1, &RBO);
@@ -112,10 +112,10 @@ namespace VaultRenderer {
         glDeleteRenderbuffers(1, &RBO);
         // glDeleteTextures(1, &entityTexture);
 
-        // for (auto &a : color_attachements) {
-        //     std::cout << a.ID << " CA\n";
-        //     glDeleteTextures(1, &a.ID);
-        // }
+         for (auto &a : color_attachements) {
+             std::cout << a.ID << " CA\n";
+             glDeleteTextures(1, &a.ID);
+         }
     }
 
     void Framebuffer::RegenerateFramebuffer() {
@@ -155,7 +155,8 @@ namespace VaultRenderer {
             shader.SetUniform1i("screen_texture", 0);
             glDrawArrays(GL_TRIANGLES, 0, 6);
             glEnable(GL_DEPTH_TEST);
-        } else {
+        } 
+        else {
             // Bind a framebuffer that houses our actual framebuffer, we do this so that the framebuffer shader gets applied to the texture wink wink
             framebuffer->Bind();
             // Clear the framebuffer
@@ -189,9 +190,10 @@ namespace VaultRenderer {
         VaultRenderer::Window::window->AspectRatioCameraViewport();
     }
 
-    void Framebuffer::AddColorAttachement(uint32_t attachement) {
+    void Framebuffer::AddColorAttachement(GLenum attachement) {
         Bind();
-        color_attachements.push_back({0, attachement});
+        uint32_t ID;
+        color_attachements.push_back({ID, attachement, GL_RGB16F, GL_RGB, GL_FLOAT});
         glGenTextures(1, &color_attachements.back().ID);
         glBindTexture(GL_TEXTURE_2D, color_attachements.back().ID);
 
@@ -203,10 +205,10 @@ namespace VaultRenderer {
         glFramebufferTexture2D(GL_FRAMEBUFFER, attachement, GL_TEXTURE_2D, color_attachements.back().ID, 0);
     }
 
-    void Framebuffer::AddColorAttachement(uint32_t attachement, GLint internal_format, GLenum format, GLenum type) {
+    void Framebuffer::AddColorAttachement(GLenum attachement, GLint internal_format, GLenum format, GLenum type) {
         Bind();
         uint32_t ID;
-        color_attachements.push_back({ID, attachement});
+        color_attachements.push_back({ID, attachement, internal_format, format, type});
         glGenTextures(1, &color_attachements.back().ID);
         glBindTexture(GL_TEXTURE_2D, color_attachements.back().ID);
 

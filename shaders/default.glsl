@@ -74,7 +74,7 @@ void main() {
 #shader fragment
 #version 330 core
 layout(location = 0) out vec4 FragColor;
-layout(location = 1) out uint EntityID;
+layout(location = 1) out vec4 EntityID;
 
 in vec2 texUV;
 in vec3 normal;
@@ -328,7 +328,7 @@ vec3 spot_light(SpotLight light) {
 }
 
 void main() {
-    EntityID = u_EntityID;
+    EntityID = vec4(1, 0, 0, 1);
 
     vec4 total_color = vec4(0);
     for (int i = 0; i < point_light_count; i++) {
@@ -367,7 +367,7 @@ void main() {
     } else {
         FragColor.a = baseColor.a;
     }
-    EntityID = u_EntityID;
+//    EntityID = u_EntityID;
 }
 #shader geometry
 #version 330 core

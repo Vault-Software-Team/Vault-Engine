@@ -38,10 +38,14 @@ namespace Engine {
         OnStartType start_thunk;
         MonoMethod *update_method;
         MonoMethod *start_method;
+        MonoMethod *init_method;
+
+        bool inited = false;
 
         ScriptClass(MonoImage *image, const std::string &name_space, const std::string &name);
 
         void OnStart(const std::string &gameObject_ID);
+        void InitInstance(const std::string &gameObject_ID);
         void OnUpdate();
     };
 

@@ -77,6 +77,7 @@ namespace VaultRenderer {
 
         framebuffer = std::make_unique<Framebuffer>(true);
         m_PostProcessingFramebuffer = std::make_unique<Framebuffer>(false);
+        
         // framebuffer->AddColorAttachement(1);
         framebuffer->draw_screen = draw_screen;
     }
@@ -95,6 +96,9 @@ namespace VaultRenderer {
         // framebuffer->RegenerateFramebuffer();
 
         double previous_time = glfwGetTime();
+        
+//        framebuffer->AddColorAttachement(GL_COLOR_ATTACHMENT1);
+//        Editor::GUI::framebufferTextureID = framebuffer->color_attachements[0].ID;
         
         while (!glfwWindowShouldClose(glfw_window)) {
             Statistics::CalculateFPS(previous_time);

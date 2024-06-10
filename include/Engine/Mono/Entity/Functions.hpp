@@ -1,8 +1,9 @@
-//
-// Created by poww on 10/06/2024.
-//
+#pragma once
 
-#ifndef VAULT_ENGINE_FUNCTIONS_HPP
-#define VAULT_ENGINE_FUNCTIONS_HPP
+#include "glm/fwd.hpp"
+#include <mono/metadata/assembly.h>
+#include <mono/jit/jit.h>
 
-#endif // VAULT_ENGINE_FUNCTIONS_HPP
+namespace Engine::CSharpInternalFunctions {
+        MonoObject *Entity_GetClassInstance(MonoString *ID, MonoString *type);
+} // namespace Engine::CSharpInternalFunctions

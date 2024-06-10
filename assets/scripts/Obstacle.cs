@@ -3,6 +3,7 @@ using Vault;
 
 public class Obstacle : Entity
 {
+
     Rigidbody2D rigidbody;
     float maxX = -3.70f;
     float startX = 3.70f;
