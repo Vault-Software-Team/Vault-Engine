@@ -14,6 +14,6 @@ else()
 endif()
  
 # target_link_libraries(engine ${CMAKE_SOURCE_DIR}/windows/lib/libmono-2.0.dll.a ${CMAKE_SOURCE_DIR}/windows/lib/libmonosgen-2.0.dll.a api glfw SDL_mixer yaml-cpp tobanteGaming::Box2D ImGui ImGuizmo)
-set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -O3 -std=c++20")
+set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -g -std=c++20")
 
  

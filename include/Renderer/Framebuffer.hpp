@@ -50,7 +50,9 @@ namespace VaultRenderer {
         void UnbindAndDrawOnScreen(Shader &shader);
         uint32_t &GetAttachement(uint32_t attachement);
         void BindAttachement(uint32_t attachement, const uint32_t &slot = 0);
-
+        
+        void DrawEverythingIntoAQuad(Shader &shader, uint32_t _texture, bool unbind = false);
+        
     private:
         int color_attachements_to_generate;
     };

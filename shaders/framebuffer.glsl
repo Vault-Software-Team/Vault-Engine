@@ -25,7 +25,9 @@ void main() {
     // FragColor.rgb = pow(frag.rgb, vec3(1.0 / gamma));
     // FragColor.rgb = frag.rgb;
     FragColor.a = 1;
-    FragColor.rgb = frag.rgb;
+    float Gamma = 2.2;
+    FragColor.rgb = pow(frag.rgb, vec3(1.0 / gamma));
+    // FragColor.rgb = vec3(1, 1, 1);
 
     // FragColor = frag;
     // FragColor.rgb = pow(frag.rgb, vec3(1.0 / gamma));

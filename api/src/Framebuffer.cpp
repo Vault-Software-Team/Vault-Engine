@@ -36,6 +36,26 @@ namespace VaultRenderer {
         glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void *)(2 * sizeof(float)));
     }
 
+    void Framebuffer::DrawEverythingIntoAQuad(Shader &shader, uint32_t _texture, bool unbind) {
+//        VaultRenderer::Window::window->AspectRatioCameraViewport();
+        glDisable(GL_CULL_FACE);
+        shader.Bind();
+
+        if (unbind) Unbind();
+        
+        glBindVertexArray(rectVAO);
+        glDisable(GL_DEPTH_TEST);
+        
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, texture);
+        shader.SetUniform1i("screen_texture", 0);
+        
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+        
+        glEnable(GL_DEPTH_TEST);
+        glBindVertexArray(0);
+    }
+    
     void Framebuffer::GenerateFramebuffer() {
         glGenFramebuffers(1, &FBO);
         glBindFramebuffer(GL_FRAMEBUFFER, FBO);
@@ -43,7 +63,7 @@ namespace VaultRenderer {
         // Texture
         glGenTextures(1, &texture);
         glBindTexture(GL_TEXTURE_2D, texture);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, Window::window->width, Window::window->height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -103,8 +123,11 @@ namespace VaultRenderer {
         if (framebuffer)
             framebuffer->DeleteFramebuffer();
         GenerateFramebuffer();
-        if (framebuffer)
+        if (framebuffer) {
+            framebuffer->width = Window::window->width;
+            framebuffer->height = Window::window->height;
             framebuffer->GenerateFramebuffer();
+        }
     }
 
     void Framebuffer::Bind() {
@@ -145,19 +168,20 @@ namespace VaultRenderer {
 
             // Disable cull face and bind the framebuffer shader provided
             glDisable(GL_CULL_FACE);
-            shader.Bind();
 
             // Draw the framebuffer to a quad
             glBindVertexArray(rectVAO);
             glDisable(GL_DEPTH_TEST);
+
             glActiveTexture(GL_TEXTURE0);
             glBindTexture(GL_TEXTURE_2D, texture);
+            shader.Bind();
             shader.SetUniform1i("screen_texture", 0);
             glDrawArrays(GL_TRIANGLES, 0, 6);
             glEnable(GL_DEPTH_TEST);
 
             // Unbind the static framebuffer that houses the actual framebuffer
-            framebuffer->Unbind();
+            Unbind();
         }
 
         Unbind();

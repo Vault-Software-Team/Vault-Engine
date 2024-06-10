@@ -1,5 +1,8 @@
+#include "assimp/material.h"
+#include "assimp/postprocess.h"
 #include <Engine/Model.hpp>
 #include <Engine/Components/MeshRenderer.hpp>
+#include <filesystem>
 #include <iostream>
 #include <fstream>
 
@@ -14,7 +17,7 @@ namespace Engine {
 
     void ModelMesh::loadModel(const std::string &path) {
         Assimp::Importer import;
-        const aiScene *scene = import.ReadFile(path, aiProcess_Triangulate | aiProcess_FixInfacingNormals | aiProcess_LimitBoneWeights);
+        const aiScene *scene = import.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_FixInfacingNormals | aiProcess_LimitBoneWeights);
 
         if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
             std::cout << "Assimp Importer Error: " << import.GetErrorString() << "\n";
@@ -24,6 +27,8 @@ namespace Engine {
 
         processNode(scene->mRootNode, scene);
         Model::GlobalBoneMaps[path] = (Model::GlobalBoneMap){GetBoneInfoMap(), GetBoneCount()};
+
+        import.FreeScene();
     }
 
     VaultRenderer::Mesh *ModelMesh::GetMeshValueByIndex(int index) {
@@ -33,6 +38,27 @@ namespace Engine {
     void ModelMesh::processNode(aiNode *node, const aiScene *scene) {
         for (unsigned int i = 0; i < node->mNumMeshes; i++) {
             aiMesh *mesh = scene->mMeshes[node->mMeshes[i]];
+            aiMatrix4x4 aiTransform = node->mTransformation;
+
+            glm::mat4 transform = glm::mat4(1.0f);
+            transform[0][0] = aiTransform.a1;
+            transform[1][0] = aiTransform.b1;
+            transform[2][0] = aiTransform.c1;
+            transform[3][0] = aiTransform.d1;
+            transform[0][1] = aiTransform.a2;
+            transform[1][1] = aiTransform.b2;
+            transform[2][1] = aiTransform.c2;
+            transform[3][1] = aiTransform.d2;
+            transform[0][2] = aiTransform.a3;
+            transform[1][2] = aiTransform.b3;
+            transform[2][2] = aiTransform.c3;
+            transform[3][2] = aiTransform.d3;
+            transform[0][3] = aiTransform.a4;
+            transform[1][3] = aiTransform.b4;
+            transform[2][3] = aiTransform.c4;
+            transform[3][3] = aiTransform.d4;
+            mesh_transforms.push_back(transform);
+
             processMesh(mesh, scene);
         }
 
@@ -59,7 +85,7 @@ namespace Engine {
 
             if (mesh->mTextureCoords[0]) {
                 vertex.texUV.x = mesh->mTextureCoords[0][i].x;
-                vertex.texUV.x = mesh->mTextureCoords[0][i].y;
+                vertex.texUV.y = mesh->mTextureCoords[0][i].y;
             } else {
                 vertex.texUV = glm::vec2(0.0f, 0.0f);
             }
@@ -100,27 +126,30 @@ namespace Engine {
 
         int diffuse_count = mot->GetTextureCount(aiTextureType_DIFFUSE);
         int specular_count = mot->GetTextureCount(aiTextureType_SPECULAR);
-        int normal_count = mot->GetTextureCount(aiTextureType_NORMALS);
+        int normal_count = mot->GetTextureCount(std::string(path).ends_with(".obj") ? aiTextureType_HEIGHT : aiTextureType_NORMALS);
+        int normalc_count = mot->GetTextureCount(aiTextureType_NORMAL_CAMERA);
         aiString texture_name;
 
         if (diffuse_count > 0) {
             ret = mot->Get(AI_MATKEY_TEXTURE(aiTextureType_DIFFUSE, 0), texture_name);
             std::string sTexName = texture_name.C_Str();
             std::replace(sTexName.begin(), sTexName.end(), '\\', '/');
-            std::cout << (directory + "/" + sTexName).c_str() << "\n";
-            meshes.back().material.SetDiffuse((directory + "/" + sTexName).c_str());
+            // std::cout << (directory + "/textures/" + std::filesystem::path(sTexName).filename().string()).c_str() << "\n";
+            meshes.back().material.SetDiffuse((directory + "/textures/" + std::filesystem::path(sTexName).filename().string()).c_str());
         }
         if (specular_count > 0) {
             ret = mot->Get(AI_MATKEY_TEXTURE(aiTextureType_SPECULAR, 0), texture_name);
             std::string sTexName = texture_name.C_Str();
             std::replace(sTexName.begin(), sTexName.end(), '\\', '/');
-            meshes.back().material.SetSpecular((directory + "/" + sTexName).c_str());
+            meshes.back().material.SetSpecular((directory + "/textures/" + std::filesystem::path(sTexName).filename().string()).c_str());
         }
         if (normal_count > 0) {
-            ret = mot->Get(AI_MATKEY_TEXTURE(aiTextureType_NORMALS, 0), texture_name);
+            ret = mot->Get(AI_MATKEY_TEXTURE(std::string(path).ends_with(".obj") ? aiTextureType_HEIGHT : aiTextureType_NORMALS, 0), texture_name);
             std::string sTexName = texture_name.C_Str();
             std::replace(sTexName.begin(), sTexName.end(), '\\', '/');
-            meshes.back().material.SetNormal((directory + "/" + sTexName).c_str());
+            // std::cout << (directory + "/textures/" + std::filesystem::path(sTexName).filename().string()).c_str() << " NORMALS\n";
+
+            meshes.back().material.SetNormal((directory + "/textures/" + std::filesystem::path(sTexName).filename().string()).c_str());
         }
     }
 

@@ -47,12 +47,11 @@ uniform bool isText;
 uniform Texture texture_diffuse;
 
 void main() {
-    if (texture_diffuse.defined) {
+    if (!texture_diffuse.defined) return;
 
-        if (isText) {
-            if (texture(texture_diffuse.tex, texCoords).r < 0.1) discard;
-        }
-
-        if (texture(texture_diffuse.tex, texCoords).a < 0.1) discard;
+    if (isText) {
+        if (texture(texture_diffuse.tex, texCoords).r < 0.1) discard;
     }
+
+    if (texture(texture_diffuse.tex, texCoords).a < 0.1) discard;
 }

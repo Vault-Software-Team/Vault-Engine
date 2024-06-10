@@ -17,6 +17,9 @@ namespace VaultRenderer {
             uint32_t ID;
             std::string texture_filepath;
             TextureType type;
+
+            t_texture() = default;
+            ~t_texture();
         };
 
         static DLL_API std::vector<std::shared_ptr<t_texture>> textures;

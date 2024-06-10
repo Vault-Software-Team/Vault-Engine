@@ -57,6 +57,7 @@ namespace Engine {
                 }
 
                 GetComponent<Transform>().Update();
+                shader.Bind();
                 shader.SetUniformMat4("transformModel", GetComponent<Transform>().model);
 
                 // meshRenderer.AnimateAndSetUniforms(shader);

@@ -16,13 +16,16 @@ namespace Engine {
             // Model Animation
             std::unique_ptr<Animation> animation;
             std::unique_ptr<Animator> animator;
+            Transform *transform;
             std::string animation_path;
+            glm::mat4 assimp_transform;
             float time_scale = 1.0;
             bool play_animation = false;
 
             ModelRenderer() = default;
 
             void OnGUI() override;
+            void Init() override;
             void Draw(VaultRenderer::Shader &shader);
             void SetAnimation(const std::string &path);
             void AnimateAndSetUniforms(VaultRenderer::Shader &shader);

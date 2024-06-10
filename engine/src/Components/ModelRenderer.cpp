@@ -108,6 +108,10 @@ namespace Engine::Components {
         animator = std::make_unique<Animator>(animation.get());
     }
 
+    void ModelRenderer::Init() {
+        transform = &Scene::Main->EntityRegistry.get<Transform>(entity);
+    }
+
     void ModelRenderer::AnimateAndSetUniforms(VaultRenderer::Shader &shader) {
         if (!animator)
             return;

@@ -136,7 +136,8 @@ namespace Engine {
             Engine::Scene::Main->main_camera_object->width = VaultRenderer::Window::window->width;
             Engine::Scene::Main->main_camera_object->height = VaultRenderer::Window::window->height;
         }
-        // AspectRatioCameraViewport();
+        // window.SetViewport(width, height);
+        AspectRatioCameraViewport();
     }
 
     // ---- SHADOW FUCKERY ---- //
@@ -198,6 +199,7 @@ namespace Engine {
         }
 
         shadowMap.Unbind();
+        // Window::window->SetViewport(width, height);
         VaultRenderer::Window::window->AspectRatioCameraViewport();
     }
 

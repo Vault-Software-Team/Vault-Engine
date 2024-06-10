@@ -1,3 +1,4 @@
+#include "Editor/GUI/MainGUI.hpp"
 #include "Renderer/Stats.hpp"
 #include <Renderer/Window.hpp>
 #include <iostream>
@@ -11,9 +12,12 @@
 
 namespace VaultRenderer {
     DLL_API Window *Window::window;
-
+    
     void Window::AspectRatioCameraViewport() {
-        float targetAspectRatio = (float)targetWidth / (float)targetHeight;
+        glViewport(0, 0, width, height);
+    }
+    void _AspectRatioCameraViewport() {
+        float targetAspectRatio = (float)Window::window->targetWidth / (float)Window::window->targetHeight;
 
         int aspectWidth = VaultRenderer::Window::window->width;
         int aspectHeight = (int)((float)aspectWidth / targetAspectRatio);
@@ -72,6 +76,7 @@ namespace VaultRenderer {
         SetDefaultImGuiTheme();
 
         framebuffer = std::make_unique<Framebuffer>(true);
+        m_PostProcessingFramebuffer = std::make_unique<Framebuffer>(false);
         // framebuffer->AddColorAttachement(1);
         framebuffer->draw_screen = draw_screen;
     }
@@ -90,10 +95,11 @@ namespace VaultRenderer {
         // framebuffer->RegenerateFramebuffer();
 
         double previous_time = glfwGetTime();
+        
         while (!glfwWindowShouldClose(glfw_window)) {
             Statistics::CalculateFPS(previous_time);
 
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            // glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             if (!use_imgui_size)
                 glfwGetWindowSize(glfw_window, &width, &height);
             framebuffer->bloomRenderer.m_SrcViewportSize.x = width;
@@ -110,6 +116,7 @@ namespace VaultRenderer {
 
             // glEnable(GL_FRAMEBUFFER_SRGB);
             framebuffer->Bind();
+            VaultRenderer::Window::window->AspectRatioCameraViewport();
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             glEnable(GL_DEPTH_TEST);
 
@@ -130,7 +137,13 @@ namespace VaultRenderer {
             // framebuffer->BindAttachement(1, 1);
             // framebuffer_shader.SetUniform1f("bloomTexture", 1);
             // bloomRenderer.RenderBloomTexture(framebuffer->GetAttachement(1), 0.005f, framebuffer->rectVAO);
+//            framebuffer->UnbindAndDrawOnScreen(framebuffer_shader);
+            
             framebuffer->UnbindAndDrawOnScreen(framebuffer_shader);
+            
+            m_PostProcessingFramebuffer->Bind();
+            framebuffer->DrawEverythingIntoAQuad(framebuffer_shader, framebuffer->texture);
+            m_PostProcessingFramebuffer->Unbind();
 
             /*
             Explaining this confusing ass code,
@@ -156,7 +169,12 @@ namespace VaultRenderer {
             if (before_width != width || before_height != height) {
                 framebuffer->width = width;
                 framebuffer->height = height;
+                m_PostProcessingFramebuffer->width = width;
+                m_PostProcessingFramebuffer->height = height;
+                
                 framebuffer->RegenerateFramebuffer();
+                m_PostProcessingFramebuffer->RegenerateFramebuffer();
+                // Editor::GUI::framebufferTextureID = framebuffer->texture;
             }
             // Update and Render additional Platform Windows
             // (Platform functions may change the current OpenGL context, so we save/restore it to make it easier to paste this code elsewhere.
@@ -182,7 +200,7 @@ namespace VaultRenderer {
     }
 
     void Window::SetClearColor(const uint32_t hex_color) {
-        glClearColor(pow(((hex_color >> 16) & 0xFF) / 255.0, gamma), pow(((hex_color >> 8) & 0xFF) / 255.0, gamma), pow(((hex_color)&0xFF) / 255.0, gamma), 1);
+        glClearColor(pow(((hex_color >> 16) & 0xFF) / 255.0, gamma), pow(((hex_color >> 8) & 0xFF) / 255.0, gamma), pow(((hex_color) & 0xFF) / 255.0, gamma), 1);
     }
 
     void Window::SetViewport(const int width, const int height) {
@@ -208,8 +226,7 @@ namespace VaultRenderer {
         ImFontConfig icons_config;
         icons_config.MergeMode = true;
         icons_config.PixelSnapH = true;
-        io.Fonts->AddFontFromFileTTF("./fonts/fa-solid-900.ttf", 16.0f,
-                                     &icons_config, icons_ranges);
+        io.Fonts->AddFontFromFileTTF("./fonts/fa-solid-900.ttf", 16.0f, &icons_config, icons_ranges);
 
         ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 2.0f);
 

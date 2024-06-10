@@ -330,7 +330,7 @@ namespace Engine {
 
     void CSharp::CompileAssemblies() {
         Editor::GUI::logs.clear();
-        std::thread *compilerThread = new std::thread([&] {
+        new std::thread([&] {
             std::array<char, 1000> buffer;
             std::string result;
             std::string build_command = "cd assets";

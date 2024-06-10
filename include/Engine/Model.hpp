@@ -95,6 +95,7 @@ namespace Engine {
         void ExtractBoneWeightForVertices(std::vector<VaultRenderer::Vertex> &vertices, aiMesh *mesh, const aiScene *scene);
 
         std::vector<VaultRenderer::Mesh> meshes;
+        std::vector<glm::mat4> mesh_transforms;
         VaultRenderer::Mesh *GetMeshValueByIndex(int index);
 
         std::string path;

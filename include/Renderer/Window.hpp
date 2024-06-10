@@ -19,6 +19,7 @@ namespace VaultRenderer {
     public:
         static DLL_API Window *window;
         std::unique_ptr<Framebuffer> framebuffer = nullptr;
+        std::unique_ptr<Framebuffer> m_PostProcessingFramebuffer = nullptr;
 
         bool use_imgui_size = false;
 

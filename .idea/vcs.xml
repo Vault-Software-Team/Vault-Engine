@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="VcsDirectoryMappings">
+    <mapping directory="" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/external/angelscript" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/external/assimp" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/external/box2d" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/external/box2d/Box2D" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/external/cegui" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/external/efsw" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/external/glfw" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/external/yaml-cpp" vcs="Git" />
+  </component>
+</project>

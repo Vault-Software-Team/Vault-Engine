@@ -165,7 +165,7 @@ int main() {
     runtime.shadowMap = &shadow_map;
     EditorLayer editor;
 
-    GUI::framebufferTextureID = window.framebuffer->framebuffer->texture;
+    GUI::framebufferTextureID = window.m_PostProcessingFramebuffer->texture;
     window.use_imgui_size = true;
 
     // Model m_2fort("./2fort/2fort.obj")
