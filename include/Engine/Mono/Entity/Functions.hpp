@@ -1,0 +1,8 @@
+//
+// Created by poww on 10/06/2024.
+//
+
+#ifndef VAULT_ENGINE_FUNCTIONS_HPP
+#define VAULT_ENGINE_FUNCTIONS_HPP
+
+#endif // VAULT_ENGINE_FUNCTIONS_HPP
