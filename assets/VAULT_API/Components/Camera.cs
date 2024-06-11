@@ -29,6 +29,7 @@ namespace Vault
             set
             {
                 Camera_SetKey("FOV", Entity.ID, value);
+                return;
             }
         }
 

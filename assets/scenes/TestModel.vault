@@ -15,22 +15,6 @@ GameObjects:
         mesh_path: ""
         material_path: ./assets/main.material
   - GameObject:
-      ID: e9aceace-0e18-42c4-aa11-e0885c7678ad
-      name: Light
-      tag: Default
-      parent: NO_PARENT
-      Transform:
-        position: [20.1599998, 61.2599983, 52.8031082]
-        rotation: [0, 0, 0]
-        scale: [1, 1, 1]
-      AmbientLight:
-        amount: 0.200000003
-        color: [1, 1, 1]
-      DirectionalLight:
-        intensity: 1
-        color: [1, 1, 1]
-        enable_shadow_mapping: true
-  - GameObject:
       ID: 812a99d9-6d0d-4c49-888b-06342c335d4f
       name: Text
       tag: Default
@@ -63,16 +47,13 @@ GameObjects:
       tag: Default
       parent: NO_PARENT
       Transform:
-        position: [16.5, 18.2000008, 29.3999996]
+        position: [0, 3.68975186, -0.516892076]
         rotation: [-0.504400134, -0.568977296, -1]
         scale: [1, 1, 1]
-      Camera:
-        fov: 45
-        near: 0.100000001
-        far: 100
-        main_camera: false
-        is2D: false
-        depth_camera: false
+      PointLight:
+        intensity: 23.3999996
+        color: [1, 1, 1]
+        enable_shadow_mapping: false
       CSharpScriptComponent:
         selected_scripts:
-          {}
+          .CameraTest: THIS_IS_EMPTY_FUCK_YOU_LOL.CameraTest

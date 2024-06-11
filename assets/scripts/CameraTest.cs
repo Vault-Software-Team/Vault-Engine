@@ -2,7 +2,7 @@ using Vault;
 
 public class CameraTest : Entity
 {
-    Camera cam;
+    PointLight light;
 
     void OnInit(string ID)
     {
@@ -11,12 +11,12 @@ public class CameraTest : Entity
 
     private void OnStart(string ID)
     {
-        cam = GetComponent<Camera>();
+        light = GetComponent<PointLight>();
     }
 
     private void OnUpdate()
     {
-        cam.FOV = 120;
+        light.color = new Vector3(1, 0, 0);
     }
 }
 

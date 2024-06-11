@@ -13,6 +13,7 @@
 #include "Engine/Mono/Audio/Functions.hpp"
 #include "Engine/Mono/Mathf/Functions.hpp"
 #include "Engine/Mono/Entity/Functions.hpp"
+#include "Engine/Mono/PointLight/Functions.hpp"
 #include "mono/metadata/assembly.h"
 #include "mono/metadata/image.h"
 #include "mono/metadata/loader.h"
@@ -297,6 +298,10 @@ namespace Engine {
         VAULT_REGISTER_FUNCTION_NAME("Vault.Camera::Camera_GetFront", Camera_GetFront);
         VAULT_REGISTER_FUNCTION_NAME("Vault.Camera::Camera_GetBool", Camera_GetBool);
         VAULT_REGISTER_FUNCTION_NAME("Vault.Camera::Camera_SetBool", Camera_SetBool);
+
+        // Point Light
+        VAULT_REGISTER_FUNCTION_NAME("Vault.PointLight::PointLight_GetKey", PointLight_GetKey);
+        VAULT_REGISTER_FUNCTION_NAME("Vault.PointLight::PointLight_SetKey", PointLight_SetKey);
 
         // Mathf
         using namespace Mathf;
