@@ -24,11 +24,12 @@ namespace Vault
         {
             get
             {
-                return Camera_GetKey("fov", Entity.ID);
+                return Camera_GetKey("FOV", Entity.ID);
             }
             set
             {
-                Camera_SetKey("fov", Entity.ID, value);
+                Camera_SetKey("FOV", Entity.ID, value);
+                return;
             }
         }
 
