@@ -2,9 +2,13 @@ using Vault;
 
 public class MainMenu : Entity
 {
-    private void OnStart(string ID)
+    void OnInit(string ID)
     {
         SetObjectID(ID);
+    }
+
+    private void OnStart(string ID)
+    {
     }
 
     private void OnUpdate()

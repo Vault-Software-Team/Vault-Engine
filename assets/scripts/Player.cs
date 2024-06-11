@@ -16,9 +16,13 @@ public class Player : Entity
         "./assets/textures/meme5.png"
     };
 
-    private void OnStart(string ID)
+    void OnInit(string ID)
     {
         SetObjectID(ID);
+    }
+
+    private void OnStart(string ID)
+    {
         rigidbody = GetComponent<Rigidbody2D>();
         bg = GetByID(GameObject.GetIDByName("Background")).GetComponent<SpriteRenderer>();
     }

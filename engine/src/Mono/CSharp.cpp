@@ -9,6 +9,7 @@
 #include "Engine/Mono/GameObject/Functions.hpp"
 #include "Engine/Mono/SpriteRenderer/Functions.hpp"
 #include "Engine/Mono/Rigidbody2D/Functions.hpp"
+#include "Engine/Mono/Camera/Functions.hpp"
 #include "Engine/Mono/Audio/Functions.hpp"
 #include "Engine/Mono/Mathf/Functions.hpp"
 #include "Engine/Mono/Entity/Functions.hpp"
@@ -289,6 +290,13 @@ namespace Engine {
         VAULT_REGISTER_FUNCTION_PREFIX("Vault.Rigidbody2D::", Rigidbody2D_Force);
         VAULT_REGISTER_FUNCTION_PREFIX("Vault.Rigidbody2D::", Rigidbody2D_Torque);
         VAULT_REGISTER_FUNCTION_PREFIX("Vault.Rigidbody2D::", Rigidbody2D_SetType);
+
+        // Camera
+        VAULT_REGISTER_FUNCTION_NAME("Vault.Camera::Camera_GetKey", Camera_GetKey);
+        VAULT_REGISTER_FUNCTION_NAME("Vault.Camera::Camera_SetKey", Camera_SetKey);
+        VAULT_REGISTER_FUNCTION_NAME("Vault.Camera::Camera_GetFront", Camera_GetFront);
+        VAULT_REGISTER_FUNCTION_NAME("Vault.Camera::Camera_GetBool", Camera_GetBool);
+        VAULT_REGISTER_FUNCTION_NAME("Vault.Camera::Camera_SetBool", Camera_SetBool);
 
         // Mathf
         using namespace Mathf;

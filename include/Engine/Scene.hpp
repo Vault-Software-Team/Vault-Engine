@@ -52,6 +52,7 @@ namespace Engine {
 
         // Events
         void OnRuntimeStart();
+        void OnRuntimePause();
         void OnRuntimeStop();
         void OnRuntimeUpdate(const float ts);
 

@@ -17,9 +17,13 @@ public class GameManager : Entity
 
     int c_score = 0;
 
-    private void OnStart(string ID)
+    void OnInit(string ID)
     {
         SetObjectID(ID);
+    }
+
+    private void OnStart(string ID)
+    {
         instance = this;
 
         oTop = GetByID(GameObject.GetIDByName("Obstacle"));

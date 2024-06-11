@@ -254,6 +254,7 @@ namespace Editor {
                 isRunning = false;
                 Audio2D::StopSound();
                 Audio2D::StopMusic();
+                Scene::Main->OnRuntimePause();
                 // DeleteWorld();
             }
 

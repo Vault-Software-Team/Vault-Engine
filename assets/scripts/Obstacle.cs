@@ -11,9 +11,13 @@ public class Obstacle : Entity
     // x = top, y = bottom
 
 
-    private void OnStart(string ID)
+    void OnInit(string ID)
     {
         SetObjectID(ID);
+    }
+
+    private void OnStart(string ID)
+    {
         rigidbody = GetComponent<Rigidbody2D>();
     }
 
