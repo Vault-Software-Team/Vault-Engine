@@ -5,6 +5,7 @@
 #include "HyperScript/HyperScript.hpp"
 #include "Renderer/Framebuffer.hpp"
 #include "imgui/TextEditor.hpp"
+#include "mono/metadata/row-indexes.h"
 #include <filesystem>
 #include <iostream>
 #include <Renderer/Window.hpp>
@@ -309,7 +310,8 @@ int main() {
         glReadBuffer(GL_COLOR_ATTACHMENT2);
         uint32_t entityId;
         glReadPixels(Window::window->mouse_pos.x, Window::window->mouse_pos.y, 1, 1, GL_RED_INTEGER, GL_UNSIGNED_INT, &entityId);
-        std::cout << "Entity ID: " << entityId << "\n";
+
+        runtime.MouseEvents((entt::entity)entityId);
 
         if (!ImGui::IsMouseDoubleClicked(0)) return;
         auto &gameObject = Scene::Main->FindGameObjectByEntity((entt::entity)entityId);

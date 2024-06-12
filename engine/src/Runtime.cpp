@@ -1,3 +1,4 @@
+#include "Engine/Components/CSharpScriptComponent.hpp"
 #include "Engine/Components/Camera.hpp"
 #include "Engine/Components/SpriteRenderer.hpp"
 #include "Engine/Components/SpritesheetRenderer.hpp"
@@ -263,6 +264,33 @@ namespace Engine {
         } else {
             shader.SetUniform1i("shadowCubemap", 11);
             shader.SetUniform1i("shadow_cubemap_mapping", 0);
+        }
+    }
+
+    void Runtime::MouseEvents(entt::entity hoveredEntity) {
+        // This here are mouse events for the C# scripts
+
+        static entt::entity currentHoveredEntity = (entt::entity)65555;
+        if (!isRunning) return;
+
+        if (currentHoveredEntity != hoveredEntity) {
+            if (Scene::Main->EntityRegistry.all_of<CSharpScriptComponent>(currentHoveredEntity)) {
+                auto &comp = Scene::Main->EntityRegistry.get<CSharpScriptComponent>(currentHoveredEntity);
+                for (auto &instance : comp.script_instances) {
+                    instance.second->OnMouseExit();
+                }
+
+                currentHoveredEntity = hoveredEntity;
+            }
+        }
+
+        if (Scene::Main->EntityRegistry.all_of<CSharpScriptComponent>(hoveredEntity)) {
+            auto &comp = Scene::Main->EntityRegistry.get<CSharpScriptComponent>(hoveredEntity);
+            currentHoveredEntity = hoveredEntity;
+
+            for (auto &instance : comp.script_instances) {
+                instance.second->OnMouseEnter();
+            }
         }
     }
 } // namespace Engine

@@ -416,6 +416,9 @@ namespace Engine {
         start_method = GetMethod("OnStart", 1);
         init_method = GetMethod("OnInit", 1);
         start_thunk = (OnStartType)GetThunkFromMethod(start_method);
+
+        OnMouseEnter_method = GetMethod("OnMouseEnter", 0);
+        OnMouseExit_method = GetMethod("OnMouseExit", 0);
     }
 
     void ScriptClass::InitInstance(const std::string &gameObject_ID) {
@@ -463,6 +466,38 @@ namespace Engine {
     void ScriptClass::OnUpdate() {
         MonoObject *exception = nullptr;
         update_thunk(GetHandleTarget(), &exception);
+
+        if (exception) {
+            MonoObject *exc = NULL;
+            MonoString *str = mono_object_to_string(exception, &exc);
+            if (exc) {
+                mono_print_unhandled_exception(exc);
+            } else {
+                Editor::GUI::LogError(mono_string_to_utf8(str)); // Log log(mono_string_to_utf8(str), LOG_ERROR);
+            }
+        }
+    }
+
+    void ScriptClass::OnMouseEnter() {
+        MonoObject *exception = nullptr;
+        if (!OnMouseEnter_method) return;
+        mono_runtime_invoke(OnMouseEnter_method, GetHandleTarget(), nullptr, &exception);
+
+        if (exception) {
+            MonoObject *exc = NULL;
+            MonoString *str = mono_object_to_string(exception, &exc);
+            if (exc) {
+                mono_print_unhandled_exception(exc);
+            } else {
+                Editor::GUI::LogError(mono_string_to_utf8(str)); // Log log(mono_string_to_utf8(str), LOG_ERROR);
+            }
+        }
+    }
+
+    void ScriptClass::OnMouseExit() {
+        MonoObject *exception = nullptr;
+        if (!OnMouseExit_method) return;
+        mono_runtime_invoke(OnMouseExit_method, GetHandleTarget(), nullptr, &exception);
 
         if (exception) {
             MonoObject *exc = NULL;

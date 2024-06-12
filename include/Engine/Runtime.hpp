@@ -6,6 +6,7 @@
 #include <Renderer/Window.hpp>
 #include <Renderer/ShadowMap.hpp>
 #include <functional>
+#include <memory>
 
 namespace Engine {
     class DLL_API Runtime {
@@ -41,5 +42,7 @@ namespace Engine {
 
         void Scheduling_DeleteGameObjects();
         void Scheduling_SceneChange();
+
+        void MouseEvents(entt::entity hoveredEntity);
     };
 } // namespace Engine

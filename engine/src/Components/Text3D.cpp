@@ -9,7 +9,6 @@ namespace Engine::Components {
     void Text3D::Draw(VaultRenderer::Shader &shader) {
         if (font) {
             transform->UpdateModel();
-            std::cout << "the entt model is: " << (uint32_t)entity << " \n";
             font->Draw(shader, transform->model, text, color, emissionColor, 0, 0, scale, y_offset, (uint32_t)entity);
         }
     }

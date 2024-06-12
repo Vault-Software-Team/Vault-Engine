@@ -40,6 +40,9 @@ namespace Engine {
         MonoMethod *start_method;
         MonoMethod *init_method;
 
+        MonoMethod *OnMouseEnter_method;
+        MonoMethod *OnMouseExit_method;
+
         bool inited = false;
 
         ScriptClass(MonoImage *image, const std::string &name_space, const std::string &name);
@@ -47,6 +50,9 @@ namespace Engine {
         void OnStart(const std::string &gameObject_ID);
         void InitInstance(const std::string &gameObject_ID);
         void OnUpdate();
+
+        void OnMouseEnter();
+        void OnMouseExit();
     };
 
     class CSharp {
