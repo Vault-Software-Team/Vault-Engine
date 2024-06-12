@@ -13,6 +13,8 @@
 namespace VaultRenderer {
     DLL_API Window *Window::window;
 
+    RendererConfig Window::Renderer;
+
     void Window::AspectRatioCameraViewport() {
         glViewport(0, 0, width, height);
     }
@@ -130,8 +132,10 @@ namespace VaultRenderer {
             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
             update_call(framebuffer_shader);
 
-            glDisable(GL_BLEND);
-            bloomRenderer.RenderBloomTexture(framebuffer->color_attachements[0].ID, 0.005f);
+            if (Renderer.Bloom) {
+                glDisable(GL_BLEND);
+                bloomRenderer.RenderBloomTexture(framebuffer->color_attachements[0].ID, 0.005f);
+            }
 
             framebuffer_shader.Bind();
             framebuffer_shader_config(framebuffer_shader);
@@ -140,6 +144,7 @@ namespace VaultRenderer {
             glActiveTexture(GL_TEXTURE1);
             glBindTexture(GL_TEXTURE_2D, bloomRenderer.BloomTexture());
             framebuffer_shader.SetUniform1i("bloom_texture", 1);
+            framebuffer_shader.SetUniform1i("useBloom", Renderer.Bloom);
 
             framebuffer->UnbindAndDrawOnScreen(framebuffer_shader);
 

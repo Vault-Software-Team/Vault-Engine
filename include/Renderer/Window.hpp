@@ -15,6 +15,10 @@
 #include <Renderer/Shader.hpp>
 
 namespace VaultRenderer {
+    struct RendererConfig {
+        bool Bloom = true;
+    };
+
     class DLL_API Window {
     public:
         static DLL_API Window *window;
@@ -34,6 +38,9 @@ namespace VaultRenderer {
         std::string title;
 
         GLFWwindow *GetGLFWWindow() const;
+
+        // RENDERER SETTINGS
+        static RendererConfig Renderer;
 
         void Run(std::function<void(Shader &)> update_call, std::function<void()> gui_call, std::function<void()> shadow_render_call, std::function<void(Shader &)> framebuffer_shader_config, std::function<void(Framebuffer::ColorAttachement &)> mouse_picking);
         void SetClearColor(const float r, const float g, const float b);

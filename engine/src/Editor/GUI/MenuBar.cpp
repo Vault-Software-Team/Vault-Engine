@@ -36,8 +36,9 @@ namespace Editor {
     static void HDRConfiguration() {
         if (!open_hdr) return;
 
-        if (ImGui::Begin("HDR Config", &open_hdr, ImGuiWindowFlags_NoDocking)) {
-            ImGui::DragFloat("Exposure", &Serializer::config.HDR.exposure);
+        if (ImGui::Begin("Renderer Config", &open_hdr, ImGuiWindowFlags_NoDocking)) {
+            ImGui::DragFloat("(HDR) Exposure", &Serializer::config.HDR.exposure);
+            ImGui::Checkbox("Bloom", &VaultRenderer::Window::Renderer.Bloom);
 
             ImGui::End();
         }
@@ -94,7 +95,7 @@ namespace Editor {
                     }
                     ImGui::EndMenu();
                 }
-                if (ImGui::BeginMenu("HDR")) {
+                if (ImGui::BeginMenu("Renderer")) {
                     if (ImGui::MenuItem("Configuration")) {
                         open_hdr = true;
                     }

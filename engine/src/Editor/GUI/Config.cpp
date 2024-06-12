@@ -1,4 +1,5 @@
 #pragma once
+#include "imgui/ImGuiNotify.hpp"
 #include <Editor/GUI/MainGUI.hpp>
 #include <Engine/Scene.hpp>
 #include <Engine/GameObject.hpp>
@@ -28,6 +29,7 @@ namespace Editor {
 
             if (ImGui::Button(ICON_FA_FLOPPY_DISK " Save Configuration")) {
                 Engine::Serializer::SaveConfigFile("./assets/config.yaml");
+                ImGui::InsertNotification({ImGuiToastType::Success, 3000, "Saved configuration successfully."});
             }
             ImGui::NewLine();
 

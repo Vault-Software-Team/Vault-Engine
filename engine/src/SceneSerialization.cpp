@@ -1,5 +1,6 @@
 #include "Engine/Components/CSharpScriptComponent.hpp"
 #include "Engine/Components/SpriteRenderer.hpp"
+#include "Renderer/Window.hpp"
 #include "yaml-cpp/emittermanip.h"
 #include <Engine/SceneSerialization.hpp>
 #include <Engine/GameObject.hpp>
@@ -709,6 +710,7 @@ namespace Engine {
         emitter << yaml::Key << "shadow_far" << yaml::Value << 100.f;
         emitter << yaml::Key << "shadow_ortho_size" << yaml::Value << 20.f;
         emitter << yaml::Key << "HDR.exposure" << yaml::Value << 2.f;
+        emitter << yaml::Key << "Renderer.Bloom" << yaml::Value << true;
 
         std::ofstream file(path);
         file << emitter.c_str();
@@ -746,20 +748,30 @@ namespace Engine {
         if (data["HDR.exposure"]) {
             config.HDR.exposure = data["HDR.exposure"].as<float>();
         }
+
+        if (data["Renderer.Bloom"]) {
+            VaultRenderer::Window::Renderer.Bloom = data["Renderer.Bloom"].as<bool>();
+        }
     }
 
     void Serializer::SaveConfigFile(const std::string &path) {
         yaml::Emitter emitter;
         emitter << yaml::BeginMap;
 
+        // Main
         emitter << yaml::Key << "main_scene" << yaml::Value << config.main_scene;
         emitter << yaml::Key << "title" << yaml::Value << config.title;
+
+        // Shadows
         emitter << yaml::Key << "shadow_near" << yaml::Value << config.shadow_near;
         emitter << yaml::Key << "shadow_far" << yaml::Value << config.shadow_far;
         emitter << yaml::Key << "shadow_ortho_size" << yaml::Value << config.shadow_ortho_size;
 
         // HDR
         emitter << yaml::Key << "HDR.exposure" << yaml::Value << config.HDR.exposure;
+
+        // Renderer
+        emitter << yaml::Key << "Renderer.Bloom" << yaml::Value << VaultRenderer::Window::Renderer.Bloom;
 
         std::ofstream file(path);
         file << emitter.c_str();

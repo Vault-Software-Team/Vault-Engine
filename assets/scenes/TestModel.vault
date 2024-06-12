@@ -27,7 +27,7 @@ GameObjects:
         text: Hello, World.
         font_path: ./assets/fonts/CascadiaCodeItalic.ttf
         color: [1, 1, 1]
-        emissionColor: [1, 0, 0]
+        emissionColor: [1, 0.378904462, 0.165957451]
         scale: 0.0199999996
         y_offset: 1
   - GameObject:

@@ -4,3 +4,4 @@ shadow_near: 1
 shadow_far: 181
 shadow_ortho_size: 53
 HDR.exposure: 2
+Renderer.Bloom: false
