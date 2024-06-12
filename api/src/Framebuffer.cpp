@@ -37,25 +37,25 @@ namespace VaultRenderer {
     }
 
     void Framebuffer::DrawEverythingIntoAQuad(Shader &shader, uint32_t _texture, bool unbind) {
-//        VaultRenderer::Window::window->AspectRatioCameraViewport();
+        //        VaultRenderer::Window::window->AspectRatioCameraViewport();
         glDisable(GL_CULL_FACE);
         shader.Bind();
 
         if (unbind) Unbind();
-        
+
         glBindVertexArray(rectVAO);
         glDisable(GL_DEPTH_TEST);
-        
+
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, texture);
         shader.SetUniform1i("screen_texture", 0);
-        
+
         glDrawArrays(GL_TRIANGLES, 0, 6);
-        
+
         glEnable(GL_DEPTH_TEST);
         glBindVertexArray(0);
     }
-    
+
     void Framebuffer::GenerateFramebuffer() {
         glGenFramebuffers(1, &FBO);
         glBindFramebuffer(GL_FRAMEBUFFER, FBO);
@@ -71,27 +71,33 @@ namespace VaultRenderer {
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture, 0);
 
         // Attachements
-        // glGenTextures(1, &entityTexture);
-        // glBindTexture(GL_TEXTURE_2D, entityTexture);
-        // glTexImage2D(GL_TEXTURE_2D, 0, GL_R32I, Window::window->width, Window::window->height, 0, GL_RED_INTEGER, GL_UNSIGNED_BYTE, nullptr);
-        // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-        // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        // glGenTextures(1, &bloomTexture);
+        // glBindTexture(GL_TEXTURE_2D, bloomTexture);
+        // glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, Window::window->width, Window::window->height, 0, GL_RGB, GL_FLOAT, nullptr);
+        // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
         // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-        // glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, entityTexture, 0);
-        // std::cout << entityTexture << " entity texture \n";
-         for (auto &a : color_attachements) {
-             std::cout << a.attachement << " Regenerated attachement.\n";
-             glGenTextures(1, &a.ID);
-             glBindTexture(GL_TEXTURE_2D, a.ID);
+        // glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, bloomTexture, 0);
 
-             glTexImage2D(GL_TEXTURE_2D, 0, a.internal_format, width, height, 0, a.format, a.type, nullptr);
-             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-             glFramebufferTexture2D(GL_FRAMEBUFFER, a.attachement, GL_TEXTURE_2D, a.ID, 0);
-         }
+        // std::cout << entityTexture << " entity texture \n";
+        std::vector<uint32_t> attachments = {GL_COLOR_ATTACHMENT0};
+
+        for (auto &a : color_attachements) {
+            std::cout << a.attachement << " Regenerated attachement.\n";
+            glGenTextures(1, &a.ID);
+            glBindTexture(GL_TEXTURE_2D, a.ID);
+
+            glTexImage2D(GL_TEXTURE_2D, 0, a.internal_format, Window::window->width, Window::window->height, 0, a.format, a.type, nullptr);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+            glFramebufferTexture2D(GL_FRAMEBUFFER, a.attachement, GL_TEXTURE_2D, a.ID, 0);
+            attachments.push_back(a.attachement);
+        }
+
+        glDrawBuffers(attachments.size(), attachments.data());
 
         // RBO
         glGenRenderbuffers(1, &RBO);
@@ -109,13 +115,14 @@ namespace VaultRenderer {
     void Framebuffer::DeleteFramebuffer() {
         glDeleteFramebuffers(1, &FBO);
         glDeleteTextures(1, &texture);
+        // glDeleteTextures(1, &bloomTexture);
         glDeleteRenderbuffers(1, &RBO);
         // glDeleteTextures(1, &entityTexture);
 
-         for (auto &a : color_attachements) {
-             std::cout << a.ID << " CA\n";
-             glDeleteTextures(1, &a.ID);
-         }
+        for (auto &a : color_attachements) {
+            std::cout << a.ID << " CA\n";
+            glDeleteTextures(1, &a.ID);
+        }
     }
 
     void Framebuffer::RegenerateFramebuffer() {
@@ -155,8 +162,7 @@ namespace VaultRenderer {
             shader.SetUniform1i("screen_texture", 0);
             glDrawArrays(GL_TRIANGLES, 0, 6);
             glEnable(GL_DEPTH_TEST);
-        } 
-        else {
+        } else {
             // Bind a framebuffer that houses our actual framebuffer, we do this so that the framebuffer shader gets applied to the texture wink wink
             framebuffer->Bind();
             // Clear the framebuffer
@@ -209,15 +215,15 @@ namespace VaultRenderer {
         Bind();
         uint32_t ID;
         color_attachements.push_back({ID, attachement, internal_format, format, type});
-        glGenTextures(1, &color_attachements.back().ID);
-        glBindTexture(GL_TEXTURE_2D, color_attachements.back().ID);
+        // glGenTextures(1, &color_attachements.back().ID);
+        // glBindTexture(GL_TEXTURE_2D, color_attachements.back().ID);
 
-        glTexImage2D(GL_TEXTURE_2D, 0, internal_format, width, height, 0, format, type, nullptr);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-        glFramebufferTexture2D(GL_FRAMEBUFFER, attachement, GL_TEXTURE_2D, color_attachements.back().ID, 0);
+        // glTexImage2D(GL_TEXTURE_2D, 0, internal_format, width, height, 0, format, type, nullptr);
+        // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        // glFramebufferTexture2D(GL_FRAMEBUFFER, attachement, GL_TEXTURE_2D, color_attachements.back().ID, 0);
     }
 
     void Framebuffer::BindAttachement(const uint32_t attachement, const uint32_t &slot) {

@@ -9,6 +9,13 @@ namespace Engine {
     struct Config {
         std::string main_scene = "";
         std::string title = "";
+        float shadow_near = 1.f;
+        float shadow_far = 100.f;
+        float shadow_ortho_size = 20.f;
+
+        struct {
+            float exposure = 2.0f;
+        } HDR;
     };
 
     class Serializer {

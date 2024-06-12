@@ -17,6 +17,7 @@ using namespace Engine::Components;
 
 namespace Editor {
     static bool open = false;
+    static bool open_hdr = false;
     static void ShadowMapConfiguration() {
         if (!open)
             return;
@@ -27,6 +28,16 @@ namespace Editor {
             ImGui::DragFloat("Far", &map->far);
             ImGui::DragFloat("Ortho Size", &map->ortho_size);
             ImGui::ImageButton((void *)map->GetTextureID(), ImVec2(200, 200), ImVec2(0, 1), ImVec2(1, 0));
+
+            ImGui::End();
+        }
+    }
+
+    static void HDRConfiguration() {
+        if (!open_hdr) return;
+
+        if (ImGui::Begin("HDR Config", &open_hdr, ImGuiWindowFlags_NoDocking)) {
+            ImGui::DragFloat("Exposure", &Serializer::config.HDR.exposure);
 
             ImGui::End();
         }
@@ -83,6 +94,12 @@ namespace Editor {
                     }
                     ImGui::EndMenu();
                 }
+                if (ImGui::BeginMenu("HDR")) {
+                    if (ImGui::MenuItem("Configuration")) {
+                        open_hdr = true;
+                    }
+                    ImGui::EndMenu();
+                }
                 ImGui::EndMenu();
             }
 
@@ -101,5 +118,6 @@ namespace Editor {
         }
 
         ShadowMapConfiguration();
+        HDRConfiguration();
     }
 } // namespace Editor

@@ -12,7 +12,7 @@
 
 namespace VaultRenderer {
     DLL_API Window *Window::window;
-    
+
     void Window::AspectRatioCameraViewport() {
         glViewport(0, 0, width, height);
     }
@@ -77,7 +77,7 @@ namespace VaultRenderer {
 
         framebuffer = std::make_unique<Framebuffer>(true);
         m_PostProcessingFramebuffer = std::make_unique<Framebuffer>(false);
-        
+
         // framebuffer->AddColorAttachement(1);
         framebuffer->draw_screen = draw_screen;
     }
@@ -86,31 +86,30 @@ namespace VaultRenderer {
         glfwTerminate();
     };
 
-    void Window::Run(std::function<void()> update_call, std::function<void()> gui_call, std::function<void()> shadow_render_call) {
+    void Window::Run(std::function<void(Shader &)> update_call, std::function<void()> gui_call, std::function<void()> shadow_render_call, std::function<void(Shader &)> framebuffer_shader_config) {
         static int before_width, before_height;
         Shader framebuffer_shader("./shaders/framebuffer.glsl");
         ImGuiIO &io = ImGui::GetIO();
 
-        // framebuffer->bloomRenderer.Init(width, height);
-        // framebuffer->AddColorAttachement(GL_COLOR_ATTACHMENT2, GL_R32I, GL_RED_INTEGER, GL_UNSIGNED_BYTE);
-        // framebuffer->RegenerateFramebuffer();
+        BloomRenderer bloomRenderer;
+        bloomRenderer.Init(width, height);
+
+        framebuffer->AddColorAttachement(GL_COLOR_ATTACHMENT1, GL_RGB16F, GL_RGB, GL_FLOAT);
 
         double previous_time = glfwGetTime();
-        
-//        framebuffer->AddColorAttachement(GL_COLOR_ATTACHMENT1);
-//        Editor::GUI::framebufferTextureID = framebuffer->color_attachements[0].ID;
-        
+
         while (!glfwWindowShouldClose(glfw_window)) {
             Statistics::CalculateFPS(previous_time);
 
             // glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             if (!use_imgui_size)
                 glfwGetWindowSize(glfw_window, &width, &height);
-            framebuffer->bloomRenderer.m_SrcViewportSize.x = width;
-            framebuffer->bloomRenderer.m_SrcViewportSize.x = height;
 
-            framebuffer->bloomRenderer.m_SrcViewportSizeFloat.x = width;
-            framebuffer->bloomRenderer.m_SrcViewportSizeFloat.x = height;
+            bloomRenderer.mSrcViewportSize.x = width;
+            bloomRenderer.mSrcViewportSize.x = height;
+
+            bloomRenderer.mSrcViewportSizeFloat.x = width;
+            bloomRenderer.mSrcViewportSizeFloat.x = height;
 
             // Framebuffer Shenanigans
             glfwPollEvents();
@@ -124,27 +123,23 @@ namespace VaultRenderer {
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             glEnable(GL_DEPTH_TEST);
 
-            update_call();
+            glEnable(GL_BLEND);
+            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+            update_call(framebuffer_shader);
 
-            // framebuffer->framebuffer->Bind();
-            // glBindTexture(GL_TEXTURE_2D, framebuffer->framebuffer->entityTexture);
-            // framebuffer->BindAttachement(GL_COLOR_ATTACHMENT2);
-            // uint32_t entityId;
-            // glReadBuffer(GL_COLOR_ATTACHMENT1);
-            // glReadPixels(mouse_pos.x, mouse_pos.y, 1, 1, GL_RED_INTEGER, GL_UNSIGNED_INT, &entityId);
-            // std::cout << mouse_pos.x << " " << mouse_pos.y << "\n";
-            // std::cout << "Reading pixel: " << entityId << "\n";
+            glDisable(GL_BLEND);
+            bloomRenderer.RenderBloomTexture(framebuffer->color_attachements[0].ID, 0.005f);
 
             framebuffer_shader.Bind();
+            framebuffer_shader_config(framebuffer_shader);
             framebuffer_shader.SetUniform1f("gamma", gamma);
 
-            // framebuffer->BindAttachement(1, 1);
-            // framebuffer_shader.SetUniform1f("bloomTexture", 1);
-            // bloomRenderer.RenderBloomTexture(framebuffer->GetAttachement(1), 0.005f, framebuffer->rectVAO);
-//            framebuffer->UnbindAndDrawOnScreen(framebuffer_shader);
-            
+            glActiveTexture(GL_TEXTURE1);
+            glBindTexture(GL_TEXTURE_2D, bloomRenderer.BloomTexture());
+            framebuffer_shader.SetUniform1i("bloom_texture", 1);
+
             framebuffer->UnbindAndDrawOnScreen(framebuffer_shader);
-            
+
             m_PostProcessingFramebuffer->Bind();
             framebuffer->DrawEverythingIntoAQuad(framebuffer_shader, framebuffer->texture);
             m_PostProcessingFramebuffer->Unbind();
@@ -175,14 +170,12 @@ namespace VaultRenderer {
                 framebuffer->height = height;
                 m_PostProcessingFramebuffer->width = width;
                 m_PostProcessingFramebuffer->height = height;
-                
+
                 framebuffer->RegenerateFramebuffer();
                 m_PostProcessingFramebuffer->RegenerateFramebuffer();
                 // Editor::GUI::framebufferTextureID = framebuffer->texture;
             }
-            // Update and Render additional Platform Windows
-            // (Platform functions may change the current OpenGL context, so we save/restore it to make it easier to paste this code elsewhere.
-            //  For this specific demo app we could also call glfwMakeContextCurrent(window) directly)
+
             if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable) {
                 GLFWwindow *backup_current_context = glfwGetCurrentContext();
                 ImGui::UpdatePlatformWindows();

@@ -74,7 +74,7 @@ void main() {
 #shader fragment
 #version 330 core
 layout(location = 0) out vec4 FragColor;
-layout(location = 1) out vec4 EntityID;
+layout(location = 1) out vec4 BloomColor;
 
 in vec2 texUV;
 in vec3 normal;
@@ -285,9 +285,9 @@ vec3 directional_light(DirectionalLight light) {
     }
 
     if (texture_diffuse.defined) {
-        return ((texture(texture_diffuse.tex, UVs).rgb * baseColor.rgb) * light.color * (diffuse * (1.0f - shadow) * inten + ambient_amount) + (spec * (1.0f - shadow))).rgb;
+        return ((texture(texture_diffuse.tex, UVs).rgb * baseColor.rgb) * light.color * (diffuse * (1.2f - shadow) * inten + ambient_amount) + (spec * (1.2f - shadow))).rgb;
     } else {
-        return ((baseColor.rgb) * light.color * (diffuse * (1.0f - shadow) * inten + ambient_amount) + (spec * (1.0f - shadow))).rgb;
+        return ((baseColor.rgb) * light.color * (diffuse * (1.2f - shadow) * inten + ambient_amount) + (spec * (1.2f - shadow))).rgb;
     }
 }
 
@@ -328,7 +328,6 @@ vec3 spot_light(SpotLight light) {
 }
 
 void main() {
-    EntityID = vec4(1, 0, 0, 1);
 
     vec4 total_color = vec4(0);
     for (int i = 0; i < point_light_count; i++) {
@@ -367,7 +366,13 @@ void main() {
     } else {
         FragColor.a = baseColor.a;
     }
-//    EntityID = u_EntityID;
+
+    float brightness = dot(FragColor.rgb, vec3(0.2126, 0.7152, 0.0722));
+    // if (brightness > 0.3) {
+    BloomColor = vec4(FragColor.rgb, FragColor.a);
+    // EntityID = vec4(1, 0, 0, 1);
+    //    EntityID = u_EntityID;
+    // }
 }
 #shader geometry
 #version 330 core

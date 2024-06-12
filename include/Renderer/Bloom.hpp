@@ -9,50 +9,42 @@ namespace VaultRenderer {
     struct DLL_API BloomMip {
         glm::vec2 size;
         glm::ivec2 intSize;
-        uint32_t texture;
+        unsigned int texture;
     };
 
-    class DLL_API BloomBuffer {
+    class DLL_API BloomFBO {
     public:
-        BloomBuffer();
-        ~BloomBuffer();
-
-        bool Init(uint32_t windowWidth, uint32_t windowHeight,
-                  uint32_t mipChainLength);
+        BloomFBO();
+        ~BloomFBO();
+        bool Init(unsigned int windowWidth, unsigned int windowHeight, unsigned int mipChainLength);
         void Destroy();
-        void BindWriting();
-
-        const std::vector<BloomMip> &GetMipChain() const {
-            return m_MipChain;
-        }
+        void BindForWriting();
+        const std::vector<BloomMip> &MipChain() const;
 
     private:
-        bool m_Init;
-        uint32_t m_Framebuffer;
-        std::vector<BloomMip> m_MipChain;
+        bool mInit;
+        unsigned int mFBO;
+        std::vector<BloomMip> mMipChain;
     };
 
-    class DLL_API BloomRenderer {
+    class BloomRenderer {
     public:
         BloomRenderer();
         ~BloomRenderer();
-        bool Init(uint32_t windowWidth, uint32_t windowHeight);
+        bool Init(unsigned int windowWidth, unsigned int windowHeight);
         void Destroy();
-        void RenderBloomTexture(uint32_t srcTexture, float filterRadius,
-                                uint32_t &quadVAO);
-        uint32_t BloomTexture();
+        void RenderBloomTexture(unsigned int srcTexture, float filterRadius);
+        unsigned int BloomTexture();
 
-        glm::ivec2 m_SrcViewportSize;
-        glm::vec2 m_SrcViewportSizeFloat;
+    public:
+        void RenderDownsamples(unsigned int srcTexture);
+        void RenderUpsamples(float filterRadius);
 
-    private:
-        void RenderDownsamples(uint32_t srcTexture, uint32_t &quadVAO);
-
-        void RenderUpsamples(float filterRadius, uint32_t &quadVAO);
         bool mInit;
-        BloomBuffer m_Framebuffer;
-        // sorry C++ gods, i gotta use raw pointers here don't kill me
-        Shader *m_DownsampleShader = nullptr;
-        Shader *m_UpsampleShader = nullptr;
+        BloomFBO mFBO;
+        glm::ivec2 mSrcViewportSize;
+        glm::vec2 mSrcViewportSizeFloat;
+        Shader *mDownsampleShader;
+        Shader *mUpsampleShader;
     };
 } // namespace VaultRenderer

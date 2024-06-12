@@ -690,6 +690,10 @@ namespace Engine {
 
         emitter << yaml::Key << "main_scene" << yaml::Value << "./assets/scenes/main.vault";
         emitter << yaml::Key << "title" << yaml::Value << "Vault Engine";
+        emitter << yaml::Key << "shadow_near" << yaml::Value << 1.f;
+        emitter << yaml::Key << "shadow_far" << yaml::Value << 100.f;
+        emitter << yaml::Key << "shadow_ortho_size" << yaml::Value << 20.f;
+        emitter << yaml::Key << "HDR.exposure" << yaml::Value << 2.f;
 
         std::ofstream file(path);
         file << emitter.c_str();
@@ -711,6 +715,22 @@ namespace Engine {
         if (data["title"]) {
             config.title = data["title"].as<std::string>();
         }
+
+        if (data["shadow_near"]) {
+            config.shadow_near = data["shadow_near"].as<float>();
+        }
+
+        if (data["shadow_far"]) {
+            config.shadow_far = data["shadow_far"].as<float>();
+        }
+
+        if (data["shadow_ortho_size"]) {
+            config.shadow_ortho_size = data["shadow_ortho_size"].as<float>();
+        }
+
+        if (data["HDR.exposure"]) {
+            config.HDR.exposure = data["HDR.exposure"].as<float>();
+        }
     }
 
     void Serializer::SaveConfigFile(const std::string &path) {
@@ -719,6 +739,12 @@ namespace Engine {
 
         emitter << yaml::Key << "main_scene" << yaml::Value << config.main_scene;
         emitter << yaml::Key << "title" << yaml::Value << config.title;
+        emitter << yaml::Key << "shadow_near" << yaml::Value << config.shadow_near;
+        emitter << yaml::Key << "shadow_far" << yaml::Value << config.shadow_far;
+        emitter << yaml::Key << "shadow_ortho_size" << yaml::Value << config.shadow_ortho_size;
+
+        // HDR
+        emitter << yaml::Key << "HDR.exposure" << yaml::Value << config.HDR.exposure;
 
         std::ofstream file(path);
         file << emitter.c_str();

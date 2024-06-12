@@ -24,7 +24,7 @@ GameObjects:
         rotation: [0, 0, 0]
         scale: [3.93999982, 3.93999982, 3.93999982]
       Text3D:
-        text: Hello, World!
+        text: Hello, World.
         font_path: ./assets/fonts/CascadiaCodeItalic.ttf
         color: [1, 1, 1]
         scale: 0.0199999996
@@ -35,25 +35,22 @@ GameObjects:
       tag: Default
       parent: NO_PARENT
       Transform:
-        position: [-4.12994623, 5.72162104, -4.75571775]
+        position: [-4.12994623, 5.72162104, -4.97401714]
         rotation: [0, 0, 0]
         scale: [14.9026003, 14.9026003, 14.9026003]
       SpriteRenderer:
         color: [1, 1, 1, 1]
         texture: ./assets/1024px-Team_Fortress_2_style_logo.svg.png
   - GameObject:
-      ID: 7b9ad394-6083-4074-93db-76e0559eaae1
-      name: Camera
+      ID: c1519bc1-ac4a-4409-a15a-baa9054ae1d3
+      name: Sun
       tag: Default
       parent: NO_PARENT
       Transform:
-        position: [0, 3.68975186, -0.516892076]
-        rotation: [-0.504400134, -0.568977296, -1]
+        position: [13, 35.0499992, 36.0999985]
+        rotation: [0, 0, 0]
         scale: [1, 1, 1]
-      PointLight:
-        intensity: 23.3999996
+      DirectionalLight:
+        intensity: 1
         color: [1, 1, 1]
-        enable_shadow_mapping: false
-      CSharpScriptComponent:
-        selected_scripts:
-          .CameraTest: THIS_IS_EMPTY_FUCK_YOU_LOL.CameraTest
+        enable_shadow_mapping: true

@@ -36,7 +36,8 @@ namespace VaultRenderer {
         int width = 1920, height = 1080;
 
         uint32_t FBO;
-        uint32_t texture, bloomTexture;
+        uint32_t texture;
+        // uint32_t bloomTexture;
         uint32_t RBO;
 
         uint32_t rectVAO, rectVBO;
@@ -53,9 +54,9 @@ namespace VaultRenderer {
         void UnbindAndDrawOnScreen(Shader &shader);
         uint32_t &GetAttachement(uint32_t attachement);
         void BindAttachement(uint32_t attachement, const uint32_t &slot = 0);
-        
+
         void DrawEverythingIntoAQuad(Shader &shader, uint32_t _texture, bool unbind = false);
-        
+
     private:
         int color_attachements_to_generate;
     };

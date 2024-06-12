@@ -159,7 +159,9 @@ int main() {
     // emptyObject->AddChild("Cunt");
 
     ShadowMap shadow_map;
-    shadow_map.ortho_size = 20.0f;
+    shadow_map.near = Serializer::config.shadow_near;
+    shadow_map.far = Serializer::config.shadow_far;
+    shadow_map.ortho_size = Serializer::config.shadow_ortho_size;
 
     Runtime runtime(default_shader);
     runtime.shadowMap = &shadow_map;
@@ -295,15 +297,23 @@ int main() {
         }
     };
 
+    auto Function_FramebufferShaderUniforms = [&](Shader &fbShader) {
+        // shader is already binded when this gets called btw & also DO NOT UNBIND HERE only set uniforms n shi
+        fbShader.SetUniform1f("HDR_Exposure", Serializer::config.HDR.exposure);
+        //
+    };
+
     /*
     FUNCTION EXECUTION ORDER:
     1. Shadow Map Rendering Function, the last argument in window.Run
     2. Runtime Function, the first argument in window.Run
-    3. GUI Function, the second argument in window.Run
+    3. Framebuffer Shader Uniforms (the shader is already binded btw)
+    4. GUI Function, the second argument in window.Run
 
     basically:
     shadow_function()
     runtime_function()
+    framebuffer_shader_config();
     gui_function()
     */
     float timestep = 0;
@@ -346,7 +356,7 @@ int main() {
         Serializer::Deserialize(Serializer::config.main_scene);
     }
 
-    window.Run([&] {
+    window.Run([&](Shader &framebuffer_shader) {
         static double lastTime = 0;
         double now = glfwGetTime();
         timestep = now - lastTime;
@@ -449,7 +459,17 @@ int main() {
 
             if (!Scene::Main->main_camera_object) Scene::Main->SetSceneCameraAsMain();
         } // clang-format off
-    }, Function_GUI, Function_ShadowMapRendering);
+
+        // Config Updates
+        {
+            // Shadow Mapping
+            Serializer::config.shadow_near = shadow_map.near;
+            Serializer::config.shadow_far = shadow_map.far;
+            Serializer::config.shadow_ortho_size = shadow_map.ortho_size;
+        }
+
+
+    }, Function_GUI, Function_ShadowMapRendering, Function_FramebufferShaderUniforms);
     // clang-format on
 
     return 0;

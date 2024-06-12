@@ -13,24 +13,27 @@ void main() {
 #shader fragment
 #version 330 core
 layout(location = 0) out vec4 FragColor;
-layout(location = 1) out vec4 EntityID;
 in vec2 texCoords;
 
 uniform sampler2D screen_texture;
+uniform sampler2D bloom_texture;
 // uniform sampler2D bloomTexture;
 uniform float gamma;
+uniform float HDR_Exposure;
+
+vec4 bloom() {
+    // vec3 color = radialBlur(chromaticAberration(chromaticAmount), vec2(0.5, 0.5), 0.05).rgb;
+    vec3 color = texture(screen_texture, texCoords).rgb;
+    vec3 bloomColor = texture(bloom_texture, texCoords).rgb;
+    return vec4(color + bloomColor, 1.0);
+}
 
 void main() {
-    EntityID = vec4(1, 0, 0, 1);
-    vec4 frag = texture(screen_texture, texCoords);
-    // vec3 bloomColor = texture(bloomTexture, texCoords).rgb;
-    // FragColor.rgb = pow(frag.rgb, vec3(1.0 / gamma));
-    // FragColor.rgb = frag.rgb;
-    FragColor.a = 1;
-    float Gamma = 2.2;
-    FragColor.rgb = pow(frag.rgb, vec3(1.0 / gamma));
-    // FragColor.rgb = vec3(1, 1, 1);
+    vec4 frag = bloom();
 
-    // FragColor = frag;
-    // FragColor.rgb = pow(frag.rgb, vec3(1.0 / gamma));
+    vec3 tone_mapped = vec3(1.0) - exp(-frag.rgb * HDR_Exposure);
+
+    FragColor.rgb = pow(tone_mapped, vec3(1.0 / gamma));
+    FragColor.a = 1;
+    // FragColor.rgb = texture(bloom_texture, texCoords).rgb;
 }
