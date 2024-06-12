@@ -1,3 +1,4 @@
+#include "imgui/imgui.h"
 #include <Engine/Components/SpriteRenderer.hpp>
 #include <Engine/Scene.hpp>
 #include <iostream>
@@ -29,9 +30,10 @@ namespace Engine::Components {
     void SpriteRenderer::OnGUI() {
         DrawComponent<SpriteRenderer>(Scene::Main->EntityRegistry, 40, [&] {
             ImGui::ColorEdit4("Color", &mesh->material.color.x);
+            ImGui::ColorEdit3("Emission Color", &mesh->material.emissionColor.x, ImGuiColorEditFlags_HDR);
 
             ImGui::Text("Sprite");
-            ImGui::ImageButton((mesh->material.diffuse ? reinterpret_cast<void*>(mesh->material.diffuse->texture_data->ID) : 0), ImVec2(100, 100), ImVec2(0, 1), ImVec2(1, 0));
+            ImGui::ImageButton((mesh->material.diffuse ? reinterpret_cast<void *>(mesh->material.diffuse->texture_data->ID) : 0), ImVec2(100, 100), ImVec2(0, 1), ImVec2(1, 0));
             if (ImGui::IsItemClicked(1)) {
                 mesh->material.diffuse.reset();
             }

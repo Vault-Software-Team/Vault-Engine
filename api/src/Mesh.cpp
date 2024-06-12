@@ -125,6 +125,7 @@ namespace VaultRenderer {
         }
 
         shader.SetUniform4f("baseColor", color.r, color.g, color.b, color.a);
+        shader.SetUniform4f("emissionColor", emissionColor.r, emissionColor.g, emissionColor.b, 1);
 
         if (diffuse && fs::exists(diffuse ? diffuse->texture_data->texture_filepath : "")) {
             diffuse->Bind(0);

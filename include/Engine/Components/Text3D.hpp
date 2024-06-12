@@ -18,6 +18,7 @@ namespace Engine {
             Text3D() = default;
             void Init();
             glm::vec3 color = glm::vec3(1, 1, 1);
+            glm::vec3 emissionColor = glm::vec3(0, 0, 0);
             std::string text = "Hello, World!";
             float y_offset = 1;
             float scale = 0.020;

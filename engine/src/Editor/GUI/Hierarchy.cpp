@@ -17,7 +17,7 @@ namespace Editor {
         std::string filterStr = search;
         std::transform(filterStr.begin(), filterStr.end(), filterStr.begin(), asciitolower);
 
-        ImGui::Begin(ICON_FA_CUBES " Hierarhcy");
+        ImGui::Begin(ICON_FA_CUBES " Hierarchy");
         if (ImGui::Button(ICON_FA_PLUS " Add GameObject", ImVec2(ImGui::GetWindowSize().x - 20, 25))) {
             auto &gameObject = GameObject::New("GameObject");
             ImGui::CloseCurrentPopup();
@@ -29,6 +29,9 @@ namespace Editor {
 
         ImVec2 cursor_pos = ImGui::GetCursorPos();
         ImGui::Dummy(ImGui::GetContentRegionAvail());
+        if (ImGui::IsMouseDoubleClicked(0) && ImGui::IsItemHovered()) {
+            GUI::selected_gameObject = nullptr;
+        }
         if (ImGui::BeginDragDropTarget()) {
             if (const ImGuiPayload *payload = ImGui::AcceptDragDropPayload("prefab")) {
                 Serializer::LoadPrefab((char *)payload->Data);

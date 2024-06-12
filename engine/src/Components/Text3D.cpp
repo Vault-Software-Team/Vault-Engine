@@ -9,7 +9,8 @@ namespace Engine::Components {
     void Text3D::Draw(VaultRenderer::Shader &shader) {
         if (font) {
             transform->UpdateModel();
-            font->Draw(shader, transform->model, text, color, glm::vec3(0, 0, 0), 0, 0, scale, y_offset);
+            std::cout << "the entt model is: " << (uint32_t)entity << " \n";
+            font->Draw(shader, transform->model, text, color, emissionColor, 0, 0, scale, y_offset, (uint32_t)entity);
         }
     }
 
@@ -28,6 +29,7 @@ namespace Engine::Components {
             ImGui::DragFloat("Scale", &scale, 0.001f);
             ImGui::DragFloat("Y Offset", &y_offset, 0.01f);
             ImGui::ColorEdit3("Color", &color.x);
+            ImGui::ColorEdit3("Emission Color", &emissionColor.x);
             if (font) {
                 ImGui::Text("Font: %s", font->font_path.c_str());
             } else {

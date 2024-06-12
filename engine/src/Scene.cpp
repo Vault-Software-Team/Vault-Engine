@@ -205,18 +205,22 @@ namespace Engine {
     void Scene::SetSceneCameraAsMain() {
         main_camera_object = EditorSceneCamera;
     }
+    static std::shared_ptr<GameObject> if_null_ = nullptr;
 
     std::shared_ptr<GameObject> &Scene::FindGameObjectByEntity(const entt::entity &entity) {
         for (auto &pGameObject : GameObjects) {
             if (pGameObject->entity == entity)
                 return pGameObject;
         }
+
+        return if_null_;
     }
     std::shared_ptr<GameObject> &Scene::FindGameObjectByID(const std::string &ID) {
         for (auto &pGameObject : GameObjects) {
             if (pGameObject->ID == ID)
                 return pGameObject;
         }
+        return if_null_;
     }
 
     std::shared_ptr<GameObject> &Scene::FindGameObjectByName(const std::string &name) {
@@ -224,6 +228,7 @@ namespace Engine {
             if (pGameObject->name == name)
                 return pGameObject;
         }
+        return if_null_;
     }
 
     template <typename T>

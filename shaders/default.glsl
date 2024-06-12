@@ -75,6 +75,7 @@ void main() {
 #version 330 core
 layout(location = 0) out vec4 FragColor;
 layout(location = 1) out vec4 BloomColor;
+layout(location = 2) out uint EntityID;
 
 in vec2 texUV;
 in vec3 normal;
@@ -97,6 +98,7 @@ uniform sampler2D shadowMap;
 uniform float ambient_amount;
 uniform vec3 ambient_color;
 uniform vec4 baseColor;
+uniform vec4 emissionColor;
 uniform samplerCube shadowCubemap;
 uniform bool shadow_cubemap_mapping;
 uniform bool shadow_mapping;
@@ -328,6 +330,7 @@ vec3 spot_light(SpotLight light) {
 }
 
 void main() {
+    EntityID = u_EntityID;
 
     vec4 total_color = vec4(0);
     for (int i = 0; i < point_light_count; i++) {
@@ -367,13 +370,15 @@ void main() {
         FragColor.a = baseColor.a;
     }
 
-    float brightness = dot(FragColor.rgb, vec3(0.2126, 0.7152, 0.0722));
+    // float brightness = dot(FragColor.rgb, vec3(0.2126, 0.7152, 0.0722));
     // if (brightness > 0.3) {
-    BloomColor = vec4(FragColor.rgb, FragColor.a);
+    // BloomColor = vec4(5, 5, 5, FragColor.a);
     // EntityID = vec4(1, 0, 0, 1);
     //    EntityID = u_EntityID;
     // }
+    BloomColor = vec4(emissionColor.rgb, FragColor.a);
 }
+
 #shader geometry
 #version 330 core
 layout(triangles) in;

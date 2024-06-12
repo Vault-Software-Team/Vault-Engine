@@ -1,4 +1,5 @@
 color: [1, 1, 1, 1]
+emissionColor: [0, 0, 0]
 diffuse: ./assets/diffuse.png
 specular: ./assets/diffuse.png
 normal: ./assets/normal.png

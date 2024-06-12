@@ -26,6 +26,6 @@ namespace VaultRenderer {
         std::map<char, Character> Characters;
 
         Font(const char *font, uint32_t scale);
-        void Draw(Shader &shader, const glm::mat4 &model, const std::string &text, glm::vec3 color, glm::vec3 bloomColor, float x, float y, float scale, float y_offset);
+        void Draw(Shader &shader, const glm::mat4 &model, const std::string &text, glm::vec3 color, glm::vec3 bloomColor, float x, float y, float scale, float y_offset, uint32_t entity);
     };
 } // namespace VaultRenderer

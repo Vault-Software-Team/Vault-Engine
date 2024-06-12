@@ -27,6 +27,7 @@ GameObjects:
         text: Hello, World.
         font_path: ./assets/fonts/CascadiaCodeItalic.ttf
         color: [1, 1, 1]
+        emissionColor: [1, 0, 0]
         scale: 0.0199999996
         y_offset: 1
   - GameObject:
@@ -40,6 +41,7 @@ GameObjects:
         scale: [14.9026003, 14.9026003, 14.9026003]
       SpriteRenderer:
         color: [1, 1, 1, 1]
+        emissionColor: [0, 0, 0]
         texture: ./assets/1024px-Team_Fortress_2_style_logo.svg.png
   - GameObject:
       ID: c1519bc1-ac4a-4409-a15a-baa9054ae1d3

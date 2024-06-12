@@ -194,6 +194,7 @@ namespace Engine {
             emitter << yaml::Key << "text" << yaml::Value << component.text;
             emitter << yaml::Key << "font_path" << yaml::Value << component.font->font_path;
             emitter << yaml::Key << "color" << yaml::Value << component.color;
+            emitter << yaml::Key << "emissionColor" << yaml::Value << component.emissionColor;
             emitter << yaml::Key << "scale" << yaml::Value << component.scale;
             emitter << yaml::Key << "y_offset" << yaml::Value << component.y_offset;
 
@@ -232,6 +233,7 @@ namespace Engine {
 
             auto &component = gameObject->GetComponent<SpriteRenderer>();
             emitter << yaml::Key << "color" << yaml::Value << component.mesh->material.color;
+            emitter << yaml::Key << "emissionColor" << yaml::Value << component.mesh->material.emissionColor;
             emitter << yaml::Key << "texture" << yaml::Value << (component.mesh->material.diffuse == nullptr ? "nullptr" : component.mesh->material.diffuse->texture_data->texture_filepath);
 
             emitter << yaml::EndMap;
@@ -377,6 +379,10 @@ namespace Engine {
             component.scale = data["Text3D"]["scale"].as<float>();
             component.y_offset = data["Text3D"]["y_offset"].as<float>();
             component.ChangeFont(data["Text3D"]["font_path"].as<std::string>());
+
+            if (data["Text3D"]["emissionColor"]) {
+                component.emissionColor = data["Text3D"]["emissionColor"].as<glm::vec3>();
+            }
         }
 
         if (data["MeshRenderer"]) {
@@ -430,6 +436,10 @@ namespace Engine {
 
             if (data["SpriteRenderer"]["color"]) {
                 component.mesh->material.color = data["SpriteRenderer"]["color"].as<glm::vec4>();
+            }
+
+            if (data["SpriteRenderer"]["emissionColor"]) {
+                component.mesh->material.emissionColor = data["SpriteRenderer"]["emissionColor"].as<glm::vec3>();
             }
         }
 
@@ -587,6 +597,7 @@ namespace Engine {
         yaml::Emitter emitter;
         emitter << yaml::BeginMap;
         emitter << yaml::Key << "color" << yaml::Value << material.color;
+        emitter << yaml::Key << "emissionColor" << yaml::Value << material.emissionColor;
         emitter << yaml::Key << "diffuse" << yaml::Value << (material.diffuse ? material.diffuse->texture_data->texture_filepath : "nullptr");
         emitter << yaml::Key << "specular" << yaml::Value << (material.specular ? material.specular->texture_data->texture_filepath : "nullptr");
         emitter << yaml::Key << "normal" << yaml::Value << (material.normal ? material.normal->texture_data->texture_filepath : "nullptr");
@@ -602,6 +613,10 @@ namespace Engine {
 
         yaml::Node data = yaml::Load(ss.str());
         material.color = data["color"].as<glm::vec4>();
+
+        if (data["emissionColor"]) {
+            material.emissionColor = data["emissionColor"].as<glm::vec3>();
+        }
 
         if (data["diffuse"].as<std::string>() != "nullptr") {
             material.SetDiffuse(data["diffuse"].as<std::string>());

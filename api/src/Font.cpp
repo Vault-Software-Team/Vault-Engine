@@ -81,14 +81,15 @@ namespace VaultRenderer {
         glBindVertexArray(0);
     }
 
-    void Font::Draw(Shader &shader, const glm::mat4 &model, const std::string &text, glm::vec3 color, glm::vec3 bloomColor, float x, float y, float scale, float y_offset) {
+    void Font::Draw(Shader &shader, const glm::mat4 &model, const std::string &text, glm::vec3 color, glm::vec3 bloomColor, float x, float y, float scale, float y_offset, uint32_t entity) {
         float saved_x = x, saved_y = y;
         glm::mat4 projection = glm::ortho(0.0f, 800.0f, 0.0f, 600.0f);
 
         shader.Bind();
+        shader.SetUniform1ui("u_EntityID", entity);
         shader.SetUniformMat4("transformModel", model);
-        shader.SetUniform3f("bloomColor", bloomColor.x, bloomColor.y, bloomColor.z);
         shader.SetUniform3f("textColor", color.x, color.y, color.z);
+        shader.SetUniform3f("emissionColor", bloomColor.x, bloomColor.y, bloomColor.z);
         shader.SetUniform1i("texture_diffuse.tex", 0);
         shader.SetUniform1i("texture_diffuse.defined", 1);
         glActiveTexture(GL_TEXTURE0);

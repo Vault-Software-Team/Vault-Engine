@@ -86,7 +86,7 @@ namespace VaultRenderer {
         glfwTerminate();
     };
 
-    void Window::Run(std::function<void(Shader &)> update_call, std::function<void()> gui_call, std::function<void()> shadow_render_call, std::function<void(Shader &)> framebuffer_shader_config) {
+    void Window::Run(std::function<void(Shader &)> update_call, std::function<void()> gui_call, std::function<void()> shadow_render_call, std::function<void(Shader &)> framebuffer_shader_config, std::function<void(Framebuffer::ColorAttachement &)> mouse_picking) {
         static int before_width, before_height;
         Shader framebuffer_shader("./shaders/framebuffer.glsl");
         ImGuiIO &io = ImGui::GetIO();
@@ -94,7 +94,10 @@ namespace VaultRenderer {
         BloomRenderer bloomRenderer;
         bloomRenderer.Init(width, height);
 
+        // Bloom Texture
         framebuffer->AddColorAttachement(GL_COLOR_ATTACHMENT1, GL_RGB16F, GL_RGB, GL_FLOAT);
+        // Mouse Picking Texture
+        framebuffer->AddColorAttachement(GL_COLOR_ATTACHMENT2, GL_R32I, GL_RED_INTEGER, GL_UNSIGNED_BYTE);
 
         double previous_time = glfwGetTime();
 
@@ -143,6 +146,10 @@ namespace VaultRenderer {
             m_PostProcessingFramebuffer->Bind();
             framebuffer->DrawEverythingIntoAQuad(framebuffer_shader, framebuffer->texture);
             m_PostProcessingFramebuffer->Unbind();
+
+            framebuffer->Bind();
+            mouse_picking(framebuffer->color_attachements[1]);
+            framebuffer->Unbind();
 
             /*
             Explaining this confusing ass code,

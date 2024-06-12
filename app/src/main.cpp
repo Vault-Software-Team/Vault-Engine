@@ -3,6 +3,7 @@
 #include "Engine/GameObject.hpp"
 #include "Engine/Model.hpp"
 #include "HyperScript/HyperScript.hpp"
+#include "Renderer/Framebuffer.hpp"
 #include "imgui/TextEditor.hpp"
 #include <filesystem>
 #include <iostream>
@@ -303,6 +304,21 @@ int main() {
         //
     };
 
+    auto Function_MousePicking = [&](Framebuffer::ColorAttachement &ca) {
+        glBindTexture(GL_TEXTURE_2D, ca.ID);
+        glReadBuffer(GL_COLOR_ATTACHMENT2);
+        uint32_t entityId;
+        glReadPixels(Window::window->mouse_pos.x, Window::window->mouse_pos.y, 1, 1, GL_RED_INTEGER, GL_UNSIGNED_INT, &entityId);
+        std::cout << "Entity ID: " << entityId << "\n";
+
+        if (!ImGui::IsMouseDoubleClicked(0)) return;
+        auto &gameObject = Scene::Main->FindGameObjectByEntity((entt::entity)entityId);
+        if (!gameObject) return;
+
+        GUI::selected_gameObject = gameObject.get();
+        //
+    };
+
     /*
     FUNCTION EXECUTION ORDER:
     1. Shadow Map Rendering Function, the last argument in window.Run
@@ -469,7 +485,7 @@ int main() {
         }
 
 
-    }, Function_GUI, Function_ShadowMapRendering, Function_FramebufferShaderUniforms);
+    }, Function_GUI, Function_ShadowMapRendering, Function_FramebufferShaderUniforms, Function_MousePicking);
     // clang-format on
 
     return 0;

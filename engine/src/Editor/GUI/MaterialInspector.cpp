@@ -87,6 +87,7 @@ namespace Editor {
             ImGui::NewLine();
 
             ImGui::ColorEdit4("Color", &MaterialInspector_material.color.x);
+            ImGui::ColorEdit4("Emission Color", &MaterialInspector_material.emissionColor.x);
 
             if (ImGui::Button(ICON_FA_FLOPPY_DISK " Save")) {
                 Engine::Serializer::SerializeMaterial(MaterialInspector_material_path, MaterialInspector_material);

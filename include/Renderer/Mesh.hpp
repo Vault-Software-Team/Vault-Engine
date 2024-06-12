@@ -10,7 +10,8 @@
 namespace VaultRenderer {
     class DLL_API Material {
     public:
-        glm::vec4 color;
+        glm::vec4 color = glm::vec4(1);
+        glm::vec3 emissionColor = glm::vec3(0);
         std::unique_ptr<VaultRenderer::Texture> diffuse{nullptr};
         std::unique_ptr<VaultRenderer::Texture> specular{nullptr};
         std::unique_ptr<VaultRenderer::Texture> normal{nullptr};
