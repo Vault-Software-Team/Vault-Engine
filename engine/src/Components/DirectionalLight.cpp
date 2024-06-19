@@ -28,7 +28,7 @@ namespace Engine::Components {
         DrawComponent<DirectionalLight>(Scene::Main->EntityRegistry, 40, [&] {
             ImGui::DragFloat("Intensity", &intensity, 0.01f, 0.0);
             ImGui::Checkbox("Shadows", &enable_shadow_mapping);
-            ImGui::ColorEdit3("Color", &color.x);
+            ImGui::ColorEdit3("Color", &color.x, ImGuiColorEditFlags_HDR);
         });
     }
 } // namespace Engine::Components

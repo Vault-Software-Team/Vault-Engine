@@ -10,6 +10,7 @@ namespace VaultRenderer {
         TEXTURE_SPECULAR,
         TEXTURE_NORMAL,
         TEXTURE_HEIGHT,
+        TEXTURE_HDRI
     };
     class DLL_API Texture {
     public:

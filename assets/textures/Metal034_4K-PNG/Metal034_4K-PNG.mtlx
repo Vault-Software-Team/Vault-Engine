@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<materialx version="1.38" fileprefix="./">
+  <standard_surface xpos="6.159420" ypos="-1.879310" name="Metal034_4K_PNG_StandardSurface" type="surfaceshader">
+    <input name="specular" value="0" type="float" />
+    <input name="coat" value="1" type="float" />
+    <input name="coat_color" value="1, 1, 1" type="color3" />
+    <input name="base" value="1" type="float" />
+    <input nodename="Metal034_4K_PNG_Color" name="base_color" type="color3" />
+    <input nodename="Metal034_4K_PNG_Metalness" name="metalness" value="1" type="float" />
+    <input nodename="normalmap" name="normal" type="vector3" />
+    <input nodename="normalmap" name="coat_normal" type="vector3" />
+    <input nodename="Metal034_4K_PNG_Roughness" name="specular_roughness" type="float" />
+    <input nodename="Metal034_4K_PNG_Roughness" name="coat_roughness" type="float" />
+  </standard_surface>
+  <surfacematerial xpos="8.695652" ypos="0.000000" name="Metal034_4K_PNG" type="material">
+    <input nodename="Metal034_4K_PNG_StandardSurface" name="surfaceshader" type="surfaceshader" />
+    <input nodename="displacement" name="displacementshader" type="displacementshader" />
+  </surfacematerial>
+  <tiledimage xpos="3.623188" ypos="-3.103448" name="Metal034_4K_PNG_Color" type="color3">
+    <input colorspace="srgb_texture" name="file" value="Metal034_4K-PNG_Color.png" type="filename" />
+    <input name="uvtiling" value="1.0, 1.0" type="vector2" />
+  </tiledimage>
+  <tiledimage xpos="3.623188" ypos="5.163793" name="Metal034_4K_PNG_Displacement" type="float">
+    <input name="file" value="Metal034_4K-PNG_Displacement.png" type="filename" />
+    <input name="uvtiling" value="1.0, 1.0" type="vector2" />
+  </tiledimage>
+  <displacement xpos="6.159420" ypos="1.879310" name="displacement" type="displacementshader">
+    <input nodename="Metal034_4K_PNG_Displacement" name="displacement" type="float" />
+    <input name="scale" value="1.0" type="float" />
+  </displacement>
+  <tiledimage xpos="3.623188" ypos="-1.758621" name="Metal034_4K_PNG_Metalness" type="float">
+    <input name="file" value="Metal034_4K-PNG_Metalness.png" type="filename" />
+    <input name="uvtiling" value="1.0, 1.0" type="vector2" />
+  </tiledimage>
+  <tiledimage xpos="1.086957" ypos="0.879310" name="Metal034_4K_PNG_NormalGL" type="vector3">
+    <input name="file" value="Metal034_4K-PNG_NormalGL.png" type="filename" />
+    <input name="uvtiling" value="1.0, 1.0" type="vector2" />
+  </tiledimage>
+  <normalmap xpos="3.623188" ypos="3.586207" name="normalmap" type="vector3">
+    <input nodename="Metal034_4K_PNG_NormalGL" name="in" type="vector3" />
+    <input name="scale" value="1.0" type="float" />
+  </normalmap>
+  <tiledimage xpos="3.623188" ypos="-0.413793" name="Metal034_4K_PNG_Roughness" type="float">
+    <input name="file" value="Metal034_4K-PNG_Roughness.png" type="filename" />
+    <input name="uvtiling" value="1.0, 1.0" type="vector2" />
+  </tiledimage>
+</materialx>

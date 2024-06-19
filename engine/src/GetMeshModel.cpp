@@ -17,7 +17,7 @@ namespace Engine {
 
     void ModelMesh::loadModel(const std::string &path) {
         Assimp::Importer import;
-        const aiScene *scene = import.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_FixInfacingNormals | aiProcess_LimitBoneWeights);
+        const aiScene *scene = import.ReadFile(path, aiProcess_Triangulate | aiProcess_FixInfacingNormals | aiProcess_LimitBoneWeights);
 
         if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
             std::cout << "Assimp Importer Error: " << import.GetErrorString() << "\n";
@@ -113,7 +113,7 @@ namespace Engine {
 
         ExtractBoneWeightForVertices(vertices, mesh, scene);
 
-        meshes.push_back(VaultRenderer::Mesh(vertices, indices));
+        meshes.push_back(VaultRenderer::Mesh(vertices, indices, mesh->mName.C_Str()));
 
         aiString mot_name;
         aiReturn ret;

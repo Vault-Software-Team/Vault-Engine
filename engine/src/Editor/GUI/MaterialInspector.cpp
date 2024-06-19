@@ -28,6 +28,9 @@ namespace Editor {
             uint32_t specularID = MaterialInspector_material.specular == nullptr ? 0 : MaterialInspector_material.specular->texture_data->ID;
             uint32_t normalID = MaterialInspector_material.normal == nullptr ? 0 : MaterialInspector_material.normal->texture_data->ID;
             uint32_t heightID = MaterialInspector_material.height == nullptr ? 0 : MaterialInspector_material.height->texture_data->ID;
+            uint32_t metallic_mapID = MaterialInspector_material.metallic_map == nullptr ? 0 : MaterialInspector_material.metallic_map->texture_data->ID;
+            uint32_t roughness_mapID = MaterialInspector_material.roughness_map == nullptr ? 0 : MaterialInspector_material.roughness_map->texture_data->ID;
+            uint32_t ao_mapID = MaterialInspector_material.ao_map == nullptr ? 0 : MaterialInspector_material.ao_map->texture_data->ID;
 
             ImGui::Text("Diffuse Texture");
             ImGui::ImageButton((void *)diffuseID, ImVec2(100, 100), ImVec2(0, 1), ImVec2(1, 0));
@@ -86,8 +89,53 @@ namespace Editor {
             }
             ImGui::NewLine();
 
+            ImGui::Text("Metallic Texture");
+            ImGui::ImageButton((void *)metallic_mapID, ImVec2(100, 100), ImVec2(0, 1), ImVec2(1, 0));
+            if (ImGui::IsItemClicked(1)) {
+                MaterialInspector_material.metallic_map.reset();
+                MaterialInspector_material.metallic_map = nullptr;
+            }
+            if (ImGui::BeginDragDropTarget()) {
+                if (const ImGuiPayload *payload = ImGui::AcceptDragDropPayload("image_file")) {
+                    std::string path = (char *)payload->Data;
+                    MaterialInspector_material.SetMetallic(path);
+                }
+            }
+            ImGui::NewLine();
+
+            ImGui::Text("Roughness Texture");
+            ImGui::ImageButton((void *)roughness_mapID, ImVec2(100, 100), ImVec2(0, 1), ImVec2(1, 0));
+            if (ImGui::IsItemClicked(1)) {
+                MaterialInspector_material.roughness_map.reset();
+                MaterialInspector_material.roughness_map = nullptr;
+            }
+            if (ImGui::BeginDragDropTarget()) {
+                if (const ImGuiPayload *payload = ImGui::AcceptDragDropPayload("image_file")) {
+                    std::string path = (char *)payload->Data;
+                    MaterialInspector_material.SetRoughness(path);
+                }
+            }
+            ImGui::NewLine();
+
+            ImGui::Text("Ambient Occlusion Texture");
+            ImGui::ImageButton((void *)ao_mapID, ImVec2(100, 100), ImVec2(0, 1), ImVec2(1, 0));
+            if (ImGui::IsItemClicked(1)) {
+                MaterialInspector_material.ao_map.reset();
+                MaterialInspector_material.ao_map = nullptr;
+            }
+            if (ImGui::BeginDragDropTarget()) {
+                if (const ImGuiPayload *payload = ImGui::AcceptDragDropPayload("image_file")) {
+                    std::string path = (char *)payload->Data;
+                    MaterialInspector_material.SetAO(path);
+                }
+            }
+            ImGui::NewLine();
+
             ImGui::ColorEdit4("Color", &MaterialInspector_material.color.x);
             ImGui::ColorEdit4("Emission Color", &MaterialInspector_material.emissionColor.x);
+            ImGui::DragFloat("Metallic", &MaterialInspector_material.metallic);
+            ImGui::DragFloat("Roughness", &MaterialInspector_material.roughness);
+            ImGui::DragFloat("AO", &MaterialInspector_material.ao);
 
             if (ImGui::Button(ICON_FA_FLOPPY_DISK " Save")) {
                 Engine::Serializer::SerializeMaterial(MaterialInspector_material_path, MaterialInspector_material);

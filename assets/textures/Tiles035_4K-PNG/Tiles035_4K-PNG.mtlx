@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<materialx version="1.38" fileprefix="./">
+  <standard_surface xpos="6.159420" name="Tiles035_4K_PNG_StandardSurface" ypos="-1.879310" type="surfaceshader">
+    <input name="specular" value="0" type="float" />
+    <input name="coat" value="1" type="float" />
+    <input name="coat_color" value="1, 1, 1" type="color3" />
+    <input name="base" value="1" type="float" />
+    <input name="base_color" nodename="Tiles035_4K_PNG_Color" type="color3" />
+    <input name="normal" nodename="normalmap" type="vector3" />
+    <input name="coat_normal" nodename="normalmap" type="vector3" />
+    <input name="specular_roughness" nodename="Tiles035_4K_PNG_Roughness" type="float" />
+    <input name="coat_roughness" nodename="Tiles035_4K_PNG_Roughness" type="float" />
+  </standard_surface>
+  <surfacematerial xpos="8.695652" name="Tiles035_4K_PNG" ypos="0.000000" type="material">
+    <input name="surfaceshader" nodename="Tiles035_4K_PNG_StandardSurface" type="surfaceshader" />
+    <input name="displacementshader" nodename="displacement" type="displacementshader" />
+  </surfacematerial>
+  <tiledimage xpos="3.623188" name="Tiles035_4K_PNG_Color" ypos="-3.103448" type="color3">
+    <input name="file" colorspace="srgb_texture" value="Tiles035_4K-PNG_Color.png" type="filename" />
+    <input name="uvtiling" value="1.0, 1.0" type="vector2" />
+  </tiledimage>
+  <tiledimage xpos="3.623188" name="Tiles035_4K_PNG_Displacement" ypos="5.163793" type="float">
+    <input name="file" value="Tiles035_4K-PNG_Displacement.png" type="filename" />
+    <input name="uvtiling" value="1.0, 1.0" type="vector2" />
+  </tiledimage>
+  <displacement xpos="6.159420" name="displacement" ypos="1.879310" type="displacementshader">
+    <input name="displacement" nodename="Tiles035_4K_PNG_Displacement" type="float" />
+    <input name="scale" value="1.0" type="float" />
+  </displacement>
+  <tiledimage xpos="1.086957" name="Tiles035_4K_PNG_NormalGL" ypos="0.879310" type="vector3">
+    <input name="file" value="Tiles035_4K-PNG_NormalGL.png" type="filename" />
+    <input name="uvtiling" value="1.0, 1.0" type="vector2" />
+  </tiledimage>
+  <normalmap xpos="3.623188" name="normalmap" ypos="3.586207" type="vector3">
+    <input name="in" nodename="Tiles035_4K_PNG_NormalGL" type="vector3" />
+    <input name="scale" value="1.0" type="float" />
+  </normalmap>
+  <tiledimage xpos="3.623188" name="Tiles035_4K_PNG_Roughness" ypos="-0.413793" type="float">
+    <input name="file" value="Tiles035_4K-PNG_Roughness.png" type="filename" />
+    <input name="uvtiling" value="1.0, 1.0" type="vector2" />
+  </tiledimage>
+</materialx>

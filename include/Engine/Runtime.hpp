@@ -1,4 +1,5 @@
 #pragma once
+#include "Engine/CascadedShadowMap.hpp"
 #include <dllapi.hpp>
 #include <Engine/Scene.hpp>
 #include <Engine/GameObject.hpp>
@@ -7,6 +8,7 @@
 #include <Renderer/ShadowMap.hpp>
 #include <functional>
 #include <memory>
+#include <Engine/HDRSkybox.hpp>
 
 namespace Engine {
     class DLL_API Runtime {
@@ -19,6 +21,8 @@ namespace Engine {
         static DLL_API Runtime *instance;
         static DLL_API VaultRenderer::Shader *default_shader;
         VaultRenderer::ShadowMap *shadowMap;
+        VaultRenderer::HDRSkybox *HDR_Skybox;
+        CascadedShadowMap *c_ShadowMap;
 
         std::vector<std::function<void()>> main_thread_calls;
 
@@ -44,5 +48,21 @@ namespace Engine {
         void Scheduling_SceneChange();
 
         void MouseEvents(entt::entity hoveredEntity);
+
+        std::vector<glm::vec4> GetFrustumCornersWorldSpace(const glm::mat4 &proj, const glm::mat4 &view) {
+            const auto inv = glm::inverse(proj * view);
+
+            std::vector<glm::vec4> frustumCorners;
+            for (uint32_t x = 0; x < 2; ++x) {
+                for (uint32_t y = 0; y < 2; ++y) {
+                    for (uint32_t z = 0; z < 2; ++z) {
+                        const glm::vec4 pt = inv * glm::vec4(2.0f * x - 1.0f, 2.0f * y - 1.0f, 2.0f * z - 1.0f, 1.0f);
+                        frustumCorners.push_back(pt / pt.w);
+                    }
+                }
+            }
+
+            return frustumCorners;
+        }
     };
 } // namespace Engine

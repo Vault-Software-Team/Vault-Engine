@@ -98,4 +98,26 @@ namespace VaultRenderer {
         // Switch back to the normal depth function
         glDepthFunc(GL_LESS);
     }
+
+    void Skybox::RenderOther(uint32_t texture, Shader &shader, glm::vec3 camPos, glm::vec3 camRot, glm::vec3 camUp) {
+        glDepthFunc(GL_LEQUAL);
+
+        shader.Bind();
+        static glm::mat4 view = glm::mat4(1.0f);
+        static glm::mat4 projection = glm::mat4(1.0f);
+
+        view = glm::mat4(glm::mat3(glm::lookAt(camPos, camPos + camRot, camUp)));
+        projection = glm::perspective(glm::radians(45.0f), (float)Window::window->targetWidth / Window::window->targetHeight, 0.1f, 100.0f);
+        shader.SetUniformMat4("view", view);
+        shader.SetUniformMat4("projection", projection);
+
+        glBindVertexArray(skyboxVAO);
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_CUBE_MAP, texture);
+        glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+        glBindVertexArray(0);
+
+        // Switch back to the normal depth function
+        glDepthFunc(GL_LESS);
+    }
 } // namespace VaultRenderer

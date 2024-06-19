@@ -20,6 +20,12 @@ namespace Engine {
             glm::mat4 &UpdateModel();
             void Update() override;
             void OnGUI() override;
+
+            void LookAt(glm::vec3 target);
+
+            void Translate(glm::vec3 translation);
+            void Rotate(glm::vec3 rotation);
+            void Scale(glm::vec3 scale);
         };
     } // namespace Components
 } // namespace Engine

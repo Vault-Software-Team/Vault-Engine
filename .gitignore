@@ -21,3 +21,6 @@ windows/assets2
 windows/fonts
 windows/shader
 cmake-build-debug
+*.hdr
+./assets/skybox/*.hdr
+*.zip

@@ -1,7 +1,7 @@
 main_scene: ./assets/scenes/TestModel.vault
 title: hello world
-shadow_near: 1
-shadow_far: 181
-shadow_ortho_size: 53
+shadow_near: 0.100000001
+shadow_far: 75
+shadow_ortho_size: 34
 HDR.exposure: 2
 Renderer.Bloom: false

@@ -192,7 +192,7 @@ namespace Engine {
 
         cam->GetComponent<Components::Camera>(StaticGameObjects_EntityRegistry).fov = 45;
         cam->GetComponent<Components::Camera>(StaticGameObjects_EntityRegistry).near = 0.01f;
-        cam->GetComponent<Components::Camera>(StaticGameObjects_EntityRegistry).far = 100.0f;
+        cam->GetComponent<Components::Camera>(StaticGameObjects_EntityRegistry).far = 500.0f;
 
         cam->GetComponent<Components::Camera>(StaticGameObjects_EntityRegistry).width = 800;
         cam->GetComponent<Components::Camera>(StaticGameObjects_EntityRegistry).height = 600;

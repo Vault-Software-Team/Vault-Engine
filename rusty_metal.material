@@ -1,0 +1,12 @@
+color: [1, 1, 1, 1]
+emissionColor: [0, 0, 0]
+diffuse: ./assets/textures/Metal020_2K-PNG/Metal020_2K-PNG_Color.png
+specular: nullptr
+normal: ./assets/textures/Metal020_2K-PNG/Metal020_2K-PNG_NormalGL.png
+height: nullptr
+roughness_map: ./assets/textures/Metal020_2K-PNG/Metal020_2K-PNG_Roughness.png
+metallic_map: ./assets/textures/Metal020_2K-PNG/Metal020_2K-PNG_Metalness.png
+ao_map: nullptr
+ao: 1
+metallic: 1
+roughness: 0.100000001

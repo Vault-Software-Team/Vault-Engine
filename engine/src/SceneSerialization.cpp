@@ -10,6 +10,8 @@
 #include <iostream>
 #include <Engine/Model.hpp>
 #include <sstream>
+#include <string>
+#include <unordered_map>
 #include <uuid.hpp>
 #include <experimental/filesystem>
 
@@ -225,6 +227,13 @@ namespace Engine {
             emitter << yaml::Key << "play_animation" << yaml::Value << component.play_animation;
             emitter << yaml::Key << "animation_path" << yaml::Value << component.animation_path;
 
+            emitter << yaml::Key << "mesh_materials";
+            emitter << yaml::BeginMap;
+            for (auto &mesh : component.model->meshes) {
+                emitter << yaml::Key << mesh.name << yaml::Value << mesh.material.filePath;
+            }
+            emitter << yaml::EndMap;
+
             emitter << yaml::EndMap;
         }
 
@@ -423,8 +432,26 @@ namespace Engine {
 
             if (data["ModelRenderer"]["animation_path"]) {
                 const auto path = data["ModelRenderer"]["animation_path"].as<std::string>();
-                component.animation_path = path;
-                component.SetAnimation(component.animation_path);
+                if (path != "") {
+                    component.animation_path = path;
+                    component.SetAnimation(component.animation_path);
+                }
+            }
+
+            if (data["ModelRenderer"]["mesh_materials"] && component.model) {
+                std::unordered_map<std::string, std::string> mat_map;
+                for (auto mesh_mat : data["ModelRenderer"]["mesh_materials"]) {
+                    const std::string &mesh_name = mesh_mat.first.as<std::string>();
+                    const std::string &material_path = mesh_mat.second.as<std::string>();
+                    mat_map[mesh_name] = material_path;
+                }
+
+                for (auto &mesh : component.model->meshes) {
+                    const auto &mesh_data = mat_map.find(mesh.name);
+                    if (mesh_data == mat_map.end()) continue;
+                    mesh.material.filePath = mesh_data->second;
+                    DeserializeMaterial(mesh_data->second, mesh.material);
+                }
             }
         }
 
@@ -603,11 +630,19 @@ namespace Engine {
         emitter << yaml::Key << "specular" << yaml::Value << (material.specular ? material.specular->texture_data->texture_filepath : "nullptr");
         emitter << yaml::Key << "normal" << yaml::Value << (material.normal ? material.normal->texture_data->texture_filepath : "nullptr");
         emitter << yaml::Key << "height" << yaml::Value << (material.height ? material.height->texture_data->texture_filepath : "nullptr");
+        emitter << yaml::Key << "roughness_map" << yaml::Value << (material.roughness_map ? material.roughness_map->texture_data->texture_filepath : "nullptr");
+        emitter << yaml::Key << "metallic_map" << yaml::Value << (material.metallic_map ? material.metallic_map->texture_data->texture_filepath : "nullptr");
+        emitter << yaml::Key << "ao_map" << yaml::Value << (material.ao_map ? material.ao_map->texture_data->texture_filepath : "nullptr");
+        // PBR
+        emitter << yaml::Key << "ao" << yaml::Value << material.ao;
+        emitter << yaml::Key << "metallic" << yaml::Value << material.metallic;
+        emitter << yaml::Key << "roughness" << yaml::Value << material.roughness;
 
         std::ofstream file(path);
         file << emitter.c_str();
     }
     void Serializer::DeserializeMaterial(const std::string &path, VaultRenderer::Material &material) {
+        if (!fs::exists(path)) return;
         std::ifstream stream(path);
         std::stringstream ss;
         ss << stream.rdbuf();
@@ -638,6 +673,33 @@ namespace Engine {
             material.SetHeight(data["height"].as<std::string>());
         } else {
             material.height.reset();
+        }
+        if (data["roughness_map"] && data["roughness_map"].as<std::string>() != "nullptr") {
+            material.SetRoughness(data["roughness_map"].as<std::string>());
+        } else {
+            material.height.reset();
+        }
+        if (data["metallic_map"] && data["metallic_map"].as<std::string>() != "nullptr") {
+            material.SetMetallic(data["metallic_map"].as<std::string>());
+        } else {
+            material.height.reset();
+        }
+        if (data["ao_map"] && data["ao_map"].as<std::string>() != "nullptr") {
+            material.SetAO(data["ao_map"].as<std::string>());
+        } else {
+            material.height.reset();
+        }
+
+        if (data["ao"]) {
+            material.ao = data["ao"].as<float>();
+        }
+
+        if (data["metallic"]) {
+            material.metallic = data["metallic"].as<float>();
+        }
+
+        if (data["roughness"]) {
+            material.roughness = data["roughness"].as<float>();
         }
     }
 

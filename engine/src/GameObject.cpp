@@ -1,4 +1,7 @@
+#include "Editor/EditorLayer.hpp"
 #include "Engine/Components/MeshRenderer.hpp"
+#include "Engine/Components/Transform.hpp"
+#include "Engine/Runtime.hpp"
 #include "Renderer/Shader.hpp"
 #include <Engine/GameObject.hpp>
 #include <Engine/Scene.hpp>
@@ -46,7 +49,6 @@ namespace Engine {
 
     void GameObject::UpdateRendering(VaultRenderer::Shader &shader, bool update_children) {
         using namespace Components;
-
         if (HasComponent<MeshRenderer>()) {
             auto &meshRenderer = GetComponent<MeshRenderer>();
             if (meshRenderer.mesh) {
@@ -59,6 +61,7 @@ namespace Engine {
                 GetComponent<Transform>().Update();
                 shader.Bind();
                 shader.SetUniformMat4("transformModel", GetComponent<Transform>().model);
+                Runtime::instance->c_ShadowMap->BindToShader(shader);
 
                 // meshRenderer.AnimateAndSetUniforms(shader);
                 if (meshRenderer.mesh_type == MESH_PLANE) shader.SetUniform1i("mesh_isFlat", true);
@@ -75,8 +78,8 @@ namespace Engine {
                 GetComponent<Transform>().Update();
                 shader.Bind();
                 shader.SetUniformMat4("transformModel", GetComponent<Transform>().model);
+                Runtime::instance->c_ShadowMap->BindToShader(shader);
                 shader.SetUniform1ui("u_EntityID", (uint32_t)entity);
-                std::cout << "uesi: " << (uint32_t)entity << "\n";
 
                 modelRenderer.AnimateAndSetUniforms(shader);
                 modelRenderer.Draw(shader);
@@ -91,6 +94,7 @@ namespace Engine {
                 transform.Update();
                 shader.Bind();
                 shader.SetUniformMat4("transformModel", transform.model);
+                Runtime::instance->c_ShadowMap->BindToShader(shader);
                 shader.SetUniform1ui("u_EntityID", (uint32_t)entity);
 
                 shader.SetUniform1i("mesh_isFlat", true);
@@ -107,6 +111,7 @@ namespace Engine {
                 transform.Update();
                 shader.Bind();
                 shader.SetUniformMat4("transformModel", transform.model);
+                Runtime::instance->c_ShadowMap->BindToShader(shader);
                 shader.SetUniform1ui("u_EntityID", (uint32_t)entity);
                 spritesheetRenderer.Draw(shader);
             }

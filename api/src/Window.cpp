@@ -141,12 +141,11 @@ namespace VaultRenderer {
             framebuffer_shader_config(framebuffer_shader);
             framebuffer_shader.SetUniform1f("gamma", gamma);
 
+            framebuffer->UnbindAndDrawOnScreen(framebuffer_shader);
             glActiveTexture(GL_TEXTURE1);
             glBindTexture(GL_TEXTURE_2D, bloomRenderer.BloomTexture());
             framebuffer_shader.SetUniform1i("bloom_texture", 1);
             framebuffer_shader.SetUniform1i("useBloom", Renderer.Bloom);
-
-            framebuffer->UnbindAndDrawOnScreen(framebuffer_shader);
 
             m_PostProcessingFramebuffer->Bind();
             framebuffer->DrawEverythingIntoAQuad(framebuffer_shader, framebuffer->texture);

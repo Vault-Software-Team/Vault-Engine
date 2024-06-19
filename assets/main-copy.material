@@ -1,0 +1,12 @@
+color: [1, 1, 1, 1]
+emissionColor: [0, 0, 0]
+diffuse: ./assets/models/Cerberus_by_Andrew_Maximov/Textures/Cerberus_A.tga
+specular: nullptr
+normal: ./assets/models/Cerberus_by_Andrew_Maximov/Textures/Cerberus_N.tga
+height: nullptr
+roughness_map: ./assets/models/Cerberus_by_Andrew_Maximov/Textures/Cerberus_R.tga
+metallic_map: ./assets/models/Cerberus_by_Andrew_Maximov/Textures/Cerberus_M.tga
+ao_map: ./assets/models/Cerberus_by_Andrew_Maximov/Textures/Raw/Cerberus_AO.tga
+ao: 1
+metallic: 1
+roughness: 0.100000001

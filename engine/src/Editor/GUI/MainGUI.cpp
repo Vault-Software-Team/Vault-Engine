@@ -277,7 +277,7 @@ namespace Editor {
     }
 
     bool GUI::IsImage(const std::string &file_path) {
-        if (file_path.ends_with(".png") || file_path.ends_with(".jpg") || file_path.ends_with(".jpeg") || file_path.ends_with(".tiff") || file_path.ends_with(".bmp")) {
+        if (file_path.ends_with(".png") || file_path.ends_with(".tga") || file_path.ends_with(".jpg") || file_path.ends_with(".jpeg") || file_path.ends_with(".tiff") || file_path.ends_with(".bmp")) {
             return true;
         }
 

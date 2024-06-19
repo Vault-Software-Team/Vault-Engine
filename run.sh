@@ -6,4 +6,5 @@ cp ../imgui.ini ./imgui.ini
 # mangohud --dlsym ./app/app
 cd ../
 gdb -ex run ./build/app/app -x ./.gdbinit
+# renderdoccmd capture ./build/app/app
 # valgrind ./build/app/app --leak-check=full

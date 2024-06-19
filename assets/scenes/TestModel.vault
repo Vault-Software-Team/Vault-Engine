@@ -1,58 +1,118 @@
 Scene: Untitled
 GameObjects:
   - GameObject:
-      ID: 72a2a838-159a-46c2-8245-a8d4e29eefcf
-      name: Floor
+      ID: 37acef2d-495a-49a9-9c2c-0faac48bd0e2
+      name: Red Light
       tag: Default
       parent: NO_PARENT
       Transform:
-        position: [0, 0, 0]
-        rotation: [-3.14159226, 0, 0]
-        scale: [48.2452965, 48.2452965, 48.2452965]
+        position: [0.800000012, 1.16551864, -1.29999995]
+        rotation: [0, 0, 0]
+        scale: [1, 1, 1]
+      DirectionalLight:
+        intensity: 3.94000006
+        color: [1, 1, 1]
+        enable_shadow_mapping: false
+  - GameObject:
+      ID: ba63b1a3-cc48-4ab6-abad-652f9fba0c45
+      name: GameObject
+      tag: Default
+      parent: NO_PARENT
+      Transform:
+        position: [0, -0.295864105, 0]
+        rotation: [0, 1.57079637, 0]
+        scale: [24.79146, 24.7927647, 24.79146]
       MeshRenderer:
         mesh_type: 0
         mesh_index: -1
         mesh_path: ""
         material_path: ./assets/main.material
   - GameObject:
-      ID: 812a99d9-6d0d-4c49-888b-06342c335d4f
-      name: Text
+      ID: 12bd358e-5087-4cc0-b413-a5c1a5d8b9a4
+      name: Metallic Sphere
       tag: Default
       parent: NO_PARENT
       Transform:
-        position: [-7.57233763, 2.31085062, -1.54256392]
+        position: [-3.67610979, 1.29268301, 0.450974226]
         rotation: [0, 0, 0]
-        scale: [3.93999982, 3.93999982, 3.93999982]
-      Text3D:
-        text: Hello, World.
-        font_path: ./assets/fonts/CascadiaCodeItalic.ttf
-        color: [1, 1, 1]
-        emissionColor: [1, 0.378904462, 0.165957451]
-        scale: 0.0199999996
-        y_offset: 1
+        scale: [1.38999999, 1.38999999, 1.38999999]
+      ModelRenderer:
+        model_path: ./assets/models/sphere.obj
+        time_scale: 1
+        play_animation: false
+        animation_path: ""
+        mesh_materials:
+          Sphere: ./assets/rusty_metal.material
   - GameObject:
-      ID: acb72126-52d6-4d7c-839c-4a31ea1d0aee
-      name: TF2 Logo
+      ID: 85eca0d7-ec3f-484c-bb8b-21d57782e6bc
+      name: GameObject
       tag: Default
       parent: NO_PARENT
       Transform:
-        position: [-4.12994623, 5.72162104, -4.97401714]
+        position: [0.87049973, 0.616511822, 1.99214566]
         rotation: [0, 0, 0]
-        scale: [14.9026003, 14.9026003, 14.9026003]
-      SpriteRenderer:
-        color: [1, 1, 1, 1]
-        emissionColor: [0, 0, 0]
-        texture: ./assets/1024px-Team_Fortress_2_style_logo.svg.png
+        scale: [1.94000006, 1.94000006, 1.94000006]
+      ModelRenderer:
+        model_path: ./assets/models/sphere.obj
+        time_scale: 1
+        play_animation: false
+        animation_path: ""
+        mesh_materials:
+          Sphere: ./assets/hi.material
   - GameObject:
-      ID: c1519bc1-ac4a-4409-a15a-baa9054ae1d3
-      name: Sun
+      ID: 3ef5f444-e5ee-4253-bd24-f02435cb7ef7
+      name: PBR Model
       tag: Default
       parent: NO_PARENT
       Transform:
-        position: [13, 35.0499992, 36.0999985]
+        position: [-1.41826236, 1.29377723, -0.735670686]
+        rotation: [-1.57079637, 0, 0]
+        scale: [0.0483359993, 0.0483349152, 0.0483349152]
+      ModelRenderer:
+        model_path: ./assets/models/Cerberus_by_Andrew_Maximov/Cerberus_LP.fbx
+        time_scale: 1
+        play_animation: false
+        animation_path: ""
+        mesh_materials:
+          Cerberus00_Fixed: ./assets/main-copy.material
+  - GameObject:
+      ID: 7a9cba74-844e-4c1e-bcbb-fc5dfa066401
+      name: GameObject
+      tag: Default
+      parent: NO_PARENT
+      Transform:
+        position: [0, 0, 0]
         rotation: [0, 0, 0]
         scale: [1, 1, 1]
-      DirectionalLight:
-        intensity: 1
-        color: [1, 1, 1]
-        enable_shadow_mapping: true
+  - GameObject:
+      ID: 4dbea4c0-ba1c-47bb-baed-b8ff662618e4
+      name: Dancing Vampire
+      tag: Default
+      parent: NO_PARENT
+      Transform:
+        position: [4.04654837, -7.04001141e-05, 1.58790433]
+        rotation: [3.14159226, 0.00178903062, 3.14159226]
+        scale: [2.89414549, 2.89420009, 2.89414549]
+      ModelRenderer:
+        model_path: ./assets/anim.dae
+        time_scale: 1
+        play_animation: true
+        animation_path: ./assets/anim.dae
+        mesh_materials:
+          Vampire-lib: ./assets/hi.material
+  - GameObject:
+      ID: 702e406c-a217-4ca2-b17e-e01ffdf15840
+      name: Salute
+      tag: Default
+      parent: NO_PARENT
+      Transform:
+        position: [-2.4561584, 3.26850568e-05, 1.10743725]
+        rotation: [-3.14159203, -1.1920929e-07, -3.14159226]
+        scale: [0.0320000052, 0.0320000052, 0.0320000052]
+      ModelRenderer:
+        model_path: ./assets/Character.fbx
+        time_scale: 1
+        play_animation: true
+        animation_path: ./assets/SaluteAnimation.fbx
+        mesh_materials:
+          Mesh: ./assets/rusty_metal.material

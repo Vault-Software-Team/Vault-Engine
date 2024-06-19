@@ -65,4 +65,16 @@ namespace Engine::Components {
             ImGui::NewLine();
         });
     }
+
+    void Transform::LookAt(glm::vec3 target) {
+        glm::vec3 direction = glm::normalize(target - position);
+        rotation = glm::eulerAngles(
+            glm::quatLookAt(direction, glm::vec3(0, 1, 0)));
+    }
+
+    void Transform::Translate(glm::vec3 translation) { position += translation; }
+
+    void Transform::Rotate(glm::vec3 rotation) { this->rotation += rotation; }
+
+    void Transform::Scale(glm::vec3 scale) { this->scale += scale; }
 } // namespace Engine::Components

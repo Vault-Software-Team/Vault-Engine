@@ -73,7 +73,7 @@ void DirectoryIterator(const std::string &str, const char *filter_str) {
             if (name.ends_with(".ttf") || name.ends_with(".otf")) {
                 icon = ICON_FA_FONT;
             }
-            if (name.ends_with(".png") || name.ends_with(".tiff") || name.ends_with(".jpg") || name.ends_with(".jpeg")) {
+            if (name.ends_with(".png") || name.ends_with(".tga") || name.ends_with(".tiff") || name.ends_with(".jpg") || name.ends_with(".jpeg")) {
                 icon = ICON_FA_IMAGE;
             }
             if (name.ends_with(".obj") || name.ends_with(".blender") || name.ends_with(".dae") || name.ends_with(".gltf") || name.ends_with(".fbx")) {
@@ -124,7 +124,7 @@ void DirectoryIterator(const std::string &str, const char *filter_str) {
                     ImGui::SetDragDropPayload("material", dir.path().string().c_str(), length + 1);
                 } else if (name.ends_with(".ttf") || name.ends_with(".otf")) {
                     ImGui::SetDragDropPayload("font_file", dir.path().string().c_str(), length + 1);
-                } else if (name.ends_with(".png") || name.ends_with(".tiff") || name.ends_with(".jpg") || name.ends_with(".jpeg")) {
+                } else if (name.ends_with(".png") || name.ends_with(".tga") || name.ends_with(".tiff") || name.ends_with(".jpg") || name.ends_with(".jpeg")) {
                     ImGui::SetDragDropPayload("image_file", dir.path().string().c_str(), length + 1);
                 } else if (name.ends_with(".vault")) {
                     ImGui::SetDragDropPayload("scene_file", dir.path().string().c_str(), length + 1);

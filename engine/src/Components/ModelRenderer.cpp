@@ -1,3 +1,4 @@
+#include "imgui/imgui.h"
 #include <Engine/Components/ModelRenderer.hpp>
 #include <Editor/GUI/MainGUI.hpp>
 #include <icons/icons.h>
@@ -55,6 +56,26 @@ namespace Engine::Components {
                     } else {
                         SetAnimation(animation_path);
                     }
+                }
+            }
+            // Mesh Materials
+            ImGui::Text("Mesh Materials");
+            if (model) {
+                if (ImGui::TreeNode(ICON_FA_PAINTBRUSH " Mesh Materials")) {
+                    for (auto &mesh : model->meshes) {
+                        if (ImGui::TreeNode(mesh.name.c_str())) {
+                            ImGui::Button(mesh.material.filePath == "" ? "Drag Material File" : mesh.material.filePath.c_str());
+                            if (ImGui::BeginDragDropTarget()) {
+                                if (const ImGuiPayload *payload = ImGui::AcceptDragDropPayload("material")) {
+                                    mesh.material.filePath = (char *)payload->Data;
+                                    Serializer::DeserializeMaterial(mesh.material.filePath, mesh.material);
+                                }
+                            }
+                            ImGui::TreePop();
+                        }
+                    }
+
+                    ImGui::TreePop();
                 }
             }
 

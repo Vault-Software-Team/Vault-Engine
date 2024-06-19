@@ -1,3 +1,4 @@
+#include "imgui/imgui.h"
 #include <Engine/Components/PointLight.hpp>
 #include <Engine/Scene.hpp>
 #include <Engine/Components/MeshRenderer.hpp>
@@ -107,7 +108,7 @@ namespace Engine::Components {
             ImGui::DragFloat("Intensity", &intensity, 0.01f, 0.0);
             ImGui::DragFloat("Shadow Far Plane", &shadow_far_plane, 0.1f, 0.0);
             ImGui::Checkbox("Shadows", &enable_shadow_mapping);
-            ImGui::ColorEdit3("Color", &color.x);
+            ImGui::ColorEdit3("Color", &color.x, ImGuiColorEditFlags_HDR);
         });
     }
 } // namespace Engine::Components

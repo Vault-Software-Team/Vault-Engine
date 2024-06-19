@@ -13,7 +13,7 @@
 namespace fs = std::filesystem;
 
 namespace VaultRenderer {
-    Mesh::Mesh(std::vector<Vertex> &vertices, std::vector<uint32_t> &indices) : vertices(vertices), indices(indices), material{glm::vec4(1, 1, 1, 1)} {
+    Mesh::Mesh(std::vector<Vertex> vertices, std::vector<uint32_t> indices, const std::string &name) : name(name), vertices(vertices), indices(indices), material{glm::vec4(1, 1, 1, 1)} {
         // VAO setup
         glGenVertexArrays(1, &VAO);
 
@@ -92,8 +92,8 @@ namespace VaultRenderer {
         material.height = nullptr;
     }
 
-    void Mesh::Draw(Shader &shader) {
-        material.BindToShader(shader);
+    void Mesh::Draw(Shader &shader, bool bindMatToShader) {
+        if (bindMatToShader) material.BindToShader(shader);
         Statistics::DrawCall();
 
         glBindVertexArray(VAO);
@@ -115,6 +115,15 @@ namespace VaultRenderer {
     void Material::SetHeight(const std::string &texture_path) {
         height = std::make_unique<Texture>(texture_path, TEXTURE_HEIGHT);
     }
+    void Material::SetRoughness(const std::string &texture_path) {
+        roughness_map = std::make_unique<Texture>(texture_path, TEXTURE_HEIGHT);
+    }
+    void Material::SetMetallic(const std::string &texture_path) {
+        metallic_map = std::make_unique<Texture>(texture_path, TEXTURE_HEIGHT);
+    }
+    void Material::SetAO(const std::string &texture_path) {
+        ao_map = std::make_unique<Texture>(texture_path, TEXTURE_HEIGHT);
+    }
 
     void Material::BindToShader(Shader &shader) {
         shader.Bind();
@@ -124,6 +133,11 @@ namespace VaultRenderer {
             glBindTexture(GL_TEXTURE_2D, 0);
         }
 
+        // Bind PBR Shit
+        shader.SetUniform1f("material.ao", ao);
+        shader.SetUniform1f("material.metallic", metallic);
+        shader.SetUniform1f("material.roughness", roughness);
+
         shader.SetUniform4f("baseColor", color.r, color.g, color.b, color.a);
         shader.SetUniform4f("emissionColor", emissionColor.r, emissionColor.g, emissionColor.b, 1);
 
@@ -132,6 +146,9 @@ namespace VaultRenderer {
             shader.SetUniform1i("texture_diffuse.tex", 0);
             shader.SetUniform1i("texture_diffuse.defined", 1);
         } else {
+            glActiveTexture(GL_TEXTURE0);
+            glBindTexture(GL_TEXTURE_2D, 0);
+
             shader.SetUniform1i("texture_diffuse.tex", -1);
             shader.SetUniform1i("texture_diffuse.defined", 0);
         }
@@ -141,6 +158,9 @@ namespace VaultRenderer {
             shader.SetUniform1i("texture_specular.tex", 1);
             shader.SetUniform1i("texture_specular.defined", 1);
         } else {
+            glActiveTexture(GL_TEXTURE1);
+            glBindTexture(GL_TEXTURE_2D, 0);
+
             shader.SetUniform1i("texture_specular.tex", -1);
             shader.SetUniform1i("texture_specular.defined", 0);
         }
@@ -150,6 +170,9 @@ namespace VaultRenderer {
             shader.SetUniform1i("texture_normal.tex", 2);
             shader.SetUniform1i("texture_normal.defined", 1);
         } else {
+            glActiveTexture(GL_TEXTURE2);
+            glBindTexture(GL_TEXTURE_2D, 0);
+
             shader.SetUniform1i("texture_normal.tex", -1);
             shader.SetUniform1i("texture_normal.defined", 0);
         }
@@ -159,8 +182,47 @@ namespace VaultRenderer {
             shader.SetUniform1i("texture_height.tex", 3);
             shader.SetUniform1i("texture_height.defined", 1);
         } else {
+            glActiveTexture(GL_TEXTURE3);
+            glBindTexture(GL_TEXTURE_2D, 0);
+
             shader.SetUniform1i("texture_height.tex", -1);
             shader.SetUniform1i("texture_height.defined", 0);
+        }
+
+        if (metallic_map && fs::exists(metallic_map ? metallic_map->texture_data->texture_filepath : "")) {
+            metallic_map->Bind(4);
+            shader.SetUniform1i("texture_metallic.tex", 4);
+            shader.SetUniform1i("texture_metallic.defined", 1);
+        } else {
+            glActiveTexture(GL_TEXTURE4);
+            glBindTexture(GL_TEXTURE_2D, 0);
+
+            shader.SetUniform1i("texture_metallic.tex", -1);
+            shader.SetUniform1i("texture_metallic.defined", 0);
+        }
+
+        if (roughness_map && fs::exists(roughness_map ? roughness_map->texture_data->texture_filepath : "")) {
+            roughness_map->Bind(5);
+            shader.SetUniform1i("texture_roughness.tex", 5);
+            shader.SetUniform1i("texture_roughness.defined", 1);
+        } else {
+            glActiveTexture(GL_TEXTURE5);
+            glBindTexture(GL_TEXTURE_2D, 0);
+
+            shader.SetUniform1i("texture_roughness.tex", -1);
+            shader.SetUniform1i("texture_roughness.defined", 0);
+        }
+
+        if (ao_map && fs::exists(ao_map ? ao_map->texture_data->texture_filepath : "")) {
+            ao_map->Bind(6);
+            shader.SetUniform1i("texture_ao.tex", 6);
+            shader.SetUniform1i("texture_ao.defined", 1);
+        } else {
+            glActiveTexture(GL_TEXTURE6);
+            glBindTexture(GL_TEXTURE_2D, 0);
+
+            shader.SetUniform1i("texture_ao.tex", -1);
+            shader.SetUniform1i("texture_ao.defined", 0);
         }
     }
 } // namespace VaultRenderer

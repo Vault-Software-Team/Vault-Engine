@@ -94,6 +94,8 @@ namespace Editor {
             AddComponentsGUIPopup(GUI::selected_gameObject);
             ImGui::EndPopup();
         }
+        ImGui::NewLine();
+        ImGui::NewLine();
 
         ImGui::End();
     }

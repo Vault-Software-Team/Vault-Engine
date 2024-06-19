@@ -18,7 +18,6 @@ namespace Engine::Components {
             Vertex{glm::vec3(-0.5f, 0.5f, 0.0f), glm::vec2(0.0f, 1.0f), glm::vec3(0, 1, 0)} //
         };
         std::vector<uint32_t> indices = {0, 1, 2, 0, 2, 3};
-
         mesh = std::make_unique<Mesh>(vertices, indices);
     }
 

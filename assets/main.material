@@ -1,6 +1,12 @@
 color: [1, 1, 1, 1]
 emissionColor: [0, 0, 0]
-diffuse: ./assets/diffuse.png
-specular: ./assets/diffuse.png
-normal: ./assets/normal.png
+diffuse: ./assets/textures/Tiles035_4K-PNG/Tiles035_4K-PNG_Color.png
+specular: nullptr
+normal: ./assets/textures/Tiles035_4K-PNG/Tiles035_4K-PNG_NormalGL.png
 height: nullptr
+roughness_map: ./assets/textures/Tiles035_4K-PNG/Tiles035_4K-PNG_Roughness.png
+metallic_map: nullptr
+ao_map: nullptr
+ao: 1
+metallic: 0
+roughness: 1

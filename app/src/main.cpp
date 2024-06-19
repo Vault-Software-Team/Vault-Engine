@@ -1,7 +1,10 @@
 #include "Engine/Audio.hpp"
+#include "Engine/CascadedShadowMap.hpp"
 #include "Engine/Components/Transform.hpp"
 #include "Engine/GameObject.hpp"
+#include "Engine/HDRSkybox.hpp"
 #include "Engine/Model.hpp"
+#include "Engine/SimpleCalls.hpp"
 #include "HyperScript/HyperScript.hpp"
 #include "Renderer/Framebuffer.hpp"
 #include "imgui/TextEditor.hpp"
@@ -107,10 +110,17 @@ int main() {
 #endif
     Statistics::SetStats();
 
-    Shader shader("./shaders/default.glsl");
+    Shader shader("./shaders/pbr.glsl");
     Shader skybox_shader("./shaders/skybox.glsl");
     Shader shadow_map_shader("./shaders/shadow_map.glsl");
     Shader shadow_cubemap_shader("./shaders/shadow_map_point.glsl");
+    Shader equirectToCubemap("./shaders/equirectToCubemap.glsl");
+    Shader hdri_skybox_shader("./shaders/hdri_skybox.glsl");
+    Shader irr_shader("./shaders/hdri_irr.glsl");
+    Shader prefilter_shader("./shaders/pbr_prefilter.glsl");
+    Shader brdf_shader("./shaders/pbr_brdf.glsl");
+    // Texture equirect("./assets/skybox/metro_noord_8k.hdr", TEXTURE_HDRI);
+
     Font::InitFT();
     default_shader = &shader;
 
@@ -161,12 +171,14 @@ int main() {
     // emptyObject->AddChild("Cunt");
 
     ShadowMap shadow_map;
+    CascadedShadowMap c_ShadowMap(4096, 500.f);
     shadow_map.near = Serializer::config.shadow_near;
     shadow_map.far = Serializer::config.shadow_far;
     shadow_map.ortho_size = Serializer::config.shadow_ortho_size;
 
     Runtime runtime(default_shader);
     runtime.shadowMap = &shadow_map;
+    runtime.c_ShadowMap = &c_ShadowMap;
     EditorLayer editor;
 
     GUI::framebufferTextureID = window.m_PostProcessingFramebuffer->texture;
@@ -305,22 +317,6 @@ int main() {
         //
     };
 
-    auto Function_MousePicking = [&](Framebuffer::ColorAttachement &ca) {
-        glBindTexture(GL_TEXTURE_2D, ca.ID);
-        glReadBuffer(GL_COLOR_ATTACHMENT2);
-        uint32_t entityId;
-        glReadPixels(Window::window->mouse_pos.x, Window::window->mouse_pos.y, 1, 1, GL_RED_INTEGER, GL_UNSIGNED_INT, &entityId);
-
-        runtime.MouseEvents((entt::entity)entityId);
-
-        if (!ImGui::IsMouseDoubleClicked(0)) return;
-        auto &gameObject = Scene::Main->FindGameObjectByEntity((entt::entity)entityId);
-        if (!gameObject) return;
-
-        GUI::selected_gameObject = gameObject.get();
-        //
-    };
-
     /*
     FUNCTION EXECUTION ORDER:
     1. Shadow Map Rendering Function, the last argument in window.Run
@@ -374,6 +370,44 @@ int main() {
         Serializer::Deserialize(Serializer::config.main_scene);
     }
 
+    // HDRI Skybox Setup
+    glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
+    HDRSkybox hdrSkybox("./assets/skybox/metro_noord_8k.hdr", &equirectToCubemap, &hdri_skybox_shader, &irr_shader, &prefilter_shader, &brdf_shader, 512);
+
+    auto Function_MousePicking = [&](Framebuffer::ColorAttachement &ca) {
+        hdrSkybox.RenderEnvCubemap();
+
+        glBindTexture(GL_TEXTURE_2D, ca.ID);
+        glReadBuffer(GL_COLOR_ATTACHMENT2);
+        uint32_t entityId;
+        glReadPixels(Window::window->mouse_pos.x, Window::window->mouse_pos.y, 1, 1, GL_RED_INTEGER, GL_UNSIGNED_INT, &entityId);
+
+        runtime.MouseEvents((entt::entity)entityId);
+
+        if (!ImGui::IsMouseDoubleClicked(0)) return;
+        auto &gameObject = Scene::Main->FindGameObjectByEntity((entt::entity)entityId);
+        if (!gameObject) return;
+
+        GUI::selected_gameObject = gameObject.get();
+        //
+    };
+    // HDRI Skybox Setup
+
+    // PBR Binding irradianceMap
+    Runtime::instance->HDR_Skybox = &hdrSkybox;
+    uint32_t IRR_FREE_TEXTURE_SLOT = 7;       // Change this if we add more texture options in Material
+    uint32_t PREFILTER_FREE_TEXTURE_SLOT = 8; // Change this if we add more texture options in Material
+    uint32_t BRDF_FREE_TEXTURE_SLOT = 9;      // Change this if we add more texture options in Material
+    shader.Bind();
+    shader.SetUniform1i("irradianceMap", 7);
+    Runtime::instance->HDR_Skybox->BindIrradianceMap(IRR_FREE_TEXTURE_SLOT);
+
+    shader.SetUniform1i("prefilterMap", 8);
+    Runtime::instance->HDR_Skybox->BindPrefilterMap(PREFILTER_FREE_TEXTURE_SLOT);
+
+    shader.SetUniform1i("brdfLUT", 9);
+    Runtime::instance->HDR_Skybox->BindBRDFLUT(BRDF_FREE_TEXTURE_SLOT);
+
     window.Run([&](Shader &framebuffer_shader) {
         static double lastTime = 0;
         double now = glfwGetTime();
@@ -391,7 +425,9 @@ int main() {
 
         // Render the skybox
         if (Scene::Main->main_camera_object) {
-            skybox.Render(skybox_shader, Scene::Main->main_camera_object->transform->position, Scene::Main->main_camera_object->transform->rotation, Scene::Main->main_camera_object->up);
+            hdrSkybox.RenderSkybox(hdri_skybox_shader, *Scene::Main->main_camera_object);
+            // DO NOT REMOVE CODE BELOW
+            // skybox.Render(skybox_shader, Scene::Main->main_camera_object->transform->position, Scene::Main->main_camera_object->transform->rotation, Scene::Main->main_camera_object->up);
         }
 
         // Shadow shenanigans and fuckery
@@ -432,6 +468,19 @@ int main() {
         //         glEnable(GL_CULL_FACE);
         //     }
         // }
+
+        // BIND PBR IBL SHIT
+        shader.Bind();
+        shader.SetUniform1i("irradianceMap", 7);
+        Runtime::instance->HDR_Skybox->BindIrradianceMap(IRR_FREE_TEXTURE_SLOT);
+
+        shader.SetUniform1i("prefilterMap", 8);
+        Runtime::instance->HDR_Skybox->BindPrefilterMap(PREFILTER_FREE_TEXTURE_SLOT);
+
+        shader.SetUniform1i("brdfLUT", 9);
+        Runtime::instance->HDR_Skybox->BindBRDFLUT(BRDF_FREE_TEXTURE_SLOT);
+        // BIND PBR IBL SHIT
+
         runtime.UpdateGameObjects(window); //
 
         // Scheduling
