@@ -19,3 +19,6 @@
 [submodule "external/cegui"]
 	path = external/cegui
 	url = https://github.com/cegui/cegui
+[submodule "external/bullet"]
+	path = external/bullet
+	url = https://github.com/Kanma/Bullet
