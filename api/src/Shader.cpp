@@ -5,19 +5,25 @@
 
 namespace VaultRenderer {
     DLL_API Shader *Shader::binded_shader;
+    std::unordered_map<std::string, Shader *> Shader::shaders;
 
-    Shader::Shader(const std::string &shader_file) : path(shader_file) {
-        enum ShaderType {
-            NONE = -1,
-            VERTEX = 0,
-            FRAGMENT = 1,
-            GEOMETRY = 2
-        } type;
+    Shader::~Shader() {
+        shaders.erase(path);
+    }
+
+    Shader::Shader(const std::string &shader_file, bool CustomShader) : path(shader_file), EngineShader(!CustomShader) {
+        Build();
+        std::cout << "Added a new GLSL shader: " << shader_file << "\n";
+        shaders[path] = this;
+    }
+
+    void Shader::Build() {
+        ShaderType type = NONE;
 
         std::string vertCode, fragCode, geometryCode, line;
 
-        printf("%s\n", (std::string("Loading shader: ") + shader_file).c_str());
-        std::ifstream fstream_shader_file(shader_file);
+        printf("%s\n", (std::string("Loading shader: ") + path).c_str());
+        std::ifstream fstream_shader_file(path);
         if (!fstream_shader_file.is_open()) {
             std::cout << "Failed to open shader file" << std::endl;
         }
@@ -25,10 +31,13 @@ namespace VaultRenderer {
         while (getline(fstream_shader_file, line)) {
             if (line == "#shader vertex") {
                 type = ShaderType::VERTEX;
+                types.push_back(type);
             } else if (line == "#shader fragment") {
                 type = ShaderType::FRAGMENT;
+                types.push_back(type);
             } else if (line == "#shader geometry") {
                 type = ShaderType::GEOMETRY;
+                types.push_back(type);
             } else {
                 switch (type) {
                 case ShaderType::VERTEX:
@@ -104,6 +113,44 @@ namespace VaultRenderer {
         if (type == ShaderType::GEOMETRY) {
             glDeleteShader(geometryShader);
         }
+
+        GLint numActiveAttribs = 0;
+        GLint numActiveUniforms = 0;
+        glGetProgramiv(ID, GL_ACTIVE_ATTRIBUTES, &numActiveAttribs);
+        glGetProgramiv(ID, GL_ACTIVE_UNIFORMS, &numActiveUniforms);
+
+        std::vector<GLchar> nameData(256);
+        for (int unif = 0; unif < numActiveUniforms; ++unif) {
+            GLint arraySize = 0;
+            GLenum type = 0;
+            GLsizei actualLength = 0;
+            glGetActiveUniform(ID, unif, nameData.size(), &actualLength, &arraySize, &type, &nameData[0]);
+            std::string name((char *)&nameData[0], actualLength);
+            active_uni_names.push_back(name);
+        }
+
+        GLint maxAttribNameLength = 0;
+        glGetProgramiv(ID, GL_ACTIVE_ATTRIBUTE_MAX_LENGTH, &maxAttribNameLength);
+
+        std::vector<GLchar> attrib_nameData(maxAttribNameLength);
+        for (int attrib = 0; attrib < numActiveAttribs; ++attrib) {
+            GLint arraySize = 0;
+            GLenum type = 0;
+            GLsizei actualLength = 0;
+            glGetActiveAttrib(ID, attrib, attrib_nameData.size(), &actualLength, &arraySize, &type, &attrib_nameData[0]);
+            std::string name((char *)&attrib_nameData[0], actualLength - 1);
+            active_attrib_names.push_back(name);
+        }
+    }
+
+    void Shader::Delete() {
+        glUseProgram(0);
+        glDeleteProgram(ID);
+    }
+
+    void Shader::Rebuild() {
+        Delete();
+        Build();
     }
 
     void Shader::Bind() {

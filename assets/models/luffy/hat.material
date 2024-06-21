@@ -1,0 +1,12 @@
+color: [1, 1, 1, 1]
+emissionColor: [0, 0, 0]
+diffuse: ./assets/models/luffy/hat.png
+specular: nullptr
+normal: nullptr
+height: nullptr
+roughness_map: nullptr
+metallic_map: nullptr
+ao_map: nullptr
+ao: 1
+metallic: 0
+roughness: 1

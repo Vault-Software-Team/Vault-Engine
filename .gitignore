@@ -24,3 +24,5 @@ cmake-build-debug
 *.hdr
 ./assets/skybox/*.hdr
 *.zip
+./assets/models/luffy
+./assets/models/luffy/*

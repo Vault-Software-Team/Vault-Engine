@@ -60,6 +60,10 @@ namespace Engine {
         void Setup2DPhysicsWorld();
         void Step2DPhysicsWorld(const float ts);
 
+        // Physics 3D Calls
+        void Setup3DPhysicsWorld();
+        void Step3DPhysicsWorld(const float ts);
+
         // Scripting Calls
         void SetupHyperScript();
         void UpdateHyperScript();

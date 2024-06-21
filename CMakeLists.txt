@@ -3,6 +3,7 @@ project(VAULT_ENGINE)
 
 include_directories(${CMAKE_SOURCE_DIR}/include)
 include_directories(${CMAKE_SOURCE_DIR}/vendor)
+include_directories(${CMAKE_SOURCE_DIR}/external/bullet)
 
 add_subdirectory(api)
 add_subdirectory(app)
@@ -29,6 +30,8 @@ endif()
 
 add_subdirectory(external/assimp)
 add_subdirectory(external/yaml-cpp)
+add_subdirectory(external/bullet)
+
 
 if(WIN32)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -static-libgcc -static-libstdc++ -w")

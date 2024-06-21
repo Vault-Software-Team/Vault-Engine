@@ -69,6 +69,8 @@ namespace Engine::Components {
             mesh = std::make_shared<VaultRenderer::Mesh>(vertices, indices);
             break;
         }
+        case MESH_CUBE: {
+        }
 
         default: {
             return;

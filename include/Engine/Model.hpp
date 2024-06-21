@@ -2,6 +2,7 @@
 #include <dllapi.hpp>
 #include <glm/ext.hpp>
 #include <glm/matrix.hpp>
+#include <unordered_map>
 #include <vector>
 #include <Renderer/Shader.hpp>
 #include <memory>
@@ -95,7 +96,8 @@ namespace Engine {
         void ExtractBoneWeightForVertices(std::vector<VaultRenderer::Vertex> &vertices, aiMesh *mesh, const aiScene *scene);
 
         std::vector<VaultRenderer::Mesh> meshes;
-        std::vector<glm::mat4> mesh_transforms;
+        // std::vector<glm::mat4> mesh_transforms;
+        glm::mat4 modelTransform = glm::mat4(1.0);
         VaultRenderer::Mesh *GetMeshValueByIndex(int index);
 
         std::string path;
@@ -106,7 +108,7 @@ namespace Engine {
 
         void loadModel(const std::string &path);
         void processNode(aiNode *node, const aiScene *scene);
-        void processMesh(aiMesh *mesh, const aiScene *scene);
+        VaultRenderer::Mesh &processMesh(aiMesh *mesh, const aiScene *scene);
         std::vector<VaultRenderer::Texture> loadMaterialTextures(aiMaterial *mat, aiTextureType type, const std::string &typeName);
     };
 
@@ -145,6 +147,7 @@ namespace Engine {
 
     public:
         Bone(const std::string &name, int ID, const aiNodeAnim *channel);
+        Bone() = default;
 
         glm::mat4 local_transform;
         glm::vec3 m_pos{0, 0, 0}, m_rot{0, 0, 0}, m_scal{1, 1, 1};
@@ -179,7 +182,7 @@ namespace Engine {
         Animation(const std::string &animationPath, Model::GlobalBoneMap &bone_map);
         ~Animation();
 
-        Bone *FindBone(const std::string &name);
+        std::shared_ptr<Bone> FindBone(const std::string &name);
 
         inline float GetTicksPerSecond() { return ticks_per_sec; }
         inline float GetDuration() { return duration; }
@@ -195,7 +198,7 @@ namespace Engine {
 
         float duration;
         int ticks_per_sec;
-        std::vector<Bone> bones;
+        std::unordered_map<std::string, std::shared_ptr<Bone>> bones;
         AssimpNodeData root_node;
         Model::GlobalBoneMap bonemap;
     };
@@ -208,7 +211,7 @@ namespace Engine {
         void PlayAnimation(Animation *anim);
         void CalculateBoneTransform(const AssimpNodeData *node, const glm::mat4 &parent);
         void LocalTransformCalculateBoneTransform(const AssimpNodeData *node, const glm::mat4 &parent);
-        std::vector<glm::mat4> GetFinalBoneMatrices();
+        std::vector<glm::mat4> &GetFinalBoneMatrices();
 
     private:
         std::vector<glm::mat4> finalBoneMatrices;

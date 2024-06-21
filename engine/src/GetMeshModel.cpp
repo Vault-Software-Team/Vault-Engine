@@ -1,3 +1,4 @@
+#include "Renderer/Mesh.hpp"
 #include "assimp/material.h"
 #include "assimp/postprocess.h"
 #include <Engine/Model.hpp>
@@ -36,30 +37,30 @@ namespace Engine {
     }
 
     void ModelMesh::processNode(aiNode *node, const aiScene *scene) {
+        glm::mat4 transform = glm::mat4(1.0f);
+        aiMatrix4x4 aiTransform = node->mTransformation;
+
+        transform[0][0] = aiTransform.a1;
+        transform[0][1] = aiTransform.b1;
+        transform[0][2] = aiTransform.c1;
+        transform[0][3] = aiTransform.d1;
+        transform[1][0] = aiTransform.a2;
+        transform[1][1] = aiTransform.b2;
+        transform[1][2] = aiTransform.c2;
+        transform[1][3] = aiTransform.d2;
+        transform[2][0] = aiTransform.a3;
+        transform[2][1] = aiTransform.b3;
+        transform[2][2] = aiTransform.c3;
+        transform[2][3] = aiTransform.d3;
+        transform[3][0] = aiTransform.a4;
+        transform[3][1] = aiTransform.b4;
+        transform[3][2] = aiTransform.c4;
+        transform[3][3] = aiTransform.d4;
+
         for (unsigned int i = 0; i < node->mNumMeshes; i++) {
             aiMesh *mesh = scene->mMeshes[node->mMeshes[i]];
-            aiMatrix4x4 aiTransform = node->mTransformation;
-
-            glm::mat4 transform = glm::mat4(1.0f);
-            transform[0][0] = aiTransform.a1;
-            transform[1][0] = aiTransform.b1;
-            transform[2][0] = aiTransform.c1;
-            transform[3][0] = aiTransform.d1;
-            transform[0][1] = aiTransform.a2;
-            transform[1][1] = aiTransform.b2;
-            transform[2][1] = aiTransform.c2;
-            transform[3][1] = aiTransform.d2;
-            transform[0][2] = aiTransform.a3;
-            transform[1][2] = aiTransform.b3;
-            transform[2][2] = aiTransform.c3;
-            transform[3][2] = aiTransform.d3;
-            transform[0][3] = aiTransform.a4;
-            transform[1][3] = aiTransform.b4;
-            transform[2][3] = aiTransform.c4;
-            transform[3][3] = aiTransform.d4;
-            mesh_transforms.push_back(transform);
-
-            processMesh(mesh, scene);
+            auto &vaultMesh = processMesh(mesh, scene);
+            vaultMesh.transform = transform;
         }
 
         for (unsigned int i = 0; i < node->mNumChildren; i++) {
@@ -67,7 +68,7 @@ namespace Engine {
         }
     }
 
-    void ModelMesh::processMesh(aiMesh *mesh, const aiScene *scene) {
+    VaultRenderer::Mesh &ModelMesh::processMesh(aiMesh *mesh, const aiScene *scene) {
         std::vector<VaultRenderer::Vertex> vertices;
         std::vector<uint32_t> indices;
         std::vector<VaultRenderer::Texture> textures;
@@ -128,6 +129,9 @@ namespace Engine {
         int specular_count = mot->GetTextureCount(aiTextureType_SPECULAR);
         int normal_count = mot->GetTextureCount(std::string(path).ends_with(".obj") ? aiTextureType_HEIGHT : aiTextureType_NORMALS);
         int normalc_count = mot->GetTextureCount(aiTextureType_NORMAL_CAMERA);
+        int metallic = mot->GetTextureCount(aiTextureType_METALNESS);
+        int roughness = mot->GetTextureCount(aiTextureType_DIFFUSE_ROUGHNESS);
+        int ao = mot->GetTextureCount(aiTextureType_AMBIENT_OCCLUSION);
         aiString texture_name;
 
         if (diffuse_count > 0) {
@@ -151,6 +155,32 @@ namespace Engine {
 
             meshes.back().material.SetNormal((directory + "/textures/" + std::filesystem::path(sTexName).filename().string()).c_str());
         }
+        if (metallic > 0) {
+            ret = mot->Get(AI_MATKEY_TEXTURE(aiTextureType_METALNESS, 0), texture_name);
+            std::string sTexName = texture_name.C_Str();
+            std::replace(sTexName.begin(), sTexName.end(), '\\', '/');
+            // std::cout << (directory + "/textures/" + std::filesystem::path(sTexName).filename().string()).c_str() << " NORMALS\n";
+
+            meshes.back().material.SetMetallic((directory + "/textures/" + std::filesystem::path(sTexName).filename().string()).c_str());
+        }
+        if (roughness > 0) {
+            ret = mot->Get(AI_MATKEY_TEXTURE(aiTextureType_DIFFUSE_ROUGHNESS, 0), texture_name);
+            std::string sTexName = texture_name.C_Str();
+            std::replace(sTexName.begin(), sTexName.end(), '\\', '/');
+            // std::cout << (directory + "/textures/" + std::filesystem::path(sTexName).filename().string()).c_str() << " NORMALS\n";
+
+            meshes.back().material.SetRoughness((directory + "/textures/" + std::filesystem::path(sTexName).filename().string()).c_str());
+        }
+        if (ao > 0) {
+            ret = mot->Get(AI_MATKEY_TEXTURE(aiTextureType_AMBIENT_OCCLUSION, 0), texture_name);
+            std::string sTexName = texture_name.C_Str();
+            std::replace(sTexName.begin(), sTexName.end(), '\\', '/');
+            // std::cout << (directory + "/textures/" + std::filesystem::path(sTexName).filename().string()).c_str() << " NORMALS\n";
+
+            meshes.back().material.SetAO((directory + "/textures/" + std::filesystem::path(sTexName).filename().string()).c_str());
+        }
+
+        return meshes.back();
     }
 
     std::vector<VaultRenderer::Texture> ModelMesh::loadMaterialTextures(aiMaterial *mat, aiTextureType type, const std::string &typeName) {

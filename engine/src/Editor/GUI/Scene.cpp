@@ -1,3 +1,7 @@
+#include "Box2D/Common/b2Math.h"
+#include "Box2D/Dynamics/b2Body.h"
+#include "Engine/Components/Rigidbody2D.hpp"
+#include "Engine/Components/Rigidbody3D.hpp"
 #include <Editor/GUI/MainGUI.hpp>
 #include <Engine/Scene.hpp>
 #include <Engine/GameObject.hpp>
@@ -104,11 +108,47 @@ namespace Editor {
                 switch (m_GuizmoMode) {
                 case ImGuizmo::OPERATION::TRANSLATE: {
                     transform.position = translation;
+
+                    if (ImGuizmo::IsUsing()) {
+                        if (selected_gameObject->HasComponent<Rigidbody2D>()) {
+                            auto &rigidbody = selected_gameObject->GetComponent<Rigidbody2D>();
+
+                            b2Body *body = (b2Body *)rigidbody.m_RuntimeBody;
+                            body->SetTransform(b2Vec2(translation.x, translation.y), transform.rotation.z);
+                            // body->getWorldTransform().setRotation(btQuaternion(rotation.z, rotation.y, rotation.x));
+                        }
+
+                        if (selected_gameObject->HasComponent<Rigidbody3D>()) {
+                            auto &rigidbody = selected_gameObject->GetComponent<Rigidbody3D>();
+
+                            btRigidBody *body = (btRigidBody *)rigidbody.body;
+                            body->getWorldTransform().setOrigin(btVector3(translation.x, translation.y, translation.z));
+                            body->getWorldTransform().setRotation(btQuaternion(transform.rotation.z, transform.rotation.y, transform.rotation.x));
+                        }
+                    }
                     break;
                 }
                 case ImGuizmo::OPERATION::ROTATE: {
                     glm::vec3 deltaRot = rotation - originalRot;
                     transform.rotation += deltaRot;
+
+                    if (ImGuizmo::IsUsing()) {
+                        if (selected_gameObject->HasComponent<Rigidbody2D>()) {
+                            auto &rigidbody = selected_gameObject->GetComponent<Rigidbody2D>();
+
+                            b2Body *body = (b2Body *)rigidbody.m_RuntimeBody;
+                            body->SetTransform(b2Vec2(transform.position.x, transform.position.y), transform.rotation.z);
+                            // body->getWorldTransform().setRotation(btQuaternion(rotation.z, rotation.y, rotation.x));
+                        }
+
+                        if (selected_gameObject->HasComponent<Rigidbody3D>()) {
+                            auto &rigidbody = selected_gameObject->GetComponent<Rigidbody3D>();
+
+                            btRigidBody *body = (btRigidBody *)rigidbody.body;
+                            body->getWorldTransform().setOrigin(btVector3(transform.position.x, transform.position.y, transform.position.z));
+                            body->getWorldTransform().setRotation(btQuaternion(rotation.z, rotation.y, rotation.x));
+                        }
+                    }
                     break;
                 }
                 case ImGuizmo::OPERATION::SCALE: {

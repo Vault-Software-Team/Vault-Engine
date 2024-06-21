@@ -1,11 +1,14 @@
 #include "Editor/EditorLayer.hpp"
 #include "Engine/Components/CSharpScriptComponent.hpp"
 #include "Engine/Components/Camera.hpp"
+#include "Engine/Components/MeshRenderer.hpp"
 #include "Engine/Components/SpriteRenderer.hpp"
 #include "Engine/Components/SpritesheetRenderer.hpp"
+#include "Engine/Physics/BulletPhysics.hpp"
 #include <Engine/Runtime.hpp>
 #include <Engine/Components/IncludeComponents.hpp>
 #include <iostream>
+#include <memory>
 
 using namespace Engine::Components;
 using namespace VaultRenderer;
@@ -16,6 +19,11 @@ namespace Engine {
     Runtime::Runtime(VaultRenderer::Shader *default_shader) {
         Runtime::default_shader = default_shader;
         instance = this;
+        bulletPhysics = std::make_unique<Physics3D>();
+    }
+
+    Runtime::~Runtime() {
+        // delete animThread;
     }
 
     void Runtime::SetDefaultShader(VaultRenderer::Shader *default_shader) {
@@ -51,6 +59,7 @@ namespace Engine {
         Scene::Main->OnRuntimeUpdate(timestep);
         Scene::Main->UpdateGameObjectComponents();
         Scene::UpdateStaticGameObjectComponents();
+        bulletPhysics->UpdatePhysics();
         std::vector<Camera *> depth_cameras = {};
         auto camV = Scene::Main->EntityRegistry.view<Camera>();
 
@@ -231,9 +240,9 @@ namespace Engine {
             auto &transform = Scene::Main->EntityRegistry.get<Transform>(e);
             if (modelRenderer.model) {
                 transform.Update();
-                shader.SetUniformMat4("transformModel", transform.model);
+                // shader.SetUniformMat4("transformModel", transform.model);
                 modelRenderer.AnimateAndSetUniforms(shader);
-                modelRenderer.Draw(shader);
+                modelRenderer.Draw(shader, transform.model);
             }
         }
 

@@ -6,7 +6,7 @@ GameObjects:
       tag: Default
       parent: NO_PARENT
       Transform:
-        position: [0.800000012, 1.16551864, -1.29999995]
+        position: [1.33064365, 1.50983417, 0.228175461]
         rotation: [0, 0, 0]
         scale: [1, 1, 1]
       DirectionalLight:
@@ -49,7 +49,7 @@ GameObjects:
       tag: Default
       parent: NO_PARENT
       Transform:
-        position: [0.87049973, 0.616511822, 1.99214566]
+        position: [0.870504975, 1.36906934, 1.99214566]
         rotation: [0, 0, 0]
         scale: [1.94000006, 1.94000006, 1.94000006]
       ModelRenderer:
@@ -84,35 +84,3 @@ GameObjects:
         position: [0, 0, 0]
         rotation: [0, 0, 0]
         scale: [1, 1, 1]
-  - GameObject:
-      ID: 4dbea4c0-ba1c-47bb-baed-b8ff662618e4
-      name: Dancing Vampire
-      tag: Default
-      parent: NO_PARENT
-      Transform:
-        position: [4.04654837, -7.04001141e-05, 1.58790433]
-        rotation: [3.14159226, 0.00178903062, 3.14159226]
-        scale: [2.89414549, 2.89420009, 2.89414549]
-      ModelRenderer:
-        model_path: ./assets/anim.dae
-        time_scale: 1
-        play_animation: true
-        animation_path: ./assets/anim.dae
-        mesh_materials:
-          Vampire-lib: ./assets/hi.material
-  - GameObject:
-      ID: 702e406c-a217-4ca2-b17e-e01ffdf15840
-      name: Salute
-      tag: Default
-      parent: NO_PARENT
-      Transform:
-        position: [-2.4561584, 3.26850568e-05, 1.10743725]
-        rotation: [-3.14159203, -1.1920929e-07, -3.14159226]
-        scale: [0.0320000052, 0.0320000052, 0.0320000052]
-      ModelRenderer:
-        model_path: ./assets/Character.fbx
-        time_scale: 1
-        play_animation: true
-        animation_path: ./assets/SaluteAnimation.fbx
-        mesh_materials:
-          Mesh: ./assets/rusty_metal.material

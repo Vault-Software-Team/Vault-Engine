@@ -8,6 +8,7 @@
 #include "../vendor/glm/gtx/quaternion.hpp"
 #include "Engine/Mono/CSharp.hpp"
 #include "Engine/Runtime.hpp"
+#include "Renderer/Shader.hpp"
 #include "efsw/efsw.hpp"
 #include "imgui/TextEditor.hpp"
 #define GLM_ENABLE_EXPERIMENTAL
@@ -50,47 +51,60 @@ namespace Editor {
                           << std::endl;
                 break;
             case efsw::Actions::Modified: {
-                if (!filename.ends_with(".cs")) break;
-                if (counter <= 0) {
-                    std::cout << "DIR (" << dir << ") FILE (" << filename << ") has event Modified" << std::endl;
+                if (filename.ends_with(".cs")) {
+                    if (counter <= 0) {
+                        std::cout << "DIR (" << dir << ") FILE (" << filename << ") has event Modified" << std::endl;
 
-                    std::array<char, 1000> buffer;
-                    std::string result;
-                    std::string build_command = "cd assets";
-                    build_command += " && \"";
-                    build_command += "dotnet"; // custom dotnet path here in the future maybe??
-                    build_command += "\" build --property WarningLevel=0 -o VAULT_OUT";
-                    std::unique_ptr<FILE, decltype(&pclose)> pipe(popen(build_command.c_str(), "r"), pclose);
+                        std::array<char, 1000> buffer;
+                        std::string result;
+                        std::string build_command = "cd assets";
+                        build_command += " && \"";
+                        build_command += "dotnet"; // custom dotnet path here in the future maybe??
+                        build_command += "\" build --property WarningLevel=0 -o VAULT_OUT";
+                        std::unique_ptr<FILE, decltype(&pclose)> pipe(popen(build_command.c_str(), "r"), pclose);
 
-                    if (!pipe) {
-                        throw std::runtime_error("popen() failed!");
-                    }
-
-                    while (fgets(buffer.data(), buffer.size(), pipe.get()) != nullptr) {
-                        const std::string output = buffer.data();
-
-                        if (output.find("error") != std::string::npos) {
-                            Editor::GUI::LogError(output);
-                        } else if (output.find("warning") != std::string::npos) {
-                            Editor::GUI::LogWarning(output);
-                        } else if (output.find("no warning") != std::string::npos) {
-                            Editor::GUI::LogInfo(output);
-                        } else {
-                            Editor::GUI::LogInfo(output);
+                        if (!pipe) {
+                            throw std::runtime_error("popen() failed!");
                         }
 
-                        if (output.find("Build succeeded.") != std::string::npos) {
-                            Editor::GUI::LogTick(output);
-                            Editor::GUI::LogTick("Please reload assembly!");
-                        }
-                    }
+                        while (fgets(buffer.data(), buffer.size(), pipe.get()) != nullptr) {
+                            const std::string output = buffer.data();
 
-                    Engine::Runtime::instance->main_thread_calls.push_back([]() {
-                        Engine::CSharp::instance->ReloadAssembly();
-                        ImGui::InsertNotification({ImGuiToastType::Success, 3000, "C# Assembly compiled & reloaded successfully."});
-                    });
+                            if (output.find("error") != std::string::npos) {
+                                Editor::GUI::LogError(output);
+                            } else if (output.find("warning") != std::string::npos) {
+                                Editor::GUI::LogWarning(output);
+                            } else if (output.find("no warning") != std::string::npos) {
+                                Editor::GUI::LogInfo(output);
+                            } else {
+                                Editor::GUI::LogInfo(output);
+                            }
+
+                            if (output.find("Build succeeded.") != std::string::npos) {
+                                Editor::GUI::LogTick(output);
+                                Editor::GUI::LogTick("Please reload assembly!");
+                            }
+                        }
+
+                        Engine::Runtime::instance->main_thread_calls.push_back([]() {
+                            Engine::CSharp::instance->ReloadAssembly();
+                            ImGui::InsertNotification({ImGuiToastType::Success, 3000, "C# Assembly compiled & reloaded successfully."});
+                        });
+                    }
+                    if (++counter >= 3) counter = 0;
+                } else if (filename.ends_with(".glsl")) {
+                    if (counter <= 0) {
+                        std::cout << "DIR GLSL (" << dir << ") FILE (" << filename << ") has event Modified" << std::endl;
+                        Engine::Runtime::instance->main_thread_calls.push_back([&]() {
+                            auto findShader = VaultRenderer::Shader::shaders.find(dir + filename);
+                            if (findShader != VaultRenderer::Shader::shaders.end()) {
+                                findShader->second->Rebuild();
+                            }
+                            ImGui::InsertNotification({ImGuiToastType::Success, 3000, ("Shader " + filename + " has been reloaded.").c_str()});
+                        });
+                    }
+                    if (++counter >= 3) counter = 0;
                 }
-                if (++counter >= 3) counter = 0;
 
                 break;
             }
@@ -116,6 +130,7 @@ namespace Editor {
         // It will watch the /tmp folder recursively ( the third parameter indicates that is recursive )
         // Reporting the files and directories changes to the instance of the listener
         efsw::WatchID watchID = fileWatcher->addWatch("./assets", listener, true);
+        efsw::WatchID watchID2 = fileWatcher->addWatch("./shaders", listener, true);
         fileWatcher->watch();
     }
 

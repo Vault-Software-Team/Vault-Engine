@@ -2,12 +2,14 @@
 #include <dllapi.hpp>
 #include <cstdint>
 #include <string>
+#include <unordered_map>
+#include <vector>
 #ifdef __EMSCRIPTEN__
-#include <emscripten.h>
-#define GL_GLEXT_PROTOTYPES
-#define EGL_EGLEXT_PROTOTYPES
+    #include <emscripten.h>
+    #define GL_GLEXT_PROTOTYPES
+    #define EGL_EGLEXT_PROTOTYPES
 #else
-#include <glad/glad.h>
+    #include <glad/glad.h>
 #endif
 #include <GLFW/glfw3.h>
 #include <glm/ext.hpp>
@@ -19,8 +21,28 @@ namespace VaultRenderer {
         uint32_t ID;
 
     public:
-        Shader(const std::string &shader_file);
-        std::string path;
+        enum ShaderType {
+            NONE = -1,
+            VERTEX = 0,
+            FRAGMENT = 1,
+            GEOMETRY = 2
+        };
+
+        static std::unordered_map<std::string, Shader *>
+            shaders;
+
+        Shader(const std::string &shader_file, bool CustomShader = false);
+        ~Shader();
+        const std::string path;
+        const bool EngineShader;
+
+        std::vector<ShaderType> types;
+        std::vector<std::string> active_uni_names;
+        std::vector<std::string> active_attrib_names;
+
+        void Build();
+        void Delete();
+        void Rebuild();
 
         void Bind();
 

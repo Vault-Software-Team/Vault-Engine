@@ -1,5 +1,8 @@
 #include "Editor/EditorLayer.hpp"
+#include "Engine/Components/BoxCollider2D.hpp"
+#include "Engine/Components/Collider3D.hpp"
 #include "Engine/Components/MeshRenderer.hpp"
+#include "Engine/Components/Rigidbody3D.hpp"
 #include "Engine/Components/Transform.hpp"
 #include "Engine/Runtime.hpp"
 #include "Renderer/Shader.hpp"
@@ -74,15 +77,16 @@ namespace Engine {
             auto &modelRenderer = GetComponent<ModelRenderer>();
             if (modelRenderer.model) {
                 glEnable(GL_CULL_FACE);
+                auto &transform = GetComponent<Transform>();
 
-                GetComponent<Transform>().Update();
+                transform.Update();
                 shader.Bind();
-                shader.SetUniformMat4("transformModel", GetComponent<Transform>().model);
+                // shader.SetUniformMat4("transformModel", transform.model);
                 Runtime::instance->c_ShadowMap->BindToShader(shader);
                 shader.SetUniform1ui("u_EntityID", (uint32_t)entity);
 
                 modelRenderer.AnimateAndSetUniforms(shader);
-                modelRenderer.Draw(shader);
+                modelRenderer.Draw(shader, transform.model);
             }
         }
 
@@ -156,6 +160,11 @@ namespace Engine {
         if (HasComponent<SpotLight>()) {
             auto &light = GetComponent<SpotLight>();
             light.AttachToShader(shader);
+        }
+
+        if (HasComponent<Rigidbody3D>()) {
+            auto &rb = GetComponent<Rigidbody3D>();
+            rb.Update();
         }
 
         for (auto &pChild : Scene::Main->GameObjects) {

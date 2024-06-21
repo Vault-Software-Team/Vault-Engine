@@ -4,6 +4,7 @@
 #include <icons/icons.h>
 #include <Engine/SceneSerialization.hpp>
 #include <Engine/Runtime.hpp>
+#include <string>
 
 namespace Engine::Components {
     void ModelRenderer::OnGUI() {
@@ -62,7 +63,9 @@ namespace Engine::Components {
             ImGui::Text("Mesh Materials");
             if (model) {
                 if (ImGui::TreeNode(ICON_FA_PAINTBRUSH " Mesh Materials")) {
+                    int i = 0;
                     for (auto &mesh : model->meshes) {
+                        ImGui::PushID(("ModelRenderer_" + mesh.name + std::to_string(i)).c_str());
                         if (ImGui::TreeNode(mesh.name.c_str())) {
                             ImGui::Button(mesh.material.filePath == "" ? "Drag Material File" : mesh.material.filePath.c_str());
                             if (ImGui::BeginDragDropTarget()) {
@@ -73,42 +76,46 @@ namespace Engine::Components {
                             }
                             ImGui::TreePop();
                         }
+                        ImGui::PopID();
+                        i++;
                     }
 
                     ImGui::TreePop();
                 }
             }
 
-            if (animation && animator) {
-                bool bonemap_treenode = ImGui::TreeNode("Bone Transforms");
+            // if (animation && animator) {
+            //     bool bonemap_treenode = ImGui::TreeNode("Bone Transforms");
 
-                if (bonemap_treenode) {
-                    auto &boneInfoMap = animation->GetIDMap();
-                    for (auto &node : boneInfoMap) {
-                        const int index = node.second.id;
-                        Bone *bone = animation->FindBone(node.first);
-                        if (!bone)
-                            continue;
+            //     if (bonemap_treenode) {
+            //         auto &boneInfoMap = animation->GetIDMap();
+            //         for (auto &node : boneInfoMap) {
+            //             const int index = node.second.id;
+            //             auto bone = animation->FindBone(node.first);
+            //             if (!bone)
+            //                 continue;
 
-                        if (ImGui::TreeNode(node.first.c_str())) {
-                            bone->SetLocalTransform();
-                            Editor::GUI::DrawVec3Control("Position", bone->m_pos);
-                            bone->m_rot = glm::degrees(bone->m_rot);
-                            Editor::GUI::DrawVec3Control("Rotation", bone->m_rot);
-                            bone->m_rot = glm::radians(bone->m_rot);
-                            Editor::GUI::DrawVec3Control("Scale", bone->m_scal, 1.0);
-                            ImGui::TreePop();
-                        }
-                    }
+            //             if (ImGui::TreeNode(node.first.c_str())) {
+            //                 bone->SetLocalTransform();
+            //                 Editor::GUI::DrawVec3Control("Position", bone->m_pos);
+            //                 bone->m_rot = glm::degrees(bone->m_rot);
+            //                 Editor::GUI::DrawVec3Control("Rotation", bone->m_rot);
+            //                 bone->m_rot = glm::radians(bone->m_rot);
+            //                 Editor::GUI::DrawVec3Control("Scale", bone->m_scal, 1.0);
+            //                 ImGui::TreePop();
+            //             }
+            //         }
 
-                    ImGui::TreePop();
-                }
-            }
+            //         ImGui::TreePop();
+            //     }
+            // }
         });
     }
 
-    void ModelRenderer::Draw(VaultRenderer::Shader &shader) {
+    void ModelRenderer::Draw(VaultRenderer::Shader &shader, const glm::mat4 &_model) {
+        shader.SetUniform1i("playAnimation", play_animation);
         for (auto &mesh : model->meshes) {
+            shader.SetUniformMat4("transformModel", _model * mesh.transform);
             mesh.Draw(shader);
         }
     }
@@ -137,13 +144,17 @@ namespace Engine::Components {
         if (!animator)
             return;
 
-        // if (play_animation)
-        animator->UpdateAnimation(Runtime::instance->timestep * time_scale);
+        if (play_animation)
+            animator->UpdateAnimation(Runtime::instance->timestep * time_scale);
 
-        auto transforms = animator->GetFinalBoneMatrices();
+        auto &transforms = animator->GetFinalBoneMatrices();
         shader.Bind();
         for (int i = 0; i < transforms.size(); ++i) {
             shader.SetUniformMat4(("finalBonesMatrices[" + std::to_string(i) + "]").c_str(), transforms[i]);
         }
+    }
+
+    void ModelRenderer::Animate() {
+        animator->UpdateAnimation(Runtime::instance->timestep * time_scale);
     }
 } // namespace Engine::Components

@@ -84,15 +84,6 @@ int main() {
 
     chdir("/home/poww/Desktop/Programming Projects/Vault-Engine");
 
-    // ANGEL SCRIPT TEST
-    // Scripting::AngelScript::AngelScriptEngine AsEngine;
-    // AsEngine.RegisterGlobalFunction("void print(const string &in)", asFUNCTION(print), asCALL_CDECL);
-    // AsEngine.LoadScript("test", "./scripts/test.as");
-    // AsEngine.CreateContext();
-    // AsEngine.GetTypeInfoBydeclaration(AsEngine.GetModule("test"), "MyClass");
-    // AsEngine.PrepareAndExecuteFunction(AsEngine.CreateContext(), AsEngine.GetFunctionByDeclaration(AsEngine.GetModule("test"), "void main()"));
-    // ANGEL SCRIPT TEST
-
     // dlsym test
     // Script *(*create_obj)() = (Script * (*)()) dlsym(dlopen("./sandbox/script.so", RTLD_LAZY), "create_script");
     // Script *script = create_obj();
@@ -137,7 +128,6 @@ int main() {
     Scene::MakeSceneCamera();
     Scene::Main->SetMainCameraObject(Scene::StaticGameObjects.back(), true);
     Scene::Main->main_camera_object->far = 550;
-
     // auto gameObject = GameObject::New("My GameObject");
     // gameObject->AddComponent<Components::MeshRenderer>();
     // gameObject->AddComponent<Components::AmbientLight>();

@@ -2,6 +2,10 @@
 #include "Box2D/Common/b2Settings.h"
 #include "Engine/Audio.hpp"
 #include "Engine/Components/CSharpScriptComponent.hpp"
+#include "Engine/Components/Collider3D.hpp"
+#include "Engine/Components/MeshRenderer.hpp"
+#include "Engine/Components/Rigidbody3D.hpp"
+#include "Engine/Physics/BulletPhysics.hpp"
 #include "mono/metadata/object-forward.h"
 #include <Engine/Scene.hpp>
 #include <iostream>
@@ -409,7 +413,32 @@ namespace Engine {
         }
     }
 
+    void Scene::Setup3DPhysicsWorld() {
+        auto view = EntityRegistry.view<Components::Rigidbody3D>();
+        for (auto e : view) {
+            auto &component = EntityRegistry.get<Components::Rigidbody3D>(e);
+
+            if (EntityRegistry.all_of<Components::BoxCollider3D>(e)) {
+                auto &collider = EntityRegistry.get<Components::BoxCollider3D>(e);
+                collider.CreateShape();
+                component.CreateBody(collider.shape);
+            }
+
+            if (EntityRegistry.all_of<Components::MeshCollider3D>(e) && EntityRegistry.all_of<Components::MeshRenderer>(e)) {
+                auto &collider = EntityRegistry.get<Components::MeshCollider3D>(e);
+                auto &renderer = EntityRegistry.get<Components::MeshRenderer>(e);
+                collider.CreateShape(&renderer);
+                component.CreateBody(collider.shape);
+            }
+        }
+    }
+
+    void Scene::Step3DPhysicsWorld(const float ts) {
+        Physics3D::instance->UpdatePhysics();
+    }
+
     void Scene::OnRuntimeStart() {
+        Setup3DPhysicsWorld();
         Setup2DPhysicsWorld();
         SetupHyperScript();
         SetupCSharp();
@@ -430,6 +459,7 @@ namespace Engine {
 
     void Scene::OnRuntimeUpdate(const float ts) {
         Step2DPhysicsWorld(ts);
+        Step3DPhysicsWorld(ts);
         UpdateHyperScript();
         UpdateCSharp();
     }

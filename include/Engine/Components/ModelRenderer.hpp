@@ -7,6 +7,7 @@
 #include <memory>
 #include <Renderer/Texture.hpp>
 #include <Engine/Model.hpp>
+#include <thread>
 
 namespace Engine {
     namespace Components {
@@ -26,9 +27,10 @@ namespace Engine {
 
             void OnGUI() override;
             void Init() override;
-            void Draw(VaultRenderer::Shader &shader);
+            void Draw(VaultRenderer::Shader &shader, const glm::mat4 &_model);
             void SetAnimation(const std::string &path);
             void AnimateAndSetUniforms(VaultRenderer::Shader &shader);
+            void Animate();
         };
     } // namespace Components
 } // namespace Engine

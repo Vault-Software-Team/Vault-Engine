@@ -1,4 +1,6 @@
 #include "Engine/Components/CSharpScriptComponent.hpp"
+#include "Engine/Components/Collider3D.hpp"
+#include "Engine/Components/Rigidbody3D.hpp"
 #include "Engine/Components/SpriteRenderer.hpp"
 #include "Renderer/Window.hpp"
 #include "yaml-cpp/emittermanip.h"
@@ -289,6 +291,40 @@ namespace Engine {
             emitter << yaml::EndMap;
         }
 
+        if (gameObject->HasComponent<Rigidbody3D>()) {
+            emitter << yaml::Key << "Rigidbody3D";
+            emitter << yaml::BeginMap;
+
+            auto &component = gameObject->GetComponent<Rigidbody3D>();
+            emitter << yaml::Key << "mass" << yaml::Value << component.mass;
+            emitter << yaml::Key << "restitution" << yaml::Value << component.restitution;
+            emitter << yaml::Key << "friction" << yaml::Value << component.friction;
+            emitter << yaml::Key << "trigger" << yaml::Value << component.trigger;
+            emitter << yaml::Key << "fixedRotation" << yaml::Value << component.fixedRotation;
+
+            emitter << yaml::EndMap;
+        }
+
+        if (gameObject->HasComponent<BoxCollider3D>()) {
+            emitter << yaml::Key << "BoxCollider3D";
+            emitter << yaml::BeginMap;
+
+            auto &component = gameObject->GetComponent<BoxCollider3D>();
+
+            emitter << yaml::Key << "size" << yaml::Value << component.size;
+            emitter << yaml::EndMap;
+        }
+
+        if (gameObject->HasComponent<MeshCollider3D>()) {
+            emitter << yaml::Key << "MeshCollider3D";
+            emitter << yaml::BeginMap;
+
+            auto &component = gameObject->GetComponent<MeshCollider3D>();
+
+            emitter << yaml::Key << "size" << yaml::Value << component.size;
+            emitter << yaml::EndMap;
+        }
+
         if (gameObject->HasComponent<BoxCollider2D>()) {
             emitter << yaml::Key << "BoxCollider2D";
             emitter << yaml::BeginMap;
@@ -514,6 +550,29 @@ namespace Engine {
             component.body_type = (Rigidbody2D::BodyType)data["Rigidbody2D"]["body_type"].as<int>();
             component.gravity_scale = data["Rigidbody2D"]["gravity_scale"].as<float>();
         }
+
+        if (data["Rigidbody3D"]) {
+            gameObject->AddComponent<Rigidbody3D>();
+            auto &component = gameObject->GetComponent<Rigidbody3D>();
+            component.mass = data["Rigidbody3D"]["mass"].as<float>();
+            component.restitution = data["Rigidbody3D"]["restitution"].as<float>();
+            component.friction = data["Rigidbody3D"]["friction"].as<float>();
+            component.trigger = data["Rigidbody3D"]["trigger"].as<bool>();
+            component.fixedRotation = data["Rigidbody3D"]["fixedRotation"].as<bool>();
+        }
+
+        if (data["BoxCollider3D"]) {
+            gameObject->AddComponent<BoxCollider3D>();
+            auto &component = gameObject->GetComponent<BoxCollider3D>();
+            component.size = data["BoxCollider3D"]["size"].as<glm::vec3>();
+        }
+
+        if (data["MeshCollider3D"]) {
+            gameObject->AddComponent<MeshCollider3D>();
+            auto &component = gameObject->GetComponent<MeshCollider3D>();
+            component.size = data["BoxCollider3D"]["size"].as<glm::vec3>();
+        }
+
         if (data["BoxCollider2D"]) {
             gameObject->AddComponent<BoxCollider2D>();
             auto &component = gameObject->GetComponent<BoxCollider2D>();

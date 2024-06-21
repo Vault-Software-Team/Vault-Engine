@@ -33,6 +33,7 @@ namespace Engine {
     void Model::processNode(aiNode *node, const aiScene *scene) {
         for (unsigned int i = 0; i < node->mNumMeshes; i++) {
             aiMesh *mesh = scene->mMeshes[node->mMeshes[i]];
+
             processMesh(mesh, scene);
         }
 
@@ -272,8 +273,8 @@ namespace Engine {
                 modelBoneMap[boneName].id = count;
                 count++;
             }
-
-            bones.push_back(Bone(channel->mNodeName.data, modelBoneMap[channel->mNodeName.data].id, channel));
+            // Bone bone = Bone(channel->mNodeName.data, modelBoneMap[channel->mNodeName.data].id, channel);
+            bones[channel->mNodeName.data] = std::make_shared<Bone>(channel->mNodeName.data, modelBoneMap[channel->mNodeName.data].id, channel);
         }
     }
 
@@ -289,9 +290,10 @@ namespace Engine {
         }
     }
 
-    Bone *Animation::FindBone(const std::string &name) {
-        auto iter = std::find_if(bones.begin(), bones.end(), [&](const Bone &Bone) { return Bone.GetName() == name; });
-        return iter == bones.end() ? nullptr : &(*iter);
+    std::shared_ptr<Bone> Animation::FindBone(const std::string &name) {
+        // auto iter = std::find_if(bones.begin(), bones.end(), [&](const Bone &Bone) { return Bone.GetName() == name; });
+        return bones.find(name) == bones.end() ? nullptr : bones.find(name)->second;
+        // return bones[name];
     }
 
     Animation::Animation(const std::string &animationPath, Model::GlobalBoneMap &bone_map) : bonemap(bone_map) {
@@ -341,7 +343,7 @@ namespace Engine {
         const std::string &nodeName = node->name;
         glm::mat4 nodeTransform = node->transformation;
 
-        Bone *Bone = curr_anim->FindBone(nodeName);
+        auto Bone = curr_anim->FindBone(nodeName);
 
         if (Bone) {
             Bone->Update(curr_time);
@@ -350,9 +352,9 @@ namespace Engine {
 
         glm::mat4 globalTransformation = parent * nodeTransform;
 
-        auto &boneInfoMap = curr_anim->GetIDMap();
+        const auto &boneInfoMap = curr_anim->GetIDMap();
         if (boneInfoMap.find(nodeName) != boneInfoMap.end()) {
-            int index = boneInfoMap[nodeName].id;
+            int index = boneInfoMap.at(nodeName).id;
             finalBoneMatrices[index] = globalTransformation * boneInfoMap.at(nodeName).offset;
         }
 
@@ -365,7 +367,7 @@ namespace Engine {
         const std::string &nodeName = node->name;
         glm::mat4 nodeTransform = node->transformation;
 
-        Bone *Bone = curr_anim->FindBone(nodeName);
+        auto Bone = curr_anim->FindBone(nodeName);
 
         if (Bone) {
             Bone->SetLocalTransform();
@@ -385,7 +387,7 @@ namespace Engine {
         }
     }
 
-    std::vector<glm::mat4> Animator::GetFinalBoneMatrices() {
+    std::vector<glm::mat4> &Animator::GetFinalBoneMatrices() {
         return finalBoneMatrices;
     }
 

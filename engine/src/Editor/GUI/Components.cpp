@@ -1,3 +1,5 @@
+#include "Engine/Components/Collider3D.hpp"
+#include "Engine/Components/Rigidbody3D.hpp"
 #include <Editor/GUI/MainGUI.hpp>
 #include <Engine/Scene.hpp>
 #include <Engine/GameObject.hpp>
@@ -27,6 +29,9 @@ void ComponentGUI(GameObject *gameObject) {
     CallComponentGUI<SpritesheetRenderer>(gameObject);
     CallComponentGUI<Rigidbody2D>(gameObject);
     CallComponentGUI<BoxCollider2D>(gameObject);
+    CallComponentGUI<Rigidbody3D>(gameObject);
+    CallComponentGUI<BoxCollider3D>(gameObject);
+    CallComponentGUI<MeshCollider3D>(gameObject);
     CallComponentGUI<PointLight>(gameObject);
     CallComponentGUI<SpotLight>(gameObject);
     CallComponentGUI<Text3D>(gameObject);
@@ -48,16 +53,23 @@ void DisplayAddComponentButton(GameObject *gameObject) {
 
 void AddComponentsGUIPopup(GameObject *gameObject) {
     DisplayAddComponentButton<Transform>(gameObject);
+
     DisplayAddComponentButton<AmbientLight>(gameObject);
     DisplayAddComponentButton<DirectionalLight>(gameObject);
+    DisplayAddComponentButton<PointLight>(gameObject);
+    DisplayAddComponentButton<SpotLight>(gameObject);
+
     DisplayAddComponentButton<MeshRenderer>(gameObject);
     DisplayAddComponentButton<ModelRenderer>(gameObject);
     DisplayAddComponentButton<SpriteRenderer>(gameObject);
     DisplayAddComponentButton<SpritesheetRenderer>(gameObject);
+
     DisplayAddComponentButton<Rigidbody2D>(gameObject);
     DisplayAddComponentButton<BoxCollider2D>(gameObject);
-    DisplayAddComponentButton<PointLight>(gameObject);
-    DisplayAddComponentButton<SpotLight>(gameObject);
+    DisplayAddComponentButton<Rigidbody3D>(gameObject);
+    DisplayAddComponentButton<BoxCollider3D>(gameObject);
+    DisplayAddComponentButton<MeshCollider3D>(gameObject);
+
     DisplayAddComponentButton<Text3D>(gameObject);
     DisplayAddComponentButton<Camera>(gameObject);
     DisplayAddComponentButton<CSharpScriptComponent>(gameObject);

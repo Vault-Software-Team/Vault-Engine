@@ -3,3 +3,4 @@
 -I./vendor
 -I./external/angelscript/sdk/add_on
 -I./external/angelscript/sdk/angelscript/include
+-I./external/bullet

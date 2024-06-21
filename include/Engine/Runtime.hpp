@@ -1,5 +1,6 @@
 #pragma once
 #include "Engine/CascadedShadowMap.hpp"
+#include "Engine/Physics/BulletPhysics.hpp"
 #include <dllapi.hpp>
 #include <Engine/Scene.hpp>
 #include <Engine/GameObject.hpp>
@@ -9,6 +10,7 @@
 #include <functional>
 #include <memory>
 #include <Engine/HDRSkybox.hpp>
+#include <thread>
 
 namespace Engine {
     class DLL_API Runtime {
@@ -23,6 +25,7 @@ namespace Engine {
         VaultRenderer::ShadowMap *shadowMap;
         VaultRenderer::HDRSkybox *HDR_Skybox;
         CascadedShadowMap *c_ShadowMap;
+        std::unique_ptr<Physics3D> bulletPhysics;
 
         std::vector<std::function<void()>> main_thread_calls;
 
@@ -31,6 +34,7 @@ namespace Engine {
         float timestep = 0;
 
         Runtime(VaultRenderer::Shader *default_shader);
+        ~Runtime();
 
         void SetDefaultShader(VaultRenderer::Shader *default_shader);
         void UpdateGameObjects(VaultRenderer::Window &window);
