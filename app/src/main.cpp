@@ -1,3 +1,8 @@
+/*
+Welcome to the worst game engines codes main file!
+In here you will throw up all over your desk cuz the coding is fucking ass
+*/
+
 #include "Engine/Audio.hpp"
 #include "Engine/CascadedShadowMap.hpp"
 #include "Engine/Components/Transform.hpp"
@@ -393,13 +398,13 @@ int main() {
     uint32_t PREFILTER_FREE_TEXTURE_SLOT = 8; // Change this if we add more texture options in Material
     uint32_t BRDF_FREE_TEXTURE_SLOT = 9;      // Change this if we add more texture options in Material
     shader.Bind();
-    shader.SetUniform1i("irradianceMap", 7);
+    shader.SetUniform1i("irradianceMap", IRR_FREE_TEXTURE_SLOT);
     Runtime::instance->HDR_Skybox->BindIrradianceMap(IRR_FREE_TEXTURE_SLOT);
 
-    shader.SetUniform1i("prefilterMap", 8);
+    shader.SetUniform1i("prefilterMap", PREFILTER_FREE_TEXTURE_SLOT);
     Runtime::instance->HDR_Skybox->BindPrefilterMap(PREFILTER_FREE_TEXTURE_SLOT);
 
-    shader.SetUniform1i("brdfLUT", 9);
+    shader.SetUniform1i("brdfLUT", BRDF_FREE_TEXTURE_SLOT);
     Runtime::instance->HDR_Skybox->BindBRDFLUT(BRDF_FREE_TEXTURE_SLOT);
 
     window.Run([&](Shader &framebuffer_shader) {
