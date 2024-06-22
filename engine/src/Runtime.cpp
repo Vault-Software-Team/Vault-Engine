@@ -1,5 +1,6 @@
 #include "Editor/EditorLayer.hpp"
 #include "Editor/GUI/MainGUI.hpp"
+#include "Engine/Components/BoxCollider2D.hpp"
 #include "Engine/Components/CSharpScriptComponent.hpp"
 #include "Engine/Components/Camera.hpp"
 #include "Engine/Components/Collider3D.hpp"
@@ -8,6 +9,7 @@
 #include "Engine/Components/SpritesheetRenderer.hpp"
 #include "Engine/Components/Transform.hpp"
 #include "Engine/Physics/BulletPhysics.hpp"
+#include "Engine/SimpleCalls.hpp"
 #include <Engine/Runtime.hpp>
 #include <Engine/Components/IncludeComponents.hpp>
 #include <iostream>
@@ -98,6 +100,27 @@ namespace Engine {
                 auto &transform = gameObject->GetComponent<Transform>();
 
                 Editor::EditorLayer::instance->ColliderGizmo.DrawGizmo(*Editor::EditorLayer::instance->ColliderGizmo.shader, &MeshRenderer::ModelMeshes[MESH_CUBE]->meshes.back(), transform.position, transform.rotation, transform.scale, coll.size);
+                glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+                glEnable(GL_DEPTH_TEST);
+            }
+
+            if (gameObject->HasComponent<BoxCollider2D>()) {
+                glDisable(GL_DEPTH_TEST);
+                glDepthFunc(GL_LEQUAL);
+                glDisable(GL_CULL_FACE);
+                glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+                auto &coll = gameObject->GetComponent<BoxCollider2D>();
+                auto &transform = gameObject->GetComponent<Transform>();
+
+                Editor::EditorLayer::instance->ColliderGizmo.shader->Bind();
+                glm::mat4 model = glm::translate(glm::mat4(1.0f), transform.position) *
+                                  glm::toMat4(glm::quat(transform.rotation)) *
+                                  glm::scale(glm::mat4(1.0f), glm::vec3((((coll.size.x) / 2) - 0.02) / 2, (((coll.size.y) / 2) - 0.02) / 2, 1));
+
+                Editor::EditorLayer::instance->ColliderGizmo.shader->SetUniformMat4("transformModel", model);
+                SimpleCalls::RenderQuad();
+                // mesh->Draw(shader, false);
+
                 glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
                 glEnable(GL_DEPTH_TEST);
             }
