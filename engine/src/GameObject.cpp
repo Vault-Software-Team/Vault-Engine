@@ -64,7 +64,7 @@ namespace Engine {
                 GetComponent<Transform>().Update();
                 shader.Bind();
                 shader.SetUniformMat4("transformModel", GetComponent<Transform>().model);
-                Runtime::instance->c_ShadowMap->BindToShader(shader);
+                // Runtime::instance->c_ShadowMap->BindToShader(shader);
 
                 // meshRenderer.AnimateAndSetUniforms(shader);
                 if (meshRenderer.mesh_type == MESH_PLANE) shader.SetUniform1i("mesh_isFlat", true);
@@ -82,7 +82,7 @@ namespace Engine {
                 transform.Update();
                 shader.Bind();
                 // shader.SetUniformMat4("transformModel", transform.model);
-                Runtime::instance->c_ShadowMap->BindToShader(shader);
+                // Runtime::instance->c_ShadowMap->BindToShader(shader);
                 shader.SetUniform1ui("u_EntityID", (uint32_t)entity);
 
                 modelRenderer.AnimateAndSetUniforms(shader);
@@ -98,7 +98,7 @@ namespace Engine {
                 transform.Update();
                 shader.Bind();
                 shader.SetUniformMat4("transformModel", transform.model);
-                Runtime::instance->c_ShadowMap->BindToShader(shader);
+                // Runtime::instance->c_ShadowMap->BindToShader(shader);
                 shader.SetUniform1ui("u_EntityID", (uint32_t)entity);
 
                 shader.SetUniform1i("mesh_isFlat", true);
@@ -115,7 +115,7 @@ namespace Engine {
                 transform.Update();
                 shader.Bind();
                 shader.SetUniformMat4("transformModel", transform.model);
-                Runtime::instance->c_ShadowMap->BindToShader(shader);
+                // Runtime::instance->c_ShadowMap->BindToShader(shader);
                 shader.SetUniform1ui("u_EntityID", (uint32_t)entity);
                 spritesheetRenderer.Draw(shader);
             }

@@ -899,7 +899,7 @@ namespace Engine {
 
         // Renderer
         emitter << yaml::Key << "Renderer.Bloom" << yaml::Value << VaultRenderer::Window::Renderer.Bloom;
-        emitter << yaml::Key << "usePBR" << yaml::Value << Runtime::instance->usePBR;
+        emitter << yaml::Key << "usePBR" << yaml::Value << Runtime::usePBR;
 
         std::ofstream file(path);
         file << emitter.c_str();

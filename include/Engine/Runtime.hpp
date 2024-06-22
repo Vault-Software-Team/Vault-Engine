@@ -26,7 +26,7 @@ namespace Engine {
         VaultRenderer::HDRSkybox *HDR_Skybox;
         CascadedShadowMap *c_ShadowMap;
         std::unique_ptr<Physics3D> bulletPhysics;
-        bool usePBR = false;
+        static bool usePBR;
 
         std::vector<std::function<void()>> main_thread_calls;
 

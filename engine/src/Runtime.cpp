@@ -15,6 +15,7 @@ using namespace VaultRenderer;
 namespace Engine {
     DLL_API Runtime *Runtime::instance = nullptr;
     DLL_API VaultRenderer::Shader *Runtime::default_shader = nullptr;
+    bool Runtime::usePBR = false;
 
     Runtime::Runtime(VaultRenderer::Shader *default_shader) {
         Runtime::default_shader = default_shader;

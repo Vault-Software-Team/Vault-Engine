@@ -167,7 +167,10 @@ int main() {
     shadow_map.far = Serializer::config.shadow_far;
     shadow_map.ortho_size = Serializer::config.shadow_ortho_size;
 
+    default_shader = Runtime::usePBR ? &shader : &non_pbr_shader;
+
     Runtime runtime(default_shader);
+    Runtime::default_shader = Runtime::usePBR ? &shader : &non_pbr_shader;
     runtime.shadowMap = &shadow_map;
     runtime.c_ShadowMap = &c_ShadowMap;
     EditorLayer editor;
@@ -525,8 +528,8 @@ int main() {
             Serializer::config.shadow_far = shadow_map.far;
             Serializer::config.shadow_ortho_size = shadow_map.ortho_size;
 
-                Runtime::instance->default_shader =Runtime::instance->usePBR ? &shader : &non_pbr_shader;
-                default_shader = Runtime::instance->default_shader;
+            Runtime::default_shader =Runtime::usePBR ? &shader : &non_pbr_shader;
+            default_shader = Runtime::default_shader;
         }
 
 
