@@ -5,6 +5,7 @@ In here you will throw up all over your desk cuz the coding is fucking ass
 
 #include "Engine/Audio.hpp"
 #include "Engine/CascadedShadowMap.hpp"
+#include "Engine/Components/MeshRenderer.hpp"
 #include "Engine/Components/Transform.hpp"
 #include "Engine/GameObject.hpp"
 #include "Engine/HDRSkybox.hpp"
@@ -116,6 +117,7 @@ int main() {
     Shader irr_shader("./shaders/hdri_irr.glsl");
     Shader prefilter_shader("./shaders/pbr_prefilter.glsl");
     Shader brdf_shader("./shaders/pbr_brdf.glsl");
+    Shader collider_gizmo_shader("./shaders/collider_gizmo.glsl");
     // Texture equirect("./assets/skybox/metro_noord_8k.hdr", TEXTURE_HDRI);
 
     Font::InitFT();
@@ -175,10 +177,17 @@ int main() {
     default_shader = Runtime::usePBR ? &shader : &non_pbr_shader;
 
     Runtime runtime(default_shader);
+
+    // default mesh setup
+    MeshRenderer::ModelMeshes[MESH_CUBE] = new ModelMesh("./default_models/cube.obj");
+    MeshRenderer::ModelMeshes[MESH_CAPSULE] = new ModelMesh("./default_models/capsule.obj");
+    MeshRenderer::ModelMeshes[MESH_SPHERE] = new ModelMesh("./default_models/sphere.obj");
+
     Runtime::default_shader = Runtime::usePBR ? &shader : &non_pbr_shader;
     runtime.shadowMap = &shadow_map;
     runtime.c_ShadowMap = &c_ShadowMap;
     EditorLayer editor;
+    editor.ColliderGizmo.shader = &collider_gizmo_shader;
 
     GUI::framebufferTextureID = window.m_PostProcessingFramebuffer->texture;
     window.use_imgui_size = true;
@@ -438,6 +447,7 @@ int main() {
 
         // Bind all the camera matricies to the Font Shader (Text)
         Scene::Main->main_camera_object->BindToShader(*Font::font_shader);
+        Scene::Main->main_camera_object->BindToShader(collider_gizmo_shader);
 
         // Update all the GameObjects components
         // shader.Bind();

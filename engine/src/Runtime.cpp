@@ -1,9 +1,12 @@
 #include "Editor/EditorLayer.hpp"
+#include "Editor/GUI/MainGUI.hpp"
 #include "Engine/Components/CSharpScriptComponent.hpp"
 #include "Engine/Components/Camera.hpp"
+#include "Engine/Components/Collider3D.hpp"
 #include "Engine/Components/MeshRenderer.hpp"
 #include "Engine/Components/SpriteRenderer.hpp"
 #include "Engine/Components/SpritesheetRenderer.hpp"
+#include "Engine/Components/Transform.hpp"
 #include "Engine/Physics/BulletPhysics.hpp"
 #include <Engine/Runtime.hpp>
 #include <Engine/Components/IncludeComponents.hpp>
@@ -63,6 +66,44 @@ namespace Engine {
         bulletPhysics->UpdatePhysics();
         std::vector<Camera *> depth_cameras = {};
         auto camV = Scene::Main->EntityRegistry.view<Camera>();
+
+#ifndef GAME_BUILD
+
+        if (Editor::GUI::selected_gameObject) {
+            auto &gameObject = Editor::GUI::selected_gameObject;
+
+            if (gameObject->HasComponent<MeshCollider3D>() && gameObject->HasComponent<MeshRenderer>()) {
+                glDisable(GL_DEPTH_TEST);
+                glDepthFunc(GL_LEQUAL);
+                glDisable(GL_CULL_FACE);
+
+                glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+                auto &comp = gameObject->GetComponent<MeshRenderer>();
+                auto &coll = gameObject->GetComponent<MeshCollider3D>();
+                auto &transform = gameObject->GetComponent<Transform>();
+
+                Editor::EditorLayer::instance->ColliderGizmo.DrawGizmo(*Editor::EditorLayer::instance->ColliderGizmo.shader, comp.mesh.get(), transform.position, transform.rotation, transform.scale, coll.size);
+
+                glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+                glEnable(GL_DEPTH_TEST);
+            }
+
+            if (gameObject->HasComponent<BoxCollider3D>()) {
+                glDisable(GL_DEPTH_TEST);
+                glDepthFunc(GL_LEQUAL);
+                glDisable(GL_CULL_FACE);
+                glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+                auto &coll = gameObject->GetComponent<BoxCollider3D>();
+                auto &transform = gameObject->GetComponent<Transform>();
+
+                Editor::EditorLayer::instance->ColliderGizmo.DrawGizmo(*Editor::EditorLayer::instance->ColliderGizmo.shader, &MeshRenderer::ModelMeshes[MESH_CUBE]->meshes.back(), transform.position, transform.rotation, transform.scale, coll.size);
+                glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+                glEnable(GL_DEPTH_TEST);
+            }
+        }
+
+#endif
 
         // Draw Component Icons
         // #ifndef GAME_BUILD

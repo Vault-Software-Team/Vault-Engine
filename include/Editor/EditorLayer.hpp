@@ -1,5 +1,6 @@
 #pragma once
 #include "Renderer/Mesh.hpp"
+#include "Renderer/Shader.hpp"
 #include "Renderer/Texture.hpp"
 #include <dllapi.hpp>
 #include <memory>
@@ -27,6 +28,12 @@ namespace Editor {
             std::unique_ptr<VaultRenderer::Mesh> SpotLightIcon;
             std::unique_ptr<VaultRenderer::Mesh> AudioIcon;
         } iconMeshes;
+
+        struct s_ColliderGizmo {
+            std::unique_ptr<VaultRenderer::Mesh> Gizmo3D;
+            VaultRenderer::Shader *shader;
+            void DrawGizmo(VaultRenderer::Shader &shader, VaultRenderer::Mesh *mesh, glm::vec3 position, glm::vec3 rotation, glm::vec3 scale, glm::vec3 colliderScale);
+        } ColliderGizmo;
 
         EditorLayer();
         void GUI();

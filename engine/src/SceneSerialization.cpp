@@ -571,7 +571,7 @@ namespace Engine {
         if (data["MeshCollider3D"]) {
             gameObject->AddComponent<MeshCollider3D>();
             auto &component = gameObject->GetComponent<MeshCollider3D>();
-            component.size = data["BoxCollider3D"]["size"].as<glm::vec3>();
+            component.size = data["MeshCollider3D"]["size"].as<glm::vec3>();
         }
 
         if (data["BoxCollider2D"]) {

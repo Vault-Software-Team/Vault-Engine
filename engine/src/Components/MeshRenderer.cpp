@@ -1,11 +1,18 @@
+#include "Engine/Model.hpp"
+#include "Renderer/Mesh.hpp"
 #include <Engine/Components/MeshRenderer.hpp>
 #include <Editor/GUI/MainGUI.hpp>
 #include <icons/icons.h>
 #include <Engine/SceneSerialization.hpp>
 #include <Engine/Runtime.hpp>
+#include <memory>
 
 namespace Engine::Components {
+    std::unordered_map<MeshType, ModelMesh *> MeshRenderer::ModelMeshes;
+
     void MeshRenderer::SetMeshType(const MeshType &a_mesh_type) {
+        // if (a_mesh_type != MESH_SPHERE && a_mesh_type != MESH_CAPSULE && a_mesh_type != MESH_CUBE) {
+        // }
         mesh_type = a_mesh_type;
         mesh.reset();
 
@@ -70,8 +77,20 @@ namespace Engine::Components {
             break;
         }
         case MESH_CUBE: {
-        }
+            mesh = std::make_shared<VaultRenderer::Mesh>(ModelMeshes[MESH_CUBE]->meshes.back().vertices, ModelMeshes[MESH_CUBE]->meshes.back().indices);
 
+            break;
+        }
+        case MESH_SPHERE: {
+            mesh = std::make_shared<VaultRenderer::Mesh>(ModelMeshes[MESH_SPHERE]->meshes.back().vertices, ModelMeshes[MESH_SPHERE]->meshes.back().indices);
+
+            break;
+        }
+        case MESH_CAPSULE: {
+            mesh = std::make_shared<VaultRenderer::Mesh>(ModelMeshes[MESH_CAPSULE]->meshes.back().vertices, ModelMeshes[MESH_CAPSULE]->meshes.back().indices);
+
+            break;
+        }
         default: {
             return;
         }
@@ -107,6 +126,14 @@ namespace Engine::Components {
                     SetMeshType(MESH_CUBE);
                     ImGui::CloseCurrentPopup();
                 }
+                if (ImGui::Button("Sphere", ImVec2(200, 0))) {
+                    SetMeshType(MESH_SPHERE);
+                    ImGui::CloseCurrentPopup();
+                }
+                if (ImGui::Button("Capsule", ImVec2(200, 0))) {
+                    SetMeshType(MESH_CAPSULE);
+                    ImGui::CloseCurrentPopup();
+                }
 
                 ImGui::EndPopup();
             }
@@ -117,6 +144,12 @@ namespace Engine::Components {
                 break;
             case MESH_CUBE:
                 ImGui::Text("Type: Cube");
+                break;
+            case MESH_SPHERE:
+                ImGui::Text("Type: Sphere");
+                break;
+            case MESH_CAPSULE:
+                ImGui::Text("Type: Capsule");
                 break;
             case MESH_PYRAMID:
                 ImGui::Text("Type: Pyramid");

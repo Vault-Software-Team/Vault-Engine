@@ -109,7 +109,7 @@ namespace Editor {
                 case ImGuizmo::OPERATION::TRANSLATE: {
                     transform.position = translation;
 
-                    if (ImGuizmo::IsUsing()) {
+                    if (ImGuizmo::IsUsing() && Runtime::instance->isRunning) {
                         if (selected_gameObject->HasComponent<Rigidbody2D>()) {
                             auto &rigidbody = selected_gameObject->GetComponent<Rigidbody2D>();
 
@@ -132,7 +132,7 @@ namespace Editor {
                     glm::vec3 deltaRot = rotation - originalRot;
                     transform.rotation += deltaRot;
 
-                    if (ImGuizmo::IsUsing()) {
+                    if (ImGuizmo::IsUsing() && Runtime::instance->isRunning) {
                         if (selected_gameObject->HasComponent<Rigidbody2D>()) {
                             auto &rigidbody = selected_gameObject->GetComponent<Rigidbody2D>();
 

@@ -6,11 +6,11 @@ GameObjects:
       tag: Default
       parent: NO_PARENT
       Transform:
-        position: [-0.796410918, 1.07935953, 0.527757049]
+        position: [-0.543494701, 2.45364141, 1.14129043]
         rotation: [0, 0, 0]
         scale: [1, 1, 1]
-      DirectionalLight:
-        intensity: 1
+      PointLight:
+        intensity: 10
         color: [1, 1, 1]
         enable_shadow_mapping: false
   - GameObject:
@@ -21,44 +21,64 @@ GameObjects:
       Transform:
         position: [0, -0.295864105, 0]
         rotation: [0, 1.57079637, 0]
-        scale: [24.79146, 24.7927647, 24.79146]
+        scale: [24.7870731, 24.7927647, 24.7870731]
       MeshRenderer:
         mesh_type: 0
         mesh_index: -1
         mesh_path: ""
         material_path: ./assets/main.material
+      Rigidbody3D:
+        mass: 0
+        restitution: 1
+        friction: 0.5
+        trigger: false
+        fixedRotation: false
+      BoxCollider3D:
+        size: [24.7900009, 0.100000001, 24.7900009]
   - GameObject:
       ID: 12bd358e-5087-4cc0-b413-a5c1a5d8b9a4
       name: Metallic Sphere
       tag: Default
       parent: NO_PARENT
       Transform:
-        position: [-3.67610979, 1.29268301, 0.450974226]
-        rotation: [0, 0, 0]
-        scale: [1.38999999, 1.38999999, 1.38999999]
-      ModelRenderer:
-        model_path: ./assets/models/sphere.obj
-        time_scale: 1
-        play_animation: false
-        animation_path: ""
-        mesh_materials:
-          Sphere: ./assets/rusty_metal.material
+        position: [-3.67610979, 3.68962407, 0.450974226]
+        rotation: [0.490184754, 0.230298996, 0.611975491]
+        scale: [3.34990001, 3.34989977, 3.34989977]
+      MeshRenderer:
+        mesh_type: 2
+        mesh_index: -1
+        mesh_path: ""
+        material_path: ./assets/rusty_metal.material
+      Rigidbody3D:
+        mass: 1
+        restitution: 0
+        friction: 0.5
+        trigger: false
+        fixedRotation: false
+      BoxCollider3D:
+        size: [3.3499999, 3.3499999, 3.3499999]
   - GameObject:
       ID: 85eca0d7-ec3f-484c-bb8b-21d57782e6bc
       name: Golden Sphere
       tag: Default
       parent: NO_PARENT
       Transform:
-        position: [0.870504975, 1.36906934, 1.99214566]
+        position: [0.870504975, 3.24835753, 1.99214566]
         rotation: [0, 0, 0]
-        scale: [1.94000006, 1.94000006, 1.94000006]
-      ModelRenderer:
-        model_path: ./assets/models/sphere.obj
-        time_scale: 1
-        play_animation: false
-        animation_path: ""
-        mesh_materials:
-          Sphere: ./assets/hi.material
+        scale: [3.4532001, 3.4532001, 3.4532001]
+      MeshRenderer:
+        mesh_type: 3
+        mesh_index: -1
+        mesh_path: ""
+        material_path: ./assets/hi.material
+      Rigidbody3D:
+        mass: 1
+        restitution: 1.5
+        friction: 0.5
+        trigger: false
+        fixedRotation: false
+      MeshCollider3D:
+        size: [3.45000005, 3.45000005, 3.45000005]
   - GameObject:
       ID: 3ef5f444-e5ee-4253-bd24-f02435cb7ef7
       name: PBR Model
