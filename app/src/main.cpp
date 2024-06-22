@@ -464,14 +464,14 @@ int main() {
         // }
 
         // BIND PBR IBL SHIT
-        shader.Bind();
-        shader.SetUniform1i("irradianceMap", 7);
+        // shader.Bind();
+        // shader.SetUniform1i("irradianceMap", 7);
         Runtime::instance->HDR_Skybox->BindIrradianceMap(IRR_FREE_TEXTURE_SLOT);
 
-        shader.SetUniform1i("prefilterMap", 8);
+        // shader.SetUniform1i("prefilterMap", 8);
         Runtime::instance->HDR_Skybox->BindPrefilterMap(PREFILTER_FREE_TEXTURE_SLOT);
 
-        shader.SetUniform1i("brdfLUT", 9);
+        // shader.SetUniform1i("brdfLUT", 9);
         Runtime::instance->HDR_Skybox->BindBRDFLUT(BRDF_FREE_TEXTURE_SLOT);
         // BIND PBR IBL SHIT
 
