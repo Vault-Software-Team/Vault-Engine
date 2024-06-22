@@ -46,6 +46,7 @@ namespace Editor {
         if (ImGui::Begin("Renderer Config", &open_hdr, ImGuiWindowFlags_NoDocking)) {
             ImGui::DragFloat("(HDR) Exposure", &Serializer::config.HDR.exposure);
             ImGui::Checkbox("Bloom", &VaultRenderer::Window::Renderer.Bloom);
+            ImGui::Checkbox("PBR", &Runtime::instance->usePBR);
 
             ImGui::End();
         }

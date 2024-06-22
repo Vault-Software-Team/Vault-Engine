@@ -284,7 +284,7 @@ namespace VaultRenderer {
         skyboxShader.Bind();
         skyboxShader.SetUniformMat4("view", camera.view);
         skyboxShader.SetUniformMat4("projection", camera.projection);
-        BindIrradianceMap(0);
+        BindEnvCubemap(0);
         skyboxShader.SetUniform1i("environmentMap", 0);
         SimpleCalls::RenderCube();
         glDepthFunc(GL_LESS);

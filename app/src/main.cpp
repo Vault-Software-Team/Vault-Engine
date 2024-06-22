@@ -102,6 +102,7 @@ int main() {
     Statistics::SetStats();
 
     Shader shader("./shaders/pbr.glsl");
+    Shader non_pbr_shader("./shaders/default.glsl");
     Shader skybox_shader("./shaders/skybox.glsl");
     Shader shadow_map_shader("./shaders/shadow_map.glsl");
     Shader shadow_cubemap_shader("./shaders/shadow_map_point.glsl");
@@ -113,7 +114,7 @@ int main() {
     // Texture equirect("./assets/skybox/metro_noord_8k.hdr", TEXTURE_HDRI);
 
     Font::InitFT();
-    default_shader = &shader;
+    default_shader = &non_pbr_shader;
 
     Skybox skybox;
 
@@ -362,7 +363,7 @@ int main() {
 
     // HDRI Skybox Setup
     glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
-    HDRSkybox hdrSkybox("./assets/skybox/metro_noord_8k.hdr", &equirectToCubemap, &hdri_skybox_shader, &irr_shader, &prefilter_shader, &brdf_shader, 512);
+    HDRSkybox hdrSkybox("./assets/skybox/metro_noord_8k.hdr", &equirectToCubemap, &hdri_skybox_shader, &irr_shader, &prefilter_shader, &brdf_shader, 1024);
 
     auto Function_MousePicking = [&](Framebuffer::ColorAttachement &ca) {
         hdrSkybox.RenderEnvCubemap();
@@ -523,6 +524,9 @@ int main() {
             Serializer::config.shadow_near = shadow_map.near;
             Serializer::config.shadow_far = shadow_map.far;
             Serializer::config.shadow_ortho_size = shadow_map.ortho_size;
+
+                Runtime::instance->default_shader =Runtime::instance->usePBR ? &shader : &non_pbr_shader;
+                default_shader = Runtime::instance->default_shader;
         }
 
 

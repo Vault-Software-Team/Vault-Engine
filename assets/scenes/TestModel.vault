@@ -6,12 +6,12 @@ GameObjects:
       tag: Default
       parent: NO_PARENT
       Transform:
-        position: [1.33064365, 1.50983417, 0.228175461]
+        position: [-0.0707632303, 1.50983346, 0.196885854]
         rotation: [0, 0, 0]
         scale: [1, 1, 1]
-      DirectionalLight:
-        intensity: 3.94000006
-        color: [1, 1, 1]
+      PointLight:
+        intensity: 13.1199999
+        color: [0.136170149, 1, 0]
         enable_shadow_mapping: false
   - GameObject:
       ID: ba63b1a3-cc48-4ab6-abad-652f9fba0c45

@@ -2,6 +2,7 @@
 #include "Engine/Components/Collider3D.hpp"
 #include "Engine/Components/Rigidbody3D.hpp"
 #include "Engine/Components/SpriteRenderer.hpp"
+#include "Engine/Runtime.hpp"
 #include "Renderer/Window.hpp"
 #include "yaml-cpp/emittermanip.h"
 #include <Engine/SceneSerialization.hpp>
@@ -832,6 +833,7 @@ namespace Engine {
         emitter << yaml::Key << "shadow_ortho_size" << yaml::Value << 20.f;
         emitter << yaml::Key << "HDR.exposure" << yaml::Value << 2.f;
         emitter << yaml::Key << "Renderer.Bloom" << yaml::Value << true;
+        emitter << yaml::Key << "usePBR" << yaml::Value << false;
 
         std::ofstream file(path);
         file << emitter.c_str();
@@ -873,6 +875,10 @@ namespace Engine {
         if (data["Renderer.Bloom"]) {
             VaultRenderer::Window::Renderer.Bloom = data["Renderer.Bloom"].as<bool>();
         }
+
+        if (data["usePBR"]) {
+            Runtime::instance->usePBR = data["usePBR"].as<bool>();
+        }
     }
 
     void Serializer::SaveConfigFile(const std::string &path) {
@@ -893,6 +899,7 @@ namespace Engine {
 
         // Renderer
         emitter << yaml::Key << "Renderer.Bloom" << yaml::Value << VaultRenderer::Window::Renderer.Bloom;
+        emitter << yaml::Key << "usePBR" << yaml::Value << Runtime::instance->usePBR;
 
         std::ofstream file(path);
         file << emitter.c_str();

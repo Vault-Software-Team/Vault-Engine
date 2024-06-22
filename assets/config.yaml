@@ -5,3 +5,4 @@ shadow_far: 75
 shadow_ortho_size: 34
 HDR.exposure: 2
 Renderer.Bloom: false
+usePBR: true
