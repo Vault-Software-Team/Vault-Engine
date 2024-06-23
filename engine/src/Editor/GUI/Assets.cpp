@@ -15,6 +15,8 @@ using namespace Engine;
 using namespace Engine::Components;
 namespace fs = std::filesystem;
 
+static std::string AddFile_Folder = "./assets";
+
 void DirectoryIterator(const std::string &str, const char *filter_str) {
     auto iter = std::filesystem::directory_iterator(str);
 
@@ -153,10 +155,21 @@ namespace Editor {
     void GUI::Assets() {
         constexpr int filter_str_size = 256;
         static char filter_str[filter_str_size];
+        static bool AddFilePopup = false;
 
         ImGui::Begin(ICON_FA_FOLDER " Assets");
         ImGui::PushItemWidth(ImGui::GetWindowSize().x - 20);
         ImGui::InputText("##AssetsFilterString", filter_str, filter_str_size);
+
+        if (ImGui::Button(ICON_FA_PLUS " Add File", ImVec2(ImGui::GetWindowSize().x - 20, 0))) {
+            ImGui::OpenPopup("Asset_AddFilePopup");
+        }
+
+        if (ImGui::BeginPopup("Asset_AddFilePopup")) {
+            ImGui::Button(ICON_FA_CODE " Add C# Script", ImVec2(150, 0));
+            ImGui::Button(ICON_FA_PAINT_ROLLER " Add GLSL Shader", ImVec2(150, 0));
+        }
+
         std::string icon = ICON_FA_CUBE;
 
         DirectoryIterator("./assets", filter_str);
