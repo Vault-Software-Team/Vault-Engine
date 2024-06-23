@@ -71,7 +71,7 @@ namespace Engine {
 
 #ifndef GAME_BUILD
 
-        if (Editor::GUI::selected_gameObject) {
+        if (Editor::GUI::selected_gameObject && Editor::EditorLayer::instance->EnableColliderGizmo) {
             auto &gameObject = Editor::GUI::selected_gameObject;
 
             if (gameObject->HasComponent<MeshCollider3D>() && gameObject->HasComponent<MeshRenderer>()) {
@@ -137,7 +137,7 @@ namespace Engine {
         glDisable(GL_DEPTH_TEST);
         glDepthFunc(GL_LEQUAL);
         glDisable(GL_CULL_FACE);
-        if (Scene::Main->main_camera_object == Scene::Main->EditorSceneCamera && Scene::Main->main_camera_object) {
+        if (Scene::Main->main_camera_object == Scene::Main->EditorSceneCamera && Scene::Main->main_camera_object && Editor::EditorLayer::instance->EnableIconGizmo) {
             Scene::Main->main_camera_object->BindToShader(*Editor::EditorLayer::instance->ColliderGizmo.shader);
 
             auto &camera = Scene::Main->StaticGameObjects_EntityRegistry.get<Camera>(Scene::Main->main_camera_object->entity);

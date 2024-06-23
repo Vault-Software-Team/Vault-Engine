@@ -1,3 +1,4 @@
+#include "Editor/EditorLayer.hpp"
 #include "Engine/Mono/CSharp.hpp"
 #include "Renderer/Shader.hpp"
 #include "imgui/ImGuiNotify.hpp"
@@ -20,6 +21,7 @@ namespace Editor {
     static bool open = false;
     static bool open_hdr = false;
     static bool open_shader_debug = false;
+    static bool open_editor = false;
 
     static ImVec4 RGB255ToRGB1(float r, float g, float b, float a) {
         return ImVec4(r / 255, g / 255, b / 255, a / 255);
@@ -117,6 +119,16 @@ namespace Editor {
             }
         }
     }
+    static void EditorConfig() {
+        if (!open_editor) return;
+
+        if (ImGui::Begin(ICON_FA_GEAR " Editor Config", &open_editor, ImGuiWindowFlags_NoDocking)) {
+            ImGui::Checkbox("Show Icons", &EditorLayer::instance->EnableIconGizmo);
+            ImGui::Checkbox("Show Collider Gizmo", &EditorLayer::instance->EnableColliderGizmo);
+
+            ImGui::End();
+        }
+    }
 
     static void SaveSceneAs() {
         if (ImGuiFileDialog::Instance()->Display("SaveSceneAsDialog")) {
@@ -185,6 +197,13 @@ namespace Editor {
                 ImGui::EndMenu();
             }
 
+            if (ImGui::BeginMenu("Editor")) {
+                if (ImGui::MenuItem("Settings")) {
+                    open_editor = true;
+                }
+                ImGui::EndMenu();
+            }
+
             if (ImGui::BeginMenu("C#")) {
                 if (ImGui::MenuItem("Reload Assembly")) {
                     CSharp::instance->ReloadAssembly();
@@ -202,5 +221,6 @@ namespace Editor {
         ShadowMapConfiguration();
         HDRConfiguration();
         ShaderDebug();
+        EditorConfig();
     }
 } // namespace Editor
