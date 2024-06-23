@@ -85,6 +85,8 @@ namespace Engine {
                 auto &coll = gameObject->GetComponent<MeshCollider3D>();
                 auto &transform = gameObject->GetComponent<Transform>();
 
+                Editor::EditorLayer::instance->ColliderGizmo.shader->Bind();
+                Editor::EditorLayer::instance->ColliderGizmo.shader->SetUniform1i("texture_diffuse.defined", 0);
                 Editor::EditorLayer::instance->ColliderGizmo.DrawGizmo(*Editor::EditorLayer::instance->ColliderGizmo.shader, comp.mesh.get(), transform.position, transform.rotation, transform.scale, coll.size);
 
                 glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -99,6 +101,8 @@ namespace Engine {
                 auto &coll = gameObject->GetComponent<BoxCollider3D>();
                 auto &transform = gameObject->GetComponent<Transform>();
 
+                Editor::EditorLayer::instance->ColliderGizmo.shader->Bind();
+                Editor::EditorLayer::instance->ColliderGizmo.shader->SetUniform1i("texture_diffuse.defined", 0);
                 Editor::EditorLayer::instance->ColliderGizmo.DrawGizmo(*Editor::EditorLayer::instance->ColliderGizmo.shader, &MeshRenderer::ModelMeshes[MESH_CUBE]->meshes.back(), transform.position, transform.rotation, transform.scale, coll.size);
                 glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
                 glEnable(GL_DEPTH_TEST);
@@ -130,62 +134,87 @@ namespace Engine {
 
 // Draw Component Icons
 #ifndef GAME_BUILD
-        // glDisable(GL_DEPTH_TEST);
-        // glDepthFunc(GL_LEQUAL);
-        // glDisable(GL_CULL_FACE);
-        // if (Scene::Main->main_camera_object == Scene::Main->EditorSceneCamera && Scene::Main->main_camera_object) {
-        //     Scene::Main->main_camera_object->BindToShader(*Editor::EditorLayer::instance->ColliderGizmo.shader);
+        glDisable(GL_DEPTH_TEST);
+        glDepthFunc(GL_LEQUAL);
+        glDisable(GL_CULL_FACE);
+        if (Scene::Main->main_camera_object == Scene::Main->EditorSceneCamera && Scene::Main->main_camera_object) {
+            Scene::Main->main_camera_object->BindToShader(*Editor::EditorLayer::instance->ColliderGizmo.shader);
 
-        //     auto &camera = Scene::Main->StaticGameObjects_EntityRegistry.get<Camera>(Scene::Main->main_camera_object->entity);
-        //     for (auto &e : camV) {
-        //         auto &transform = Scene::Main->EntityRegistry.get<Transform>(e);
+            auto &camera = Scene::Main->StaticGameObjects_EntityRegistry.get<Camera>(Scene::Main->main_camera_object->entity);
+            for (auto &e : camV) {
+                auto &transform = Scene::Main->EntityRegistry.get<Transform>(e);
 
-        //         Transform t = transform;
-        //         float distance = glm::distance(t.position, camera.transform->position);
-        //         t.scale = glm::vec3(-(distance / 4), distance / 4, distance / 4);
-        //         t.LookAt(camera.transform->position);
-        //         t.Update();
+                Transform t = transform;
+                float distance = glm::distance(t.position, camera.transform->position);
+                t.scale = glm::vec3(-(distance / 8), distance / 8, distance / 8);
+                t.LookAt(camera.transform->position);
+                t.Update();
 
-        //         Editor::EditorLayer::instance->DrawIcon(Editor::EditorLayer::instance->iconMeshes.CameraIcon, *Editor::EditorLayer::instance->ColliderGizmo.shader, t.model, (uint32_t)transform.entity, Editor::EditorLayer::instance->icons.CameraIcon);
-        //     }
+                Editor::EditorLayer::instance->ColliderGizmo.shader->Bind();
+                Editor::EditorLayer::instance->ColliderGizmo.shader->SetUniformMat4("transformModel", t.model);
+                Editor::EditorLayer::instance->ColliderGizmo.shader->SetUniform1ui("u_EntityID", (uint32_t)transform.entity);
+                Editor::EditorLayer::instance->icons.CameraIcon->Bind(0);
+                Editor::EditorLayer::instance->ColliderGizmo.shader->SetUniform1i("texture_diffuse.defined", 1);
+                Editor::EditorLayer::instance->ColliderGizmo.shader->SetUniform1i("texture_diffuse.tex", 0);
+                SimpleCalls::RenderQuad();
+                // Editor::EditorLayer::instance->DrawIcon(Editor::EditorLayer::instance->iconMeshes.CameraIcon, *Editor::EditorLayer::instance->ColliderGizmo.shader, t.model, (uint32_t)transform.entity, Editor::EditorLayer::instance->icons.CameraIcon);
+            }
 
-        //     auto v_PointLight = Scene::Main->EntityRegistry.view<PointLight>();
-        //     for (auto &e : v_PointLight) {
-        //         auto &transform = Scene::Main->EntityRegistry.get<Transform>(e);
-        //         Transform t = transform;
-        //         float distance = glm::distance(t.position, camera.transform->position);
-        //         t.scale = glm::vec3(-(distance / 4), distance / 4, distance / 4);
-        //         t.LookAt(camera.transform->position);
-        //         t.Update();
+            auto v_PointLight = Scene::Main->EntityRegistry.view<PointLight>();
+            for (auto &e : v_PointLight) {
+                auto &transform = Scene::Main->EntityRegistry.get<Transform>(e);
+                Transform t = transform;
+                float distance = glm::distance(t.position, camera.transform->position);
+                t.scale = glm::vec3(-(distance / 8), distance / 8, distance / 8);
+                t.LookAt(camera.transform->position);
+                t.Update();
 
-        //         Editor::EditorLayer::instance->DrawIcon(Editor::EditorLayer::instance->iconMeshes.PointLightIcon, *Editor::EditorLayer::instance->ColliderGizmo.shader, t.model, (uint32_t)transform.entity, Editor::EditorLayer::instance->icons.PointLightIcon);
-        //     }
+                Editor::EditorLayer::instance->ColliderGizmo.shader->Bind();
+                Editor::EditorLayer::instance->ColliderGizmo.shader->SetUniformMat4("transformModel", t.model);
+                Editor::EditorLayer::instance->ColliderGizmo.shader->SetUniform1ui("u_EntityID", (uint32_t)transform.entity);
+                Editor::EditorLayer::instance->icons.PointLightIcon->Bind(0);
+                Editor::EditorLayer::instance->ColliderGizmo.shader->SetUniform1i("texture_diffuse.defined", 1);
+                Editor::EditorLayer::instance->ColliderGizmo.shader->SetUniform1i("texture_diffuse.tex", 0);
+                SimpleCalls::RenderQuad();
+            }
 
-        //     auto v_DirectionalLight = Scene::Main->EntityRegistry.view<DirectionalLight>();
-        //     for (auto &e : v_DirectionalLight) {
-        //         auto &transform = Scene::Main->EntityRegistry.get<Transform>(e);
-        //         Transform t = transform;
-        //         float distance = glm::distance(t.position, camera.transform->position);
-        //         t.scale = glm::vec3(-(distance / 4), distance / 4, distance / 4);
-        //         t.LookAt(camera.transform->position);
-        //         t.Update();
+            auto v_DirectionalLight = Scene::Main->EntityRegistry.view<DirectionalLight>();
+            for (auto &e : v_DirectionalLight) {
+                auto &transform = Scene::Main->EntityRegistry.get<Transform>(e);
+                Transform t = transform;
+                float distance = glm::distance(t.position, camera.transform->position);
+                t.scale = glm::vec3(-(distance / 8), distance / 8, distance / 8);
+                t.LookAt(camera.transform->position);
+                t.Update();
 
-        //         Editor::EditorLayer::instance->DrawIcon(Editor::EditorLayer::instance->iconMeshes.DirLightIcon, *Editor::EditorLayer::instance->ColliderGizmo.shader, t.model, (uint32_t)transform.entity, Editor::EditorLayer::instance->icons.DirLightIcon);
-        //     }
+                Editor::EditorLayer::instance->ColliderGizmo.shader->Bind();
+                Editor::EditorLayer::instance->ColliderGizmo.shader->SetUniformMat4("transformModel", t.model);
+                Editor::EditorLayer::instance->ColliderGizmo.shader->SetUniform1ui("u_EntityID", (uint32_t)transform.entity);
+                Editor::EditorLayer::instance->icons.DirLightIcon->Bind(0);
+                Editor::EditorLayer::instance->ColliderGizmo.shader->SetUniform1i("texture_diffuse.defined", 1);
+                Editor::EditorLayer::instance->ColliderGizmo.shader->SetUniform1i("texture_diffuse.tex", 0);
+                SimpleCalls::RenderQuad();
+            }
 
-        //     auto v_SpotLight = Scene::Main->EntityRegistry.view<SpotLight>();
-        //     for (auto &e : v_SpotLight) {
-        //         auto &transform = Scene::Main->EntityRegistry.get<Transform>(e);
-        //         Transform t = transform;
-        //         float distance = glm::distance(t.position, camera.transform->position);
-        //         t.scale = glm::vec3(-(distance / 4), distance / 4, distance / 4);
-        //         t.LookAt(camera.transform->position);
-        //         t.Update();
+            auto v_SpotLight = Scene::Main->EntityRegistry.view<SpotLight>();
+            for (auto &e : v_SpotLight) {
+                auto &transform = Scene::Main->EntityRegistry.get<Transform>(e);
+                Transform t = transform;
+                float distance = glm::distance(t.position, camera.transform->position);
+                t.scale = glm::vec3(-(distance / 8), distance / 8, distance / 8);
+                t.LookAt(camera.transform->position);
+                t.Update();
 
-        //         Editor::EditorLayer::instance->DrawIcon(Editor::EditorLayer::instance->iconMeshes.SpotLightIcon, *Editor::EditorLayer::instance->ColliderGizmo.shader, t.model, (uint32_t)transform.entity, Editor::EditorLayer::instance->icons.SpotLightIcon);
-        //     }
-        // }
-        // glEnable(GL_DEPTH_TEST);
+                Editor::EditorLayer::instance->ColliderGizmo.shader->Bind();
+                Editor::EditorLayer::instance->ColliderGizmo.shader->SetUniformMat4("transformModel", t.model);
+                Editor::EditorLayer::instance->ColliderGizmo.shader->SetUniform1ui("u_EntityID", (uint32_t)transform.entity);
+                Editor::EditorLayer::instance->icons.SpotLightIcon->Bind(0);
+                Editor::EditorLayer::instance->ColliderGizmo.shader->SetUniform1i("texture_diffuse.defined", 1);
+                Editor::EditorLayer::instance->ColliderGizmo.shader->SetUniform1i("texture_diffuse.tex", 0);
+                SimpleCalls::RenderQuad();
+            }
+        }
+        glEnable(GL_DEPTH_TEST);
 
 #endif
 

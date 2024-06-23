@@ -19,8 +19,11 @@ void main() {
 #shader fragment
 #version 330 core
 out vec4 FragColor;
+out vec4 BloomColor;
+out uint EntityID;
 
 in vec2 texUV;
+uniform uint u_EntityID;
 
 struct Texture {
     sampler2D tex;
@@ -30,5 +33,7 @@ struct Texture {
 uniform Texture texture_diffuse;
 
 void main() {
+    EntityID = u_EntityID;
+    BloomColor = vec4(0, 0, 0, 1);
     FragColor = texture_diffuse.defined ? texture(texture_diffuse.tex, texUV) : vec4(0, 1, 0, 1);
 }

@@ -10,6 +10,9 @@ namespace Editor {
     public:
         static DLL_API EditorLayer *instance;
 
+        bool EnableIconGizmo = true;
+        bool EnableColliderGizmo = true;
+
         std::unique_ptr<VaultRenderer::Mesh> IconMesh = nullptr;
         std::unique_ptr<VaultRenderer::Shader> IconShader = nullptr;
 
