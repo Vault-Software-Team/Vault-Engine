@@ -4,6 +4,7 @@
 #include <Engine/Components/IncludeComponents.hpp>
 #include <icons/icons.h>
 #include <imgui/imgui.h>
+#include <imgui/imgui_stdlib.h>
 #include <filesystem>
 #include <iostream>
 #include <Engine/SceneSerialization.hpp>
@@ -46,6 +47,31 @@ void DirectoryIterator(const std::string &str, const char *filter_str) {
     for (auto &entry : iter)
         sorted_by_name.insert(entry);
 
+    static std::string FilePath = "";
+    static std::string FileName = "";
+    static std::string FileDir = "";
+    const int PopupElementWidth = 150;
+
+    if (ImGui::BeginPopup("AssetsFile_ContextMenu")) {
+        ImGui::PushItemWidth(PopupElementWidth);
+        ImGui::InputText("##AssetsFileChangeName", &FileName);
+        if (ImGui::Button("Rename File", ImVec2(PopupElementWidth, 0))) {
+            fs::rename(FilePath, FileDir + "/" + FileName);
+            ImGui::CloseCurrentPopup();
+            FilePath = "";
+            FileName = "";
+        }
+
+        if (ImGui::Button(ICON_FA_TRASH_CAN " Delete File", ImVec2(PopupElementWidth, 0))) {
+            fs::remove_all(FilePath);
+            ImGui::CloseCurrentPopup();
+            FilePath = "";
+            FileName = "";
+        }
+
+        ImGui::EndPopup();
+    }
+
     for (auto &dir : sorted_by_name) {
         if (dir.path().string().find("VAULT_API", 0) != std::string::npos) {
             continue;
@@ -60,10 +86,22 @@ void DirectoryIterator(const std::string &str, const char *filter_str) {
         }
 
         if (dir.is_directory()) {
-            if (ImGui::TreeNode((std::string(ICON_FA_FOLDER) + " " + dir.path().filename().string()).c_str())) {
+            bool treenode = ImGui::TreeNode((std::string(ICON_FA_FOLDER) + " " + dir.path().filename().string()).c_str());
+            if (treenode) {
+                if (ImGui::IsMouseClicked(1) && ImGui::IsItemHovered()) {
+                    AddFile_Folder = dir.path().string();
+                    ImGui::OpenPopup("Asset_AddFilePopup");
+                }
+
                 DirectoryIterator(dir.path().string(), filter_str);
                 ImGui::TreePop();
+            } else {
+                if (ImGui::IsMouseClicked(1) && ImGui::IsItemHovered()) {
+                    AddFile_Folder = dir.path().string();
+                    ImGui::OpenPopup("Asset_AddFilePopup");
+                }
             }
+
         } else {
             std::string dir_filename = dir.path().filename().string();
             std::transform(dir_filename.begin(), dir_filename.end(), dir_filename.begin(), Editor::asciitolower);
@@ -95,6 +133,14 @@ void DirectoryIterator(const std::string &str, const char *filter_str) {
             }
 
             bool pressed = ImGui::Selectable((icon + " " + dir.path().filename().string()).c_str());
+
+            if (ImGui::IsMouseClicked(1) && ImGui::IsItemHovered()) {
+                FilePath = dir.path().string();
+                FileName = dir.path().filename().string();
+                FileDir = dir.path().parent_path().string();
+                ImGui::OpenPopup("AssetsFile_ContextMenu");
+            }
+
             if (ImGui::IsMouseDoubleClicked(0) && ImGui::IsItemHovered()) {
                 if (name.ends_with(".vault")) {
                     Editor::GUI::selected_gameObject = nullptr;
@@ -119,6 +165,7 @@ void DirectoryIterator(const std::string &str, const char *filter_str) {
                     Engine::Model model(dir.path().string());
                 }
             }
+
             if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None)) {
                 Editor::GUI::dragPayload = fs::absolute(dir.path()).string();
                 auto length = dir.path().string().length();
@@ -166,8 +213,89 @@ namespace Editor {
         }
 
         if (ImGui::BeginPopup("Asset_AddFilePopup")) {
-            ImGui::Button(ICON_FA_CODE " Add C# Script", ImVec2(150, 0));
-            ImGui::Button(ICON_FA_PAINT_ROLLER " Add GLSL Shader", ImVec2(150, 0));
+            static std::string Filename = "New File";
+            ImGui::PushItemWidth(150);
+            ImGui::InputText("##AssetsAddFileString", &Filename);
+            ImGui::TextWrapped("%s", AddFile_Folder.c_str());
+
+            if (AddFile_Folder != "./assets") {
+                if (ImGui::Button(ICON_FA_TRASH_CAN " Delete Folder", ImVec2(150, 0))) {
+                    fs::remove_all(AddFile_Folder);
+                    ImGui::CloseCurrentPopup();
+                    AddFile_Folder = "";
+                    Filename = "New File";
+                }
+            }
+
+            if (ImGui::Button(ICON_FA_CODE " Add C# Script", ImVec2(150, 0))) {
+                std::ofstream ofs(AddFile_Folder + "/" + Filename + ".cs");
+
+                ofs << "using Vault;\n";
+                ofs << "public class CameraTest : Entity {\n";
+                ofs << "void OnInit(string ID) {\n";
+                ofs << "    SetObjectID(ID);\n";
+                ofs << "}\n\n";
+
+                ofs << "private void OnStart(string ID) {\n";
+                ofs << "}\n\n";
+
+                ofs << "private void OnUpdate() {\n";
+                ofs << "}\n";
+                ofs << "\n";
+                ofs << "void OnMouseEnter() {\n";
+                ofs << "    Debug.Log(\"Mouse Entered!\");\n";
+                ofs << "}\n\n";
+
+                ofs << "void OnMouseExit() {\n";
+                ofs << "    Debug.Log(\"Mouse Left!\");\n";
+                ofs << "}\n";
+                ofs << "}\n";
+
+                ofs.close();
+                ImGui::CloseCurrentPopup();
+                AddFile_Folder = "./assets";
+                Filename = "New File";
+            }
+
+            if (ImGui::Button(ICON_FA_PAINT_ROLLER " Add PBR Shader", ImVec2(150, 0))) {
+                std::ifstream stream("./shaders/pbr.glsl");
+                std::stringstream ss;
+                ss << stream.rdbuf();
+                std::string content = ss.str();
+
+                std::ofstream ofs(AddFile_Folder + "/" + Filename + "_pbr.glsl");
+                ofs << content << "\n";
+                ofs.close();
+                ImGui::CloseCurrentPopup();
+                AddFile_Folder = "./assets";
+                Filename = "New File";
+            }
+
+            if (ImGui::Button(ICON_FA_PAINT_ROLLER " Add GLSL Shader", ImVec2(150, 0))) {
+                std::ifstream stream("./shaders/default.glsl");
+                std::stringstream ss;
+                ss << stream.rdbuf();
+                std::string content = ss.str();
+
+                std::ofstream ofs(AddFile_Folder + "/" + Filename + ".glsl");
+                ofs << content << "\n";
+                ofs.close();
+                ImGui::CloseCurrentPopup();
+                AddFile_Folder = "./assets";
+                Filename = "New File";
+            }
+
+            if (ImGui::Button(ICON_FA_PAINT_ROLLER " Add Text File", ImVec2(150, 0))) {
+                std::ofstream ofs(AddFile_Folder + "/" + Filename + ".txt");
+                ofs.close();
+                ImGui::CloseCurrentPopup();
+                AddFile_Folder = "./assets";
+                Filename = "New File";
+            }
+
+            ImGui::EndPopup();
+        } else {
+            AddFile_Folder = "./assets";
         }
 
         std::string icon = ICON_FA_CUBE;
