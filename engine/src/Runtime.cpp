@@ -62,7 +62,8 @@ namespace Engine {
 
         default_shader->Bind();
         SetGlobalUniforms();
-        Scene::Main->OnRuntimeUpdate(timestep);
+        if (isRunning)
+            Scene::Main->OnRuntimeUpdate(timestep);
         Scene::Main->UpdateGameObjectComponents();
         Scene::UpdateStaticGameObjectComponents();
         bulletPhysics->UpdatePhysics();

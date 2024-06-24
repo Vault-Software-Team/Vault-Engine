@@ -6,11 +6,11 @@ GameObjects:
       tag: Default
       parent: NO_PARENT
       Transform:
-        position: [-0.543494701, 2.45364141, 1.14129043]
+        position: [0, 1.89374077, 0]
         rotation: [0, 0, 0]
         scale: [1, 1, 1]
       PointLight:
-        intensity: 10
+        intensity: 25
         color: [1, 1, 1]
         enable_shadow_mapping: false
   - GameObject:
@@ -41,21 +41,21 @@ GameObjects:
       tag: Default
       parent: NO_PARENT
       Transform:
-        position: [-3.67610979, 3.68962407, 0.450974226]
+        position: [-3.67610979, 4.6890049, 0.450974226]
         rotation: [0.490184754, 0.230298996, 0.611975491]
         scale: [3.34990001, 3.34989977, 3.34989977]
       MeshRenderer:
-        mesh_type: 2
+        mesh_type: 1
         mesh_index: -1
         mesh_path: ""
         material_path: ./assets/rusty_metal.material
       Rigidbody3D:
         mass: 1
-        restitution: 0
+        restitution: 1
         friction: 0.5
         trigger: false
         fixedRotation: false
-      BoxCollider3D:
+      MeshCollider3D:
         size: [3.3499999, 3.3499999, 3.3499999]
   - GameObject:
       ID: 85eca0d7-ec3f-484c-bb8b-21d57782e6bc
@@ -63,17 +63,17 @@ GameObjects:
       tag: Default
       parent: NO_PARENT
       Transform:
-        position: [0.870504975, 3.24835753, 1.99214566]
-        rotation: [0, 0, 0]
+        position: [0.870504975, 2.59883571, 1.99214566]
+        rotation: [-1.49218536e-07, 0, 0]
         scale: [3.4532001, 3.4532001, 3.4532001]
       MeshRenderer:
-        mesh_type: 3
+        mesh_type: 4
         mesh_index: -1
         mesh_path: ""
         material_path: ./assets/hi.material
       Rigidbody3D:
         mass: 1
-        restitution: 1.5
+        restitution: 1.20000005
         friction: 0.5
         trigger: false
         fixedRotation: false
@@ -85,7 +85,7 @@ GameObjects:
       tag: Default
       parent: NO_PARENT
       Transform:
-        position: [-1.41826236, 1.29377723, -0.735670686]
+        position: [-1.73103392, 1.29377818, -0.955234468]
         rotation: [-1.57079637, 0, 0]
         scale: [0.0483359993, 0.0483349152, 0.0483349152]
       ModelRenderer:
@@ -105,5 +105,5 @@ GameObjects:
         rotation: [0, 0, 0]
         scale: [1, 1, 1]
       AmbientLight:
-        amount: 1
+        amount: 1.11000001
         color: [1, 1, 1]

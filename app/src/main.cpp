@@ -88,7 +88,7 @@ void print(const std::string &traki) {
 int main() {
     using namespace VaultRenderer;
 
-    chdir("/home/poww/Desktop/Programming Projects/Vault-Engine");
+    // chdir("/home/poww/Desktop/Programming Projects/Vault-Engine");
 
     // dlsym test
     // Script *(*create_obj)() = (Script * (*)()) dlsym(dlopen("./sandbox/script.so", RTLD_LAZY), "create_script");

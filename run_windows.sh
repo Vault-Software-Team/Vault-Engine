@@ -7,4 +7,4 @@ cp ../dlls/* ./app
 
 cd ../../
 # ./app/app.exe
-WINEDEBUG=-all,err+module WINEPATH=/usr/x86_64-w64-mingw32/bin/ ./windows/build/app/app.exe
+WINEDEBUG=-all,err+module ./windows/build/app/app.exe
