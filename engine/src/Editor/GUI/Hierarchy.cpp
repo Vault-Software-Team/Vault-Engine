@@ -36,13 +36,23 @@ namespace Editor {
             if (const ImGuiPayload *payload = ImGui::AcceptDragDropPayload("prefab")) {
                 Serializer::LoadPrefab((char *)payload->Data);
             }
+            if (const ImGuiPayload *payload = ImGui::AcceptDragDropPayload("gameobject")) {
+                for (auto &gameObject : Scene::Main->GameObjects) {
+                    if (gameObject->ID == (char *)payload->Data) {
+                        gameObject->parent = "NO_PARENT";
+                        break;
+                    }
+                }
+            }
             ImGui::EndDragDropTarget();
         }
+
         ImGui::SetCursorPos(cursor_pos);
 
         for (auto &gameObject : Scene::Main->GameObjects) {
             if (!gameObject)
                 continue;
+
             if (gameObject->parent != "NO_PARENT")
                 continue;
 

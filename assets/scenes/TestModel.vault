@@ -39,7 +39,7 @@ GameObjects:
       ID: 12bd358e-5087-4cc0-b413-a5c1a5d8b9a4
       name: Metallic Sphere
       tag: Default
-      parent: NO_PARENT
+      parent: 85eca0d7-ec3f-484c-bb8b-21d57782e6bc
       Transform:
         position: [-3.67610979, 4.6890049, 0.450974226]
         rotation: [0.490184754, 0.230298996, 0.611975491]

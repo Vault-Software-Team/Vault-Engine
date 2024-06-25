@@ -9,6 +9,7 @@
 #include <Engine/GameObject.hpp>
 #include <Engine/Scene.hpp>
 #include <Engine/Components/IncludeComponents.hpp>
+#include <algorithm>
 #include <uuid.hpp>
 #include <iostream>
 #include <Editor/GUI/MainGUI.hpp>
@@ -216,6 +217,16 @@ namespace Engine {
     }
 
     void GameObject::GUI() {
+        int index = -1;
+        auto it = std::find(Scene::Main->GameObjects.begin(), Scene::Main->GameObjects.end(), shared_from_this());
+
+        if (it != Scene::Main->GameObjects.end()) {
+            index = it - Scene::Main->GameObjects.begin();
+        }
+
+        if (index == -1)
+            return;
+
         bool hasChildren = false;
         for (auto &gameObject : Scene::Main->GameObjects) {
             if (gameObject->parent == ID) {
@@ -231,12 +242,51 @@ namespace Engine {
 
         // ImGui::TextColored(color, icon.c_str());
         // ImGui::SameLine();
+
+        ImGui::Dummy(ImVec2(ImGui::GetContentRegionAvail().x, 5));
+
         ImGui::PushStyleColor(ImGuiCol_Text, color);
+        if (ImGui::BeginDragDropTarget()) {
+            if (const ImGuiPayload *payload = ImGui::AcceptDragDropPayload("gameobject")) {
+                for (auto &gameObject : Scene::Main->GameObjects) {
+                    if (gameObject->ID == (char *)payload->Data) {
+                        int gIndex = -1;
+                        auto it = find(Scene::Main->GameObjects.begin(), Scene::Main->GameObjects.end(), gameObject);
+
+                        if (it != Scene::Main->GameObjects.end()) {
+                            gIndex = it - Scene::Main->GameObjects.begin();
+                        }
+
+                        if (gIndex == -1)
+                            continue;
+
+                        std::swap(Scene::Main->GameObjects[gIndex], Scene::Main->GameObjects[index]);
+                    }
+                }
+            }
+
+            ImGui::EndDragDropTarget();
+        }
         if (hasChildren) {
             bool tree_node_open = ImGui::TreeNodeEx(ID.c_str(), ImGuiTreeNodeFlags_SpanAvailWidth, "%s", (icon + " " + name).c_str());
+            if (ImGui::BeginDragDropTarget()) {
+                if (const ImGuiPayload *payload =
+                        ImGui::AcceptDragDropPayload("gameobject")) {
+                    if ((char *)payload->Data != ID) {
+                        for (auto &gameObject : Scene::Main->GameObjects) {
+                            if (gameObject->ID == (char *)payload->Data) {
+                                gameObject->parent = ID;
+                                break;
+                            }
+                        }
+                    }
+                }
+                ImGui::EndDragDropTarget();
+            }
             if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None)) {
                 Editor::GUI::dragPayload = ID.c_str();
                 ImGui::SetDragDropPayload("gameobject", ID.c_str(), ID.length() + 1);
+                ImGui::Text("%s %s", ICON_FA_CUBE, name.c_str());
                 ImGui::EndDragDropSource();
             }
             GUI_ContextMenu();
@@ -256,10 +306,24 @@ namespace Engine {
             if (ImGui::Selectable((icon + " " + name).c_str(), false, ImGuiSelectableFlags_SpanAvailWidth)) {
                 Editor::GUI::selected_gameObject = this;
             }
+            if (ImGui::BeginDragDropTarget()) {
+                if (const ImGuiPayload *payload =
+                        ImGui::AcceptDragDropPayload("gameobject")) {
+                    if ((char *)payload->Data != ID) {
+                        for (auto &gameObject : Scene::Main->GameObjects) {
+                            if (gameObject->ID == (char *)payload->Data) {
+                                gameObject->parent = ID;
+                                break;
+                            }
+                        }
+                    }
+                }
+                ImGui::EndDragDropTarget();
+            }
             if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None)) {
                 Editor::GUI::dragPayload = ID.c_str();
                 ImGui::SetDragDropPayload("gameobject", ID.c_str(), ID.length() + 1);
-                ImGui::Text("%s %s", ICON_FA_CUBE, ID.c_str());
+                ImGui::Text("%s %s", ICON_FA_CUBE, name.c_str());
                 ImGui::EndDragDropSource();
             }
 

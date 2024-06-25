@@ -86,9 +86,13 @@ namespace Engine {
                 auto &coll = gameObject->GetComponent<MeshCollider3D>();
                 auto &transform = gameObject->GetComponent<Transform>();
 
+                Transform t = transform;
+                t.scale = coll.size;
+                t.UpdateModel();
+
                 Editor::EditorLayer::instance->ColliderGizmo.shader->Bind();
                 Editor::EditorLayer::instance->ColliderGizmo.shader->SetUniform1i("texture_diffuse.defined", 0);
-                Editor::EditorLayer::instance->ColliderGizmo.DrawGizmo(*Editor::EditorLayer::instance->ColliderGizmo.shader, comp.mesh.get(), transform.position, transform.rotation, transform.scale, coll.size);
+                Editor::EditorLayer::instance->ColliderGizmo.DrawGizmo(*Editor::EditorLayer::instance->ColliderGizmo.shader, comp.mesh.get(), t.model, coll.size);
 
                 glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
                 glEnable(GL_DEPTH_TEST);
@@ -102,9 +106,13 @@ namespace Engine {
                 auto &coll = gameObject->GetComponent<BoxCollider3D>();
                 auto &transform = gameObject->GetComponent<Transform>();
 
+                Transform t = transform;
+                t.scale = coll.size;
+                t.UpdateModel();
+
                 Editor::EditorLayer::instance->ColliderGizmo.shader->Bind();
                 Editor::EditorLayer::instance->ColliderGizmo.shader->SetUniform1i("texture_diffuse.defined", 0);
-                Editor::EditorLayer::instance->ColliderGizmo.DrawGizmo(*Editor::EditorLayer::instance->ColliderGizmo.shader, &MeshRenderer::ModelMeshes[MESH_CUBE]->meshes.back(), transform.position, transform.rotation, transform.scale, coll.size);
+                Editor::EditorLayer::instance->ColliderGizmo.DrawGizmo(*Editor::EditorLayer::instance->ColliderGizmo.shader, &MeshRenderer::ModelMeshes[MESH_CUBE]->meshes.back(), t.model, coll.size);
                 glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
                 glEnable(GL_DEPTH_TEST);
             }

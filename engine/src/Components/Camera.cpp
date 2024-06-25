@@ -92,7 +92,7 @@ namespace Engine::Components {
             if (first_click) {
                 glfwSetCursorPos(window, (float)width / 2, (float)height / 2);
                 first_click = false;
-                return;
+                // return;
             }
 
             double mouse_x;

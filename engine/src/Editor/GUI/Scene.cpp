@@ -80,8 +80,7 @@ namespace Editor {
                 glm::mat4 projection = Scene::Main->main_camera_object->projection;
 
                 auto &transform = selected_gameObject->GetComponent<Transform>();
-                transform.Update();
-                glm::mat4 transformMat = transform.model;
+                glm::mat4 transformMat = transform.UpdateModelWithoutParent();
                 glm::vec3 originalRot = transform.rotation;
                 glm::vec3 originalScal = transform.scale;
 

@@ -85,8 +85,15 @@ namespace Engine {
 
     class DLL_API ModelMesh {
     public:
+        struct Info {
+            ModelMesh *ref;
+            int count;
+        };
+        static std::unordered_map<std::string, Info> LoadedModels;
+
         ModelMesh(const std::string &path);
         ModelMesh(const char *path);
+        ~ModelMesh();
         auto &GetBoneInfoMap() { return m_BoneInfoMap; }
         int &GetBoneCount() { return m_BoneCounter; }
         void SetVertexBoneDataToDefault(VaultRenderer::Vertex &vertex);

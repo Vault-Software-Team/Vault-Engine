@@ -35,7 +35,7 @@ namespace Editor {
         struct s_ColliderGizmo {
             std::unique_ptr<VaultRenderer::Mesh> Gizmo3D;
             VaultRenderer::Shader *shader;
-            void DrawGizmo(VaultRenderer::Shader &shader, VaultRenderer::Mesh *mesh, glm::vec3 position, glm::vec3 rotation, glm::vec3 scale, glm::vec3 colliderScale);
+            void DrawGizmo(VaultRenderer::Shader &shader, VaultRenderer::Mesh *mesh, glm::mat4 &model, glm::vec3 colliderScale);
         } ColliderGizmo;
 
         EditorLayer();

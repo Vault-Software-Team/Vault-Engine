@@ -99,12 +99,8 @@ namespace Editor {
         shader.Unbind();
     }
 
-    void EditorLayer::s_ColliderGizmo::DrawGizmo(VaultRenderer::Shader &shader, VaultRenderer::Mesh *mesh, glm::vec3 position, glm::vec3 rotation, glm::vec3 scale, glm::vec3 colliderScale) {
+    void EditorLayer::s_ColliderGizmo::DrawGizmo(VaultRenderer::Shader &shader, VaultRenderer::Mesh *mesh, glm::mat4 &model, glm::vec3 colliderScale) {
         shader.Bind();
-        glm::mat4 model = glm::translate(glm::mat4(1.0f), position) *
-                          glm::toMat4(glm::quat(rotation)) *
-                          glm::scale(glm::mat4(1.0f), colliderScale * glm::vec3(0.5, 0.5, 0.5));
-
         shader.SetUniformMat4("transformModel", model);
         mesh->Draw(shader, false);
     }

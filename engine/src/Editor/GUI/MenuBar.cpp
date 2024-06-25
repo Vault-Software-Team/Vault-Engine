@@ -1,4 +1,5 @@
 #include "Editor/EditorLayer.hpp"
+#include "Engine/Model.hpp"
 #include "Engine/Mono/CSharp.hpp"
 #include "Renderer/Shader.hpp"
 #include "imgui/ImGuiNotify.hpp"
@@ -22,6 +23,7 @@ namespace Editor {
     static bool open_hdr = false;
     static bool open_shader_debug = false;
     static bool open_editor = false;
+    static bool open_model_debug = false;
 
     static ImVec4 RGB255ToRGB1(float r, float g, float b, float a) {
         return ImVec4(r / 255, g / 255, b / 255, a / 255);
@@ -117,8 +119,27 @@ namespace Editor {
                 } else
                     ImGui::PopStyleColor();
             }
+
+            ImGui::End();
         }
     }
+
+    static void ModelDebug() {
+        if (!open_model_debug) return;
+
+        ImGui::SetNextWindowSizeConstraints(ImVec2(250.0f, 250.0f), ImVec2(1000.0f, 1000.f));
+        if (ImGui::Begin("Model List", &open_model_debug, ImGuiWindowFlags_NoDocking)) {
+            for (auto &mMap : ModelMesh::LoadedModels) {
+                auto &info = mMap.second;
+                std::filesystem::path p(info.ref->path);
+
+                ImGui::Text("%s", info.ref->path.c_str());
+            }
+
+            ImGui::End();
+        }
+    }
+
     static void EditorConfig() {
         if (!open_editor) return;
 
@@ -187,13 +208,18 @@ namespace Editor {
                     }
                     ImGui::EndMenu();
                 }
-                if (ImGui::BeginMenu("Shaders")) {
-                    if (ImGui::MenuItem("List")) {
+                if (ImGui::BeginMenu("Lists")) {
+                    if (ImGui::MenuItem("Shaders")) {
                         open_shader_debug = true;
+                    }
+
+                    if (ImGui::MenuItem("Models")) {
+                        open_model_debug = true;
                     }
 
                     ImGui::EndMenu();
                 }
+
                 ImGui::EndMenu();
             }
 
@@ -222,5 +248,6 @@ namespace Editor {
         HDRConfiguration();
         ShaderDebug();
         EditorConfig();
+        ModelDebug();
     }
 } // namespace Editor

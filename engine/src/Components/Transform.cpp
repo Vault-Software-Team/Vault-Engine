@@ -49,6 +49,35 @@ namespace Engine::Components {
         return model;
     }
 
+    glm::mat4 Transform::UpdateModelWithoutParent() {
+        if (std::isnan(position.x))
+            position.x = 0;
+        if (std::isnan(position.y))
+            position.y = 0;
+        if (std::isnan(position.z))
+            position.z = 0;
+
+        if (std::isnan(rotation.x))
+            rotation.x = 0;
+        if (std::isnan(rotation.y))
+            rotation.y = 0;
+        if (std::isnan(rotation.z))
+            rotation.z = 0;
+
+        if (std::isnan(scale.x))
+            scale.x = 1;
+        if (std::isnan(scale.y))
+            scale.y = 1;
+        if (std::isnan(scale.z))
+            scale.z = 1;
+
+        return glm::translate(glm::mat4(1.0f), position) *
+               glm::toMat4(glm::quat(rotation)) *
+               glm::scale(glm::mat4(1.0f),
+                          glm::vec3(scale.x * 0.5, scale.y * 0.5,
+                                    scale.z * 0.5));
+    }
+
     void Transform::Update() {
         UpdateModel();
     }

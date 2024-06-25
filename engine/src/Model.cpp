@@ -5,6 +5,7 @@
 
 namespace Engine {
     DLL_API std::map<std::string, Model::GlobalBoneMap> Model::GlobalBoneMaps;
+    std::unordered_map<std::string, ModelMesh::Info> ModelMesh::LoadedModels;
 
     Model::Model(const std::string &path) : path(path) {
         parent = GameObject::New("Model");

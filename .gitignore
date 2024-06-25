@@ -27,3 +27,5 @@ assets copy
 *.zip
 ./assets/models/luffy
 ./assets/models/luffy/*
+./windows/dist
+./dist

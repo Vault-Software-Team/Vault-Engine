@@ -18,6 +18,7 @@ namespace Engine {
             Transform() = default;
 
             glm::mat4 &UpdateModel();
+            glm::mat4 UpdateModelWithoutParent();
             void Update() override;
             void OnGUI() override;
 

@@ -9,11 +9,31 @@
 
 namespace Engine {
     ModelMesh::ModelMesh(const std::string &path) : path(path) {
+        if (LoadedModels.find(path) != LoadedModels.end()) {
+            auto &info = LoadedModels[path];
+            info.count++;
+        } else {
+            LoadedModels[path] = {this, 1};
+        }
         loadModel(path);
     }
 
     ModelMesh::ModelMesh(const char *path) : path(path) {
+        if (LoadedModels.find(path) != LoadedModels.end()) {
+            auto &info = LoadedModels[path];
+            info.count++;
+        } else {
+            LoadedModels[path] = {this, 1};
+        }
         loadModel(path);
+    }
+
+    ModelMesh::~ModelMesh() {
+        if (LoadedModels.find(path) != LoadedModels.end()) {
+            auto &info = LoadedModels[path];
+            info.count--;
+            if (info.count <= 0) LoadedModels.erase(path);
+        }
     }
 
     void ModelMesh::loadModel(const std::string &path) {
