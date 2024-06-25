@@ -9,6 +9,7 @@
 #include "Engine/Components/SpritesheetRenderer.hpp"
 #include "Engine/Components/Transform.hpp"
 #include "Engine/Physics/BulletPhysics.hpp"
+#include "Engine/PostProcessing.hpp"
 #include "Engine/SimpleCalls.hpp"
 #include <Engine/Runtime.hpp>
 #include <Engine/Components/IncludeComponents.hpp>
@@ -62,8 +63,11 @@ namespace Engine {
 
         default_shader->Bind();
         SetGlobalUniforms();
+        PostProcessing::BindToShader(*default_shader);
+
         if (isRunning)
             Scene::Main->OnRuntimeUpdate(timestep);
+
         Scene::Main->UpdateGameObjectComponents();
         Scene::UpdateStaticGameObjectComponents();
         bulletPhysics->UpdatePhysics();

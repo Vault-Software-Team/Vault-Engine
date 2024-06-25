@@ -118,6 +118,14 @@ uniform float shadowCubemapFarPlane;
 uniform float cameraFarPlane;
 uniform uint u_EntityID;
 
+// Post Processing Values
+struct PostProcessing {
+    bool GlobalBloom;
+    float BloomThreshold;
+    vec3 BloomMultiplier;
+};
+uniform PostProcessing config_PostProcessing;
+
 // PBR
 struct Material {
     float metallic;
@@ -434,14 +442,20 @@ void main() {
     }
     FragColor.a = 1;
 
-    // float brightness = dot(FragColor.rgb, vec3(0.2126, 0.7152, 0.0722));
-    // if (brightness > 0.5) {
-    // BloomColor.rgb = FragColor.rgb;
-    // BloomColor.a = 1;
-    // }
-    // BloomColor = vec4(5, 5, 5, 1);
+    if (config_PostProcessing.GlobalBloom) {
+        float brightness = dot(FragColor.rgb, vec3(0.2126, 0.7152, 0.0722));
+        if (emissionColor.rgb == vec3(0, 0, 0)) {
+            if (brightness > config_PostProcessing.BloomThreshold) {
+                BloomColor = FragColor * vec4(config_PostProcessing.BloomMultiplier, 1);
+            }
+        } else {
+            BloomColor = vec4(emissionColor.rgb, FragColor.a);
+        }
+    } else {
+        BloomColor = vec4(emissionColor.rgb, FragColor.a);
+    }
 
-    BloomColor = vec4(emissionColor.rgb, FragColor.a);
+    // BloomColor = vec4(5, 5, 5, 1);
 }
 
 #shader geometry

@@ -4,5 +4,8 @@ shadow_near: 0.100000001
 shadow_far: 75
 shadow_ortho_size: 34
 HDR.exposure: 2
-Renderer.Bloom: false
+Renderer.Bloom: true
 usePBR: true
+PostProcessing.GlobalBloom: true
+PostProcessing.BloomThreshold: 0.75
+PostProcessing.BloomMultiplier: [0.100000001, 0.100000001, 0.100000001]

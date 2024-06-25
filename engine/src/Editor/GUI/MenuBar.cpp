@@ -1,6 +1,7 @@
 #include "Editor/EditorLayer.hpp"
 #include "Engine/Model.hpp"
 #include "Engine/Mono/CSharp.hpp"
+#include "Engine/PostProcessing.hpp"
 #include "Renderer/Shader.hpp"
 #include "imgui/ImGuiNotify.hpp"
 #include <Editor/GUI/MainGUI.hpp>
@@ -24,6 +25,7 @@ namespace Editor {
     static bool open_shader_debug = false;
     static bool open_editor = false;
     static bool open_model_debug = false;
+    static bool open_post_processing = false;
 
     static ImVec4 RGB255ToRGB1(float r, float g, float b, float a) {
         return ImVec4(r / 255, g / 255, b / 255, a / 255);
@@ -48,7 +50,7 @@ namespace Editor {
         if (!open_hdr) return;
 
         if (ImGui::Begin("Renderer Config", &open_hdr, ImGuiWindowFlags_NoDocking)) {
-            ImGui::DragFloat("(HDR) Exposure", &Serializer::config.HDR.exposure);
+            ImGui::DragFloat("(HDR) Exposure", &Serializer::config.HDR.exposure, 0.1);
             ImGui::Checkbox("Bloom", &VaultRenderer::Window::Renderer.Bloom);
             ImGui::Checkbox("PBR", &Runtime::instance->usePBR);
 
@@ -151,6 +153,18 @@ namespace Editor {
         }
     }
 
+    static void PostProcessingConfig() {
+        if (!open_post_processing) return;
+
+        if (ImGui::Begin(ICON_FA_GEAR " Post Processing Config", &open_post_processing, ImGuiWindowFlags_NoDocking)) {
+            ImGui::Checkbox("Global Bloom", &PostProcessing::GlobalBloom);
+            ImGui::DragFloat("Bloom Threshold", &PostProcessing::BloomThreshold, 0.01, 0.0f);
+            GUI::DrawVec3Control("Bloom Multiplier", PostProcessing::BloomMultiplier, 1.0f);
+
+            ImGui::End();
+        }
+    }
+
     static void SaveSceneAs() {
         if (ImGuiFileDialog::Instance()->Display("SaveSceneAsDialog")) {
             // action if OK
@@ -196,18 +210,24 @@ namespace Editor {
             }
 
             if (ImGui::BeginMenu("Renderer")) {
+                if (ImGui::MenuItem("Configuration")) {
+                    open_hdr = true;
+                }
+
+                if (ImGui::BeginMenu("Post Processing")) {
+                    if (ImGui::MenuItem("Configuration")) {
+                        open_post_processing = true;
+                    }
+                    ImGui::EndMenu();
+                }
+
                 if (ImGui::BeginMenu("Shadows")) {
                     if (ImGui::MenuItem("Configuration")) {
                         open = true;
                     }
                     ImGui::EndMenu();
                 }
-                if (ImGui::BeginMenu("Renderer")) {
-                    if (ImGui::MenuItem("Configuration")) {
-                        open_hdr = true;
-                    }
-                    ImGui::EndMenu();
-                }
+
                 if (ImGui::BeginMenu("Lists")) {
                     if (ImGui::MenuItem("Shaders")) {
                         open_shader_debug = true;
@@ -249,5 +269,6 @@ namespace Editor {
         ShaderDebug();
         EditorConfig();
         ModelDebug();
+        PostProcessingConfig();
     }
 } // namespace Editor

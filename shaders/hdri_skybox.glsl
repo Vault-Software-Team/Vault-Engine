@@ -19,6 +19,7 @@ void main() {
 #shader fragment
 #version 330 core
 out vec4 FragColor;
+out vec4 BloomColor;
 in vec3 WorldPos;
 
 uniform samplerCube environmentMap;
@@ -29,4 +30,5 @@ void main() {
     vec3 envColor = textureLod(environmentMap, WorldPos, 1.2).rgb;
 
     FragColor = vec4(envColor, 1.0);
+    BloomColor = vec4(0, 0, 0, 1);
 }

@@ -2,8 +2,10 @@
 #include "Engine/Components/Collider3D.hpp"
 #include "Engine/Components/Rigidbody3D.hpp"
 #include "Engine/Components/SpriteRenderer.hpp"
+#include "Engine/PostProcessing.hpp"
 #include "Engine/Runtime.hpp"
 #include "Renderer/Window.hpp"
+#include "glm/fwd.hpp"
 #include "yaml-cpp/emittermanip.h"
 #include <Engine/SceneSerialization.hpp>
 #include <Engine/GameObject.hpp>
@@ -629,6 +631,8 @@ namespace Engine {
 
         auto gameObjects = data["GameObjects"];
 
+        glfwSetWindowTitle(VaultRenderer::Window::window->GetGLFWWindow(), (VaultRenderer::Window::window->title + " | " + fs::path(path).filename().string()).c_str());
+
         if (!gameObjects)
             return;
 
@@ -879,6 +883,18 @@ namespace Engine {
         if (data["usePBR"]) {
             Runtime::instance->usePBR = data["usePBR"].as<bool>();
         }
+
+        if (data["PostProcessing.GlobalBloom"]) {
+            PostProcessing::GlobalBloom = data["PostProcessing.GlobalBloom"].as<bool>();
+        }
+
+        if (data["PostProcessing.BloomThreshold"]) {
+            PostProcessing::BloomThreshold = data["PostProcessing.BloomThreshold"].as<float>();
+        }
+
+        if (data["PostProcessing.BloomMultiplier"]) {
+            PostProcessing::BloomMultiplier = data["PostProcessing.BloomMultiplier"].as<glm::vec3>();
+        }
     }
 
     void Serializer::SaveConfigFile(const std::string &path) {
@@ -900,6 +916,11 @@ namespace Engine {
         // Renderer
         emitter << yaml::Key << "Renderer.Bloom" << yaml::Value << VaultRenderer::Window::Renderer.Bloom;
         emitter << yaml::Key << "usePBR" << yaml::Value << Runtime::usePBR;
+
+        // Post Processing
+        emitter << yaml::Key << "PostProcessing.GlobalBloom" << yaml::Value << PostProcessing::GlobalBloom;
+        emitter << yaml::Key << "PostProcessing.BloomThreshold" << yaml::Value << PostProcessing::BloomThreshold;
+        emitter << yaml::Key << "PostProcessing.BloomMultiplier" << yaml::Value << PostProcessing::BloomMultiplier;
 
         std::ofstream file(path);
         file << emitter.c_str();
