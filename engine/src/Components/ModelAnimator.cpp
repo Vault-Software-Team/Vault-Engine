@@ -1,4 +1,6 @@
+#include "Engine/Components/BoneManipulator.hpp"
 #include "Engine/Components/MeshRenderer.hpp"
+#include "Engine/GameObject.hpp"
 #include "Engine/Scene.hpp"
 #include "Renderer/Shader.hpp"
 #include "imgui/imgui.h"
@@ -81,9 +83,31 @@ namespace Engine::Components {
         if (!animator)
             return;
 
+        if (!play_animation) return;
+
         auto &transforms = animator->GetFinalBoneMatrices();
+        auto v = Scene::Main->EntityRegistry.view<BoneManipulator>();
+
         for (int i = 0; i < transforms.size(); ++i) {
-            shader.SetUniformMat4(("finalBonesMatrices[" + std::to_string(i) + "]").c_str(), transforms[i]);
+            glm::mat4 bone_transform(1.0);
+
+            for (auto &go : Scene::Main->GameObjects) {
+                if (go->parent != ID) continue;
+                if (!go->HasComponent<BoneManipulator>()) continue;
+
+                auto &comp = go->GetComponent<BoneManipulator>();
+
+                auto &boneInfoMap = animation->GetIDMap();
+                if (boneInfoMap.find(comp.nodeName) != boneInfoMap.end()) {
+                    int index = boneInfoMap[comp.nodeName].id;
+                    if (index != i) continue;
+
+                    auto &transform = go->GetComponent<Transform>();
+                    bone_transform = transform.UpdateModelWithoutParent();
+                }
+            }
+
+            shader.SetUniformMat4(("finalBonesMatrices[" + std::to_string(i) + "]").c_str(), bone_transform * transforms[i]);
         }
     }
 

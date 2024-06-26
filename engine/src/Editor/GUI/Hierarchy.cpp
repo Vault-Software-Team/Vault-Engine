@@ -1,3 +1,4 @@
+#include "Engine/Components/BoneManipulator.hpp"
 #include "Engine/Components/ModelAnimator.hpp"
 #include "Engine/SceneSerialization.hpp"
 #include <Editor/GUI/MainGUI.hpp>
@@ -64,8 +65,18 @@ namespace Editor {
 
                     i++;
                 }
-                gameObject->AddComponent<ModelAnimator>();
+                for (auto &bone : model->m_BoneInfoMap) {
+                    // first = bone name, second = bone info
+                    auto &_gameObject = GameObject::New(bone.first);
+                    _gameObject->AddComponent<BoneManipulator>();
+                    _gameObject->parent = gameObject->ID;
+
+                    auto &boneManipulator = _gameObject->AddComponent<BoneManipulator>();
+                    boneManipulator.nodeName = bone.first;
+                }
+
                 auto &comp = gameObject->AddComponent<ModelAnimator>();
+
                 comp.model = std::make_unique<ModelMesh>((char *)payload->Data);
             }
 

@@ -1,3 +1,4 @@
+#include "Engine/Components/BoneManipulator.hpp"
 #include "Engine/Components/CSharpScriptComponent.hpp"
 #include "Engine/Components/Collider3D.hpp"
 #include "Engine/Components/ModelAnimator.hpp"
@@ -252,6 +253,16 @@ namespace Engine {
             emitter << yaml::Key << "time_scale" << yaml::Value << component.time_scale;
             emitter << yaml::Key << "play_animation" << yaml::Value << component.play_animation;
             emitter << yaml::Key << "animation_path" << yaml::Value << component.animation_path;
+
+            emitter << yaml::EndMap;
+        }
+
+        if (gameObject->HasComponent<BoneManipulator>()) {
+            emitter << yaml::Key << "BoneManipulator";
+            emitter << yaml::BeginMap;
+
+            auto &component = gameObject->GetComponent<BoneManipulator>();
+            emitter << yaml::Key << "nodeName" << yaml::Value << component.nodeName;
 
             emitter << yaml::EndMap;
         }
@@ -529,6 +540,14 @@ namespace Engine {
                     component.animation_path = path;
                     component.SetAnimation(component.animation_path);
                 }
+            }
+        }
+
+        if (data["BoneManipulator"]) {
+            gameObject->AddComponent<BoneManipulator>();
+            auto &component = gameObject->GetComponent<BoneManipulator>();
+            if (data["BoneManipulator"]["nodeName"]) {
+                component.nodeName = data["BoneManipulator"]["nodeName"].as<std::string>();
             }
         }
 

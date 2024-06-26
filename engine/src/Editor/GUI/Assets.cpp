@@ -1,3 +1,4 @@
+#include "Engine/Components/BoneManipulator.hpp"
 #include "Engine/Components/MeshRenderer.hpp"
 #include "Engine/Components/ModelAnimator.hpp"
 #include <Editor/GUI/MainGUI.hpp>
@@ -182,6 +183,17 @@ void DirectoryIterator(const std::string &str, const char *filter_str) {
 
                         i++;
                     }
+
+                    for (auto &bone : model->m_BoneInfoMap) {
+                        // first = bone name, second = bone info
+                        auto &_gameObject = GameObject::New(bone.first);
+                        _gameObject->AddComponent<BoneManipulator>();
+                        _gameObject->parent = gameObject->ID;
+
+                        auto &boneManipulator = _gameObject->GetComponent<BoneManipulator>();
+                        boneManipulator.nodeName = bone.first;
+                    }
+
                     auto &comp = gameObject->AddComponent<ModelAnimator>();
                     comp.model = std::make_unique<ModelMesh>(dir.path().string());
                     // Engine::Model model(dir.path().string());
