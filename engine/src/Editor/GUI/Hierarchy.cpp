@@ -1,3 +1,4 @@
+#include "Engine/Components/ModelAnimator.hpp"
 #include "Engine/SceneSerialization.hpp"
 #include <Editor/GUI/MainGUI.hpp>
 #include <Engine/Scene.hpp>
@@ -45,12 +46,12 @@ namespace Editor {
                 }
             }
             if (const ImGuiPayload *payload = ImGui::AcceptDragDropPayload("model_file")) {
-                Engine::ModelMesh model((char *)payload->Data);
+                Engine::ModelMesh *model = new Engine::ModelMesh((char *)payload->Data);
 
                 auto &gameObject = GameObject::New("Model");
 
                 int i = 0;
-                for (auto &mesh : model.meshes) {
+                for (auto &mesh : model->meshes) {
                     auto &_gameObject = GameObject::New(mesh.name);
                     _gameObject->AddComponent<MeshRenderer>();
                     _gameObject->parent = gameObject->ID;
@@ -58,10 +59,14 @@ namespace Editor {
                     auto &meshRenderer = _gameObject->GetComponent<MeshRenderer>();
                     meshRenderer.SetCustomMeshType(mesh.vertices, mesh.indices);
                     meshRenderer.mesh_index = i;
-                    meshRenderer.mesh_path = model.path;
+                    meshRenderer.mesh_path = model->path;
+                    meshRenderer.model = std::shared_ptr<ModelMesh>(model);
 
                     i++;
                 }
+                gameObject->AddComponent<ModelAnimator>();
+                auto &comp = gameObject->AddComponent<ModelAnimator>();
+                comp.model = std::make_unique<ModelMesh>((char *)payload->Data);
             }
 
             ImGui::EndDragDropTarget();

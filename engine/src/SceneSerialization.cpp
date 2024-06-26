@@ -1,5 +1,6 @@
 #include "Engine/Components/CSharpScriptComponent.hpp"
 #include "Engine/Components/Collider3D.hpp"
+#include "Engine/Components/ModelAnimator.hpp"
 #include "Engine/Components/Rigidbody3D.hpp"
 #include "Engine/Components/SpriteRenderer.hpp"
 #include "Engine/PostProcessing.hpp"
@@ -242,6 +243,19 @@ namespace Engine {
             emitter << yaml::EndMap;
         }
 
+        if (gameObject->HasComponent<ModelAnimator>()) {
+            emitter << yaml::Key << "ModelAnimator";
+            emitter << yaml::BeginMap;
+
+            auto &component = gameObject->GetComponent<ModelAnimator>();
+            emitter << yaml::Key << "model_path" << yaml::Value << (component.model == nullptr ? "nullptr" : component.model->path);
+            emitter << yaml::Key << "time_scale" << yaml::Value << component.time_scale;
+            emitter << yaml::Key << "play_animation" << yaml::Value << component.play_animation;
+            emitter << yaml::Key << "animation_path" << yaml::Value << component.animation_path;
+
+            emitter << yaml::EndMap;
+        }
+
         if (gameObject->HasComponent<SpriteRenderer>()) {
             emitter << yaml::Key << "SpriteRenderer";
             emitter << yaml::BeginMap;
@@ -449,21 +463,10 @@ namespace Engine {
 
             component.SetMeshType((MeshType)data["MeshRenderer"]["mesh_type"].as<int>());
             if (component.mesh_type == Components::MESH_CUSTOM_MODEL && component.mesh_index > -1) {
-                ModelMesh *model;
-                bool _new = false;
-                auto f = ModelMesh::LoadedModels.find(component.mesh_path);
-
-                if (f != ModelMesh::LoadedModels.end()) {
-                    model = f->second.ref;
-                } else {
-                    model = new ModelMesh(component.mesh_path);
-                    _new = true;
-                }
+                component.model = std::make_shared<ModelMesh>(component.mesh_path);
 
                 component.mesh.reset();
-                component.mesh = std::make_shared<VaultRenderer::Mesh>(model->meshes[component.mesh_index].vertices, model->meshes[component.mesh_index].indices);
-
-                if (_new) delete model;
+                component.mesh = std::make_shared<VaultRenderer::Mesh>(component.model->meshes[component.mesh_index].vertices, component.model->meshes[component.mesh_index].indices);
             }
         }
 
@@ -502,6 +505,29 @@ namespace Engine {
                     if (mesh_data == mat_map.end()) continue;
                     mesh.material.filePath = mesh_data->second;
                     DeserializeMaterial(mesh_data->second, mesh.material);
+                }
+            }
+        }
+
+        if (data["ModelAnimator"]) {
+            gameObject->AddComponent<ModelAnimator>();
+            auto &component = gameObject->GetComponent<ModelAnimator>();
+            if (data["ModelAnimator"]["model_path"]) {
+                component.model.reset();
+                component.model = std::make_unique<ModelMesh>(data["ModelAnimator"]["model_path"].as<std::string>());
+            }
+            if (data["ModelAnimator"]["time_scale"]) {
+                component.time_scale = data["ModelAnimator"]["time_scale"].as<float>();
+            }
+            if (data["ModelAnimator"]["play_animation"]) {
+                component.play_animation = data["ModelAnimator"]["play_animation"].as<bool>();
+            }
+
+            if (data["ModelAnimator"]["animation_path"]) {
+                const auto path = data["ModelAnimator"]["animation_path"].as<std::string>();
+                if (path != "") {
+                    component.animation_path = path;
+                    component.SetAnimation(component.animation_path);
                 }
             }
         }

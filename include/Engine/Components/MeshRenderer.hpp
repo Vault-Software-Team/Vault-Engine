@@ -2,6 +2,7 @@
 #include <dllapi.hpp>
 #include <glm/ext.hpp>
 #include "Base.hpp"
+#include "Engine/Components/ModelAnimator.hpp"
 #include <Renderer/Mesh.hpp>
 #include <Renderer/Shader.hpp>
 #include <memory>
@@ -32,6 +33,7 @@ namespace Engine {
             std::shared_ptr<ModelMesh> model = nullptr;
             std::string material_path = "";
             std::string animation_path = "";
+            ModelAnimator *animator_ref;
 
             // Model Animation
 

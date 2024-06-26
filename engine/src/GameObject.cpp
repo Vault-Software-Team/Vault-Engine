@@ -2,6 +2,7 @@
 #include "Engine/Components/BoxCollider2D.hpp"
 #include "Engine/Components/Collider3D.hpp"
 #include "Engine/Components/MeshRenderer.hpp"
+#include "Engine/Components/ModelAnimator.hpp"
 #include "Engine/Components/Rigidbody3D.hpp"
 #include "Engine/Components/Transform.hpp"
 #include "Engine/Runtime.hpp"
@@ -53,6 +54,7 @@ namespace Engine {
 
     void GameObject::UpdateRendering(VaultRenderer::Shader &shader, bool update_children) {
         using namespace Components;
+
         if (HasComponent<MeshRenderer>()) {
             auto &meshRenderer = GetComponent<MeshRenderer>();
             if (meshRenderer.mesh) {
@@ -70,6 +72,16 @@ namespace Engine {
                 // meshRenderer.AnimateAndSetUniforms(shader);
                 if (meshRenderer.mesh_type == MESH_PLANE) shader.SetUniform1i("mesh_isFlat", true);
                 shader.SetUniform1ui("u_EntityID", (uint32_t)entity);
+
+                auto &thisGo = GameObject::FindGameObjectByEntity(meshRenderer.entity);
+                if (thisGo->parent != "NO_PARENT") {
+                    auto &parent = GameObject::FindGameObjectByID(thisGo->parent);
+                    if (parent->HasComponent<ModelAnimator>()) {
+                        auto &comp = parent->GetComponent<ModelAnimator>();
+                        comp.BindToShader(shader);
+                    }
+                }
+
                 meshRenderer.mesh->Draw(shader);
             }
         }
@@ -142,6 +154,11 @@ namespace Engine {
         using namespace Components;
 
         UpdateRendering(shader);
+
+        if (HasComponent<ModelAnimator>()) {
+            auto &animator = GetComponent<ModelAnimator>();
+            animator.PlayAnimation();
+        }
 
         if (HasComponent<AmbientLight>()) {
             auto &light = GetComponent<AmbientLight>();

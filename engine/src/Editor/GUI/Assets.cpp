@@ -1,4 +1,5 @@
 #include "Engine/Components/MeshRenderer.hpp"
+#include "Engine/Components/ModelAnimator.hpp"
 #include <Editor/GUI/MainGUI.hpp>
 #include <Engine/Scene.hpp>
 #include <Engine/GameObject.hpp>
@@ -163,12 +164,12 @@ void DirectoryIterator(const std::string &str, const char *filter_str) {
                 }
 
                 if (name.ends_with(".obj") || name.ends_with(".blender") || name.ends_with(".blend") || name.ends_with(".dae") || name.ends_with(".gltf") || name.ends_with(".glTF") || name.ends_with(".fbx")) {
-                    Engine::ModelMesh model(dir.path().string());
+                    Engine::ModelMesh *model = new Engine::ModelMesh(dir.path().string());
 
                     auto &gameObject = GameObject::New("Model");
 
                     int i = 0;
-                    for (auto &mesh : model.meshes) {
+                    for (auto &mesh : model->meshes) {
                         auto &_gameObject = GameObject::New(mesh.name);
                         _gameObject->AddComponent<MeshRenderer>();
                         _gameObject->parent = gameObject->ID;
@@ -176,10 +177,13 @@ void DirectoryIterator(const std::string &str, const char *filter_str) {
                         auto &meshRenderer = _gameObject->GetComponent<MeshRenderer>();
                         meshRenderer.SetCustomMeshType(mesh.vertices, mesh.indices);
                         meshRenderer.mesh_index = i;
-                        meshRenderer.mesh_path = model.path;
+                        meshRenderer.mesh_path = model->path;
+                        meshRenderer.model = std::shared_ptr<ModelMesh>(model);
 
                         i++;
                     }
+                    auto &comp = gameObject->AddComponent<ModelAnimator>();
+                    comp.model = std::make_unique<ModelMesh>(dir.path().string());
                     // Engine::Model model(dir.path().string());
                 }
             }

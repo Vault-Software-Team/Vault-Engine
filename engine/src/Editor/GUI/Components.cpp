@@ -1,4 +1,5 @@
 #include "Engine/Components/Collider3D.hpp"
+#include "Engine/Components/ModelAnimator.hpp"
 #include "Engine/Components/Rigidbody3D.hpp"
 #include <Editor/GUI/MainGUI.hpp>
 #include <Engine/Scene.hpp>
@@ -24,6 +25,7 @@ void ComponentGUI(GameObject *gameObject) {
     CallComponentGUI<AmbientLight>(gameObject);
     CallComponentGUI<DirectionalLight>(gameObject);
     CallComponentGUI<MeshRenderer>(gameObject);
+    CallComponentGUI<ModelAnimator>(gameObject);
     CallComponentGUI<ModelRenderer>(gameObject);
     CallComponentGUI<SpriteRenderer>(gameObject);
     CallComponentGUI<SpritesheetRenderer>(gameObject);
@@ -60,7 +62,8 @@ void AddComponentsGUIPopup(GameObject *gameObject) {
     DisplayAddComponentButton<SpotLight>(gameObject);
 
     DisplayAddComponentButton<MeshRenderer>(gameObject);
-    DisplayAddComponentButton<ModelRenderer>(gameObject);
+    DisplayAddComponentButton<ModelAnimator>(gameObject);
+    // DisplayAddComponentButton<ModelRenderer>(gameObject);
     DisplayAddComponentButton<SpriteRenderer>(gameObject);
     DisplayAddComponentButton<SpritesheetRenderer>(gameObject);
 

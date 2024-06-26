@@ -108,19 +108,24 @@ GameObjects:
         amount: 1.11000001
         color: [1, 1, 1]
   - GameObject:
-      ID: 324135cf-c364-492f-99cb-16039f5eb6f6
-      name: faggot
+      ID: 950420eb-fb2e-46aa-a9c0-7d2cae4c07ec
+      name: Model
       tag: Default
       parent: NO_PARENT
       Transform:
-        position: [0, 0, -4.75537682]
+        position: [19.176693, 0.240662575, 0]
         rotation: [0, 0, 0]
-        scale: [0.180000007, 0.180000007, 0.180000007]
+        scale: [1, 1, 1]
+      ModelAnimator:
+        model_path: ./assets/Character.fbx
+        time_scale: 1
+        play_animation: true
+        animation_path: ./assets/SaluteAnimation.fbx
   - GameObject:
-      ID: 59ae480f-cb0d-431f-988a-1c427bff1266
+      ID: 661d542d-cdd8-4f3c-9835-63b642b3551a
       name: Mesh
       tag: Default
-      parent: 324135cf-c364-492f-99cb-16039f5eb6f6
+      parent: 950420eb-fb2e-46aa-a9c0-7d2cae4c07ec
       Transform:
         position: [0, 0, 0]
         rotation: [0, 0, 0]
