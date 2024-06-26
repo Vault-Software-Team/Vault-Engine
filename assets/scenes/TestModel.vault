@@ -107,3 +107,26 @@ GameObjects:
       AmbientLight:
         amount: 1.11000001
         color: [1, 1, 1]
+  - GameObject:
+      ID: 324135cf-c364-492f-99cb-16039f5eb6f6
+      name: faggot
+      tag: Default
+      parent: NO_PARENT
+      Transform:
+        position: [0, 0, -4.75537682]
+        rotation: [0, 0, 0]
+        scale: [0.180000007, 0.180000007, 0.180000007]
+  - GameObject:
+      ID: 59ae480f-cb0d-431f-988a-1c427bff1266
+      name: Mesh
+      tag: Default
+      parent: 324135cf-c364-492f-99cb-16039f5eb6f6
+      Transform:
+        position: [0, 0, 0]
+        rotation: [0, 0, 0]
+        scale: [1, 1, 1]
+      MeshRenderer:
+        mesh_type: 5
+        mesh_index: 0
+        mesh_path: ./assets/Character.fbx
+        material_path: ""

@@ -1,3 +1,4 @@
+#include "Engine/Components/MeshRenderer.hpp"
 #include <Editor/GUI/MainGUI.hpp>
 #include <Engine/Scene.hpp>
 #include <Engine/GameObject.hpp>
@@ -116,7 +117,7 @@ void DirectoryIterator(const std::string &str, const char *filter_str) {
             if (name.ends_with(".png") || name.ends_with(".tga") || name.ends_with(".tiff") || name.ends_with(".jpg") || name.ends_with(".jpeg")) {
                 icon = ICON_FA_IMAGE;
             }
-            if (name.ends_with(".obj") || name.ends_with(".blender") || name.ends_with(".dae") || name.ends_with(".gltf") || name.ends_with(".fbx")) {
+            if (name.ends_with(".obj") || name.ends_with(".blender") || name.ends_with(".blend") || name.ends_with(".dae") || name.ends_with(".gltf") || name.ends_with(".glTF") || name.ends_with(".fbx")) {
                 icon = ICON_FA_CUBES;
             }
             if (name.ends_with(".mtl") || name.ends_with(".material")) {
@@ -161,8 +162,25 @@ void DirectoryIterator(const std::string &str, const char *filter_str) {
                     stream.close();
                 }
 
-                if (name.ends_with(".obj") || name.ends_with(".blender") || name.ends_with(".dae") || name.ends_with(".gltf") || name.ends_with(".fbx")) {
-                    Engine::Model model(dir.path().string());
+                if (name.ends_with(".obj") || name.ends_with(".blender") || name.ends_with(".blend") || name.ends_with(".dae") || name.ends_with(".gltf") || name.ends_with(".glTF") || name.ends_with(".fbx")) {
+                    Engine::ModelMesh model(dir.path().string());
+
+                    auto &gameObject = GameObject::New("Model");
+
+                    int i = 0;
+                    for (auto &mesh : model.meshes) {
+                        auto &_gameObject = GameObject::New(mesh.name);
+                        _gameObject->AddComponent<MeshRenderer>();
+                        _gameObject->parent = gameObject->ID;
+
+                        auto &meshRenderer = _gameObject->GetComponent<MeshRenderer>();
+                        meshRenderer.SetCustomMeshType(mesh.vertices, mesh.indices);
+                        meshRenderer.mesh_index = i;
+                        meshRenderer.mesh_path = model.path;
+
+                        i++;
+                    }
+                    // Engine::Model model(dir.path().string());
                 }
             }
 
@@ -177,7 +195,7 @@ void DirectoryIterator(const std::string &str, const char *filter_str) {
                     ImGui::SetDragDropPayload("image_file", dir.path().string().c_str(), length + 1);
                 } else if (name.ends_with(".vault")) {
                     ImGui::SetDragDropPayload("scene_file", dir.path().string().c_str(), length + 1);
-                } else if (name.ends_with(".obj") || name.ends_with(".blender") || name.ends_with(".dae") || name.ends_with(".gltf") || name.ends_with(".fbx")) {
+                } else if (name.ends_with(".obj") || name.ends_with(".blender") || name.ends_with(".blend") || name.ends_with(".dae") || name.ends_with(".gltf") || name.ends_with(".glTF") || name.ends_with(".fbx")) {
                     ImGui::SetDragDropPayload("model_file", dir.path().string().c_str(), length + 1);
                 } else if (name.ends_with(".hyper")) {
                     ImGui::SetDragDropPayload("hyperscript_file", dir.path().string().c_str(), length + 1);

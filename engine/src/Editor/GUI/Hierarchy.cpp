@@ -44,6 +44,26 @@ namespace Editor {
                     }
                 }
             }
+            if (const ImGuiPayload *payload = ImGui::AcceptDragDropPayload("model_file")) {
+                Engine::ModelMesh model((char *)payload->Data);
+
+                auto &gameObject = GameObject::New("Model");
+
+                int i = 0;
+                for (auto &mesh : model.meshes) {
+                    auto &_gameObject = GameObject::New(mesh.name);
+                    _gameObject->AddComponent<MeshRenderer>();
+                    _gameObject->parent = gameObject->ID;
+
+                    auto &meshRenderer = _gameObject->GetComponent<MeshRenderer>();
+                    meshRenderer.SetCustomMeshType(mesh.vertices, mesh.indices);
+                    meshRenderer.mesh_index = i;
+                    meshRenderer.mesh_path = model.path;
+
+                    i++;
+                }
+            }
+
             ImGui::EndDragDropTarget();
         }
 

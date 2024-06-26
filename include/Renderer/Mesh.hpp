@@ -11,9 +11,9 @@ namespace VaultRenderer {
     class DLL_API Material {
     public:
         // PBR
-        float ao;
-        float metallic;
-        float roughness;
+        float ao = 1;
+        float metallic = 0;
+        float roughness = 0.2;
         std::string filePath = "";
 
         glm::vec4 color = glm::vec4(1);

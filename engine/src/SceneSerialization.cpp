@@ -449,9 +449,21 @@ namespace Engine {
 
             component.SetMeshType((MeshType)data["MeshRenderer"]["mesh_type"].as<int>());
             if (component.mesh_type == Components::MESH_CUSTOM_MODEL && component.mesh_index > -1) {
-                ModelMesh model_mesh(component.mesh_path);
+                ModelMesh *model;
+                bool _new = false;
+                auto f = ModelMesh::LoadedModels.find(component.mesh_path);
+
+                if (f != ModelMesh::LoadedModels.end()) {
+                    model = f->second.ref;
+                } else {
+                    model = new ModelMesh(component.mesh_path);
+                    _new = true;
+                }
+
                 component.mesh.reset();
-                component.mesh = std::make_shared<VaultRenderer::Mesh>(model_mesh.meshes[component.mesh_index].vertices, model_mesh.meshes[component.mesh_index].indices);
+                component.mesh = std::make_shared<VaultRenderer::Mesh>(model->meshes[component.mesh_index].vertices, model->meshes[component.mesh_index].indices);
+
+                if (_new) delete model;
             }
         }
 
