@@ -5,6 +5,7 @@
 #include "Engine/Components/ModelAnimator.hpp"
 #include "Engine/Components/Rigidbody3D.hpp"
 #include "Engine/Components/Transform.hpp"
+#include "Engine/Discord.hpp"
 #include "Engine/Runtime.hpp"
 #include "Renderer/Shader.hpp"
 #include <Engine/GameObject.hpp>
@@ -316,11 +317,13 @@ namespace Engine {
                 ImGui::TreePop();
             }
             if (ImGui::IsMouseClicked(0) && ImGui::IsItemHovered() && !ImGui::IsMouseDragging(0)) {
+                DiscordRPC::instance->UpdatePresence("In Editor", "Inspecting " + name);
                 Editor::GUI::selected_gameObject = this;
             }
         } else {
             ImGui::PushID(ID.c_str());
             if (ImGui::Selectable((icon + " " + name).c_str(), false, ImGuiSelectableFlags_SpanAvailWidth)) {
+                DiscordRPC::instance->UpdatePresence("In Editor", "Inspecting " + name);
                 Editor::GUI::selected_gameObject = this;
             }
             if (ImGui::BeginDragDropTarget()) {

@@ -7,6 +7,7 @@ In here you will throw up all over your desk cuz the coding is fucking ass
 #include "Engine/CascadedShadowMap.hpp"
 #include "Engine/Components/MeshRenderer.hpp"
 #include "Engine/Components/Transform.hpp"
+#include "Engine/Discord.hpp"
 #include "Engine/GameObject.hpp"
 #include "Engine/HDRSkybox.hpp"
 #include "Engine/Model.hpp"
@@ -379,6 +380,10 @@ int main() {
     if (fs::exists(Serializer::config.main_scene)) {
         Serializer::Deserialize(Serializer::config.main_scene);
     }
+
+    // Discord
+    DiscordRPC discordRPC("1025522890688442400");
+    discordRPC.UpdatePresence("In Editor", "Making a game");
 
     // HDRI Skybox Setup
     glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);

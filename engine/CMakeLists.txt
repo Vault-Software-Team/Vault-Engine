@@ -12,7 +12,7 @@ if(WIN32)
     target_link_libraries(engine ${CMAKE_SOURCE_DIR}/windows/lib/libmono-2.0.dll.a ${CMAKE_SOURCE_DIR}/windows/lib/libSDL2_mixer.dll.a ${CMAKE_SOURCE_DIR}/windows/lib/libSDL2.dll.a ${CMAKE_SOURCE_DIR}/windows/lib/libmonosgen-2.0.dll.a api glfw yaml-cpp tobanteGaming::Box2D ImGui ImGuizmo)
 else()
     link_directories(${CMAKE_SOURCE_DIR}/lib)
-    target_link_libraries(engine ${CMAKE_SOURCE_DIR}/lib/libSDL2_mixer.so api glfw efsw yaml-cpp tobanteGaming::Box2D ImGui ImGuizmo bullet)
+    target_link_libraries(engine ${CMAKE_SOURCE_DIR}/lib/libSDL2_mixer.so api glfw efsw yaml-cpp tobanteGaming::Box2D ImGui ImGuizmo bullet discord-rpc)
 endif()
  
 # target_link_libraries(engine ${CMAKE_SOURCE_DIR}/windows/lib/libmono-2.0.dll.a ${CMAKE_SOURCE_DIR}/windows/lib/libmonosgen-2.0.dll.a api glfw SDL_mixer yaml-cpp tobanteGaming::Box2D ImGui ImGuizmo)

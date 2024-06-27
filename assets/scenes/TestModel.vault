@@ -141,7 +141,7 @@ GameObjects:
       tag: Default
       parent: a53b540d-a8d3-4cdc-adad-79eab8f1e8a2
       Transform:
-        position: [6.01079321, 2.57629251, 0]
+        position: [0, 0, 0]
         rotation: [0, 0, 0]
         scale: [1, 1, 1]
       BoneManipulator:
@@ -174,7 +174,7 @@ GameObjects:
       tag: Default
       parent: a53b540d-a8d3-4cdc-adad-79eab8f1e8a2
       Transform:
-        position: [-33.534832, 12.1214018, 0]
+        position: [0, 0, 0]
         rotation: [0, 0, 0]
         scale: [1, 1, 1]
       BoneManipulator:

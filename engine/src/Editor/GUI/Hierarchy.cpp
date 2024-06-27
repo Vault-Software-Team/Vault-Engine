@@ -1,5 +1,6 @@
 #include "Engine/Components/BoneManipulator.hpp"
 #include "Engine/Components/ModelAnimator.hpp"
+#include "Engine/Discord.hpp"
 #include "Engine/SceneSerialization.hpp"
 #include <Editor/GUI/MainGUI.hpp>
 #include <Engine/Scene.hpp>
@@ -33,6 +34,7 @@ namespace Editor {
         ImGui::Dummy(ImGui::GetContentRegionAvail());
         if (ImGui::IsMouseDoubleClicked(0) && ImGui::IsItemHovered()) {
             GUI::selected_gameObject = nullptr;
+            DiscordRPC::instance->UpdatePresence("In Editor", "Making a game");
         }
         if (ImGui::BeginDragDropTarget()) {
             if (const ImGuiPayload *payload = ImGui::AcceptDragDropPayload("prefab")) {

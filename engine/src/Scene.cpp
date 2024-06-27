@@ -5,6 +5,7 @@
 #include "Engine/Components/Collider3D.hpp"
 #include "Engine/Components/MeshRenderer.hpp"
 #include "Engine/Components/Rigidbody3D.hpp"
+#include "Engine/Discord.hpp"
 #include "Engine/Physics/BulletPhysics.hpp"
 #include "mono/metadata/object-forward.h"
 #include <Engine/Scene.hpp>
@@ -438,6 +439,7 @@ namespace Engine {
     }
 
     void Scene::OnRuntimeStart() {
+        DiscordRPC::instance->UpdatePresence("In Editor", "Playing the game");
         Setup3DPhysicsWorld();
         Setup2DPhysicsWorld();
         SetupHyperScript();
@@ -446,6 +448,8 @@ namespace Engine {
     }
 
     void Scene::OnRuntimeStop() {
+        DiscordRPC::instance->UpdatePresence("In Editor", "Making the game");
+
         Physics2DWorld.reset();
         Audio2D::StopSound();
         Audio2D::StopMusic();
