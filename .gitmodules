@@ -22,3 +22,6 @@
 [submodule "external/bullet"]
 	path = external/bullet
 	url = https://github.com/Kanma/Bullet
+[submodule "external/discord-rpc"]
+	path = external/discord-rpc
+	url = https://github.com/discord/discord-rpc
