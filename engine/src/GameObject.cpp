@@ -8,6 +8,7 @@
 #include "Engine/Discord.hpp"
 #include "Engine/Runtime.hpp"
 #include "Renderer/Shader.hpp"
+#include "StupidFunctions.hpp"
 #include <Engine/GameObject.hpp>
 #include <Engine/Scene.hpp>
 #include <Engine/Components/IncludeComponents.hpp>
@@ -278,7 +279,8 @@ namespace Engine {
                         if (gIndex == -1)
                             continue;
 
-                        std::swap(Scene::Main->GameObjects[gIndex], Scene::Main->GameObjects[index]);
+                        // std::swap(Scene::Main->GameObjects[gIndex], Scene::Main->GameObjects[index]);
+                        vector_move(Scene::Main->GameObjects, gIndex, index);
                     }
                 }
             }

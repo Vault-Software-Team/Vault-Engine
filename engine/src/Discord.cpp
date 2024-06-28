@@ -43,6 +43,7 @@ DiscordRPC::DiscordRPC(const std::string &id) : m_ID(id) {
 DiscordRPC::~DiscordRPC() {
     Discord_Shutdown();
 }
+
 void DiscordRPC::UpdatePresence(const std::string &details, const std::string &state, const std::string &largeImageKey, const std::string &largeImageText, const std::string &smallImageKey, const std::string &smallImageText) {
 #ifndef GAME_BUILD
     char buffer[256];
