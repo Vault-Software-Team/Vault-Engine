@@ -134,6 +134,9 @@ void DirectoryIterator(const std::string &str, const char *filter_str) {
             if (name.ends_with(".prefab")) {
                 icon = ICON_FA_CUBE;
             }
+            if (name.ends_with(".glsl")) {
+                icon = ICON_FA_PAINTBRUSH;
+            }
 
             bool pressed = ImGui::Selectable((icon + " " + dir.path().filename().string()).c_str());
 
@@ -217,6 +220,8 @@ void DirectoryIterator(const std::string &str, const char *filter_str) {
                     ImGui::SetDragDropPayload("hyperscript_file", dir.path().string().c_str(), length + 1);
                 } else if (name.ends_with(".prefab")) {
                     ImGui::SetDragDropPayload("prefab", dir.path().string().c_str(), length + 1);
+                } else if (name.ends_with(".glsl")) {
+                    ImGui::SetDragDropPayload("shader", dir.path().string().c_str(), length + 1);
                 }
                 ImGui::Text("%s %s", icon.c_str(), dir.path().filename().string().c_str());
                 ImGui::EndDragDropSource();

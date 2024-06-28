@@ -17,6 +17,8 @@ namespace Engine {
             glm::vec2 spriteSize{32, 32};
             glm::vec2 spriteOffset{0, 0};
 
+            std::unique_ptr<VaultRenderer::Shader> custom_shader;
+            std::string custom_shader_path;
             SpritesheetRenderer() = default;
             void Init() override;
 

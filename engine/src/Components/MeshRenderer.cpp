@@ -1,5 +1,6 @@
 #include "Engine/Model.hpp"
 #include "Renderer/Mesh.hpp"
+#include "Renderer/Shader.hpp"
 #include <Engine/Components/MeshRenderer.hpp>
 #include <Editor/GUI/MainGUI.hpp>
 #include <icons/icons.h>
@@ -170,16 +171,13 @@ namespace Engine::Components {
                         Serializer::DeserializeMaterial(path, mesh->material);
                 }
             }
-            // if (mesh_type == MESH_CUSTOM_MODEL) {
-            //     ImGui::Separator();
 
-            //     ImGui::Button(animation_path == "" ? "Drag Animation File" : animation_path.c_str());
-            //     if (ImGui::BeginDragDropTarget()) {
-            //         if (const ImGuiPayload *payload = ImGui::AcceptDragDropPayload("model_file")) {
-            //             std::string path = (char *)payload->Data;
-            //             animation_path = path;
-            //             SetAnimation(animation_path);
-            //         }
+            // ImGui::Button("Drag Custom Shader");
+            // if (custom_shader_path != "") ImGui::Text("Custom Shader: %s", custom_shader_path.c_str());
+            // if (ImGui::BeginDragDropTarget()) {
+            //     if (const ImGuiPayload *payload = ImGui::AcceptDragDropPayload("shader")) {
+            //         custom_shader_path = (char *)payload->Data;
+            //         custom_shader = std::make_unique<VaultRenderer::Shader>(custom_shader_path);
             //     }
             // }
         });

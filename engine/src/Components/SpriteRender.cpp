@@ -42,6 +42,15 @@ namespace Engine::Components {
                     mesh->material.SetDiffuse(path);
                 }
             }
+
+            // ImGui::Button("Drag Custom Shader");
+            // if (custom_shader_path != "") ImGui::Text("Custom Shader: %s", custom_shader_path.c_str());
+            // if (ImGui::BeginDragDropTarget()) {
+            //     if (const ImGuiPayload *payload = ImGui::AcceptDragDropPayload("shader")) {
+            //         custom_shader_path = (char *)payload->Data;
+            //         custom_shader = std::make_unique<VaultRenderer::Shader>(custom_shader_path);
+            //     }
+            // }
         });
     }
 } // namespace Engine::Components

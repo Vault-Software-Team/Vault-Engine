@@ -34,7 +34,8 @@ namespace Engine {
             std::string material_path = "";
             std::string animation_path = "";
             ModelAnimator *animator_ref;
-
+            std::unique_ptr<VaultRenderer::Shader> custom_shader;
+            std::string custom_shader_path;
             // Model Animation
 
             MeshRenderer() = default;

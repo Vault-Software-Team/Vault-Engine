@@ -12,7 +12,8 @@ namespace Engine {
             static inline const std::string display_name = "Sprite Renderer";
             std::unique_ptr<VaultRenderer::Mesh> mesh;
             Transform *transform;
-
+            std::unique_ptr<VaultRenderer::Shader> custom_shader;
+            std::string custom_shader_path;
             SpriteRenderer() = default;
             void Init() override;
 

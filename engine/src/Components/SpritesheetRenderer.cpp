@@ -45,7 +45,7 @@ namespace Engine::Components {
             ImGui::ColorEdit4("Color", &mesh->material.color.x);
 
             ImGui::Text("Sprite");
-            ImGui::ImageButton((mesh->material.diffuse ? reinterpret_cast<void*>(mesh->material.diffuse->texture_data->ID) : 0), ImVec2(100, 100), ImVec2(0, 1), ImVec2(1, 0));
+            ImGui::ImageButton((mesh->material.diffuse ? reinterpret_cast<void *>(mesh->material.diffuse->texture_data->ID) : 0), ImVec2(100, 100), ImVec2(0, 1), ImVec2(1, 0));
             if (ImGui::IsItemClicked(1)) {
                 mesh->material.diffuse.reset();
             }
@@ -55,6 +55,15 @@ namespace Engine::Components {
                     mesh->material.SetDiffuse(path);
                 }
             }
+
+            // ImGui::Button("Drag Custom Shader");
+            // if (custom_shader_path != "") ImGui::Text("Custom Shader: %s", custom_shader_path.c_str());
+            // if (ImGui::BeginDragDropTarget()) {
+            //     if (const ImGuiPayload *payload = ImGui::AcceptDragDropPayload("shader")) {
+            //         custom_shader_path = (char *)payload->Data;
+            //         custom_shader = std::make_unique<VaultRenderer::Shader>(custom_shader_path);
+            //     }
+            // }
 
             Editor::GUI::DrawVec2Control("Sheet Size", spritesheetSize);
             Editor::GUI::DrawVec2Control("Sprite Size", spriteSize);
