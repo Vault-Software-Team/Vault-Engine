@@ -21,7 +21,6 @@ namespace Vault
             set
             {
                 PointLight_SetKey("intensity", Entity.ID, Format.ToString(value));
-                return;
             }
         }
 
@@ -34,7 +33,6 @@ namespace Vault
             set
             {
                 PointLight_SetKey("shadowFarPlane", Entity.ID, Format.ToString(value));
-                return;
             }
         }
 
@@ -47,7 +45,6 @@ namespace Vault
             set
             {
                 PointLight_SetKey("enableShadowMapping", Entity.ID, value ? "true" : "false");
-                return;
             }
         }
 
@@ -59,7 +56,7 @@ namespace Vault
             }
             set
             {
-                return PointLight_SetKey("color", Entity.ID, Format.ToString(value.x) + " " + Format.ToString(value.y) + " " + Format.ToString(value.z));
+                PointLight_SetKey("color", Entity.ID, Format.ToString(value.x) + " " + Format.ToString(value.y) + " " + Format.ToString(value.z));
             }
         }
     }

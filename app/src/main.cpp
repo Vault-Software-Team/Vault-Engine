@@ -123,6 +123,10 @@ int main() {
     Shader collider_gizmo_shader("./shaders/collider_gizmo.glsl");
     // Texture equirect("./assets/skybox/metro_noord_8k.hdr", TEXTURE_HDRI);
 
+    if (fs::exists(".vscode")) {
+        fs::copy("./csharp-lib/lib", "./assets/VAULT_API", fs::copy_options::overwrite_existing | fs::copy_options::recursive);
+    }
+
     Font::InitFT();
     default_shader = &non_pbr_shader;
 
@@ -139,37 +143,6 @@ int main() {
     Scene::MakeSceneCamera();
     Scene::Main->SetMainCameraObject(Scene::StaticGameObjects.back(), true);
     Scene::Main->main_camera_object->far = 550;
-    // auto gameObject = GameObject::New("My GameObject");
-    // gameObject->AddComponent<Components::MeshRenderer>();
-    // gameObject->AddComponent<Components::AmbientLight>();
-    // auto &meshRenderer = gameObject->GetComponent<Components::MeshRenderer>();
-    // gameObject->GetComponent<Components::AmbientLight>().amount = 0.2f;
-    // meshRenderer.SetMeshType(Components::MESH_PLANE);
-    // meshRenderer.mesh->material.SetDiffuse("./diffuse.png");
-    // meshRenderer.mesh->material.SetSpecular("./diffuse.png");
-    // meshRenderer.mesh->material.SetNormal("./normal.png");
-    // meshRenderer.mesh->material.SetHeight("./displacement.png");
-
-    // auto lightObject = GameObject::New("PointLight");
-    // lightObject->AddComponent<Components::PointLight>();
-    // lightObject->AddComponent<Components::MeshRenderer>();
-    // lightObject->GetComponent<Components::MeshRenderer>().SetMeshType(Components::MESH_PYRAMID);
-    // lightObject->GetComponent<Components::PointLight>().enable_shadow_mapping = true;
-
-    // auto emptyObject = GameObject::New("Text");
-    // emptyObject->AddComponent<Text3D>();
-    // emptyObject->GetComponent<Text3D>().text = "Hello, World!";
-    // emptyObject->GetComponent<Text3D>().scale = 0.02;
-    // emptyObject->GetComponent<Text3D>().ChangeFont("./fonts/OpenSans-Bold.ttf");
-    // auto &empty_transform = emptyObject->GetComponent<Transform>();
-
-    // using namespace Engine::Components;
-    // auto &transform = gameObject->GetComponent<Transform>();
-    // auto &light_transform = lightObject->GetComponent<Transform>();
-    // // transform.rotation.x = glm::radians(90.f);
-    // transform.scale = glm::vec3(10, 10, 10);
-
-    // emptyObject->AddChild("Cunt");
 
     ShadowMap shadow_map;
     CascadedShadowMap c_ShadowMap(4096, 500.f);
@@ -387,7 +360,7 @@ int main() {
 
     // HDRI Skybox Setup
     glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
-    HDRSkybox hdrSkybox("./assets/skybox/metro_noord_8k.hdr", &equirectToCubemap, &hdri_skybox_shader, &irr_shader, &prefilter_shader, &brdf_shader, 1024);
+    HDRSkybox hdrSkybox("./assets/skybox/default_skybox.hdr", &equirectToCubemap, &hdri_skybox_shader, &irr_shader, &prefilter_shader, &brdf_shader, 1024);
 
     auto Function_MousePicking = [&](Framebuffer::ColorAttachement &ca) {
         hdrSkybox.RenderEnvCubemap();

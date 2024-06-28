@@ -285,16 +285,16 @@ namespace Engine {
             transform.ID = new_gameObject->ID;
         }
 
-        CopyComponent<Transform>(destination_reg, source_reg);
-        CopyComponent<Camera>(destination_reg, source_reg);
-        CopyComponent<MeshRenderer>(destination_reg, source_reg);
-        CopyComponent<AmbientLight>(destination_reg, source_reg);
-        CopyComponent<PointLight>(destination_reg, source_reg);
-        CopyComponent<DirectionalLight>(destination_reg, source_reg);
-        CopyComponent<SpotLight>(destination_reg, source_reg);
-        CopyComponent<Text3D>(destination_reg, source_reg);
-        CopyComponent<BoxCollider2D>(destination_reg, source_reg);
-        CopyComponent<Rigidbody2D>(destination_reg, source_reg);
+        // CopyComponent<Transform>(destination_reg, source_reg);
+        // CopyComponent<Camera>(destination_reg, source_reg);
+        // CopyComponent<MeshRenderer>(destination_reg, source_reg);
+        // CopyComponent<AmbientLight>(destination_reg, source_reg);
+        // CopyComponent<PointLight>(destination_reg, source_reg);
+        // CopyComponent<DirectionalLight>(destination_reg, source_reg);
+        // CopyComponent<SpotLight>(destination_reg, source_reg);
+        // CopyComponent<Text3D>(destination_reg, source_reg);
+        // CopyComponent<BoxCollider2D>(destination_reg, source_reg);
+        // CopyComponent<Rigidbody2D>(destination_reg, source_reg);
 
         return new_scene;
     }

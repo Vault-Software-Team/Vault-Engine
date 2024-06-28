@@ -1,6 +1,6 @@
 color: [1, 1, 1, 1]
 emissionColor: [0, 0, 0]
-texUVs: [5, 5]
+texUVs: [1.5, 1.5]
 diffuse: ./assets/textures/Tiles035_4K-PNG/Tiles035_4K-PNG_Color.png
 specular: nullptr
 normal: ./assets/textures/Tiles035_4K-PNG/Tiles035_4K-PNG_NormalGL.png

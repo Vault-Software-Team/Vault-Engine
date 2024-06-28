@@ -8,14 +8,16 @@ public class CameraTest : Entity
         SetObjectID(ID);
     }
 
+    Rigidbody3D rigidbody;
+
     private void OnStart(string ID)
     {
-
+        rigidbody = GetComponent<Rigidbody3D>();
     }
 
     private void OnUpdate()
     {
-
+        rigidbody.velocity = new Vector3(1, 0, 0);
     }
 
     void OnMouseEnter()

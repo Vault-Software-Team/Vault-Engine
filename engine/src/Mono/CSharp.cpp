@@ -9,6 +9,7 @@
 #include "Engine/Mono/GameObject/Functions.hpp"
 #include "Engine/Mono/SpriteRenderer/Functions.hpp"
 #include "Engine/Mono/Rigidbody2D/Functions.hpp"
+#include "Engine/Mono/Rigidbody3D/Functions.hpp"
 #include "Engine/Mono/Camera/Functions.hpp"
 #include "Engine/Mono/Audio/Functions.hpp"
 #include "Engine/Mono/Mathf/Functions.hpp"
@@ -291,6 +292,15 @@ namespace Engine {
         VAULT_REGISTER_FUNCTION_PREFIX("Vault.Rigidbody2D::", Rigidbody2D_Force);
         VAULT_REGISTER_FUNCTION_PREFIX("Vault.Rigidbody2D::", Rigidbody2D_Torque);
         VAULT_REGISTER_FUNCTION_PREFIX("Vault.Rigidbody2D::", Rigidbody2D_SetType);
+
+        // Rigidbody3D
+        VAULT_REGISTER_FUNCTION_PREFIX("Vault.Rigidbody3D::", Rigidbody3D_GetKey);
+        VAULT_REGISTER_FUNCTION_PREFIX("Vault.Rigidbody3D::", Rigidbody3D_SetKey);
+        VAULT_REGISTER_FUNCTION_PREFIX("Vault.Rigidbody3D::", Rigidbody3D_AddForce);
+        VAULT_REGISTER_FUNCTION_PREFIX("Vault.Rigidbody3D::", Rigidbody3D_AddTorque);
+        VAULT_REGISTER_FUNCTION_PREFIX("Vault.Rigidbody3D::", Rigidbody3D_AddForceAtPosition);
+        VAULT_REGISTER_FUNCTION_PREFIX("Vault.Rigidbody3D::", Rigidbody3D_SetVelocity);
+        VAULT_REGISTER_FUNCTION_PREFIX("Vault.Rigidbody3D::", Rigidbody3D_SetAngularVelocity);
 
         // Camera
         VAULT_REGISTER_FUNCTION_NAME("Vault.Camera::Camera_GetKey", Camera_GetKey);
