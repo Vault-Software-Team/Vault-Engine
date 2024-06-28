@@ -5,6 +5,7 @@
 #include <Renderer/Shader.hpp>
 #include <memory>
 #include "Texture.hpp"
+#include "glm/fwd.hpp"
 
 #define MAX_BONE_INFLUENCE 4
 namespace VaultRenderer {
@@ -14,6 +15,7 @@ namespace VaultRenderer {
         float ao = 1;
         float metallic = 0;
         float roughness = 0.2;
+        glm::vec2 texUVs = glm::vec2(0, 0);
         std::string filePath = "";
 
         glm::vec4 color = glm::vec4(1);

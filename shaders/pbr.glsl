@@ -31,6 +31,8 @@ uniform mat4 camera_projection;
 uniform mat4 light_proj;
 uniform bool mesh_isFlat;
 uniform bool playAnimation;
+uniform vec2 texUVOffset;
+
 const int MAX_BONES = 100;
 const int MAX_BONE_INFLUENCE = 4;
 uniform mat4 finalBonesMatrices[MAX_BONES];
@@ -65,6 +67,12 @@ void main() {
     data_out.model = transformModel;
     data_out.cameraCalcs = camera_projection * camera_view;
     data_out.texUV = vTextureUV;
+    if (texUVOffset.x > 0) {
+        data_out.texUV *= texUVOffset.x;
+    }
+    if (texUVOffset.y > 0) {
+        data_out.texUV *= texUVOffset.y;
+    }
     data_out.normal = mat3(transpose(inverse(transformModel))) * totalNormal;
     data_out.normal = normalize(data_out.normal);
     // normal = vNormal;

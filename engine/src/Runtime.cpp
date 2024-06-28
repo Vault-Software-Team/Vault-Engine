@@ -70,7 +70,7 @@ namespace Engine {
 
         Scene::Main->UpdateGameObjectComponents();
         Scene::UpdateStaticGameObjectComponents();
-        bulletPhysics->UpdatePhysics();
+
         std::vector<Camera *> depth_cameras = {};
         auto camV = Scene::Main->EntityRegistry.view<Camera>();
 

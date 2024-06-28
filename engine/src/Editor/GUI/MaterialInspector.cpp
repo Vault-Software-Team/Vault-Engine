@@ -136,6 +136,7 @@ namespace Editor {
             ImGui::DragFloat("Metallic", &MaterialInspector_material.metallic);
             ImGui::DragFloat("Roughness", &MaterialInspector_material.roughness);
             ImGui::DragFloat("AO", &MaterialInspector_material.ao);
+            GUI::DrawVec2Control("Texture UVs", MaterialInspector_material.texUVs);
 
             if (ImGui::Button(ICON_FA_FLOPPY_DISK " Save")) {
                 Engine::Serializer::SerializeMaterial(MaterialInspector_material_path, MaterialInspector_material);

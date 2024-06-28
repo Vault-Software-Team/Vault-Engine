@@ -1,5 +1,6 @@
 #include "Engine/DecomposeTransform.hpp"
 #include "Engine/Physics/BulletPhysics.hpp"
+#include "Engine/Runtime.hpp"
 #include <Engine/Components/Rigidbody3D.hpp>
 #include <Editor/GUI/MainGUI.hpp>
 #include <icons/icons.h>
@@ -106,6 +107,8 @@ namespace Engine::Components {
     void Rigidbody3D::Update() {
         if (!body)
             return;
+
+        if (!Runtime::instance->isRunning) return;
 
         btTransform btTrans = body->getWorldTransform();
         glm::mat4 mat = glm::mat4(1.0f);

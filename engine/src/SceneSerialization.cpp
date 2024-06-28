@@ -747,6 +747,7 @@ namespace Engine {
         emitter << yaml::BeginMap;
         emitter << yaml::Key << "color" << yaml::Value << material.color;
         emitter << yaml::Key << "emissionColor" << yaml::Value << material.emissionColor;
+        emitter << yaml::Key << "texUVs" << yaml::Value << material.texUVs;
         emitter << yaml::Key << "diffuse" << yaml::Value << (material.diffuse ? material.diffuse->texture_data->texture_filepath : "nullptr");
         emitter << yaml::Key << "specular" << yaml::Value << (material.specular ? material.specular->texture_data->texture_filepath : "nullptr");
         emitter << yaml::Key << "normal" << yaml::Value << (material.normal ? material.normal->texture_data->texture_filepath : "nullptr");
@@ -773,6 +774,10 @@ namespace Engine {
 
         if (data["emissionColor"]) {
             material.emissionColor = data["emissionColor"].as<glm::vec3>();
+        }
+
+        if (data["texUVs"]) {
+            material.texUVs = data["texUVs"].as<glm::vec2>();
         }
 
         if (data["diffuse"].as<std::string>() != "nullptr") {
