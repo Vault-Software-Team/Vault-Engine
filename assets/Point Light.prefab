@@ -1,0 +1,15 @@
+Prefab: bc241e35-a70e-447c-8fd0-3bf20543adc6
+GameObjects:
+  - GameObject:
+      ID: bc241e35-a70e-447c-8fd0-3bf20543adc6
+      name: Point Light
+      tag: Default
+      parent: NO_PARENT
+      Transform:
+        position: [-3.23532939, 2.82556272, -4.22606277]
+        rotation: [0, 0, 0]
+        scale: [1, 1, 1]
+      PointLight:
+        intensity: 11.0900002
+        color: [1, 0.566862822, 0.114893615]
+        enable_shadow_mapping: false

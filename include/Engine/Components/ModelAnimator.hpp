@@ -7,17 +7,24 @@
 #include <memory>
 #include <Renderer/Texture.hpp>
 #include <Engine/Model.hpp>
+#include <string>
 #include <thread>
+#include <unordered_map>
 
 namespace Engine {
     namespace Components {
         struct DLL_API ModelAnimator : Base {
             static inline const std::string display_name = "Model Animator";
             std::unique_ptr<ModelMesh> model;
-            std::unique_ptr<Animation> animation;
+
             std::unique_ptr<Animator> animator;
+            // std::unique_ptr<Animation> animation;
+            std::unordered_map<std::string, std::unique_ptr<Animation>> animations;
+
             Transform *transform = nullptr;
             std::string animation_path;
+
+            std::string current_animation = "";
 
             float time_scale = 1.0;
             bool play_animation = false;
@@ -26,7 +33,7 @@ namespace Engine {
 
             void OnGUI() override;
             void Init() override;
-            void SetAnimation(const std::string &path);
+            void SetAnimation(const std::string &animation_name, const std::string &path);
             void BindToShader(VaultRenderer::Shader &shader);
             void Animate();
             void PlayAnimation();

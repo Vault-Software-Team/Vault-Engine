@@ -1,6 +1,7 @@
 #include "Engine/Components/BoneManipulator.hpp"
 #include "Engine/Components/MeshRenderer.hpp"
 #include "Engine/GameObject.hpp"
+#include "Engine/Model.hpp"
 #include "Engine/Scene.hpp"
 #include "Renderer/Shader.hpp"
 #include "imgui/imgui.h"
@@ -26,26 +27,50 @@ namespace Engine::Components {
                 ImGui::Text("%s", model->path.c_str());
             }
 
-            ImGui::Button("Drag Animation/Model File");
-            if (ImGui::IsItemHovered() && ImGui::IsMouseClicked(2)) {
-                animator.reset();
-                animation.reset();
-                animation_path = "";
-            }
-            if (ImGui::BeginDragDropTarget()) {
-                if (const ImGuiPayload *payload = ImGui::AcceptDragDropPayload("model_file")) {
-                    std::string path = (char *)payload->Data;
-                    animation_path = path;
-                    SetAnimation(animation_path);
-                    play_animation = true;
-                }
-            }
-            ImGui::Text("%s", animation_path.c_str());
             ImGui::DragFloat("Animation Time Scale", &time_scale, 0.01);
             if (animation_path != "") {
                 if (ImGui::Button(play_animation ? "Stop Animation" : "Play Animation")) {
                     play_animation = !play_animation;
                 }
+            }
+
+            if (ImGui::TreeNode("Animations")) {
+                static std::string GUI_AnimationName = "new_anim";
+                ImGui::InputText("##ModelAnimatorAnimName", &GUI_AnimationName);
+                if (ImGui::Button(ICON_FA_PLUS " Create New Animation")) {
+                    if (animations.find(GUI_AnimationName) == animations.end() && GUI_AnimationName != "") {
+                        animations[GUI_AnimationName] = nullptr;
+                        GUI_AnimationName = "new_anim";
+                    }
+                }
+                ImGui::NewLine();
+                ImGui::Text("Current Animation");
+                ImGui::InputText("##ModelAnimatorCurrAnim", &current_animation);
+
+                for (auto &anim_data : animations) {
+                    if (ImGui::TreeNode(anim_data.first.c_str())) {
+                        ImGui::Button("Drag Animation/Model File");
+                        if (ImGui::IsItemHovered() && ImGui::IsMouseClicked(2)) {
+                            anim_data.second.reset();
+                            animation_path = "";
+                        }
+                        if (ImGui::BeginDragDropTarget()) {
+                            if (const ImGuiPayload *payload = ImGui::AcceptDragDropPayload("model_file")) {
+                                std::string path = (char *)payload->Data;
+                                animation_path = path;
+                                SetAnimation(anim_data.first, animation_path);
+                                play_animation = true;
+                            }
+                        }
+                        if (anim_data.second.get()) {
+                            ImGui::Text("%s", anim_data.second->animation_path.c_str());
+                        }
+
+                        ImGui::TreePop();
+                    }
+                }
+
+                ImGui::TreePop();
             }
 
             // if (animation && animator) {
@@ -85,6 +110,10 @@ namespace Engine::Components {
 
         if (!play_animation) return;
 
+        auto find_anim = animations.find(current_animation);
+        if (find_anim == animations.end()) return;
+        auto &animation = find_anim->second;
+
         auto &transforms = animator->GetFinalBoneMatrices();
         auto v = Scene::Main->EntityRegistry.view<BoneManipulator>();
 
@@ -111,13 +140,15 @@ namespace Engine::Components {
         }
     }
 
-    void ModelAnimator::SetAnimation(const std::string &path) {
+    void ModelAnimator::SetAnimation(const std::string &animation_name, const std::string &path) {
         if (!model) return;
+        animations[animation_name] = std::make_unique<Animation>(path, Model::GlobalBoneMaps[model->path]);
+        if (animations.size() <= 1) animator = std::make_unique<Animator>(animations[animation_name].get());
+        // animator.reset();
 
-        animation.reset();
-        animator.reset();
-        animation = std::make_unique<Animation>(path, Model::GlobalBoneMaps[model->path]);
-        animator = std::make_unique<Animator>(animation.get());
+        // animation.reset();
+        // animation = std::make_unique<Animation>(path, Model::GlobalBoneMaps[model->path]);
+        // animator = std::make_unique<Animator>(animation.get());
     }
 
     void ModelAnimator::Init() {
@@ -142,6 +173,13 @@ namespace Engine::Components {
         if (!animator)
             return;
 
+        auto find_anim = animations.find(current_animation);
+        if (find_anim == animations.end()) return;
+        auto &animation = find_anim->second;
+
+        if (animator->curr_anim != animation.get())
+            animator->SetCurrentAnimation(animation.get());
+
         if (play_animation)
             animator->UpdateAnimation(Runtime::instance->timestep * time_scale);
 
@@ -155,6 +193,13 @@ namespace Engine::Components {
     void ModelAnimator::AnimateAndSetUniforms(VaultRenderer::Shader &shader) {
         if (!animator)
             return;
+
+        auto find_anim = animations.find(current_animation);
+        if (find_anim == animations.end()) return;
+        auto &animation = find_anim->second;
+
+        if (animator->curr_anim != animation.get())
+            animator->SetCurrentAnimation(animation.get());
 
         if (play_animation)
             animator->UpdateAnimation(Runtime::instance->timestep * time_scale);

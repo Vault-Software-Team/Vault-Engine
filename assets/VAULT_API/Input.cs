@@ -13,6 +13,14 @@ namespace Vault
         public static extern bool IsKeyDown(int key);
         [MethodImpl(MethodImplOptions.InternalCall)]
         public static extern bool IsKeyUp(int key);
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        public static extern int GetVerticalAxis();
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        public static extern int GetHorizontalAxis();
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        public static extern int GetMouseXAxis();
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        public static extern int GetMouseYAxis();
 
         public static int KEY_SPACE = 32;
         public static int KEY_APOSTROPHE = 39;  /* ' */

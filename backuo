@@ -80,7 +80,7 @@ void print(const std::string &traki) {
 int main() {
     using namespace VaultRenderer;
 
-    chdir("/home/poww/Desktop/Programming Projects/Vault-Engine");
+    chdir("/home/poww/Desktop/Projects/Vault-Engine");
 
     // ANGEL SCRIPT TEST
     // Scripting::AngelScript::AngelScriptEngine AsEngine;

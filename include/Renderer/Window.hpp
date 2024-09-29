@@ -49,6 +49,7 @@ namespace VaultRenderer {
         void AspectRatioCameraViewport();
         void SetMousePos(float x, float y);
         void SetMousePos(glm::vec2 xy);
+        void SetWindowIcon(const std::string &path);
 
     private:
         static DLL_API void FramebufferSizeCallback(GLFWwindow *window, int width, int height);

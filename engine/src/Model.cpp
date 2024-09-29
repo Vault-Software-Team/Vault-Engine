@@ -297,7 +297,7 @@ namespace Engine {
         // return bones[name];
     }
 
-    Animation::Animation(const std::string &animationPath, Model::GlobalBoneMap &bone_map) : bonemap(bone_map) {
+    Animation::Animation(const std::string &animationPath, Model::GlobalBoneMap &bone_map) : bonemap(bone_map), animation_path(animationPath) {
         Assimp::Importer importer;
         const aiScene *scene = importer.ReadFile(animationPath, aiProcess_Triangulate);
         assert(scene && scene->mRootNode);
@@ -312,6 +312,11 @@ namespace Engine {
 
     // -- ANIMATOR BEGIN
     Animator::Animator(Animation *anim) {
+        SetCurrentAnimation(anim);
+    }
+
+    void Animator::SetCurrentAnimation(Animation *anim) {
+        finalBoneMatrices = {};
         curr_time = 0.0;
         curr_anim = anim;
 

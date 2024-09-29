@@ -19,6 +19,8 @@ namespace Engine::Components {
         };
         std::vector<uint32_t> indices = {0, 1, 2, 0, 2, 3};
         mesh = std::make_unique<Mesh>(vertices, indices);
+        mesh->material.roughness = 1;
+        mesh->material.metallic = 0;
     }
 
     void SpriteRenderer::Draw(VaultRenderer::Shader &shader) {

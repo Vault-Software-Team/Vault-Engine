@@ -252,7 +252,16 @@ namespace Engine {
             emitter << yaml::Key << "model_path" << yaml::Value << (component.model == nullptr ? "nullptr" : component.model->path);
             emitter << yaml::Key << "time_scale" << yaml::Value << component.time_scale;
             emitter << yaml::Key << "play_animation" << yaml::Value << component.play_animation;
-            emitter << yaml::Key << "animation_path" << yaml::Value << component.animation_path;
+            emitter << yaml::Key << "current_animation" << yaml::Value << component.current_animation;
+
+            // emitter << yaml::Key << "animation_path" << yaml::Value << component.animation_path;
+
+            emitter << yaml::Key << "animations";
+            emitter << yaml::BeginMap;
+            for (auto &mesh : component.animations) {
+                emitter << yaml::Key << mesh.first << yaml::Value << mesh.second->animation_path;
+            }
+            emitter << yaml::EndMap;
 
             emitter << yaml::EndMap;
         }
@@ -534,13 +543,25 @@ namespace Engine {
                 component.play_animation = data["ModelAnimator"]["play_animation"].as<bool>();
             }
 
-            if (data["ModelAnimator"]["animation_path"]) {
-                const auto path = data["ModelAnimator"]["animation_path"].as<std::string>();
-                if (path != "") {
-                    component.animation_path = path;
-                    component.SetAnimation(component.animation_path);
+            if (data["ModelAnimator"]["current_animation"]) {
+                component.current_animation = data["ModelAnimator"]["current_animation"].as<std::string>();
+            }
+
+            if (data["ModelRenderer"]["animations"]) {
+                for (auto anim : data["ModelRenderer"]["animations"]) {
+                    const std::string &name = anim.first.as<std::string>();
+                    const std::string &path = anim.second.as<std::string>();
+                    component.SetAnimation(name, path);
                 }
             }
+
+            // if (data["ModelAnimator"]["animation_path"]) {
+            //     const auto path = data["ModelAnimator"]["animation_path"].as<std::string>();
+            //     if (path != "") {
+            //         component.animation_path = path;
+            //         component.SetAnimation(component.animation_path);
+            //     }
+            // }
         }
 
         if (data["BoneManipulator"]) {

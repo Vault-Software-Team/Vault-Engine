@@ -6,7 +6,13 @@ include_directories(${CMAKE_SOURCE_DIR}/vendor)
 include_directories(${CMAKE_SOURCE_DIR}/external/bullet)
 
 add_subdirectory(api)
-add_subdirectory(app)
+
+# if(NOT PROJECT_SELECTOR)
+    # add_subdirectory(app)
+# else()
+    add_subdirectory(app-project)
+# endif()
+
 add_subdirectory(engine)
 # add_subdirectory(hyperscript)
 add_subdirectory(external/box2d)
@@ -15,7 +21,7 @@ add_subdirectory(vendor/ImGuizmo)
 add_subdirectory(external/efsw)
 add_subdirectory(external/discord-rpc)
 if (NOT EMSCRIPTEN)
-add_subdirectory(external/glfw)
+    add_subdirectory(external/glfw)
 else()
     include_directories(/usr/lib/emsdk/upstream/emscripten/cache/sysroot/include)
     set_target_properties(api

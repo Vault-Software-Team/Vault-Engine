@@ -1,0 +1,16 @@
+Prefab: 252ef9f8-0ec8-4810-9000-9ee78fa9227c
+GameObjects:
+  - GameObject:
+      ID: 252ef9f8-0ec8-4810-9000-9ee78fa9227c
+      name: Obstacle Bottom
+      tag: Default
+      parent: NO_PARENT
+      Transform:
+        position: [0, 0.360000014, 0]
+        rotation: [0, 0, 0]
+        scale: [1, 2.43867493, 1]
+      MeshRenderer:
+        mesh_type: 2
+        mesh_index: -1
+        mesh_path: ""
+        material_path: ""

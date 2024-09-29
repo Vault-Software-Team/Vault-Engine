@@ -67,15 +67,17 @@ namespace Editor {
 
                     i++;
                 }
-                for (auto &bone : model->m_BoneInfoMap) {
-                    // first = bone name, second = bone info
-                    auto &_gameObject = GameObject::New(bone.first);
-                    _gameObject->AddComponent<BoneManipulator>();
-                    _gameObject->parent = gameObject->ID;
+                // for (auto &bone : model->m_BoneInfoMap) {
+                //     // first = bone name, second = bone info
+                //     std::cout << "Creating bone manip: " << bone.first << "\n";
+                //     auto &_gameObject = GameObject::New(bone.first);
+                //     std::cout << _gameObject.get() << " " << gameObject.get() << "\n";
+                //     _gameObject->AddComponent<BoneManipulator>();
+                //     _gameObject->parent = gameObject->ID;
 
-                    auto &boneManipulator = _gameObject->AddComponent<BoneManipulator>();
-                    boneManipulator.nodeName = bone.first;
-                }
+                //     auto &boneManipulator = _gameObject->AddComponent<BoneManipulator>();
+                //     boneManipulator.nodeName = bone.first;
+                // }
 
                 auto &comp = gameObject->AddComponent<ModelAnimator>();
 

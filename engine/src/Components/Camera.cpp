@@ -11,7 +11,8 @@
 
 namespace Engine::Components {
     void Camera::UpdateMatrix() {
-        view = glm::lookAt(transform->position, transform->position + transform->rotation, up);
+        glm::vec3 full_rot = mouse_rot + transform->rotation;
+        view = glm::lookAt(transform->position, transform->position + full_rot, up);
         const float aspect = (float)VaultRenderer::Window::window->targetWidth / VaultRenderer::Window::window->targetHeight;
         if (!is2D) {
             // Isn't 2D
@@ -23,13 +24,13 @@ namespace Engine::Components {
             projection = glm::scale(projection, glm::vec3(transform->scale.x, transform->scale.y, 1.0f));
         }
 
-        front = glm::rotate(glm::inverse(glm::quat(transform->rotation)), glm::vec3(0.0, 0.0, -1.0));
+        front = glm::rotate(glm::inverse(glm::quat(full_rot)), glm::vec3(0.0, 0.0, -1.0));
         // glm::lookAt(cam_pos + lightPos, cam_pos + Scene::mainCamera->Front, lightUpThing);
     }
 
     void Camera::Init() {
         transform = static_registry ? &Scene::StaticGameObjects_EntityRegistry.get<Transform>(entity) : &Scene::Main->EntityRegistry.get<Transform>(entity);
-        transform->rotation.z = -1;
+        mouse_rot.z = -1;
     }
 
     void Camera::BindToShader(VaultRenderer::Shader &shader) {
@@ -47,19 +48,19 @@ namespace Engine::Components {
         // height = VaultRenderer::Window::window->height;
 
         if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
-            transform->position += speed * transform->rotation;
+            transform->position += speed * mouse_rot;
         }
 
         if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
-            transform->position += speed * -glm::normalize(glm::cross(transform->rotation, up));
+            transform->position += speed * -glm::normalize(glm::cross(mouse_rot, up));
         }
 
         if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
-            transform->position += speed * -transform->rotation;
+            transform->position += speed * -mouse_rot;
         }
 
         if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
-            transform->position += speed * glm::normalize(glm::cross(transform->rotation, up));
+            transform->position += speed * glm::normalize(glm::cross(mouse_rot, up));
         }
 
         if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) {
@@ -103,12 +104,12 @@ namespace Engine::Components {
             float rotation_x = sensitivity * (float)(mouse_y - ((float)height / 2)) / height;
             float rotation_y = sensitivity * (float)(mouse_x - ((float)width / 2)) / width;
 
-            glm::vec3 new_rotation = glm::rotate(transform->rotation, glm::radians(-rotation_x), glm::normalize(glm::cross(transform->rotation, up)));
+            glm::vec3 new_rotation = glm::rotate(mouse_rot, glm::radians(-rotation_x), glm::normalize(glm::cross(mouse_rot, up)));
 
             if (!((glm::angle(new_rotation, up) <= glm::radians(5.0f)) || (glm::angle(new_rotation, -up) <= glm::radians(5.0f)))) {
-                transform->rotation = new_rotation;
+                mouse_rot = new_rotation;
             }
-            transform->rotation = glm::rotate(transform->rotation, glm::radians(-rotation_y), up);
+            mouse_rot = glm::rotate(mouse_rot, glm::radians(-rotation_y), up);
 
             glfwSetCursorPos(window, (float)width / 2, (float)height / 2);
         }

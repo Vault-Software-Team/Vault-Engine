@@ -185,6 +185,8 @@ namespace Engine {
 
     class DLL_API Animation {
     public:
+        const std::string animation_path;
+
         Animation() = default;
         Animation(const std::string &animationPath, Model::GlobalBoneMap &bone_map);
         ~Animation();
@@ -212,17 +214,19 @@ namespace Engine {
 
     class DLL_API Animator {
     public:
+        Animation *curr_anim;
+
         Animator(Animation *anim);
         void UpdateAnimation(float dt);
         void UpdateTransforms();
         void PlayAnimation(Animation *anim);
         void CalculateBoneTransform(const AssimpNodeData *node, const glm::mat4 &parent);
         void LocalTransformCalculateBoneTransform(const AssimpNodeData *node, const glm::mat4 &parent);
+        void SetCurrentAnimation(Animation *anim);
         std::vector<glm::mat4> &GetFinalBoneMatrices();
 
     private:
         std::vector<glm::mat4> finalBoneMatrices;
-        Animation *curr_anim;
         float curr_time;
         float timestep;
     };

@@ -3,6 +3,7 @@ Welcome to the worst game engines codes main file!
 In here you will throw up all over your desk cuz the coding is fucking ass
 */
 
+#include <stb_image/stb_image.h>
 #include "Engine/Audio.hpp"
 #include "Engine/CascadedShadowMap.hpp"
 #include "Engine/Components/MeshRenderer.hpp"
@@ -12,6 +13,7 @@ In here you will throw up all over your desk cuz the coding is fucking ass
 #include "Engine/HDRSkybox.hpp"
 #include "Engine/Model.hpp"
 #include "Engine/SimpleCalls.hpp"
+#include "GLFW/glfw3.h"
 #include "HyperScript/HyperScript.hpp"
 #include "Renderer/Framebuffer.hpp"
 #include "imgui/TextEditor.hpp"
@@ -91,7 +93,7 @@ int main() {
 
     // lets pretend i added some code here
 
-    // chdir("/home/poww/Desktop/Programming Projects/Vault-Engine");
+    // chdir("/home/poww/Desktop/Projects/Vault-Engine");
 
     // dlsym test
     // Script *(*create_obj)() = (Script * (*)()) dlsym(dlopen("./sandbox/script.so", RTLD_LAZY), "create_script");
@@ -107,6 +109,7 @@ int main() {
     Window window(1280, 720, Serializer::config.title == "" ? "Vault Engine" : Serializer::config.title.c_str());
 #else
     Window window(1280, 720, "Vault Engine");
+    window.SetWindowIcon("./editor/icons/icon.png");
 #endif
     Statistics::SetStats();
 

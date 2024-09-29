@@ -14,6 +14,7 @@
 #include "Engine/Mono/Audio/Functions.hpp"
 #include "Engine/Mono/Mathf/Functions.hpp"
 #include "Engine/Mono/Entity/Functions.hpp"
+#include "Engine/Mono/ModelAnimator/Functions.hpp"
 #include "Engine/Mono/PointLight/Functions.hpp"
 #include "mono/metadata/assembly.h"
 #include "mono/metadata/image.h"
@@ -262,6 +263,10 @@ namespace Engine {
         VAULT_REGISTER_FUNCTION_NAME("Vault.Input::IsKeyReleased", Input::IsKeyReleased);
         VAULT_REGISTER_FUNCTION_NAME("Vault.Input::IsKeyDown", Input::IsKeyDown);
         VAULT_REGISTER_FUNCTION_NAME("Vault.Input::IsKeyUp", Input::IsKeyUp);
+        VAULT_REGISTER_FUNCTION_NAME("Vault.Input::GetVerticalAxis", Input::GetVerticalAxis);
+        VAULT_REGISTER_FUNCTION_NAME("Vault.Input::GetHorizontalAxis", Input::GetHorizontalAxis);
+        VAULT_REGISTER_FUNCTION_NAME("Vault.Input::GetMouseXAxis", Input::GetMouseXAxis);
+        VAULT_REGISTER_FUNCTION_NAME("Vault.Input::GetMouseYAxis", Input::GetMouseYAxis);
 
         // Log
         VAULT_REGISTER_FUNCTION_NAME("Vault.Debug::Log", CSharp_EditorConsole_Log);
@@ -301,6 +306,10 @@ namespace Engine {
         VAULT_REGISTER_FUNCTION_PREFIX("Vault.Rigidbody3D::", Rigidbody3D_AddForceAtPosition);
         VAULT_REGISTER_FUNCTION_PREFIX("Vault.Rigidbody3D::", Rigidbody3D_SetVelocity);
         VAULT_REGISTER_FUNCTION_PREFIX("Vault.Rigidbody3D::", Rigidbody3D_SetAngularVelocity);
+
+        // ModelAnimator
+        VAULT_REGISTER_FUNCTION_PREFIX("Vault.ModelAnimator::", ModelAnimator_GetCurrentAnimation);
+        VAULT_REGISTER_FUNCTION_PREFIX("Vault.ModelAnimator::", ModelAnimator_SetCurrentAnimation);
 
         // Camera
         VAULT_REGISTER_FUNCTION_NAME("Vault.Camera::Camera_GetKey", Camera_GetKey);

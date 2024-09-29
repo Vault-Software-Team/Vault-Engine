@@ -5,8 +5,8 @@ public class Obstacle : Entity
 {
 
     Rigidbody2D rigidbody;
-    float maxX = -3.70f;
-    float startX = 3.70f;
+    float maxX = -6.00f;
+    float startX = 6.00f;
 
     // x = top, y = bottom
 
@@ -23,7 +23,7 @@ public class Obstacle : Entity
 
     private void OnUpdate()
     {
-        rigidbody.SetVelocity(-4, rigidbody.velocity.y);
+        rigidbody.SetVelocity(-6, rigidbody.velocity.y);
 
 
         // if (transform.position.x <= maxX)

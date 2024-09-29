@@ -1,0 +1,263 @@
+Scene: Untitled
+GameObjects:
+  - GameObject:
+      ID: d2db04b3-8f69-482a-926f-7fc53d212346
+      name: Ambient
+      tag: Default
+      parent: NO_PARENT
+      Transform:
+        position: [0, 0, 0]
+        rotation: [0, 0, 0]
+        scale: [1, 1, 1]
+      AmbientLight:
+        amount: 0.730000019
+        color: [1, 1, 1]
+  - GameObject:
+      ID: 1e31e2f3-1750-4e93-8b41-46de7dc5876a
+      name: Game Manager
+      tag: Default
+      parent: NO_PARENT
+      Transform:
+        position: [0, 0, 0]
+        rotation: [0, 0, 0]
+        scale: [1, 1, 1]
+      CSharpScriptComponent:
+        selected_scripts:
+          .GameManager: THIS_IS_EMPTY_FUCK_YOU_LOL.GameManager
+  - GameObject:
+      ID: 6f31f087-cb43-4507-a355-5493a15349e7
+      name: Game Camera
+      tag: Default
+      parent: NO_PARENT
+      Transform:
+        position: [0, 2.29999995, 7]
+        rotation: [0, -0.232128799, -1]
+        scale: [0.999995351, 0.999998629, 0.999998868]
+      Camera:
+        fov: 45
+        near: 0.100000001
+        far: 100
+        main_camera: true
+        is2D: false
+        depth_camera: false
+  - GameObject:
+      ID: 5b64a8a1-21ee-47ba-8d86-4b9db7e2086d
+      name: Floor
+      tag: Default
+      parent: NO_PARENT
+      Transform:
+        position: [0, -0.295864105, 0]
+        rotation: [0, 0, 0]
+        scale: [67.8959579, 67.9321747, 67.8959579]
+      MeshRenderer:
+        mesh_type: 0
+        mesh_index: -1
+        mesh_path: ""
+        material_path: ./assets/main.material
+      Rigidbody2D:
+        body_type: 0
+        gravity_scale: 1
+      BoxCollider2D:
+        density: 1
+        friction: 1
+        restitution: 0
+        trigger: false
+        offset: [0, 0]
+        size: [24.7800007, 0.200000003]
+  - GameObject:
+      ID: 4d50f867-fad5-4e91-92a1-579b9b2d0c46
+      name: Left
+      tag: Default
+      parent: af7c4e75-c61e-4b3a-8f27-41e2e2660368
+      Transform:
+        position: [-3.46242476, 2.82556272, -8.69903564]
+        rotation: [0, 0, 0]
+        scale: [1, 1, 1]
+      PointLight:
+        intensity: 50
+        color: [1, 0.0978723168, 0.0978723168]
+        enable_shadow_mapping: false
+  - GameObject:
+      ID: bc241e35-a70e-447c-8fd0-3bf20543adc6
+      name: Middle
+      tag: Default
+      parent: af7c4e75-c61e-4b3a-8f27-41e2e2660368
+      Transform:
+        position: [0.275395393, 2.82556272, -8.69999981]
+        rotation: [0, 0, 0]
+        scale: [2, 2, 2]
+      PointLight:
+        intensity: 50
+        color: [1, 0.140425503, 0.140425503]
+        enable_shadow_mapping: false
+  - GameObject:
+      ID: af7c4e75-c61e-4b3a-8f27-41e2e2660368
+      name: Middle
+      tag: Default
+      parent: NO_PARENT
+      Transform:
+        position: [-3.36465049, 2.4012351, -5.92682934]
+        rotation: [0, 0, 0]
+        scale: [1, 1, 1]
+      Text3D:
+        text: shitty flappy 3d or smth
+        font_path: ./assets/fonts/CascadiaCodeItalic.ttf
+        color: [1, 1, 1]
+        emissionColor: [1, 0.0638297796, 0.0638297796]
+        scale: 0.0149999997
+        y_offset: 1
+  - GameObject:
+      ID: 4ac8b4ea-0503-44bf-8883-20cc962b9dc5
+      name: Right
+      tag: Default
+      parent: af7c4e75-c61e-4b3a-8f27-41e2e2660368
+      Transform:
+        position: [4.13524532, 2.82556272, -8.69999981]
+        rotation: [0, 0, 0]
+        scale: [1, 1, 1]
+      PointLight:
+        intensity: 50
+        color: [1, 0.114893615, 0.114893615]
+        enable_shadow_mapping: false
+  - GameObject:
+      ID: 1553c8cf-b818-4f30-b158-0a98bc65b6bf
+      name: Player
+      tag: Default
+      parent: NO_PARENT
+      Transform:
+        position: [-3.32212615, 1.85484529, 0]
+        rotation: [0, 0, -1.57079637]
+        scale: [0.49536711, 1.65024054, 1]
+      MeshRenderer:
+        mesh_type: 2
+        mesh_index: -1
+        mesh_path: ""
+        material_path: ""
+      Rigidbody2D:
+        body_type: 2
+        gravity_scale: 1.20000005
+      BoxCollider2D:
+        density: 1
+        friction: 1
+        restitution: 0
+        trigger: false
+        offset: [0, 0]
+        size: [0.5, 1.64999998]
+      CSharpScriptComponent:
+        selected_scripts:
+          .Player3D: THIS_IS_EMPTY_FUCK_YOU_LOL.Player3D
+  - GameObject:
+      ID: 252ef9f8-0ec8-4810-9000-9ee78fa9227c
+      name: Obstacle Bottom
+      tag: Default
+      parent: NO_PARENT
+      Transform:
+        position: [6, -1.26608932, 0]
+        rotation: [0, 0, 0]
+        scale: [1, 8.13288021, 1]
+      MeshRenderer:
+        mesh_type: 2
+        mesh_index: -1
+        mesh_path: ""
+        material_path: ./assets/obstacle.material
+      Rigidbody2D:
+        body_type: 1
+        gravity_scale: 1
+      BoxCollider2D:
+        density: 1
+        friction: 1
+        restitution: 0
+        trigger: false
+        offset: [0, 0]
+        size: [1, 8.13000011]
+      CSharpScriptComponent:
+        selected_scripts:
+          .Obstacle: THIS_IS_EMPTY_FUCK_YOU_LOL.Obstacle
+  - GameObject:
+      ID: ed2f3459-250d-41ae-87de-fa6bebcd111a
+      name: Obstacle Top
+      tag: Default
+      parent: NO_PARENT
+      Transform:
+        position: [6, 4.30000019, 0]
+        rotation: [0, 0, 0]
+        scale: [1, 10.390748, 1]
+      MeshRenderer:
+        mesh_type: 2
+        mesh_index: -1
+        mesh_path: ""
+        material_path: ./assets/obstacle.material
+      Rigidbody2D:
+        body_type: 1
+        gravity_scale: 1
+      BoxCollider2D:
+        density: 1
+        friction: 1
+        restitution: 0
+        trigger: false
+        offset: [0, 0]
+        size: [1, 10.3900003]
+      CSharpScriptComponent:
+        selected_scripts:
+          .Obstacle: THIS_IS_EMPTY_FUCK_YOU_LOL.Obstacle
+  - GameObject:
+      ID: 3ac64b21-1966-4d15-a9c0-76cd8426259c
+      name: Score Text
+      tag: Default
+      parent: NO_PARENT
+      Transform:
+        position: [-2.8479023, 0, 3.21131492]
+        rotation: [-1.57079566, 0.733567476, 3.20976795e-07]
+        scale: [0.304290056, 0.304289997, 0.303576052]
+      Text3D:
+        text: "SCORE: "
+        font_path: ./assets/fonts/VCR_OSD_MONO_1.001.ttf
+        color: [1, 1, 1]
+        emissionColor: [0.11063838, 1, 0]
+        scale: 0.0199999996
+        y_offset: 1
+  - GameObject:
+      ID: 0e8ecc8e-3719-4c13-92a6-5333851bc4ca
+      name: Score Light
+      tag: Default
+      parent: NO_PARENT
+      Transform:
+        position: [-2.90941548, 0.226810217, 2.13804245]
+        rotation: [0, 0, 0]
+        scale: [1, 1, 1]
+      PointLight:
+        intensity: 2.82999992
+        color: [0.178723395, 1, 0.178723395]
+        enable_shadow_mapping: false
+  - GameObject:
+      ID: c8b8cce2-c7e7-4740-b080-534492195967
+      name: Hawk Tuah 1
+      tag: Default
+      parent: NO_PARENT
+      Transform:
+        position: [-4, 0.939999998, -5.5999999]
+        rotation: [0, 0, 0]
+        scale: [4.14720011, 4.14720011, 4.14720011]
+      SpriteRenderer:
+        color: [1, 1, 1, 1]
+        emissionColor: [0, 0, 0]
+        texture: ./assets/hawk.png
+      CSharpScriptComponent:
+        selected_scripts:
+          .Spin: THIS_IS_EMPTY_FUCK_YOU_LOL.Spin
+  - GameObject:
+      ID: 865d7adb-f75a-40d9-96cb-2e062bed3c25
+      name: Hawk Tuah 2
+      tag: Default
+      parent: NO_PARENT
+      Transform:
+        position: [4.00145054, 0.936368048, -5.6024704]
+        rotation: [0, 0, 0]
+        scale: [4.14720011, 4.14720011, 4.14720011]
+      SpriteRenderer:
+        color: [1, 1, 1, 1]
+        emissionColor: [0, 0, 0]
+        texture: ./assets/hawk.png
+      CSharpScriptComponent:
+        selected_scripts:
+          .SpinOther: THIS_IS_EMPTY_FUCK_YOU_LOL.SpinOther

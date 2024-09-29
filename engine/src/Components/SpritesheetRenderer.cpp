@@ -33,9 +33,12 @@ namespace Engine::Components {
         std::vector<uint32_t> indices = {0, 1, 2, 0, 2, 3};
 
         mesh = std::make_unique<Mesh>(vertices, indices);
+        mesh->material.roughness = 1;
+        mesh->material.metallic = 0;
     }
 
     void SpritesheetRenderer::Draw(VaultRenderer::Shader &shader) {
+
         if (mesh)
             mesh->Draw(shader);
     }

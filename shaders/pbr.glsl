@@ -455,6 +455,8 @@ void main() {
         if (emissionColor.rgb == vec3(0, 0, 0)) {
             if (brightness > config_PostProcessing.BloomThreshold) {
                 BloomColor = FragColor * vec4(config_PostProcessing.BloomMultiplier, 1);
+            } else {
+                BloomColor = vec4(0, 0, 0, FragColor.a);
             }
         } else {
             BloomColor = vec4(emissionColor.rgb, FragColor.a);

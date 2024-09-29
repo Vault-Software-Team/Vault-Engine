@@ -2,6 +2,8 @@
 #include "Box2D/Dynamics/b2Body.h"
 #include "Engine/Components/Rigidbody2D.hpp"
 #include "Engine/Components/Rigidbody3D.hpp"
+#include "Engine/Input/Input.hpp"
+#include "glm/ext.hpp"
 #include <Editor/GUI/MainGUI.hpp>
 #include <Engine/Scene.hpp>
 #include <Engine/GameObject.hpp>
@@ -50,6 +52,9 @@ namespace Editor {
         mousePos.y -= windowPos.y;
         mousePos.y = windowSize.y - mousePos.y;
         Window::window->SetMousePos(mousePos.x, mousePos.y);
+
+        ImVec2 w_p = ImGui::GetWindowPos();
+        Input::winPos = glm::vec2(w_p.x, w_p.y);
 
         ImGui::Image((void *)framebufferTextureID, size, ImVec2(0, 1), ImVec2(1, 0));
         if (ImGui::BeginDragDropTarget()) {

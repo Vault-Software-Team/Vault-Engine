@@ -1,4 +1,24 @@
-0, 1, 2, 3 = diffuse, specular, normal, height
-10 = shadowMap
+0;, 1, 2, 3 = diffuse, specular, normal, height
+10; = shadowMap
 11 = shadowCubemap
 12 = bloomTexture
+
+r_post_fxaa 0; 
+vr_enable_tonemapping 0;
+vr_enable_high_precision_lighting 0;
+vr_postprocess_enable 0;
+r_mixed_shadows 0;
+r_rendersun 0;
+r_shadows 0;
+r_high_quality_shadows 0;
+vr_aoproxy_enable 0;
+r_directlighting 0;
+mat_fullbright 1000;
+r_drawskybox 0;
+r_grass_quality 0;
+mat_dof_enabled 0;
+r_drawsprites 0;
+vr_render_decals 0;
+r_ssao 0;
+r_ssr 0;
+r_translucent 0;

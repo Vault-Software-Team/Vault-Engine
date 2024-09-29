@@ -1,0 +1,13 @@
+color: [1, 0, 0, 1]
+emissionColor: [0, 0, 0]
+texUVs: [0, 0]
+diffuse: nullptr
+specular: nullptr
+normal: nullptr
+height: nullptr
+roughness_map: ./assets/textures/Metal034_4K-PNG/Metal034_4K-PNG_Roughness.png
+metallic_map: nullptr
+ao_map: nullptr
+ao: 1
+metallic: 1
+roughness: 0.200000003

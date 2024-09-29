@@ -1,0 +1,18 @@
+Prefab: c8b8cce2-c7e7-4740-b080-534492195967
+GameObjects:
+  - GameObject:
+      ID: c8b8cce2-c7e7-4740-b080-534492195967
+      name: Hawk Tuah 1
+      tag: Default
+      parent: NO_PARENT
+      Transform:
+        position: [0, 2.79159546, 0]
+        rotation: [0, 0, 0]
+        scale: [4.14720011, 4.14720011, 4.14720011]
+      SpriteRenderer:
+        color: [1, 1, 1, 1]
+        emissionColor: [0, 0, 0]
+        texture: ./assets/hawk.png
+      CSharpScriptComponent:
+        selected_scripts:
+          .Spin: THIS_IS_EMPTY_FUCK_YOU_LOL.Spin

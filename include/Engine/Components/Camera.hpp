@@ -23,6 +23,7 @@ namespace Engine {
 
             glm::mat4 view, projection;
             glm::vec3 front;
+            glm::vec3 mouse_rot;
 
             // Camera Properties
             float fov = 45, near = 0.1, far = 100.0;

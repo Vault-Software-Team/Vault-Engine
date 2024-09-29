@@ -9,6 +9,7 @@
 #include <Renderer/Framebuffer.hpp>
 #include <Renderer/Bloom.hpp>
 #include <ImGuizmo/ImGuizmo.h>
+#include <stb_image/stb_image.h>
 
 namespace VaultRenderer {
     DLL_API Window *Window::window;
@@ -333,5 +334,12 @@ namespace VaultRenderer {
 
     void Window::FramebufferSizeCallback(GLFWwindow *window, int width, int height) {
         // glViewport(0, 0, width, height);
+    }
+
+    void Window::SetWindowIcon(const std::string &path) {
+        GLFWimage images[1];
+        images[0].pixels = stbi_load(path.c_str(), &images[0].width, &images[0].height, 0, 4); // rgba channels
+        glfwSetWindowIcon(GetGLFWWindow(), 1, images);
+        stbi_image_free(images[0].pixels);
     }
 } // namespace VaultRenderer
