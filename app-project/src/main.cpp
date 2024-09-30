@@ -88,6 +88,60 @@ using namespace Editor;
 void print(const std::string &traki) {
     std::cout << traki << "\n";
 }
+fs::path path;
+int selected = -1;
+static const bool DEBUG_MODE = true;
+static const std::string GAME_ENGINE_BINARY = DEBUG_MODE ? "./build/app/app" : "./bin/build.out";
+
+void DisplayProject(GLFWwindow *window, const std::string &name,
+                    const std::string &path, int index) {
+    ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.05f, 0.055f, 0.051f, 1.0f));
+    ImGui::PushStyleColor(ImGuiCol_ButtonHovered,
+                          ImVec4(0.07f, 0.075f, 0.071f, 1.0f));
+    ImGui::PushStyleColor(ImGuiCol_ButtonActive,
+                          ImVec4(0.1f, 0.105f, 0.11f, 1.0f));
+    ImGui::PushStyleVar(ImGuiStyleVar_ButtonTextAlign, ImVec2(0.03f, 0.5f));
+    ImGui::SetCursorPosX(25);
+    if (ImGui::Button(std::string(name + "\n" + path).c_str(),
+                      ImVec2(ImGui::GetWindowWidth() - 50, 70))) {
+#ifdef _WIN32
+        // open build.exe
+        // get cwd
+        char cwd[1024];
+        _getcwd(cwd, sizeof(cwd));
+        std::string s_Cwd = cwd;
+
+        std::cout << s_Cwd + "\\bin\\win_build.exe \"" + path + "\" \"" + CsharpVariables::oldCwd + "\\dotnet\\dotnet\"" << std::endl;
+        std::thread t(
+            [&]() { system((".\\bin\\win_build.exe \"" + path + "\" \"" + +CsharpVariables::oldCwd + "\\dotnet\\dotnet\"").c_str()); });
+
+        t.detach();
+#else
+        char cwd[1024];
+        getcwd(cwd, sizeof(cwd));
+        std::string s_Cwd = cwd;
+        std::string command = GAME_ENGINE_BINARY + " \"" + path + "\"";
+        std::cout << command << "\n";
+
+        std::thread t([&]() {
+            std::string command = GAME_ENGINE_BINARY + " \"" + path + "\"";
+            int a = system(command.c_str());
+            std::cout << "[THREAD] a = " << a << " | command: " << command << "\n";
+        });
+        t.detach();
+#endif
+    }
+
+    if (ImGui::IsItemHovered() && ImGui::IsMouseClicked(1)) {
+        selected = index;
+        ImGui::OpenPopup("Project Options");
+    }
+
+    ImGui::PopStyleColor(3);
+    ImGui::PopStyleVar();
+
+    ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 5);
+}
 
 int main() {
     using namespace VaultRenderer;
@@ -97,7 +151,7 @@ int main() {
 
     float timestep = 0;
 
-    Texture logo("./editor/icons/icon.png", TEXTURE_DIFFUSE);
+    Texture logo("./editor/icons/logo_github.png", TEXTURE_GUI_ICON);
 
     fs::path config_path;
 #ifdef _WIN32
@@ -141,6 +195,9 @@ int main() {
     ImGuiFileDialog::Instance()->SetFileStyle(IGFD_FileStyleByTypeFile, "", ImVec4(1, 1, 1, 1.0f), ICON_FA_FILE);
     ImGuiFileDialog::Instance()->SetFileStyle(IGFD_FileStyleByTypeDir, "", ImVec4(1, 1, 1, 1.0f), ICON_FA_FOLDER);
 
+    ImGuiStyle &style = ImGui::GetStyle();
+    style.WindowRounding = 0.f;
+
     auto Function_GUI = [&]() {
         int width, height;
         glfwGetWindowSize(window.GetGLFWWindow(), &width, &height);
@@ -148,51 +205,49 @@ int main() {
         const ImGuiViewport *viewport = ImGui::GetMainViewport();
 
         // Set position to the bottom of the viewport
-        ImGui::SetNextWindowPos(ImVec2(viewport->Pos.x, viewport->Pos.y));
-        // ImGui::SetNextWindowPos(ImVec2(0, 0));
-        ImGui::SetNextWindowSize(ImVec2(width, height));
+        // ImGui::SetNextWindowPos(ImVec2(viewport->Pos.x, viewport->Pos.y));
+        // // ImGui::SetNextWindowPos(ImVec2(0, 0));
+        // ImGui::SetNextWindowSize(ImVec2(width, height));
         // flags
         ImGuiWindowFlags flags = ImGuiWindowFlags_NoCollapse |
                                  ImGuiWindowFlags_NoResize |
                                  ImGuiWindowFlags_NoMove |
                                  ImGuiWindowFlags_NoBringToFrontOnFocus |
                                  ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoDocking;
-        // padding
+
+        ImGui::SetNextWindowPos(ImVec2(viewport->Pos.x, viewport->Pos.y));
+        ImGui::SetNextWindowSize(ImVec2(width - 250, height));
         ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(25, 25));
         ImGui::SetNextWindowViewport(ImGui::GetMainViewport()->ID);
-        if (ImGui::Begin(ICON_FA_LAYER_GROUP " Projects", nullptr, flags)) {
-            static char name[256];
-            if (ImGui::BeginPopup("create_new_project")) {
-                ImGui::InputText("Project Name", name, 256);
-
-                if (ImGui::Button("Create Project")) {
-                    ImGuiFileDialog::Instance()->OpenDialog("NewProject", ICON_FA_FOLDER " Choose where to create this project ..", NULL, ".");
-                    // ImGui::CloseCurrentPopup();
-                }
-
-                ImGui::EndPopup();
-            }
-
-            if (ImGui::BeginChild("##icon stuff", ImVec2(0, 150))) {
-                ImGui::Image((void *)logo.texture_data->ID, ImVec2(150, 150),
-                             ImVec2(0, 1), ImVec2(1, 0));
-                ImGui::SameLine();
-                auto cursor_pos = ImGui::GetCursorPos();
-                ImGui::SetCursorPos(ImVec2(cursor_pos.x + 20, cursor_pos.y + 5));
-                if (ImGui::Button("New Project", ImVec2(200, 60))) {
-                    ImGui::OpenPopup("create_new_project");
-                }
-                ImGui::SameLine();
-                auto cursor_pos2 = ImGui::GetCursorPos();
-                ImGui::SetCursorPos(ImVec2(cursor_pos.x + 20, cursor_pos.y + 75));
-                if (ImGui::Button("Load Project", ImVec2(200, 60))) {
-                    ImGuiFileDialog::Instance()->OpenDialog("OpenProject", ICON_FA_FOLDER " Choose a project folder ..", NULL, ".");
-                }
+        if (ImGui::Begin("Mainpanel", nullptr, flags)) {
+            if (ImGui::BeginChild("##icon stuff", ImVec2(0, 200))) {
+                ImGui::Image((void *)logo.texture_data->ID, ImVec2(340, 200), ImVec2(0, 1), ImVec2(1, 0));
                 ImGui::EndChild();
             }
 
+            int i = 0;
+            for (auto &project : projects) {
+                DisplayProject(window.GetGLFWWindow(), project.name, project.path, i);
+                i++;
+            }
+        }
+        ImGui::End();
+
+        ImGui::SetNextWindowPos(ImVec2(viewport->Pos.x + (width - 250), viewport->Pos.y));
+        ImGui::SetNextWindowSize(ImVec2(250, height));
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(25, 25));
+        ImGui::SetNextWindowViewport(ImGui::GetMainViewport()->ID);
+        if (ImGui::Begin("Sidepanel", nullptr, flags)) {
+            if (ImGui::Button("Create Project", ImVec2(200, 60))) {
+                ImGui::OpenPopup("CreateProject_Popup");
+            }
+            if (ImGui::Button("Open Project", ImVec2(200, 60))) {
+                ImGuiFileDialog::Instance()->OpenDialog("OpenProject", ICON_FA_FOLDER " Choose a project to open ..", NULL, ".");
+            }
+            static char name[256];
+
             if (ImGuiFileDialog::Instance()->Display("NewProject")) {
-                // action if OK
+                //         // action if OK
                 if (ImGuiFileDialog::Instance()->IsOk()) {
                     std::string filePathName = ImGuiFileDialog::Instance()->GetFilePathName();
                     std::string filePath = ImGuiFileDialog::Instance()->GetCurrentPath();
@@ -260,7 +315,14 @@ int main() {
 
                 ImGuiFileDialog::Instance()->Close();
             }
-            // ImVec2 windowSize = ImGui::GetWindowSize();
+
+            if (ImGui::BeginPopup("CreateProject_Popup")) {
+                ImGui::InputText("Name", name, 256);
+                if (ImGui::Button(ICON_FA_FOLDER " Select Directory"))
+                    ImGuiFileDialog::Instance()->OpenDialog("NewProject", ICON_FA_FOLDER " Choose a folder to create project in ..", NULL, ".");
+
+                ImGui::EndPopup();
+            }
         }
         ImGui::End();
 

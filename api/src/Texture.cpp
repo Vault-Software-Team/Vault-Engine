@@ -1,3 +1,4 @@
+#include "Renderer/Window.hpp"
 #include <Renderer/Texture.hpp>
 #include <stb_image/stb_image.h>
 #ifdef __EMSCRIPTEN__
@@ -14,11 +15,14 @@ namespace VaultRenderer {
     DLL_API std::vector<std::shared_ptr<Texture::t_texture>> Texture::textures;
 
     Texture::t_texture::~t_texture() {
+        if (glfwWindowShouldClose(VaultRenderer::Window::window->GetGLFWWindow())) return;
+
         std::cout << "t_texture" << texture_filepath << " deleted\n";
         glDeleteTextures(1, &ID);
     }
 
     Texture::~Texture() {
+        if (glfwWindowShouldClose(VaultRenderer::Window::window->GetGLFWWindow())) return;
         if (texture_data.use_count() <= 2) {
             for (int i = 0; i < textures.size(); i++) {
                 if (textures[i]->texture_filepath == texture_data->texture_filepath) {
@@ -75,8 +79,8 @@ namespace VaultRenderer {
                 glGenTextures(1, &texture_data->ID);
                 glBindTexture(GL_TEXTURE_2D, texture_data->ID);
 
-                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, type == TEXTURE_GUI_ICON ? GL_LINEAR : GL_NEAREST);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, type == TEXTURE_GUI_ICON ? GL_LINEAR : GL_NEAREST);
 
                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
@@ -94,6 +98,14 @@ namespace VaultRenderer {
                     // glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
                     if (nrChannels >= 4)
                         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+                    else if (nrChannels == 3)
+                        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+                    else if (nrChannels == 1)
+                        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RED, GL_UNSIGNED_BYTE, data);
+                    break;
+                case TEXTURE_GUI_ICON:
+                    if (nrChannels >= 4)
+                        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
                     else if (nrChannels == 3)
                         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
                     else if (nrChannels == 1)

@@ -1,4 +1,5 @@
 #include "Editor/GUI/MainGUI.hpp"
+#include "GLFW/glfw3.h"
 #include "Renderer/Stats.hpp"
 #include <Renderer/Window.hpp>
 #include <iostream>
@@ -197,6 +198,12 @@ namespace VaultRenderer {
             glfwSwapBuffers(glfw_window);
             before_width = width;
             before_height = height;
+        }
+
+        if (glfwWindowShouldClose(glfw_window)) {
+            std::cout << "CLOSING FAGGOT\n";
+            abort();
+            std::cout << "aborted, hopefully";
         }
     }
 
