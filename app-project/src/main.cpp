@@ -13,10 +13,13 @@ In here you will throw up all over your desk cuz the coding is fucking ass
 #include "Engine/HDRSkybox.hpp"
 #include "Engine/Model.hpp"
 #include "Engine/SimpleCalls.hpp"
+#include "ExternalApps/Links.hpp"
 #include "GLFW/glfw3.h"
 #include "HyperScript/HyperScript.hpp"
 #include "Renderer/Framebuffer.hpp"
+#include "icons/icons.h"
 #include "imgui/TextEditor.hpp"
+#include "json.hpp"
 #include "mono/metadata/row-indexes.h"
 #include <filesystem>
 #include <iostream>
@@ -40,6 +43,7 @@ In here you will throw up all over your desk cuz the coding is fucking ass
 #include <Engine/Scripting/LoadScripts.hpp>
 #include <script_test.hpp>
 #include <experimental/filesystem>
+#include <thread>
 
 namespace fs = std::filesystem;
 static VaultRenderer::Shader *default_shader;
@@ -134,6 +138,8 @@ void DisplayProject(GLFWwindow *window, const std::string &name,
 
     if (ImGui::IsItemHovered() && ImGui::IsMouseClicked(1)) {
         selected = index;
+        /// as
+        /// as
         ImGui::OpenPopup("Project Options");
     }
 
@@ -141,6 +147,25 @@ void DisplayProject(GLFWwindow *window, const std::string &name,
     ImGui::PopStyleVar();
 
     ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 5);
+}
+
+struct Project {
+    std::string name;
+    std::string path;
+};
+static fs::path CONFIG_FILE = "";
+
+void SaveProjectsConfig(const std::vector<Project> &projects) {
+    nlohmann::json j_projects = nlohmann::json::array();
+    for (auto &project : projects) {
+        nlohmann::json j;
+        j["name"] = project.name;
+        j["path"] = project.path;
+        j_projects.push_back(j);
+    }
+
+    std::ofstream file(CONFIG_FILE / "projects.json");
+    file << j_projects;
 }
 
 int main() {
@@ -177,12 +202,8 @@ int main() {
         fout << "[]";
         fout.close();
     }
+    CONFIG_FILE = config_path;
 #endif
-
-    struct Project {
-        std::string name;
-        std::string path;
-    };
 
     std::vector<Project> projects;
     nlohmann::json j_Projects = nlohmann::json::parse(std::fstream(config_path / "projects.json"));
@@ -230,7 +251,20 @@ int main() {
                 DisplayProject(window.GetGLFWWindow(), project.name, project.path, i);
                 i++;
             }
+
+            if (ImGui::BeginPopup("Project Options")) {
+                if (selected < 0) ImGui::CloseCurrentPopup();
+                if (ImGui::Button(ICON_FA_TRASH_CAN " Delete Project", ImVec2(200, 25))) {
+                    projects.erase(projects.begin() + selected);
+                    SaveProjectsConfig(projects);
+                    ImGui::CloseCurrentPopup();
+                }
+                if (ImGui::Button("Close Popup", ImVec2(200, 25))) ImGui::CloseCurrentPopup();
+
+                ImGui::EndPopup();
+            }
         }
+
         ImGui::End();
 
         ImGui::SetNextWindowPos(ImVec2(viewport->Pos.x + (width - 250), viewport->Pos.y));
@@ -244,6 +278,12 @@ int main() {
             if (ImGui::Button("Open Project", ImVec2(200, 60))) {
                 ImGuiFileDialog::Instance()->OpenDialog("OpenProject", ICON_FA_FOLDER " Choose a project to open ..", NULL, ".");
             }
+
+            if (ImGui::Button("Install .NET", ImVec2(200, 60))) {
+                External::OpenURLInBrowser("https://dotnet.microsoft.com/en-us/download/dotnet/6.0");
+            }
+            ImGui::Text(".NET 6.0 or higher required!");
+
             static char name[256];
 
             if (ImGuiFileDialog::Instance()->Display("NewProject")) {
@@ -257,33 +297,26 @@ int main() {
                     data["name"] = name;
                     data["path"] = filePathName;
 
-                    std::ifstream fout(config_path / "projects.json");
-                    nlohmann::json globalProjects =
-                        nlohmann::json::parse(fout);
-                    fout.close();
-
-                    std::ofstream fout2(config_path / "projects.json");
-                    globalProjects.push_back(data);
-
-                    fout2 << globalProjects.dump(4);
-                    fout2.close();
-
-                    projFile << data.dump(4) << std::endl;
+                    projFile << data.dump(4);
                     projFile.close();
 
                     projects.push_back({name, filePathName});
                     fs::path projectPath = filePathName;
 
+                    SaveProjectsConfig(projects);
+
                     // copy assets, shaders, build and imgui.ini to the
                     // project
-                    fs::copy(fs::absolute("assets"), projectPath / "assets",
-                             fs::copy_options::recursive);
-                    fs::copy(fs::absolute("shaders"),
-                             projectPath / "shaders",
-                             fs::copy_options::recursive);
-                    fs::copy_file(fs::absolute("imgui.ini"),
-                                  projectPath / "imgui.ini",
-                                  fs::copy_options::recursive);
+                    std::cout << "COPYING FILES...\n";
+                    fs::copy(fs::absolute("assets"), projectPath / "assets", fs::copy_options::recursive);
+                    std::cout << "COPYING FILES 1...\n";
+                    fs::copy(fs::absolute("shaders"), projectPath / "shaders", fs::copy_options::recursive);
+                    std::cout << "COPYING FILES 2...\n";
+                    fs::copy(fs::absolute("editor"), projectPath / "editor", fs::copy_options::recursive);
+                    std::cout << "COPYING FILES 3...\n";
+                    fs::copy(fs::absolute("fonts"), projectPath / "fonts", fs::copy_options::recursive);
+                    std::cout << "COPYING FILES 4...\n";
+                    fs::copy_file(fs::absolute("imgui.ini"), projectPath / "imgui.ini", fs::copy_options::recursive);
                 }
 
                 ImGuiFileDialog::Instance()->Close();
@@ -300,16 +333,8 @@ int main() {
                         nlohmann::json data = nlohmann::json::parse(projFile);
                         projFile.close();
 
-                        std::ifstream fout(config_path / "projects.json");
-                        nlohmann::json globalProjects = nlohmann::json::parse(fout);
-                        fout.close();
-
-                        globalProjects.push_back(data);
-                        std::ofstream fout2(config_path / "projects.json");
-                        fout2 << globalProjects.dump(4);
-                        fout2.close();
-
                         projects.push_back({data["name"], data["path"]});
+                        SaveProjectsConfig(projects);
                     }
                 }
 

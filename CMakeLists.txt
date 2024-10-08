@@ -7,11 +7,11 @@ include_directories(${CMAKE_SOURCE_DIR}/external/bullet)
 
 add_subdirectory(api)
 
-# if(NOT PROJECT_SELECTOR)
-    # add_subdirectory(app)
-# else()
+if(NOT PROJECT_SELECTOR)
+    add_subdirectory(app)
+else()
     add_subdirectory(app-project)
-# endif()
+endif()
 
 add_subdirectory(engine)
 # add_subdirectory(hyperscript)

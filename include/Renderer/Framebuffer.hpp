@@ -33,6 +33,12 @@ namespace VaultRenderer {
         std::vector<ColorAttachement> color_attachements;
 
         bool draw_screen = false;
+
+        struct {
+            bool enabled = false;
+            uint32_t samples = 8;
+        } msaa;
+
         int width = 1920, height = 1080;
 
         uint32_t FBO;

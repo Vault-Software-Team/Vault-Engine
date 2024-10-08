@@ -13,14 +13,18 @@ build
 windows/build
 windows/assets
 windows/csharp-lib
+.backupofgit
 windows/Game
 windows/mono
+external copy
+external-asdasd
 windows/shaders
 windows/bin
 windows/assets2
 windows/fonts
 windows/shader
 cmake-build-debug
+dist
 *.hdr
 ./assets/skybox/*.hdr
 assets copy

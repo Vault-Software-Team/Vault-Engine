@@ -709,8 +709,9 @@ namespace Engine {
 
         auto gameObjects = data["GameObjects"];
 
+#ifndef GAME_BUILD
         glfwSetWindowTitle(VaultRenderer::Window::window->GetGLFWWindow(), (VaultRenderer::Window::window->title + " | " + fs::path(path).filename().string()).c_str());
-
+#endif
         if (!gameObjects)
             return;
 

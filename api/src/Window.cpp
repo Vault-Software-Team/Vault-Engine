@@ -199,12 +199,6 @@ namespace VaultRenderer {
             before_width = width;
             before_height = height;
         }
-
-        if (glfwWindowShouldClose(glfw_window)) {
-            std::cout << "CLOSING FAGGOT\n";
-            abort();
-            std::cout << "aborted, hopefully";
-        }
     }
 
     GLFWwindow *Window::GetGLFWWindow() const {

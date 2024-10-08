@@ -1,3 +1,4 @@
+#include "imgui/imgui.h"
 #include <Engine/Components/Camera.hpp>
 #include <Engine/Scene.hpp>
 #include <Renderer/Window.hpp>
@@ -11,7 +12,7 @@
 
 namespace Engine::Components {
     void Camera::UpdateMatrix() {
-        glm::vec3 full_rot = mouse_rot + transform->rotation;
+        glm::vec3 full_rot = transform->rotation;
         view = glm::lookAt(transform->position, transform->position + full_rot, up);
         const float aspect = (float)VaultRenderer::Window::window->targetWidth / VaultRenderer::Window::window->targetHeight;
         if (!is2D) {
@@ -30,7 +31,7 @@ namespace Engine::Components {
 
     void Camera::Init() {
         transform = static_registry ? &Scene::StaticGameObjects_EntityRegistry.get<Transform>(entity) : &Scene::Main->EntityRegistry.get<Transform>(entity);
-        mouse_rot.z = -1;
+        transform->rotation.z = -1;
     }
 
     void Camera::BindToShader(VaultRenderer::Shader &shader) {
@@ -48,19 +49,19 @@ namespace Engine::Components {
         // height = VaultRenderer::Window::window->height;
 
         if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
-            transform->position += speed * mouse_rot;
+            transform->position += speed * transform->rotation;
         }
 
         if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
-            transform->position += speed * -glm::normalize(glm::cross(mouse_rot, up));
+            transform->position += speed * -glm::normalize(glm::cross(transform->rotation, up));
         }
 
         if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
-            transform->position += speed * -mouse_rot;
+            transform->position += speed * -transform->rotation;
         }
 
         if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
-            transform->position += speed * glm::normalize(glm::cross(mouse_rot, up));
+            transform->position += speed * glm::normalize(glm::cross(transform->rotation, up));
         }
 
         if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) {
@@ -82,36 +83,47 @@ namespace Engine::Components {
         // Mouse Input
         if (is2D) return;
 
-        if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_RELEASE) {
-            glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-            first_click = true;
-        }
+        int old_width = 0, old_height = 0;
 
         if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS) {
             glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+            ImGui::SetMouseCursor(ImGuiMouseCursor_None);
 
             if (first_click) {
                 glfwSetCursorPos(window, (float)width / 2, (float)height / 2);
                 first_click = false;
-                // return;
+                return;
             }
+
+            // have to do thisf or some reason
+            // if (old_width - width <= 2 && old_height - height > 0) width = old_width;
+            // if (old_height - height <= 2 && old_height - height > 0) height = old_height;
+            // if (old_width == width - 1 || old_width == width + 1) width = old_width;
+            // if (old_height == height - 1 || old_height == height + 1) height = old_height;
 
             double mouse_x;
             double mouse_y;
 
             glfwGetCursorPos(window, &mouse_x, &mouse_y);
 
-            float rotation_x = sensitivity * (float)(mouse_y - ((float)height / 2)) / height;
-            float rotation_y = sensitivity * (float)(mouse_x - ((float)width / 2)) / width;
+            float rotation_x = sensitivity * (mouse_y - (height / 2)) / height;
+            float rotation_y = sensitivity * (mouse_x - (width / 2)) / width;
 
-            glm::vec3 new_rotation = glm::rotate(mouse_rot, glm::radians(-rotation_x), glm::normalize(glm::cross(mouse_rot, up)));
+            glm::vec3 new_rotation = glm::rotate(transform->rotation, glm::radians(-rotation_x), glm::normalize(glm::cross(transform->rotation, up)));
 
             if (!((glm::angle(new_rotation, up) <= glm::radians(5.0f)) || (glm::angle(new_rotation, -up) <= glm::radians(5.0f)))) {
-                mouse_rot = new_rotation;
+                transform->rotation = new_rotation;
             }
-            mouse_rot = glm::rotate(mouse_rot, glm::radians(-rotation_y), up);
+            transform->rotation = glm::rotate(transform->rotation, glm::radians(-rotation_y), up);
 
             glfwSetCursorPos(window, (float)width / 2, (float)height / 2);
+
+            old_width = width;
+            old_height = heigth;
+        } else if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_RELEASE) {
+            glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+            ImGui::SetMouseCursor(ImGuiMouseCursor_Arrow);
+            first_click = true;
         }
     }
 
