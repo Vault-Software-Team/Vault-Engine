@@ -1,0 +1,123 @@
+@font-face {
+    font-family: Inter;
+    src: url(../content/fonts/Inter-VariableFont_opsz\,wght.ttf);
+}
+body {
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+    background-color: white;
+}
+
+.navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 40px;
+    background-color: white;
+    color: black;
+    border-bottom: 1px solid #ddd;
+}
+
+.logo img {
+    height: 40px;
+    margin-left: 10px;
+}
+
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.nav-links a {
+    color: rgb(92, 92, 92);
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: bold;
+    position: relative;
+    transition: color 0.3s ease;
+}
+
+.nav-links a:visited,
+.nav-links a:active {
+    color: rgb(82, 82, 82);
+}
+
+.nav-links a:hover {
+    color: black;
+}
+
+
+.download-btn {
+    background-color: black;
+    border: none;
+    padding: 12px 20px;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.download-btn:hover {
+    opacity: 0.8;
+}
+
+.overview {
+    padding: 40px;
+    background-color: #f4f4f4;
+}
+
+.overview-content {
+    text-align: left;
+    margin-left: 40px;
+}
+
+.overview h2 {
+    font-size: 36px;
+    color: black;
+    margin-bottom: 20px;
+}
+
+.overview p {
+    font-size: 18px;
+    color: grey;
+    margin-bottom: 30px;
+    max-width: 800px;
+}
+
+.overview .download-btn {
+    padding: 12px 24px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.furtherdown {
+    text-align: center;
+    padding: 60px 20px;
+}
+
+.furtherdown-content h2 {
+    font-size: 2.5em;
+    margin-bottom: 20px;
+}
+
+.furtherdown-content p {
+    font-size: 1.2em;
+    margin-bottom: 30px;
+}
+
+.screenshot-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px 0;
+}
+
+.screenshot-container img {
+    max-width: 80%;
+    height: auto;
+    margin: 0 auto;
+}
