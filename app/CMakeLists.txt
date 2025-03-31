@@ -7,7 +7,7 @@ include_directories(${CMAKE_SOURCE_DIR}/vendor)
 #     add_compile_definitions(GAME_BUILD)
 # endif()
 add_executable(app ${SRC_FILES} ${CMAKE_SOURCE_DIR}/engine/src/SceneSerialization.cpp ${CMAKE_SOURCE_DIR}/vendor/glad/glad.c )
-set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -g -std=c++20")
+set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -std=c++20 -g")
 
 set(CMAKE_CXX_STANDARD 20)
 

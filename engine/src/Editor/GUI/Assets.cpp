@@ -20,12 +20,20 @@ using namespace Engine::Components;
 namespace fs = std::filesystem;
 
 static std::string AddFile_Folder = "./assets";
+static std::set<std::filesystem::directory_entry> cached_files;
 
-void DirectoryIterator(const std::string &str, const char *filter_str) {
+void CacheFiles(std::string &filterStr, const std::string &str) {
+    cached_files.clear();
     auto iter = std::filesystem::directory_iterator(str);
 
-    std::string filterStr = filter_str;
     std::transform(filterStr.begin(), filterStr.end(), filterStr.begin(), Editor::asciitolower);
+
+    for (auto &entry : iter)
+        cached_files.insert(entry);
+}
+
+void DirectoryIterator(const std::string &str, const char *filter_str, bool dynamic = false) {
+    static bool isFirstFrame = true;
 
     ImVec2 win_size = ImGui::GetWindowSize();
     ImVec2 cursor_pos = ImGui::GetCursorPos();
@@ -45,10 +53,22 @@ void DirectoryIterator(const std::string &str, const char *filter_str) {
     }
     ImGui::SetCursorPos(cursor_pos);
 
-    std::set<std::filesystem::directory_entry> sorted_by_name;
+    std::string filterStr = filter_str;
+    if (isFirstFrame) {
+        CacheFiles(filterStr, str);
 
-    for (auto &entry : iter)
-        sorted_by_name.insert(entry);
+        isFirstFrame = false;
+    }
+
+    std::set<std::filesystem::directory_entry> dynamic_files;
+    if (dynamic) {
+        auto iter = std::filesystem::directory_iterator(str);
+
+        std::transform(filterStr.begin(), filterStr.end(), filterStr.begin(), Editor::asciitolower);
+
+        for (auto &entry : iter)
+            dynamic_files.insert(entry);
+    }
 
     static std::string FilePath = "";
     static std::string FileName = "";
@@ -75,7 +95,7 @@ void DirectoryIterator(const std::string &str, const char *filter_str) {
         ImGui::EndPopup();
     }
 
-    for (auto &dir : sorted_by_name) {
+    for (auto &dir : dynamic ? dynamic_files : cached_files) {
         if (dir.path().string().find("VAULT_API", 0) != std::string::npos) {
             continue;
         }
@@ -96,7 +116,7 @@ void DirectoryIterator(const std::string &str, const char *filter_str) {
                     ImGui::OpenPopup("Asset_AddFilePopup");
                 }
 
-                DirectoryIterator(dir.path().string(), filter_str);
+                DirectoryIterator(dir.path().string(), filter_str, true);
                 ImGui::TreePop();
             } else {
                 if (ImGui::IsMouseClicked(1) && ImGui::IsItemHovered()) {
@@ -247,6 +267,10 @@ namespace Editor {
         ImGui::PushItemWidth(ImGui::GetWindowSize().x - 20);
         ImGui::InputText("##AssetsFilterString", filter_str, filter_str_size);
 
+        if (ImGui::Button(ICON_FA_ROTATE_RIGHT " Refresh Files", ImVec2(ImGui::GetWindowSize().x - 20, 0))) {
+            std::string filterStr = filter_str;
+            CacheFiles(filterStr, "./assets");
+        }
         if (ImGui::Button(ICON_FA_PLUS " Add File", ImVec2(ImGui::GetWindowSize().x - 20, 0))) {
             ImGui::OpenPopup("Asset_AddFilePopup");
         }

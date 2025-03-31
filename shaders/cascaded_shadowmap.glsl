@@ -1,5 +1,5 @@
 #shader vertex
-#version 460 core
+#version 330 core
 layout(location = 0) in vec3 aPos;
 
 uniform mat4 transformModel;
@@ -8,13 +8,13 @@ void main() {
 }
 
 #shader fragment
-#version 460 core
+#version 330 core
 
 void main() {
 }
 
 #shader geometry
-#version 460 core
+#version 330 core
 
 layout(triangles, invocations = 5) in;
 layout(triangle_strip, max_vertices = 3) out;

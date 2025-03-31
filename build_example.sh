@@ -1,6 +1,7 @@
 # LINUX REGION BEGIN
 if [ "$1" = "glinux" ]; then
     echo "MAKE SURE YOU COMPILED THE ENGINE AS GAME_BUILD FIRST BEFORE RUNNING THIS!"
+    echo "MAKE SURE YOU COMPILED THE PROJECT SELECTOR WITH DEBUG_MODE FALSE!"
 
     if [ -d "./dist/game_build/linux" ] ; then
         rm -r ./dist/game_build/linux
@@ -15,9 +16,11 @@ if [ "$1" = "glinux" ]; then
     cp -r ./mono ./dist/game_build/linux
     cp -r ./dist/default-folders/assets ./dist/game_build/linux
     cp -r ./lib ./dist/game_build/linux
+    cp -r ./windows/dlls ./dist/game_build/linux
     cp -r ./default_models ./dist/game_build/linux
     mkdir ./dist/game_build/linux/bin
     cp -r ./build/app/app ./dist/game_build/linux/bin/gamebin
+    cp -r ./build/app-project/app-project ./dist/game_build/linux/bin/project_selector
     cp -r ./linux/LaunchGame.sh ./dist/game_build/linux
 fi
 
@@ -40,7 +43,10 @@ if [ "$1" = "linux" ]; then
     cp -r ./default_models ./dist/linux
     mkdir ./dist/linux/bin
     cp -r ./build/app/app ./dist/linux/bin/enginebin
+    cp -r ./dist/game_build/linux/bin/gamebin ./dist/linux/bin/gamebin
     cp -r "./linux/Vault Engine.sh" "./dist/linux/Vault Engine.sh"
+    cp -r ./linux/LaunchGame.sh ./dist/linux/bin
+    cp -r "./imgui.ini" "./dist/linux/imgui.ini"
 fi
 
 # LINUX REGION END
@@ -72,6 +78,7 @@ fi
 
 if [ "$1" = "windows" ]; then
     echo "MAKE SURE YOU COMPILED THE ENGINE AS THE ENGINE EDITOR FIRST BEFORE RUNNING THIS!"
+    echo "MAKE SURE YOU COMPILED THE PROJECT SELECTOR WITH DEBUG_MODE FALSE!"
 
     if [ -d "./dist/windows" ] ; then
         rm -r ./dist/windows
@@ -92,7 +99,11 @@ if [ "$1" = "windows" ]; then
     cp -r ./default_models ./dist/windows
     mkdir ./dist/windows/bin
     cp -r ./windows/build/app/app.exe ./dist/windows/bin/engine.exe
+    cp -r ./windows/build/app-project/app-project.exe ./dist/windows/bin/project_selector.exe
+    cp -r ./dist/game_build/windows/bin/game.exe ./dist/windows/bin/game.exe
+    cp -r ./windows/LaunchGame.bat ./dist/windows/bin/LaunchGame.bat
     cp -r "./windows/Vault Engine.bat" ./dist/windows
+    cp -r "./imgui.ini" "./dist/linux/imgui.ini"
 fi
 
 # WINDOWS REGION END

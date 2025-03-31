@@ -94,9 +94,14 @@ void print(const std::string &traki) {
 }
 fs::path path;
 int selected = -1;
-static const bool DEBUG_MODE = true;
-static const std::string GAME_ENGINE_BINARY = DEBUG_MODE ? "./build/app/app" : "./bin/build.out";
-
+static const bool DEBUG_MODE = false;
+#ifdef _WIN32
+    #include <windows.h>
+    #include <direct.h>
+static const std::string GAME_ENGINE_BINARY = DEBUG_MODE ? ".\\windows\\build\\app\\app.exe" : ".\\bin\\engine.exe";
+#else
+static const std::string GAME_ENGINE_BINARY = DEBUG_MODE ? "./build/app/app" : "./bin/enginebin";
+#endif
 void DisplayProject(GLFWwindow *window, const std::string &name,
                     const std::string &path, int index) {
     ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.05f, 0.055f, 0.051f, 1.0f));
@@ -114,10 +119,14 @@ void DisplayProject(GLFWwindow *window, const std::string &name,
         char cwd[1024];
         _getcwd(cwd, sizeof(cwd));
         std::string s_Cwd = cwd;
+        std::string command = GAME_ENGINE_BINARY + " \"" + path + "\"";
+        std::cout << command << "\n";
 
-        std::cout << s_Cwd + "\\bin\\win_build.exe \"" + path + "\" \"" + CsharpVariables::oldCwd + "\\dotnet\\dotnet\"" << std::endl;
-        std::thread t(
-            [&]() { system((".\\bin\\win_build.exe \"" + path + "\" \"" + +CsharpVariables::oldCwd + "\\dotnet\\dotnet\"").c_str()); });
+        std::thread t([&]() {
+            std::string command = fs::canonical(GAME_ENGINE_BINARY).string() + " \"" + path + "\"";
+            std::cout << "[THREAD] command: " << command << "\n";
+            int a = system((command).c_str());
+        });
 
         t.detach();
 #else
@@ -264,6 +273,7 @@ int main() {
                 ImGui::EndPopup();
             }
         }
+        ImGui::PopStyleVar();
 
         ImGui::End();
 
@@ -316,6 +326,9 @@ int main() {
                     std::cout << "COPYING FILES 3...\n";
                     fs::copy(fs::absolute("fonts"), projectPath / "fonts", fs::copy_options::recursive);
                     std::cout << "COPYING FILES 4...\n";
+                    fs::copy(fs::absolute("default_models"), projectPath / "default_models", fs::copy_options::recursive);
+                    fs::copy(fs::absolute("mono"), projectPath / "mono", fs::copy_options::recursive);
+                    fs::copy(fs::absolute("bin"), projectPath / "bin", fs::copy_options::recursive);
                     fs::copy_file(fs::absolute("imgui.ini"), projectPath / "imgui.ini", fs::copy_options::recursive);
                 }
 
@@ -349,6 +362,8 @@ int main() {
                 ImGui::EndPopup();
             }
         }
+        ImGui::PopStyleVar();
+
         ImGui::End();
 
         ImGuiWindowFlags flags2 = ImGuiWindowFlags_NoCollapse |
@@ -360,8 +375,6 @@ int main() {
         ImGui::SetNextWindowSize(
             ImVec2(width - (width / 1.5), height));
         // ImGui::SetNextWindowViewport(ImGui::GetMainViewport()->ID);
-
-        ImGui::End();
     };
 
     window.Run([&](Shader &framebuffer_shader) {

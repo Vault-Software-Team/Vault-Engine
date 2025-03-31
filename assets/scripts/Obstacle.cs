@@ -31,4 +31,5 @@ public class Obstacle : Entity
         //     transform.position.x = startX;
         // }
     }
+    
 }

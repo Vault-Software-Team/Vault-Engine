@@ -1,10 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "xXQY8o/XaqqpPfcvCo5/lwX5N0MCZ2zedt0FtDlYfWLKGFKl1tF1w/n0uIIqfNlyW7qYwoWJj5jeEI+IhmzwGw==",
+  "dgSpecHash": "HbKE79DpidvqpgkaH54JjeDolliFF5GrocXcWVcQPketshyprY7FS2M453S84ehxH71Wte4nu2Rg7W418crNgA==",
   "success": true,
   "projectFilePath": "/home/poww/Desktop/Projects/Vault-Engine/assets/csharp-lib.csproj",
   "expectedPackageFiles": [
-    "/home/poww/.nuget/packages/microsoft.aspnetcore.app.ref/6.0.32/microsoft.aspnetcore.app.ref.6.0.32.nupkg.sha512"
+    "/home/poww/.nuget/packages/microsoft.aspnetcore.app.ref/6.0.36/microsoft.aspnetcore.app.ref.6.0.36.nupkg.sha512"
   ],
   "logs": []
 }

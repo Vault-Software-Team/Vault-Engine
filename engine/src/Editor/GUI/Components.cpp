@@ -63,7 +63,7 @@ void AddComponentsGUIPopup(GameObject *gameObject) {
 
     DisplayAddComponentButton<MeshRenderer>(gameObject);
     DisplayAddComponentButton<ModelAnimator>(gameObject);
-    // DisplayAddComponentButton<ModelRenderer>(gameObject);
+    DisplayAddComponentButton<ModelRenderer>(gameObject);
     DisplayAddComponentButton<SpriteRenderer>(gameObject);
     DisplayAddComponentButton<SpritesheetRenderer>(gameObject);
 

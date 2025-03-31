@@ -107,7 +107,7 @@ int main() {
     // SE.JustRunTheScript(SE.GetModule("test"));
 
     Serializer::LoadConfigFile("./assets/config.yaml");
-    std::cout << "its game buiald\n";
+    std::cout << "its game buiald!!!\n";
 #ifdef GAME_BUILD
     std::cout << "its game build\n";
     Window window(1280, 720, Serializer::config.title == "" ? "Vault Engine" : Serializer::config.title.c_str());
@@ -162,9 +162,9 @@ int main() {
     Runtime runtime(default_shader);
 
     // default mesh setup
-    MeshRenderer::ModelMeshes[MESH_CUBE] = new ModelMesh("./default_models/cube.obj");
-    MeshRenderer::ModelMeshes[MESH_CAPSULE] = new ModelMesh("./default_models/capsule.obj");
-    MeshRenderer::ModelMeshes[MESH_SPHERE] = new ModelMesh("./default_models/sphere.obj");
+    MeshRenderer::ModelMeshes[MESH_CUBE] = new ModelMesh(fs::path("./default_models/cube.obj").string());
+    MeshRenderer::ModelMeshes[MESH_CAPSULE] = new ModelMesh(fs::path("./default_models/capsule.obj").string());
+    MeshRenderer::ModelMeshes[MESH_SPHERE] = new ModelMesh(fs::path("./default_models/sphere.obj").string());
 
     Runtime::default_shader = Runtime::usePBR ? &shader : &non_pbr_shader;
     runtime.shadowMap = &shadow_map;

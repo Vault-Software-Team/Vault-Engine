@@ -1,4 +1,5 @@
 #include "Editor/GUI/MainGUI.hpp"
+#include "Engine/Runtime.hpp"
 #include "GLFW/glfw3.h"
 #include "Renderer/Stats.hpp"
 #include <Renderer/Window.hpp>
@@ -134,16 +135,18 @@ namespace VaultRenderer {
             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
             update_call(framebuffer_shader);
 
-            if (Renderer.Bloom) {
-                glDisable(GL_BLEND);
-                bloomRenderer.RenderBloomTexture(framebuffer->color_attachements[0].ID, 0.005f);
-            }
-
             framebuffer_shader.Bind();
             framebuffer_shader_config(framebuffer_shader);
             framebuffer_shader.SetUniform1f("gamma", gamma);
 
             framebuffer->UnbindAndDrawOnScreen(framebuffer_shader);
+
+            if (Renderer.Bloom) {
+                bloomRenderer.RenderBloomTexture(framebuffer->color_attachements[0].ID, 0.005f);
+            }
+            VaultRenderer::Window::window->AspectRatioCameraViewport();
+
+            framebuffer_shader.Bind();
             glActiveTexture(GL_TEXTURE1);
             glBindTexture(GL_TEXTURE_2D, bloomRenderer.BloomTexture());
             framebuffer_shader.SetUniform1i("bloom_texture", 1);

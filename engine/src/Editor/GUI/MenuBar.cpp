@@ -8,6 +8,7 @@
 #include <Engine/Scene.hpp>
 #include <Engine/GameObject.hpp>
 #include <Engine/Components/IncludeComponents.hpp>
+#include <exception>
 #include <icons/icons.h>
 #include <imgui/imgui.h>
 #include <Engine/SceneSerialization.hpp>
@@ -18,6 +19,8 @@
 
 using namespace Engine;
 using namespace Engine::Components;
+
+namespace fs = std::filesystem;
 
 namespace Editor {
     static bool open = false;
@@ -184,6 +187,7 @@ namespace Editor {
     }
 
     void GUI::MenuBar() {
+        static bool isLinux = false;
         SaveSceneAs();
 
         if (ImGui::BeginMainMenuBar()) {
@@ -204,6 +208,20 @@ namespace Editor {
 
                 if (ImGui::MenuItem("Config")) {
                     Editor::GUI::isConfigurationOpen = true;
+                }
+
+                if (ImGui::BeginMenu("Build Game")) {
+                    if (ImGui::MenuItem("Linux")) {
+                        isLinux = true;
+                        ImGuiFileDialog::Instance()->OpenDialog("BuildGameSelectPath", "Build for Linux", nullptr, ".");
+                    }
+
+                    if (ImGui::MenuItem("Windows")) {
+                        isLinux = false;
+                        ImGuiFileDialog::Instance()->OpenDialog("BuildGameSelectPath", "Build for Linux", nullptr, ".");
+                    }
+
+                    ImGui::EndMenu();
                 }
 
                 ImGui::EndMenu();
@@ -262,6 +280,40 @@ namespace Editor {
             }
 
             ImGui::EndMainMenuBar();
+        }
+
+        if (ImGuiFileDialog::Instance()->Display("BuildGameSelectPath")) {
+            // action if OK
+            if (ImGuiFileDialog::Instance()->IsOk()) {
+                fs::path build_path = ImGuiFileDialog::Instance()->GetCurrentPath();
+
+                if (fs::equivalent(build_path, fs::path("./"))) {
+                    ImGui::InsertNotification({ImGuiToastType::Error, 5000, "Cannot build in the same directory as the project."});
+                    ImGuiFileDialog::Instance()->Close();
+                    return;
+                }
+
+                try {
+                    if (fs::exists(build_path / "game_build")) fs::remove_all(build_path / "game_build");
+                    fs::create_directory(build_path / "game_build");
+                    fs::create_directory(build_path / "game_build" / "bin");
+
+                    fs::copy("./shaders", build_path / "game_build" / "shaders", fs::copy_options::recursive);
+                    fs::copy("./editor", build_path / "game_build" / "editor", fs::copy_options::recursive);
+                    fs::copy("./fonts", build_path / "game_build" / "fonts", fs::copy_options::recursive);
+                    fs::copy("./mono", build_path / "game_build" / "mono", fs::copy_options::recursive);
+                    fs::copy("./assets", build_path / "game_build" / "assets", fs::copy_options::recursive);
+                    fs::copy(isLinux ? "./lib" : "./dlls", build_path / "game_build" / (isLinux ? "lib" : "dlls"), fs::copy_options::recursive);
+                    fs::copy("./default_models", build_path / "game_build" / "default_models", fs::copy_options::recursive);
+                    fs::copy(isLinux ? "./bin/gamebin" : "./bin/game.exe", build_path / "game_build" / "bin" / (isLinux ? "gamebin" : "game.exe"), fs::copy_options::recursive);
+                    fs::copy(isLinux ? "./bin/LaunchGame.sh" : "./bin/LaunchGame.bat", build_path / "game_build" / (isLinux ? "LaunchGame.sh" : "LaunchGame.bat"), fs::copy_options::recursive);
+                    ImGui::InsertNotification({ImGuiToastType::Success, 5000, "Built game for %s successfully!", isLinux ? "linux" : "windows"});
+                } catch (std::exception &e) {
+                    std::cout << "[FS-ERROR] " << e.what() << "\n";
+                    ImGui::InsertNotification({ImGuiToastType::Error, 5000, "%s", e.what()});
+                }
+            }
+            ImGuiFileDialog::Instance()->Close();
         }
 
         ShadowMapConfiguration();

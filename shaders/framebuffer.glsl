@@ -30,7 +30,7 @@ vec4 bloom() {
 }
 
 void main() {
-    vec4 frag = useBloom ? bloom() : texture(screen_texture, texCoords);
+    vec4 frag = useBloom ? bloom() : vec4(texture(screen_texture, texCoords).rgb, 1);
 
     vec3 tone_mapped = vec3(1.0) - exp(-frag.rgb * HDR_Exposure);
 

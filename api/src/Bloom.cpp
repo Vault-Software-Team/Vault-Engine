@@ -156,7 +156,9 @@ namespace VaultRenderer {
     void BloomRenderer::RenderBloomTexture(unsigned int srcTexture, float filterRadius) {
         mFBO.BindForWriting();
 
+        glDisable(GL_BLEND);
         this->RenderDownsamples(srcTexture);
+        glEnable(GL_BLEND);
         this->RenderUpsamples(filterRadius);
 
         glBindFramebuffer(GL_FRAMEBUFFER, 0);

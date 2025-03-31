@@ -373,7 +373,7 @@ namespace Engine {
             std::string build_command = "cd assets";
             build_command += " && \"";
             build_command += "dotnet"; // custom dotnet path here in the future maybe??
-            build_command += "\" build --property WarningLevel=0 -o VAULT_OUT";
+            build_command += "\" build WarningLevel=0 -o VAULT_OUT";
             std::unique_ptr<FILE, decltype(&pclose)> pipe(popen(build_command.c_str(), "r"), pclose);
 
             if (!pipe) {

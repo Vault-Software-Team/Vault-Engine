@@ -18,8 +18,11 @@ namespace Engine {
     }
 
     void Model::loadModel(const std::string &path) {
+        std::cout << "Loading Model " << path << "\n";
         Assimp::Importer import;
+        std::cout << "Importer initialized\n";
         const aiScene *scene = import.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_FixInfacingNormals | aiProcess_LimitBoneWeights);
+        std::cout << "Scene read file!\n";
 
         if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
             std::cout << "Assimp Importer Error: " << import.GetErrorString() << "\n";
