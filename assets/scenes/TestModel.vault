@@ -6,12 +6,12 @@ GameObjects:
       tag: Default
       parent: NO_PARENT
       Transform:
-        position: [0, 1.89374077, 0]
+        position: [1.02701116, 1.43493462, 0.606458008]
         rotation: [0, 0, 0]
         scale: [1, 1, 1]
       PointLight:
-        intensity: 25
-        color: [1, 1, 1]
+        intensity: 9.72000027
+        color: [1, 0, 0]
         enable_shadow_mapping: false
   - GameObject:
       ID: d2db04b3-8f69-482a-926f-7fc53d212346
@@ -23,7 +23,7 @@ GameObjects:
         rotation: [0, 0, 0]
         scale: [1, 1, 1]
       AmbientLight:
-        amount: 1.11000001
+        amount: 0.409999996
         color: [1, 1, 1]
   - GameObject:
       ID: 1689489d-b285-4ca9-9ec1-20572db8c8f3
@@ -40,9 +40,9 @@ GameObjects:
       tag: Default
       parent: NO_PARENT
       Transform:
-        position: [0, -0.295864105, 0]
+        position: [0, -0.295864105, -0.330522001]
         rotation: [0, 1.57079637, 0]
-        scale: [24.7870731, 24.7927647, 24.7870731]
+        scale: [32.1888161, 32.2305946, 32.1888161]
       MeshRenderer:
         mesh_type: 0
         mesh_index: -1
@@ -84,7 +84,7 @@ GameObjects:
       tag: Default
       parent: 1689489d-b285-4ca9-9ec1-20572db8c8f3
       Transform:
-        position: [3.2859087, 1.84547698, 1.99214566]
+        position: [-1.97142243, 3.46426868, 1.99214566]
         rotation: [-1.49218536e-07, 0, 0]
         scale: [3.4532001, 3.4532001, 3.4532001]
       MeshRenderer:
@@ -106,7 +106,7 @@ GameObjects:
       tag: Default
       parent: NO_PARENT
       Transform:
-        position: [-1.73103392, 1.29377818, -0.955234468]
+        position: [-1.73103392, 0.95738405, -0.926705182]
         rotation: [-1.57079637, 0, 0]
         scale: [0.0483359993, 0.0483349152, 0.0483349152]
       ModelRenderer:

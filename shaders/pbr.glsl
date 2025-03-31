@@ -248,80 +248,26 @@ float ShadowCalculation(vec3 fragPosWorldSpace, vec3 N, vec3 L, bool cascaded) {
     // select cascade layer
     float shadow = 0.0;
     if (!shadow_mapping) return 0.0;
-    if (cascaded) {
-        vec4 fragPosViewSpace = camera_view * vec4(fragPosWorldSpace, 1.0);
-        float depthValue = abs(fragPosViewSpace.z);
 
-        int layer = -1;
-        for (int i = 0; i < cascadeCount; ++i) {
-            if (depthValue < cascadePlaneDistances[i]) {
-                layer = i;
-                break;
+    vec3 lightCoords = fragPosLight.xyz / fragPosLight.w;
+    if (lightCoords.z <= 1.0f) {
+        lightCoords = (lightCoords + 1.0f) / 2.0f;
+
+        float closestDepth = texture(m_shadowMap, lightCoords.xy).r;
+        float currentDepth = lightCoords.z;
+        float bias = max(0.025f * (1.0f - dot(N, L)), 0.0005f);
+
+        int sampleRadius = 2;
+        vec2 pixelSize = 1.0 / textureSize(m_shadowMap, 0);
+        for (int y = -sampleRadius; y <= sampleRadius; y++) {
+            for (int x = -sampleRadius; x <= sampleRadius; x++) {
+                float closestDepth = texture(m_shadowMap, lightCoords.xy + vec2(x, y) * pixelSize).r;
+                if (currentDepth > closestDepth + bias)
+                    shadow += 1.0f;
             }
         }
-        if (layer == -1) {
-            layer = cascadeCount;
-        }
 
-        vec4 fragPosLightSpace = lightSpaceMatrices[layer] * vec4(fragPosWorldSpace, 1.0);
-
-        // perform perspective divide
-        vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
-        // transform to [0,1] range
-        projCoords = projCoords * 0.5 + 0.5;
-
-        // get depth of current fragment from light's perspective
-        float currentDepth = projCoords.z;
-        if (currentDepth > 1.0) {
-            return 0.0;
-        }
-        // calculate bias (based on depth map resolution and slope)
-        // vec3 normal = normalize(normal);
-        float bias = max(0.05 * (1.0 - dot(N, L)), 0.005);
-        if (layer == cascadeCount) {
-            bias *= 1 / (cameraFarPlane * 0.5f);
-        } else {
-            bias *= 1 / (cascadePlaneDistances[layer] * 0.5f);
-        }
-
-        vec2 texelSize = 1.0 / vec2(textureSize(shadowMap, 0));
-        for (int x = -1; x <= 1; ++x) {
-            for (int y = -1; y <= 1; ++y) {
-                float pcfDepth = texture(
-                                     shadowMap,
-                                     vec3(projCoords.xy + vec2(x, y) * texelSize,
-                                          layer))
-                                     .r;
-                shadow += (currentDepth - bias) > pcfDepth ? 1.0 : 0.0;
-            }
-        }
-        shadow /= 9.0;
-
-        // keep the shadow at 0.0 when outside the far_plane region of the light's frustum.
-        if (projCoords.z > 1.0) {
-            shadow = 0.0;
-        }
-    } else {
-        vec3 lightCoords = fragPosLight.xyz / fragPosLight.w;
-        if (lightCoords.z <= 1.0f) {
-            lightCoords = (lightCoords + 1.0f) / 2.0f;
-
-            float closestDepth = texture(m_shadowMap, lightCoords.xy).r;
-            float currentDepth = lightCoords.z;
-            float bias = max(0.025f * (1.0f - dot(N, L)), 0.0005f);
-
-            int sampleRadius = 2;
-            vec2 pixelSize = 1.0 / textureSize(m_shadowMap, 0);
-            for (int y = -sampleRadius; y <= sampleRadius; y++) {
-                for (int x = -sampleRadius; x <= sampleRadius; x++) {
-                    float closestDepth = texture(m_shadowMap, lightCoords.xy + vec2(x, y) * pixelSize).r;
-                    if (currentDepth > closestDepth + bias)
-                        shadow += 1.0f;
-                }
-            }
-
-            shadow /= pow((sampleRadius * 2 + 1), 2);
-        }
+        shadow /= pow((sampleRadius * 2 + 1), 2);
     }
 
     return shadow;

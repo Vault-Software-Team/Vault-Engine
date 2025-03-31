@@ -102,7 +102,7 @@ uniform Texture texture_normal;
 uniform Texture texture_height;
 
 uniform vec3 camera_position;
-uniform sampler2D shadowMap;
+uniform sampler2D m_shadowMap;
 uniform float ambient_amount;
 uniform vec3 ambient_color;
 uniform vec4 baseColor;
@@ -211,6 +211,35 @@ vec3 point_light(PointLight light) {
     }
 }
 
+float ShadowCalculation(vec3 fragPosWorldSpace, vec3 N, vec3 L, bool cascaded) {
+    // select cascade layer
+    float shadow = 0.0;
+    if (!shadow_mapping) return 0.0;
+
+    vec3 lightCoords = fragPosLight.xyz / fragPosLight.w;
+    if (lightCoords.z <= 1.0f) {
+        lightCoords = (lightCoords + 1.0f) / 2.0f;
+
+        float closestDepth = texture(m_shadowMap, lightCoords.xy).r;
+        float currentDepth = lightCoords.z;
+        float bias = max(0.025f * (1.0f - dot(N, L)), 0.0005f);
+
+        int sampleRadius = 2;
+        vec2 pixelSize = 1.0 / textureSize(m_shadowMap, 0);
+        for (int y = -sampleRadius; y <= sampleRadius; y++) {
+            for (int x = -sampleRadius; x <= sampleRadius; x++) {
+                float closestDepth = texture(m_shadowMap, lightCoords.xy + vec2(x, y) * pixelSize).r;
+                if (currentDepth > closestDepth + bias)
+                    shadow += 1.0f;
+            }
+        }
+
+        shadow /= pow((sampleRadius * 2 + 1), 2);
+    }
+
+    return shadow;
+}
+
 vec3 directional_light(DirectionalLight light) {
     float inten = light.intensity;
     vec3 light_dir = normalize(light.position);
@@ -271,26 +300,7 @@ vec3 directional_light(DirectionalLight light) {
 
     float shadow = 0.0f;
     if (shadow_mapping) {
-        vec3 lightCoords = fragPosLight.xyz / fragPosLight.w;
-        if (lightCoords.z <= 1.0f) {
-            lightCoords = (lightCoords + 1.0f) / 2.0f;
-
-            float closestDepth = texture(shadowMap, lightCoords.xy).r;
-            float currentDepth = lightCoords.z;
-            float bias = max(0.025f * (1.0f - dot(m_normal, light_dir)), 0.0005f);
-
-            int sampleRadius = 2;
-            vec2 pixelSize = 1.0 / textureSize(shadowMap, 0);
-            for (int y = -sampleRadius; y <= sampleRadius; y++) {
-                for (int x = -sampleRadius; x <= sampleRadius; x++) {
-                    float closestDepth = texture(shadowMap, lightCoords.xy + vec2(x, y) * pixelSize).r;
-                    if (currentDepth > closestDepth + bias)
-                        shadow += 1.0f;
-                }
-            }
-
-            shadow /= pow((sampleRadius * 2 + 1), 2);
-        }
+        shadow = ShadowCalculation(current_position, normal, light_dir, false);
     }
 
     if (texture_diffuse.defined) {

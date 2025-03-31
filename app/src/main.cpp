@@ -107,7 +107,6 @@ int main() {
     // SE.JustRunTheScript(SE.GetModule("test"));
 
     Serializer::LoadConfigFile("./assets/config.yaml");
-    std::cout << "its game buiald!!!\n";
 #ifdef GAME_BUILD
     std::cout << "its game build\n";
     Window window(1280, 720, Serializer::config.title == "" ? "Vault Engine" : Serializer::config.title.c_str());

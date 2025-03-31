@@ -37,6 +37,7 @@ DiscordRPC::DiscordRPC(const std::string &id) : m_ID(id) {
         std::cout << "Discord: Spectate Game " << spectateSecret << std::endl;
     };
 
+    std::cout << "Discord Initialized\n";
     Discord_Initialize(id.c_str(), handlers.get(), 1, nullptr);
 }
 
