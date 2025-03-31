@@ -261,3 +261,16 @@ GameObjects:
       CSharpScriptComponent:
         selected_scripts:
           .SpinOther: THIS_IS_EMPTY_FUCK_YOU_LOL.SpinOther
+  - GameObject:
+      ID: 59f10a19-6fff-40dc-950b-a2a242654345
+      name: GameObject
+      tag: Default
+      parent: NO_PARENT
+      Transform:
+        position: [1.4681108, 3.42987919, -3.49424696]
+        rotation: [0, 0, 0]
+        scale: [1, 1, 1]
+      DirectionalLight:
+        intensity: 1
+        color: [1, 1, 1]
+        enable_shadow_mapping: true

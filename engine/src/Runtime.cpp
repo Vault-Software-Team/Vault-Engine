@@ -74,7 +74,11 @@ namespace Engine {
         std::vector<Camera *> depth_cameras = {};
         auto camV = Scene::Main->EntityRegistry.view<Camera>();
 
-#ifndef GAME_BUILD
+#ifndef BUILD_GAME
+        std::cout << "RUNNING GAME BUILD SHIT\n";
+#endif
+
+#ifndef BUILD_GAME
 
         if (Editor::GUI::selected_gameObject && Editor::EditorLayer::instance->EnableColliderGizmo) {
             auto &gameObject = Editor::GUI::selected_gameObject;
@@ -146,12 +150,15 @@ namespace Engine {
 #endif
 
 // Draw Component Icons
-#ifndef GAME_BUILD
+#ifndef BUILD_GAME
         glDisable(GL_DEPTH_TEST);
         glDepthFunc(GL_LEQUAL);
         glDisable(GL_CULL_FACE);
+        std::cout << "trying to call a icon gizmo:\n"
+                  << Scene::Main->main_camera_object << " | " << Scene::Main->EditorSceneCamera << " | " << (Editor::EditorLayer::instance->EnableIconGizmo ? "true" : "false") << "\n";
         if (Scene::Main->main_camera_object == Scene::Main->EditorSceneCamera && Scene::Main->main_camera_object && Editor::EditorLayer::instance->EnableIconGizmo) {
             Scene::Main->main_camera_object->BindToShader(*Editor::EditorLayer::instance->ColliderGizmo.shader);
+            std::cout << "calling icon gizmos\n";
 
             auto &camera = Scene::Main->StaticGameObjects_EntityRegistry.get<Camera>(Scene::Main->main_camera_object->entity);
             for (auto &e : camV) {
@@ -175,6 +182,7 @@ namespace Engine {
 
             auto v_PointLight = Scene::Main->EntityRegistry.view<PointLight>();
             for (auto &e : v_PointLight) {
+                std::cout << "point light icon\n";
                 auto &transform = Scene::Main->EntityRegistry.get<Transform>(e);
                 Transform t = transform;
                 float distance = glm::distance(t.position, camera.transform->position);

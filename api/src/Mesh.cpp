@@ -103,26 +103,26 @@ namespace VaultRenderer {
 
     Material::Material(const glm::vec4 &color) : color(color) {}
 
-    void Material::SetDiffuse(const std::string &texture_path) {
-        diffuse = std::make_unique<Texture>(texture_path, TEXTURE_DIFFUSE);
+    void Material::SetDiffuse(const std::string &texture_path, bool gl_linear) {
+        diffuse = std::make_unique<Texture>(texture_path, TEXTURE_DIFFUSE, gl_linear);
     }
-    void Material::SetSpecular(const std::string &texture_path) {
-        specular = std::make_unique<Texture>(texture_path, TEXTURE_SPECULAR);
+    void Material::SetSpecular(const std::string &texture_path, bool gl_linear) {
+        specular = std::make_unique<Texture>(texture_path, TEXTURE_SPECULAR, gl_linear);
     }
-    void Material::SetNormal(const std::string &texture_path) {
-        normal = std::make_unique<Texture>(texture_path, TEXTURE_NORMAL);
+    void Material::SetNormal(const std::string &texture_path, bool gl_linear) {
+        normal = std::make_unique<Texture>(texture_path, TEXTURE_NORMAL, gl_linear);
     }
-    void Material::SetHeight(const std::string &texture_path) {
-        height = std::make_unique<Texture>(texture_path, TEXTURE_HEIGHT);
+    void Material::SetHeight(const std::string &texture_path, bool gl_linear) {
+        height = std::make_unique<Texture>(texture_path, TEXTURE_HEIGHT, gl_linear);
     }
-    void Material::SetRoughness(const std::string &texture_path) {
-        roughness_map = std::make_unique<Texture>(texture_path, TEXTURE_HEIGHT);
+    void Material::SetRoughness(const std::string &texture_path, bool gl_linear) {
+        roughness_map = std::make_unique<Texture>(texture_path, TEXTURE_HEIGHT, gl_linear);
     }
-    void Material::SetMetallic(const std::string &texture_path) {
-        metallic_map = std::make_unique<Texture>(texture_path, TEXTURE_HEIGHT);
+    void Material::SetMetallic(const std::string &texture_path, bool gl_linear) {
+        metallic_map = std::make_unique<Texture>(texture_path, TEXTURE_HEIGHT, gl_linear);
     }
-    void Material::SetAO(const std::string &texture_path) {
-        ao_map = std::make_unique<Texture>(texture_path, TEXTURE_HEIGHT);
+    void Material::SetAO(const std::string &texture_path, bool gl_linear) {
+        ao_map = std::make_unique<Texture>(texture_path, TEXTURE_HEIGHT, gl_linear);
     }
 
     void Material::BindToShader(Shader &shader) {

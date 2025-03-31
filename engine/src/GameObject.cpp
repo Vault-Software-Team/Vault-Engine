@@ -132,6 +132,7 @@ namespace Engine {
                 shader.SetUniformMat4("transformModel", transform.model);
                 // Runtime::instance->c_ShadowMap->BindToShader(shader);
                 shader.SetUniform1ui("u_EntityID", (uint32_t)entity);
+                shader.SetUniform1i("u_UseTextureAlpha", 1);
                 spritesheetRenderer.Draw(shader);
             }
         }

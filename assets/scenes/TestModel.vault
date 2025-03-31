@@ -6,12 +6,12 @@ GameObjects:
       tag: Default
       parent: NO_PARENT
       Transform:
-        position: [3.3727901, 5.47102404, -2.56695604]
+        position: [-0.604334772, 1.73144591, -1.24437499]
         rotation: [0, 0, 0]
         scale: [1, 1, 1]
       PointLight:
-        intensity: 15
-        color: [0.340425611, 1, 0]
+        intensity: 25
+        color: [1, 1, 1]
         enable_shadow_mapping: true
   - GameObject:
       ID: d2db04b3-8f69-482a-926f-7fc53d212346
@@ -23,7 +23,7 @@ GameObjects:
         rotation: [0, 0, 0]
         scale: [1, 1, 1]
       AmbientLight:
-        amount: 1
+        amount: 0.0500000007
         color: [1, 1, 1]
   - GameObject:
       ID: 1689489d-b285-4ca9-9ec1-20572db8c8f3
@@ -55,7 +55,7 @@ GameObjects:
         trigger: false
         fixedRotation: false
       BoxCollider3D:
-        size: [24.7900009, 0.100000001, 24.7900009]
+        size: [32.1899986, 0.100000001, 32.1899986]
   - GameObject:
       ID: 12bd358e-5087-4cc0-b413-a5c1a5d8b9a4
       name: Metallic Sphere
@@ -94,7 +94,7 @@ GameObjects:
         material_path: ./assets/rusty_metal.material
       Rigidbody3D:
         mass: 1
-        restitution: 1.20000005
+        restitution: 2
         friction: 0.5
         trigger: false
         fixedRotation: false
@@ -116,6 +116,14 @@ GameObjects:
         animation_path: ""
         mesh_materials:
           Cerberus00_Fixed: ./assets/main-copy.material
+      Rigidbody3D:
+        mass: 1
+        restitution: 0
+        friction: 0.5
+        trigger: false
+        fixedRotation: false
+      BoxCollider3D:
+        size: [2.29999995, 11.6000004, 3.29999995]
   - GameObject:
       ID: d44167a1-ec4c-4a0b-9088-6fc7b5c78678
       name: GameObject
@@ -132,3 +140,26 @@ GameObjects:
         animation_path: ./assets/Character.fbx
         mesh_materials:
           Mesh: ./assets/hi.material
+  - GameObject:
+      ID: 2c504963-9fc9-45fb-9550-be67f3877456
+      name: GameObject
+      tag: Default
+      parent: NO_PARENT
+      Transform:
+        position: [1.56614637, 1.17967188, -2.73479795]
+        rotation: [0, 0, 0]
+        scale: [3.30599475, 3.30999994, 1.10158503]
+      SpritesheetRenderer:
+        color: [1, 1, 1, 1]
+        texture: ./assets/Pico_Burps.png
+        spritesheet_size: [4096, 2048]
+        sprite_size: [443, 475]
+        sprite_offset: [896, 480]
+      Rigidbody3D:
+        mass: 1
+        restitution: 2
+        friction: 0.5
+        trigger: false
+        fixedRotation: false
+      BoxCollider3D:
+        size: [3.4000001, 3.29999995, 0.100000001]

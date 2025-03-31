@@ -55,7 +55,7 @@ namespace Engine::Components {
             if (ImGui::BeginDragDropTarget()) {
                 if (const ImGuiPayload *payload = ImGui::AcceptDragDropPayload("image_file")) {
                     std::string path = (char *)payload->Data;
-                    mesh->material.SetDiffuse(path);
+                    mesh->material.SetDiffuse(path, true);
                 }
             }
 
@@ -80,6 +80,8 @@ namespace Engine::Components {
         if (mesh == nullptr)
             return;
 
+        glm::vec2 old_spritesheetSize, old_spriteOffset, old_spriteSize;
+
         bool trulyChanged = false;
         for (auto &vertex : mesh->vertices) {
             int index = &vertex - &mesh->vertices[0];
@@ -102,10 +104,15 @@ namespace Engine::Components {
                 glm::vec2(spriteOffset.x / spritesheetSize.x,
                           yCoord / spritesheetSize.y)};
 
-            trulyChanged = !(vertex.texUV.x == texCoords[index].x && vertex.texUV.y == texCoords[index].y);
+            // garbage garbage garbage garbage
+            trulyChanged = spriteOffset.x != old_spriteOffset.x || spriteOffset.y != old_spriteOffset.y || old_spritesheetSize.x != spritesheetSize.x || old_spritesheetSize.y != spritesheetSize.y || old_spriteSize.x != spriteSize.x || old_spriteSize.y != spriteSize.y;
 
             vertex.texUV = texCoords[index];
         }
+
+        old_spriteOffset = spriteOffset;
+        old_spritesheetSize = spritesheetSize;
+        old_spriteSize = spriteSize;
 
         if (trulyChanged) {
             glBindVertexArray(mesh->VAO);

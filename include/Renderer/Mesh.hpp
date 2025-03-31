@@ -30,26 +30,25 @@ namespace VaultRenderer {
 
         Material(const glm::vec4 &color = glm::vec4(1, 1, 1, 1));
 
-        void SetDiffuse(const std::string &texture_path);
-        void SetSpecular(const std::string &texture_path);
-        void SetNormal(const std::string &texture_path);
-        void SetHeight(const std::string &texture_path);
-        void SetRoughness(const std::string &texture_path);
-        void SetMetallic(const std::string &texture_path);
-        void SetAO(const std::string &texture_path);
+        void SetDiffuse(const std::string &texture_path, bool gl_linear = false);
+        void SetSpecular(const std::string &texture_path, bool gl_linear = false);
+        void SetNormal(const std::string &texture_path, bool gl_linear = false);
+        void SetHeight(const std::string &texture_path, bool gl_linear = false);
+        void SetRoughness(const std::string &texture_path, bool gl_linear = false);
+        void SetMetallic(const std::string &texture_path, bool gl_linear = false);
+        void SetAO(const std::string &texture_path, bool gl_linear = false);
 
         void BindToShader(Shader &shader);
     };
     struct DLL_API Vertex {
-        glm::vec3 position;
+        glm::vec3 position = glm::vec3(0);
         glm::vec2 texUV = glm::vec2(0, 0);
         glm::vec3 normal = glm::vec3(0, 1, 0);
         glm::vec3 tangent = glm::vec3(0, 0, 0);
         glm::vec3 bitangent = glm::vec3(0, 0, 0);
-        uint32_t EntityID;
-        // int modelIndex;
-        int m_BoneIDs[MAX_BONE_INFLUENCE];
-        float m_Weights[MAX_BONE_INFLUENCE];
+        uint32_t EntityID = 0;
+        int m_BoneIDs[MAX_BONE_INFLUENCE] = {0, 0, 0, 0};
+        float m_Weights[MAX_BONE_INFLUENCE] = {0, 0, 0, 0};
     };
     struct BoneInfo {
         int id;

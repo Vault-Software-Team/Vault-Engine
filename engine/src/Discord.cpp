@@ -46,7 +46,7 @@ DiscordRPC::~DiscordRPC() {
 }
 
 void DiscordRPC::UpdatePresence(const std::string &details, const std::string &state, const std::string &largeImageKey, const std::string &largeImageText, const std::string &smallImageKey, const std::string &smallImageText) {
-#ifndef GAME_BUILD
+#ifndef BUILD_GAME
     char buffer[256];
     DiscordRichPresence discordPresence;
     memset(&discordPresence, 0, sizeof(discordPresence));

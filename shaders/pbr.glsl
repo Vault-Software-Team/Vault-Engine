@@ -122,6 +122,7 @@ uniform vec4 emissionColor;
 uniform float shadowCubemapFarPlane;
 uniform float cameraFarPlane;
 uniform uint u_EntityID;
+uniform bool u_UseTextureAlpha;
 
 // Shadow Mapping
 uniform samplerCube shadowCubemap;
@@ -427,7 +428,6 @@ void main() {
     } else {
         FragColor.a = baseColor.a;
     }
-    FragColor.a = 1;
 
     if (config_PostProcessing.GlobalBloom) {
         float brightness = dot(FragColor.rgb, vec3(0.2126, 0.7152, 0.0722));

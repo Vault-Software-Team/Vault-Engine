@@ -313,19 +313,19 @@ namespace Editor {
                 }
 
                 try {
-                    if (fs::exists(build_path / "game_build")) fs::remove_all(build_path / "game_build");
-                    fs::create_directory(build_path / "game_build");
-                    fs::create_directory(build_path / "game_build" / "bin");
+                    if (fs::exists(build_path / "BUILD_GAME")) fs::remove_all(build_path / "BUILD_GAME");
+                    fs::create_directory(build_path / "BUILD_GAME");
+                    fs::create_directory(build_path / "BUILD_GAME" / "bin");
 
-                    fs::copy("./shaders", build_path / "game_build" / "shaders", fs::copy_options::recursive);
-                    fs::copy("./editor", build_path / "game_build" / "editor", fs::copy_options::recursive);
-                    fs::copy("./fonts", build_path / "game_build" / "fonts", fs::copy_options::recursive);
-                    fs::copy("./mono", build_path / "game_build" / "mono", fs::copy_options::recursive);
-                    fs::copy("./assets", build_path / "game_build" / "assets", fs::copy_options::recursive);
-                    fs::copy(isLinux ? "./lib" : "./dlls", build_path / "game_build" / (isLinux ? "lib" : "dlls"), fs::copy_options::recursive);
-                    fs::copy("./default_models", build_path / "game_build" / "default_models", fs::copy_options::recursive);
-                    fs::copy(isLinux ? "./bin/gamebin" : "./bin/game.exe", build_path / "game_build" / "bin" / (isLinux ? "gamebin" : "game.exe"), fs::copy_options::recursive);
-                    fs::copy(isLinux ? "./bin/LaunchGame.sh" : "./bin/LaunchGame.bat", build_path / "game_build" / (isLinux ? "LaunchGame.sh" : "LaunchGame.bat"), fs::copy_options::recursive);
+                    fs::copy("./shaders", build_path / "BUILD_GAME" / "shaders", fs::copy_options::recursive);
+                    fs::copy("./editor", build_path / "BUILD_GAME" / "editor", fs::copy_options::recursive);
+                    fs::copy("./fonts", build_path / "BUILD_GAME" / "fonts", fs::copy_options::recursive);
+                    fs::copy("./mono", build_path / "BUILD_GAME" / "mono", fs::copy_options::recursive);
+                    fs::copy("./assets", build_path / "BUILD_GAME" / "assets", fs::copy_options::recursive);
+                    fs::copy(isLinux ? "./lib" : "./dlls", build_path / "BUILD_GAME" / (isLinux ? "lib" : "dlls"), fs::copy_options::recursive);
+                    fs::copy("./default_models", build_path / "BUILD_GAME" / "default_models", fs::copy_options::recursive);
+                    fs::copy(isLinux ? "./bin/gamebin" : "./bin/game.exe", build_path / "BUILD_GAME" / "bin" / (isLinux ? "gamebin" : "game.exe"), fs::copy_options::recursive);
+                    fs::copy(isLinux ? "./bin/LaunchGame.sh" : "./bin/LaunchGame.bat", build_path / "BUILD_GAME" / (isLinux ? "LaunchGame.sh" : "LaunchGame.bat"), fs::copy_options::recursive);
                     ImGui::InsertNotification({ImGuiToastType::Success, 5000, "Built game for %s successfully!", isLinux ? "linux" : "windows"});
                 } catch (std::exception &e) {
                     std::cout << "[FS-ERROR] " << e.what() << "\n";

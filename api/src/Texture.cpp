@@ -35,7 +35,7 @@ namespace VaultRenderer {
         }
     }
 
-    Texture::Texture(const std::string &texture_file, const TextureType &type) {
+    Texture::Texture(const std::string &texture_file, const TextureType &type, bool gl_linear) {
         bool found = false;
         for (auto tex : textures) {
             if (tex->texture_filepath == texture_file) {
@@ -79,8 +79,8 @@ namespace VaultRenderer {
                 glGenTextures(1, &texture_data->ID);
                 glBindTexture(GL_TEXTURE_2D, texture_data->ID);
 
-                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, type == TEXTURE_GUI_ICON ? GL_LINEAR : GL_NEAREST);
-                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, type == TEXTURE_GUI_ICON ? GL_LINEAR : GL_NEAREST);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_linear ? GL_LINEAR : GL_NEAREST);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_linear ? GL_LINEAR : GL_NEAREST);
 
                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);

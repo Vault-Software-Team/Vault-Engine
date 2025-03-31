@@ -591,24 +591,24 @@ namespace Engine {
         if (data["SpritesheetRenderer"]) {
             gameObject->AddComponent<SpritesheetRenderer>();
             auto &component = gameObject->GetComponent<SpritesheetRenderer>();
-            if (data["SpriteRenderer"]["texture"] && data["SpriteRenderer"]["texture"].as<std::string>() != "nullptr") {
-                component.mesh->material.SetDiffuse(data["SpriteRenderer"]["texture"].as<std::string>());
+            if (data["SpritesheetRenderer"]["texture"] && data["SpritesheetRenderer"]["texture"].as<std::string>() != "nullptr") {
+                component.mesh->material.SetDiffuse(data["SpritesheetRenderer"]["texture"].as<std::string>());
             }
 
-            if (data["SpriteRenderer"]["color"]) {
-                component.mesh->material.color = data["SpriteRenderer"]["color"].as<glm::vec4>();
+            if (data["SpritesheetRenderer"]["color"]) {
+                component.mesh->material.color = data["SpritesheetRenderer"]["color"].as<glm::vec4>();
             }
 
-            if (data["SpriteRenderer"]["spritesheet_size"]) {
-                component.spritesheetSize = data["SpriteRenderer"]["spritesheet_size"].as<glm::vec2>();
+            if (data["SpritesheetRenderer"]["spritesheet_size"]) {
+                component.spritesheetSize = data["SpritesheetRenderer"]["spritesheet_size"].as<glm::vec2>();
             }
 
-            if (data["SpriteRenderer"]["sprite_size"]) {
-                component.spriteSize = data["SpriteRenderer"]["sprite_size"].as<glm::vec2>();
+            if (data["SpritesheetRenderer"]["sprite_size"]) {
+                component.spriteSize = data["SpritesheetRenderer"]["sprite_size"].as<glm::vec2>();
             }
 
-            if (data["SpriteRenderer"]["sprite_offset"]) {
-                component.spriteOffset = data["SpriteRenderer"]["sprite_offset"].as<glm::vec2>();
+            if (data["SpritesheetRenderer"]["sprite_offset"]) {
+                component.spriteOffset = data["SpritesheetRenderer"]["sprite_offset"].as<glm::vec2>();
             }
         }
 
@@ -709,7 +709,7 @@ namespace Engine {
 
         auto gameObjects = data["GameObjects"];
 
-#ifndef GAME_BUILD
+#ifndef BUILD_GAME
         glfwSetWindowTitle(VaultRenderer::Window::window->GetGLFWWindow(), (VaultRenderer::Window::window->title + " | " + fs::path(path).filename().string()).c_str());
 #endif
         if (!gameObjects)

@@ -28,7 +28,7 @@ namespace VaultRenderer {
 
         std::shared_ptr<t_texture> texture_data;
 
-        Texture(const std::string &texture_file, const TextureType &type = TEXTURE_DIFFUSE);
+        Texture(const std::string &texture_file, const TextureType &type = TEXTURE_DIFFUSE, bool gl_linear = false);
         ~Texture();
 
         void Bind(uint32_t slot);

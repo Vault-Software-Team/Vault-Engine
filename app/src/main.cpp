@@ -88,8 +88,6 @@ void print(const std::string &traki) {
     std::cout << traki << "\n";
 }
 
-#undef GAME_BUILD
-
 int main() {
     using namespace VaultRenderer;
 
@@ -107,7 +105,7 @@ int main() {
     // SE.JustRunTheScript(SE.GetModule("test"));
 
     Serializer::LoadConfigFile("./assets/config.yaml");
-#ifdef GAME_BUILD
+#ifdef BUILD_GAME
     std::cout << "its game build\n";
     Window window(1280, 720, Serializer::config.title == "" ? "Vault Engine" : Serializer::config.title.c_str());
 #else
@@ -197,7 +195,7 @@ int main() {
     // -- SKELETAL ANIMATION EXAMPLE --
 
     // GAME BUILD
-    bool GAME_BUILD_called_once = false;
+    bool BUILD_GAME_called_once = false;
 
     // GUI
     auto teLangDef = TextEditor::LanguageDefinition::C();
@@ -212,11 +210,11 @@ int main() {
     auto Function_GUI = [&] {
         ImGui::DockSpaceOverViewport(ImGui::GetMainViewport(), ImGuiDockNodeFlags_PassthruCentralNode);
 
-#ifdef GAME_BUILD
+#ifdef BUILD_GAME
         bool &isStopped = Runtime::instance->isStopped;
         bool &isRunning = Runtime::instance->isRunning;
 
-        if (!GAME_BUILD_called_once) {
+        if (!BUILD_GAME_called_once) {
             isRunning = true;
             isStopped = false;
             Scene::Main->OnRuntimeStart();
@@ -238,7 +236,7 @@ int main() {
                 }
             }
 
-            GAME_BUILD_called_once = true;
+            BUILD_GAME_called_once = true;
         }
         editor.GameGUI();
 #else
