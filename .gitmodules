@@ -1,0 +1,3 @@
+[submodule "external/openfbx"]
+	path = external/openfbx
+	url = https://github.com/nem0/OpenFBX
