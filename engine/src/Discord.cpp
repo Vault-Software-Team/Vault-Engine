@@ -37,30 +37,30 @@ DiscordRPC::DiscordRPC(const std::string &id) : m_ID(id) {
         std::cout << "Discord: Spectate Game " << spectateSecret << std::endl;
     };
 
-    // Discord_Initialize(id.c_str(), handlers.get(), 1, nullptr);
+    Discord_Initialize(id.c_str(), handlers.get(), 1, nullptr);
 }
 
 DiscordRPC::~DiscordRPC() {
-    // Discord_Shutdown();
+    Discord_Shutdown();
 }
 
 void DiscordRPC::UpdatePresence(const std::string &details, const std::string &state, const std::string &largeImageKey, const std::string &largeImageText, const std::string &smallImageKey, const std::string &smallImageText) {
 #ifndef GAME_BUILD
-    // char buffer[256];
-    // DiscordRichPresence discordPresence;
-    // memset(&discordPresence, 0, sizeof(discordPresence));
-    // discordPresence.largeImageKey = largeImageKey.c_str();
-    // discordPresence.largeImageText = largeImageText.c_str();
-    // discordPresence.smallImageKey = smallImageKey.c_str();
-    // discordPresence.smallImageText = smallImageText.c_str();
-    // discordPresence.state = state.c_str();
-    // discordPresence.details = details.c_str();
-    // discordPresence.joinSecret = "asdfasdf83784387fgd8";
-    // discordPresence.matchSecret = "adfkjfdhjk394874567";
-    // discordPresence.partyId = uuid::generate_uuid_v4().c_str();
-    // discordPresence.partySize = 1;
-    // discordPresence.partyMax = 5;
-    // discordPresence.startTimestamp = timestamp;
-    // Discord_UpdatePresence(&discordPresence);
+    char buffer[256];
+    DiscordRichPresence discordPresence;
+    memset(&discordPresence, 0, sizeof(discordPresence));
+    discordPresence.largeImageKey = largeImageKey.c_str();
+    discordPresence.largeImageText = largeImageText.c_str();
+    discordPresence.smallImageKey = smallImageKey.c_str();
+    discordPresence.smallImageText = smallImageText.c_str();
+    discordPresence.state = state.c_str();
+    discordPresence.details = details.c_str();
+    discordPresence.joinSecret = "asdfasdf83784387fgd8";
+    discordPresence.matchSecret = "adfkjfdhjk394874567";
+    discordPresence.partyId = uuid::generate_uuid_v4().c_str();
+    discordPresence.partySize = 1;
+    discordPresence.partyMax = 5;
+    discordPresence.startTimestamp = timestamp;
+    Discord_UpdatePresence(&discordPresence);
 #endif
 }
