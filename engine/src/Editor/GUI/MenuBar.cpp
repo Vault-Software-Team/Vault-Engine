@@ -29,6 +29,7 @@ namespace Editor {
     static bool open_editor = false;
     static bool open_model_debug = false;
     static bool open_post_processing = false;
+    static bool open_pbr_config = false;
 
     static ImVec4 RGB255ToRGB1(float r, float g, float b, float a) {
         return ImVec4(r / 255, g / 255, b / 255, a / 255);
@@ -168,6 +169,16 @@ namespace Editor {
         }
     }
 
+    static void PBRConfig() {
+        if (!open_pbr_config) return;
+
+        if (ImGui::Begin(ICON_FA_GEAR " PBR Config", &open_pbr_config, ImGuiWindowFlags_NoDocking)) {
+            ImGui::Checkbox("Image Based Lightning", &PostProcessing::PBR_IBL);
+
+            ImGui::End();
+        }
+    }
+
     static void SaveSceneAs() {
         if (ImGuiFileDialog::Instance()->Display("SaveSceneAsDialog")) {
             // action if OK
@@ -235,6 +246,13 @@ namespace Editor {
                 if (ImGui::BeginMenu("Post Processing")) {
                     if (ImGui::MenuItem("Configuration")) {
                         open_post_processing = true;
+                    }
+                    ImGui::EndMenu();
+                }
+
+                if (ImGui::BeginMenu("PBR")) {
+                    if (ImGui::MenuItem("Configuration")) {
+                        open_pbr_config = true;
                     }
                     ImGui::EndMenu();
                 }
@@ -322,5 +340,6 @@ namespace Editor {
         EditorConfig();
         ModelDebug();
         PostProcessingConfig();
+        PBRConfig();
     }
 } // namespace Editor

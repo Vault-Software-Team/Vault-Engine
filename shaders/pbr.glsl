@@ -131,6 +131,7 @@ struct PostProcessing {
     bool GlobalBloom;
     float BloomThreshold;
     vec3 BloomMultiplier;
+    bool PBR_IBL;
 };
 uniform PostProcessing config_PostProcessing;
 
@@ -379,10 +380,16 @@ void main() {
     vec2 brdf = texture(brdfLUT, vec2(max(dot(N, V), 0.0), roughness)).rg;
     vec3 specular = prefilteredColor * (F * brdf.x + brdf.y);
 
-    vec3 ambient = (kD * diffuse + specular) * ao;
-    ambient *= ambient_amount;
+    vec3 color = vec3(0);
+    if (config_PostProcessing.PBR_IBL) {
+        vec3 ambient = (kD * diffuse + specular) * ao;
+        ambient *= ambient_amount;
+        color = (ambient + Lo) * (1.2 - shadow);
+    } else {
+        vec3 ambient = vec3(ambient_amount) * albedo * ao;
+        color = (ambient + Lo) * (1.2 - shadow);
+    }
 
-    vec3 color = (ambient + Lo) * (1.2 - shadow);
     // color = color / (color + vec3(1.0));
     // color = pow(color, vec3(1.0 / 2.2));
 

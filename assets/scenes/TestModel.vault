@@ -6,12 +6,12 @@ GameObjects:
       tag: Default
       parent: NO_PARENT
       Transform:
-        position: [1.02701116, 1.43493462, 0.606458008]
+        position: [0, 2.13524389, 0.930640578]
         rotation: [0, 0, 0]
         scale: [1, 1, 1]
       PointLight:
-        intensity: 9.72000027
-        color: [1, 0, 0]
+        intensity: 10.8599997
+        color: [1, 1, 1]
         enable_shadow_mapping: false
   - GameObject:
       ID: d2db04b3-8f69-482a-926f-7fc53d212346
@@ -23,7 +23,7 @@ GameObjects:
         rotation: [0, 0, 0]
         scale: [1, 1, 1]
       AmbientLight:
-        amount: 0.409999996
+        amount: 0.0199999996
         color: [1, 1, 1]
   - GameObject:
       ID: 1689489d-b285-4ca9-9ec1-20572db8c8f3
@@ -84,14 +84,14 @@ GameObjects:
       tag: Default
       parent: 1689489d-b285-4ca9-9ec1-20572db8c8f3
       Transform:
-        position: [-1.97142243, 3.46426868, 1.99214566]
+        position: [3.19833088, 3.46426868, 1.99214566]
         rotation: [-1.49218536e-07, 0, 0]
         scale: [3.4532001, 3.4532001, 3.4532001]
       MeshRenderer:
         mesh_type: 4
         mesh_index: -1
         mesh_path: ""
-        material_path: ./assets/hi.material
+        material_path: ./assets/rusty_metal.material
       Rigidbody3D:
         mass: 1
         restitution: 1.20000005
@@ -106,7 +106,7 @@ GameObjects:
       tag: Default
       parent: NO_PARENT
       Transform:
-        position: [-1.73103392, 0.95738405, -0.926705182]
+        position: [-1.73103392, 2.54849267, -0.926705182]
         rotation: [-1.57079637, 0, 0]
         scale: [0.0483359993, 0.0483349152, 0.0483349152]
       ModelRenderer:
