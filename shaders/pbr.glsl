@@ -136,6 +136,8 @@ struct PostProcessing {
     float BloomThreshold;
     vec3 BloomMultiplier;
     bool PBR_IBL;
+    float ShadowStrength;
+    vec3 ShadowColor;
 };
 uniform PostProcessing config_PostProcessing;
 
@@ -155,6 +157,7 @@ struct PointLight {
     vec3 position;
     vec3 color;
     float intensity;
+    float shadow_strength;
 };
 
 struct DirectionalLight {
@@ -408,10 +411,10 @@ void main() {
     if (config_PostProcessing.PBR_IBL) {
         vec3 ambient = (kD * diffuse + specular) * ao;
         ambient *= ambient_amount;
-        color = (ambient + Lo) * (1.2 - shadow);
+        color = (ambient + Lo) * (1.2 - (shadow * config_PostProcessing.ShadowStrength));
     } else {
         vec3 ambient = vec3(ambient_amount) * albedo * ao;
-        color = (ambient + Lo) * (1.2 - shadow);
+        color = (ambient + Lo) * (1.2 - (shadow * config_PostProcessing.ShadowStrength));
     }
     // color = color / (color + vec3(1.0));
     // color = pow(color, vec3(1.0 / 2.2));

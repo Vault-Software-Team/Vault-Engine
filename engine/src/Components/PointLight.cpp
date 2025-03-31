@@ -117,9 +117,11 @@ namespace Engine::Components {
     void PointLight::OnGUI() {
         DrawComponent<PointLight>(Scene::Main->EntityRegistry, 40, [&] {
             ImGui::DragFloat("Intensity", &intensity, 0.01f, 0.0);
+            ImGui::ColorEdit3("Color", &color.x, ImGuiColorEditFlags_HDR);
             ImGui::DragFloat("Shadow Far Plane", &shadow_far_plane, 0.1f, 0.0);
             ImGui::Checkbox("Shadows", &enable_shadow_mapping);
-            ImGui::ColorEdit3("Color", &color.x, ImGuiColorEditFlags_HDR);
+            // ImGui::DragFloat("Shadow Strength", &shadow_strength, 0.1f, 0.0);
+            // if (shadow_strength < 0) shadow_strength = 0;
         });
     }
 } // namespace Engine::Components

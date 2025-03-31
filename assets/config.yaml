@@ -7,5 +7,7 @@ HDR.exposure: 2
 Renderer.Bloom: true
 usePBR: true
 PostProcessing.GlobalBloom: true
+PostProcessing.PBR_IBL: true
 PostProcessing.BloomThreshold: 0.75
 PostProcessing.BloomMultiplier: [0.100000001, 0.100000001, 0.100000001]
+PostProcessing.shadow_strength: 0.600000024

@@ -163,6 +163,7 @@ namespace Editor {
         if (ImGui::Begin(ICON_FA_GEAR " Post Processing Config", &open_post_processing, ImGuiWindowFlags_NoDocking)) {
             ImGui::Checkbox("Global Bloom", &PostProcessing::GlobalBloom);
             ImGui::DragFloat("Bloom Threshold", &PostProcessing::BloomThreshold, 0.01, 0.0f);
+            ImGui::DragFloat("Shadow Strength", &PostProcessing::shadow_strength, 0.01, 0.0f);
             GUI::DrawVec3Control("Bloom Multiplier", PostProcessing::BloomMultiplier, 1.0f);
 
             ImGui::End();

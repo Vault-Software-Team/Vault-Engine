@@ -6,13 +6,13 @@ GameObjects:
       tag: Default
       parent: NO_PARENT
       Transform:
-        position: [0, 2.13524389, 0.930640578]
+        position: [1.75195384, 6.66952658, -1.44410539]
         rotation: [0, 0, 0]
         scale: [1, 1, 1]
       PointLight:
-        intensity: 10.8599997
-        color: [1, 1, 1]
-        enable_shadow_mapping: false
+        intensity: 15
+        color: [0.340425611, 1, 0]
+        enable_shadow_mapping: true
   - GameObject:
       ID: d2db04b3-8f69-482a-926f-7fc53d212346
       name: Ambient
@@ -23,7 +23,7 @@ GameObjects:
         rotation: [0, 0, 0]
         scale: [1, 1, 1]
       AmbientLight:
-        amount: 0.0199999996
+        amount: 1
         color: [1, 1, 1]
   - GameObject:
       ID: 1689489d-b285-4ca9-9ec1-20572db8c8f3
@@ -116,3 +116,19 @@ GameObjects:
         animation_path: ""
         mesh_materials:
           Cerberus00_Fixed: ./assets/main-copy.material
+  - GameObject:
+      ID: d44167a1-ec4c-4a0b-9088-6fc7b5c78678
+      name: GameObject
+      tag: Default
+      parent: NO_PARENT
+      Transform:
+        position: [0.481170774, -0.267260313, -3.97360897]
+        rotation: [0, 0, 0]
+        scale: [0.0500000119, 0.0500000119, 0.0500000119]
+      ModelRenderer:
+        model_path: ./assets/Character.fbx
+        time_scale: 0.5
+        play_animation: false
+        animation_path: ./assets/Character.fbx
+        mesh_materials:
+          Mesh: ./assets/hi.material

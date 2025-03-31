@@ -8,6 +8,8 @@ namespace Engine {
         static float BloomThreshold;
         static glm::vec3 BloomMultiplier;
         static bool PBR_IBL;
+        static glm::vec3 shadow_color;
+        static float shadow_strength;
 
         static void BindToShader(VaultRenderer::Shader &shader, const std::string &u_StructName = "config_PostProcessing");
     };

@@ -114,6 +114,7 @@ namespace Engine::Components {
 
     void ModelRenderer::Draw(VaultRenderer::Shader &shader, const glm::mat4 &_model) {
         shader.SetUniform1i("playAnimation", play_animation);
+        if (!model) return;
         for (auto &mesh : model->meshes) {
             shader.SetUniformMat4("transformModel", _model * mesh.transform);
             mesh.Draw(shader);
@@ -152,6 +153,7 @@ namespace Engine::Components {
         for (int i = 0; i < transforms.size(); ++i) {
             shader.SetUniformMat4(("finalBonesMatrices[" + std::to_string(i) + "]").c_str(), transforms[i]);
         }
+        shader.SetUniform1i("playAnimation", play_animation);
     }
 
     void ModelRenderer::Animate() {

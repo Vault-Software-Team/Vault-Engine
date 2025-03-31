@@ -972,12 +972,20 @@ namespace Engine {
             PostProcessing::GlobalBloom = data["PostProcessing.GlobalBloom"].as<bool>();
         }
 
+        if (data["PostProcessing.PBR_IBL"]) {
+            PostProcessing::PBR_IBL = data["PostProcessing.PBR_IBL"].as<bool>();
+        }
+
         if (data["PostProcessing.BloomThreshold"]) {
             PostProcessing::BloomThreshold = data["PostProcessing.BloomThreshold"].as<float>();
         }
 
         if (data["PostProcessing.BloomMultiplier"]) {
             PostProcessing::BloomMultiplier = data["PostProcessing.BloomMultiplier"].as<glm::vec3>();
+        }
+
+        if (data["PostProcessing.ShadowStrength"]) {
+            PostProcessing::shadow_strength = data["PostProcessing.shadow_strength"].as<float>();
         }
     }
 
@@ -1003,8 +1011,10 @@ namespace Engine {
 
         // Post Processing
         emitter << yaml::Key << "PostProcessing.GlobalBloom" << yaml::Value << PostProcessing::GlobalBloom;
+        emitter << yaml::Key << "PostProcessing.PBR_IBL" << yaml::Value << PostProcessing::PBR_IBL;
         emitter << yaml::Key << "PostProcessing.BloomThreshold" << yaml::Value << PostProcessing::BloomThreshold;
         emitter << yaml::Key << "PostProcessing.BloomMultiplier" << yaml::Value << PostProcessing::BloomMultiplier;
+        emitter << yaml::Key << "PostProcessing.shadow_strength" << yaml::Value << PostProcessing::shadow_strength;
 
         std::ofstream file(path);
         file << emitter.c_str();
