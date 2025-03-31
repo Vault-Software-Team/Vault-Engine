@@ -20,7 +20,7 @@ namespace Engine {
             float intensity = 1.0f;
             float shadow_far_plane = 100.0f;
             bool enable_shadow_mapping = false;
-            float shadow_strength = 1;
+            float ShadowStrength = 1;
             int index = 0;
 
             void AttachToShader(VaultRenderer::Shader &shader);

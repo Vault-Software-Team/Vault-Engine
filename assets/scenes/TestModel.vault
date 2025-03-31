@@ -6,7 +6,7 @@ GameObjects:
       tag: Default
       parent: NO_PARENT
       Transform:
-        position: [1.75195384, 6.66952658, -1.44410539]
+        position: [3.3727901, 5.47102404, -2.56695604]
         rotation: [0, 0, 0]
         scale: [1, 1, 1]
       PointLight:

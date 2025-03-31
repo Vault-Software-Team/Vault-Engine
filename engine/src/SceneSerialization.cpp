@@ -985,7 +985,7 @@ namespace Engine {
         }
 
         if (data["PostProcessing.ShadowStrength"]) {
-            PostProcessing::shadow_strength = data["PostProcessing.shadow_strength"].as<float>();
+            PostProcessing::ShadowStrength = data["PostProcessing.ShadowStrength"].as<float>();
         }
     }
 
@@ -1014,7 +1014,7 @@ namespace Engine {
         emitter << yaml::Key << "PostProcessing.PBR_IBL" << yaml::Value << PostProcessing::PBR_IBL;
         emitter << yaml::Key << "PostProcessing.BloomThreshold" << yaml::Value << PostProcessing::BloomThreshold;
         emitter << yaml::Key << "PostProcessing.BloomMultiplier" << yaml::Value << PostProcessing::BloomMultiplier;
-        emitter << yaml::Key << "PostProcessing.shadow_strength" << yaml::Value << PostProcessing::shadow_strength;
+        emitter << yaml::Key << "PostProcessing.ShadowStrength" << yaml::Value << PostProcessing::ShadowStrength;
 
         std::ofstream file(path);
         file << emitter.c_str();
