@@ -19,6 +19,7 @@ namespace VaultRenderer {
     private:
         static DLL_API Shader *binded_shader;
         uint32_t ID;
+        uint32_t OldID;
 
     public:
         enum ShaderType {
@@ -40,7 +41,7 @@ namespace VaultRenderer {
         std::vector<std::string> active_uni_names;
         std::vector<std::string> active_attrib_names;
 
-        void Build();
+        void Build(bool rebuild = false);
         void Delete();
         void Rebuild();
 

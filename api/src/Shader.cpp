@@ -1,4 +1,5 @@
 #include <Renderer/Shader.hpp>
+#include <cstddef>
 #include <stdio.h>
 #include <fstream>
 #include <iostream>
@@ -17,7 +18,7 @@ namespace VaultRenderer {
         shaders[path] = this;
     }
 
-    void Shader::Build() {
+    void Shader::Build(bool rebuild) {
         ShaderType type = NONE;
 
         std::string vertCode, fragCode, geometryCode, line;
@@ -62,14 +63,28 @@ namespace VaultRenderer {
         int success;
         char infoLog[512];
 
-        vertShader = glCreateShader(GL_VERTEX_SHADER);
-        glShaderSource(vertShader, 1, &vertShaderCode, NULL);
-        glCompileShader(vertShader);
-        glGetShaderiv(vertShader, GL_COMPILE_STATUS, &success);
-        if (!success) {
-            glGetShaderInfoLog(vertShader, 512, NULL, infoLog);
-            printf("Failed to compile Vertex Shader");
-            std::cout << infoLog << std::endl;
+        if (!rebuild) {
+            vertShader = glCreateShader(GL_VERTEX_SHADER);
+            glShaderSource(vertShader, 1, &vertShaderCode, NULL);
+            glCompileShader(vertShader);
+            glGetShaderiv(vertShader, GL_COMPILE_STATUS, &success);
+            if (!success) {
+                glGetShaderInfoLog(vertShader, 512, NULL, infoLog);
+                printf("Failed to compile Vertex Shader");
+                std::cout << infoLog << std::endl;
+            }
+
+            if (type == ShaderType::GEOMETRY) {
+                geometryShader = glCreateShader(GL_GEOMETRY_SHADER);
+                glShaderSource(geometryShader, 1, &geometryShaderCode, NULL);
+                glCompileShader(geometryShader);
+                glGetShaderiv(geometryShader, GL_COMPILE_STATUS, &success);
+                if (!success) {
+                    glGetShaderInfoLog(geometryShader, 512, NULL, infoLog);
+                    printf("Failed to compile Geometry Shader");
+                    std::cout << infoLog << std::endl;
+                }
+            }
         }
 
         fragShader = glCreateShader(GL_FRAGMENT_SHADER);
@@ -82,25 +97,22 @@ namespace VaultRenderer {
             std::cout << infoLog << std::endl;
         }
 
-        if (type == ShaderType::GEOMETRY) {
-            geometryShader = glCreateShader(GL_GEOMETRY_SHADER);
-            glShaderSource(geometryShader, 1, &geometryShaderCode, NULL);
-            glCompileShader(geometryShader);
-            glGetShaderiv(geometryShader, GL_COMPILE_STATUS, &success);
-            if (!success) {
-                glGetShaderInfoLog(geometryShader, 512, NULL, infoLog);
-                printf("Failed to compile Geometry Shader");
-                std::cout << infoLog << std::endl;
+        ID = rebuild ? ID : glCreateProgram();
+        if (!rebuild) {
+            glAttachShader(ID, vertShader);
+            if (type == 2) {
+                glAttachShader(ID, geometryShader);
             }
         }
-
-        ID = glCreateProgram();
-        glAttachShader(ID, vertShader);
         glAttachShader(ID, fragShader);
-        if (type == 2) {
-            glAttachShader(ID, geometryShader);
-        }
         glLinkProgram(ID);
+        if (!rebuild) {
+            glDetachShader(ID, vertShader);
+            if (type == 2) {
+                glDetachShader(ID, geometryShader);
+            }
+        }
+        glDetachShader(ID, fragShader);
         glGetProgramiv(ID, GL_LINK_STATUS, &success);
         if (!success) {
             glGetProgramInfoLog(ID, 512, NULL, infoLog);
@@ -149,13 +161,21 @@ namespace VaultRenderer {
     }
 
     void Shader::Rebuild() {
-        Delete();
-        Build();
+        active_attrib_names.clear();
+        active_uni_names.clear();
+        binded_shader = nullptr;
+
+        Build(true);
     }
 
     void Shader::Bind() {
         if (binded_shader != this)
             glUseProgram(ID);
+
+        if (binded_shader == this && OldID != ID) {
+            glUseProgram(ID);
+            OldID = ID;
+        }
 
         binded_shader = this;
     }

@@ -334,8 +334,22 @@ namespace Editor {
                 Filename = "New File";
             }
 
-            if (ImGui::Button(ICON_FA_PAINT_ROLLER " Add GLSL Shader", ImVec2(150, 0))) {
+            if (ImGui::Button(ICON_FA_PAINT_ROLLER " Add GLSL Shader (Default)", ImVec2(150, 0))) {
                 std::ifstream stream("./shaders/default.glsl");
+                std::stringstream ss;
+                ss << stream.rdbuf();
+                std::string content = ss.str();
+
+                std::ofstream ofs(AddFile_Folder + "/" + Filename + ".glsl");
+                ofs << content << "\n";
+                ofs.close();
+                ImGui::CloseCurrentPopup();
+                AddFile_Folder = "./assets";
+                Filename = "New File";
+            }
+
+            if (ImGui::Button(ICON_FA_PAINT_ROLLER " Add GLSL Shader (PBR)", ImVec2(150, 0))) {
+                std::ifstream stream("./shaders/pbr.glsl");
                 std::stringstream ss;
                 ss << stream.rdbuf();
                 std::string content = ss.str();

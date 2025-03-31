@@ -95,36 +95,35 @@ namespace Editor {
             GUI::logs.clear();
         } else {
             // C# STUFF !!
-            // auto &klass = CSharp::instance->command_classes[".MyCommand"];
-            // std::vector<std::string> out = console_GetArgumentsWithStarter(command);
+            std::vector<std::string> out = console_GetArgumentsWithStarter(command);
 
-            // std::string command = out[0];
+            std::string command = out[0];
 
-            // out.erase(out.begin());
-            // std::string args;
-            // for (auto &string : out) {
-            //     args += string;
-            //     args += " ";
-            // }
+            out.erase(out.begin());
+            std::string args;
+            for (auto &string : out) {
+                args += string;
+                args += " ";
+            }
 
-            // auto &registry = CSharp::instance->command_classes["DevConsole.CommandRegistry"];
+            auto &registry = CSharp::instance->command_classes["DevConsole.CommandRegistry"];
 
-            // void *__args[2] = {
-            //     CSharpHelper::StrToMonoString(command),
-            //     CSharpHelper::StrToMonoString(args) //
-            // };
-            // MonoObject *exception = nullptr;
-            // mono_runtime_invoke(registry->GetMethod("Execute", 2), registry->GetHandleTarget(), __args, &exception);
+            void *__args[2] = {
+                CSharpHelper::StrToMonoString(command),
+                CSharpHelper::StrToMonoString(args) //
+            };
+            MonoObject *exception = nullptr;
+            mono_runtime_invoke(registry->GetMethod("Execute", 2), registry->GetHandleTarget(), __args, &exception);
 
-            // if (exception) {
-            //     MonoObject *exc = NULL;
-            //     MonoString *str = mono_object_to_string(exception, &exc);
-            //     if (exc) {
-            //         mono_print_unhandled_exception(exc);
-            //     } else {
-            //         Editor::GUI::LogError(mono_string_to_utf8(str)); // Log log(mono_string_to_utf8(str), LOG_ERROR);
-            //     }
-            // }
+            if (exception) {
+                MonoObject *exc = NULL;
+                MonoString *str = mono_object_to_string(exception, &exc);
+                if (exc) {
+                    mono_print_unhandled_exception(exc);
+                } else {
+                    Editor::GUI::LogError(mono_string_to_utf8(str)); // Log log(mono_string_to_utf8(str), LOG_ERROR);
+                }
+            }
         }
     }
 

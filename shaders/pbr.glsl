@@ -119,12 +119,16 @@ uniform float ambient_amount;
 uniform vec3 ambient_color;
 uniform vec4 baseColor;
 uniform vec4 emissionColor;
-uniform samplerCube shadowCubemap;
-uniform bool shadow_cubemap_mapping;
-uniform bool shadow_mapping;
 uniform float shadowCubemapFarPlane;
 uniform float cameraFarPlane;
 uniform uint u_EntityID;
+
+// Shadow Mapping
+uniform samplerCube shadowCubemap;
+uniform bool shadow_cubemap_mapping;
+uniform bool shadow_mapping;
+uniform float dirshadow_bias_min;
+uniform float dirshadow_bias_max;
 
 // Post Processing Values
 struct PostProcessing {
@@ -256,7 +260,7 @@ float ShadowCalculation(vec3 fragPosWorldSpace, vec3 N, vec3 L, bool cascaded) {
 
         float closestDepth = texture(m_shadowMap, lightCoords.xy).r;
         float currentDepth = lightCoords.z;
-        float bias = max(0.025f * (1.0f - dot(N, L)), 0.0005f);
+        float bias = max(dirshadow_bias_max * (1.0f - dot(N, L)), dirshadow_bias_min);
 
         int sampleRadius = 2;
         vec2 pixelSize = 1.0 / textureSize(m_shadowMap, 0);
@@ -333,6 +337,26 @@ void main() {
 
         float NdotL = max(dot(N, L), 0.0);
         Lo += (kD * albedo / PI + specular) * radiance * NdotL;
+
+        if (shadow_cubemap_mapping) {
+            vec3 fragToLight = current_position - (point_lights[i].position);
+            float current_depth = length(fragToLight);
+            float bias = max(0.025 * (1.0 - dot(normal, L)), 0.0005);
+
+            int sampleRadius = 2;
+            float pixelSize = 1.0 / 1024;
+
+            for (int z = -sampleRadius; z <= sampleRadius; z++) {
+                for (int y = -sampleRadius; y <= sampleRadius; y++) {
+                    for (int x = -sampleRadius; x <= sampleRadius; x++) {
+                        float closestDepth = texture(shadowCubemap, fragToLight + vec3(x, y, z) * pixelSize).r;
+                        closestDepth *= shadowCubemapFarPlane;
+                        if (current_depth > closestDepth + bias) shadow += 1.0;
+                    }
+                }
+            }
+            shadow /= pow((sampleRadius * 2 + 1), 3);
+        }
     }
 
     // dir lights
@@ -389,7 +413,6 @@ void main() {
         vec3 ambient = vec3(ambient_amount) * albedo * ao;
         color = (ambient + Lo) * (1.2 - shadow);
     }
-
     // color = color / (color + vec3(1.0));
     // color = pow(color, vec3(1.0 / 2.2));
 

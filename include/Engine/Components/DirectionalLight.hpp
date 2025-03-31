@@ -17,6 +17,7 @@ namespace Engine {
             glm::vec3 color = glm::vec3(1, 1, 1);
             float intensity = 1.0f;
             bool enable_shadow_mapping = false;
+            float bias_max = 0.025f, bias_min = 0.0005f;
             int index = 0;
 
             void AttachToShader(VaultRenderer::Shader &shader);

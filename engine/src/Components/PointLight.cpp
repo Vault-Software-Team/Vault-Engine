@@ -1,3 +1,4 @@
+#include "Engine/Components/ModelRenderer.hpp"
 #include "imgui/imgui.h"
 #include <Engine/Components/PointLight.hpp>
 #include <Engine/Scene.hpp>
@@ -50,26 +51,22 @@ namespace Engine::Components {
     }
 
     void PointLight::DrawToShadowMap(VaultRenderer::Shader &shader) {
-        glEnable(GL_DEPTH_TEST);
-        glViewport(0, 0, 2046, 2046);
-        glBindFramebuffer(GL_FRAMEBUFFER, shadowMapFBO);
-        glClear(GL_DEPTH_BUFFER_BIT);
         auto v = Scene::Main->EntityRegistry.view<MeshRenderer>();
         auto v2 = Scene::Main->EntityRegistry.view<Text3D>();
+        auto v3 = Scene::Main->EntityRegistry.view<ModelRenderer>();
 
-        shader.Bind();
-
-        glm::mat4 shadow_projection = glm::perspective(glm::radians(90.0f), 1.0f, 0.1f, shadow_far_plane);
+        glm::mat4 shadow_projection = glm::perspective(glm::radians(90.0f), 2048.f / 2048.f, 1.0f, shadow_far_plane);
         glm::mat4 shadow_transforms[] = {
             shadow_projection * glm::lookAt(transform->position, transform->position + glm::vec3(1.0, 0.0, 0.0), glm::vec3(0, -1.0, 0)),
             shadow_projection * glm::lookAt(transform->position, transform->position + glm::vec3(-1.0, 0.0, 0.0), glm::vec3(0, -1.0, 0)),
-            shadow_projection * glm::lookAt(transform->position, transform->position + glm::vec3(0.0, 1.0, 0.0), glm::vec3(0, 0.0, 1)),
+            shadow_projection * glm::lookAt(transform->position, transform->position + glm::vec3(0.0, 1.0, 0.0), glm::vec3(0, 0.0, 1.0)),
             shadow_projection * glm::lookAt(transform->position, transform->position + glm::vec3(0.0, -1.0, 0.0), glm::vec3(0, 0, -1.0)),
             shadow_projection * glm::lookAt(transform->position, transform->position + glm::vec3(0.0, 0.0, 1.0), glm::vec3(0, -1.0, 0)),
             shadow_projection * glm::lookAt(transform->position, transform->position + glm::vec3(0.0, 0.0, -1.0), glm::vec3(0, -1.0, 0)),
         };
 
         // Could be done with a loop but i dont fucking care
+        shader.Bind();
         shader.SetUniformMat4("shadow_matrices[0]", shadow_transforms[0]);
         shader.SetUniformMat4("shadow_matrices[1]", shadow_transforms[1]);
         shader.SetUniformMat4("shadow_matrices[2]", shadow_transforms[2]);
@@ -78,6 +75,11 @@ namespace Engine::Components {
         shader.SetUniformMat4("shadow_matrices[5]", shadow_transforms[5]);
         shader.SetUniform3f("light_position", transform->position.x, transform->position.y, transform->position.z);
         shader.SetUniform1f("far", shadow_far_plane);
+
+        glViewport(0, 0, 2048, 2048);
+        glBindFramebuffer(GL_FRAMEBUFFER, shadowMapFBO);
+        glEnable(GL_DEPTH_TEST);
+        glClear(GL_DEPTH_BUFFER_BIT);
 
         for (auto e : v) {
             auto &meshRenderer = Scene::Main->EntityRegistry.get<MeshRenderer>(e);
@@ -96,6 +98,15 @@ namespace Engine::Components {
             shader.SetUniform1i("isText", 1);
             shader.SetUniformMat4("transformModel", transform.model);
             meshRenderer.Draw(shader);
+        }
+
+        for (auto e : v3) {
+            auto &modelRenderer = Scene::Main->EntityRegistry.get<ModelRenderer>(e);
+            auto &transform = Scene::Main->EntityRegistry.get<Transform>(e);
+            transform.Update();
+            shader.SetUniformMat4("transformModel", transform.model);
+            modelRenderer.AnimateAndSetUniforms(shader);
+            modelRenderer.Draw(shader, transform.model);
         }
 
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
