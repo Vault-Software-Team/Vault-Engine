@@ -1,4 +1,5 @@
 #pragma once
+#include "Engine/Components/Transform.hpp"
 #include <dllapi.hpp>
 #include <string>
 #include <entt/entt.hpp>
@@ -23,6 +24,7 @@ namespace Engine {
         entt::registry *other_registry = nullptr;
 
     public:
+        Components::Transform *transform;
         static DLL_API std::vector<std::shared_ptr<GameObject>> scheduled_deletions;
 
         static DLL_API std::shared_ptr<GameObject> &FindGameObjectByEntity(const entt::entity &entity);

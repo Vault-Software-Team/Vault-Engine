@@ -40,8 +40,6 @@ add_subdirectory(external/yaml-cpp)
 add_subdirectory(external/bullet)
 add_subdirectory(external/openfbx)
 
-set(GAME_BUILD 
-
 if(WIN32)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -static-libgcc -static-libstdc++ -w -g")
 endif()

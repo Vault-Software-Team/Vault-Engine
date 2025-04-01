@@ -1,0 +1,25 @@
+Prefab: 2c504963-9fc9-45fb-9550-be67f3877456
+GameObjects:
+  - GameObject:
+      ID: 2c504963-9fc9-45fb-9550-be67f3877456
+      name: pico
+      tag: Default
+      parent: NO_PARENT
+      Transform:
+        position: [1.56614637, 1.17967188, -2.73479795]
+        rotation: [0, 0, 0]
+        scale: [3.30599475, 3.30999994, 1.10158503]
+      SpritesheetRenderer:
+        color: [1, 1, 1, 1]
+        texture: ./assets/Pico_Burps.png
+        spritesheet_size: [4096, 2048]
+        sprite_size: [443, 475]
+        sprite_offset: [896, 480]
+      Rigidbody3D:
+        mass: 1
+        restitution: 2
+        friction: 0.5
+        trigger: false
+        fixedRotation: false
+      BoxCollider3D:
+        size: [3.4000001, 3.29999995, 0.100000001]

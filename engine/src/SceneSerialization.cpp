@@ -4,11 +4,13 @@
 #include "Engine/Components/ModelAnimator.hpp"
 #include "Engine/Components/Rigidbody3D.hpp"
 #include "Engine/Components/SpriteRenderer.hpp"
+#include "Engine/Components/SpritesheetAnimator.hpp"
 #include "Engine/PostProcessing.hpp"
 #include "Engine/Runtime.hpp"
 #include "Renderer/Window.hpp"
 #include "glm/fwd.hpp"
 #include "yaml-cpp/emittermanip.h"
+#include "yaml-cpp/node/node.h"
 #include <Engine/SceneSerialization.hpp>
 #include <Engine/GameObject.hpp>
 #include <filesystem>
@@ -302,6 +304,49 @@ namespace Engine {
             emitter << yaml::EndMap;
         }
 
+        if (gameObject->HasComponent<SpritesheetAnimator>()) {
+            emitter << yaml::Key << "SpritesheetAnimator";
+            emitter << yaml::BeginMap;
+
+            auto &component = gameObject->GetComponent<SpritesheetAnimator>();
+            emitter << yaml::Key << "color" << yaml::Value << component.mesh->material.color;
+            emitter << yaml::Key << "texture" << yaml::Value << (component.mesh->material.diffuse == nullptr ? "nullptr" : component.mesh->material.diffuse->texture_data->texture_filepath);
+            emitter << yaml::Key << "spritesheet_size" << yaml::Value << component.spritesheetSize;
+            emitter << yaml::Key << "animate" << yaml::Value << component.animate;
+            emitter << yaml::Key << "time_between_frames" << yaml::Value << component.time_between_frames;
+            emitter << yaml::Key << "current_animation" << yaml::Value << component.current_animation;
+
+            emitter << yaml::Key << "animations";
+            emitter << yaml::BeginMap;
+            for (auto &animation : component.animations) {
+                emitter << yaml::Key << animation.first;
+                emitter << yaml::BeginMap;
+
+                emitter << yaml::Key << "loop" << yaml::Value << animation.second.loop;
+
+                emitter << yaml::Key << "frames";
+                emitter << yaml::BeginMap;
+
+                int i = 0;
+                for (auto &frame : animation.second.frames) {
+                    emitter << yaml::Key << std::to_string(i);
+                    emitter << yaml::BeginMap;
+                    emitter << yaml::Key << "sprite_size" << yaml::Value << frame.spriteSize;
+                    emitter << yaml::Key << "sprite_offset" << yaml::Value << frame.spriteOffset;
+                    emitter << yaml::EndMap;
+
+                    i++;
+                }
+
+                emitter << yaml::EndMap;
+
+                emitter << yaml::EndMap;
+            }
+            emitter << yaml::EndMap;
+
+            emitter << yaml::EndMap;
+        }
+
         if (gameObject->HasComponent<Camera>()) {
             emitter << yaml::Key << "Camera";
             emitter << yaml::BeginMap;
@@ -585,6 +630,55 @@ namespace Engine {
 
             if (data["SpriteRenderer"]["emissionColor"]) {
                 component.mesh->material.emissionColor = data["SpriteRenderer"]["emissionColor"].as<glm::vec3>();
+            }
+        }
+
+        if (data["SpritesheetAnimator"]) {
+            gameObject->AddComponent<SpritesheetAnimator>();
+            auto &component = gameObject->GetComponent<SpritesheetAnimator>();
+            if (data["SpritesheetAnimator"]["texture"] && data["SpritesheetAnimator"]["texture"].as<std::string>() != "nullptr") {
+                component.mesh->material.SetDiffuse(data["SpritesheetAnimator"]["texture"].as<std::string>());
+            }
+
+            if (data["SpritesheetAnimator"]["color"]) {
+                component.mesh->material.color = data["SpritesheetAnimator"]["color"].as<glm::vec4>();
+            }
+
+            if (data["SpritesheetAnimator"]["time_between_frames"]) {
+                component.time_between_frames = data["SpritesheetAnimator"]["time_between_frames"].as<float>();
+            }
+
+            if (data["SpritesheetAnimator"]["current_animation"]) {
+                component.current_animation = data["SpritesheetAnimator"]["current_animation"].as<std::string>();
+            }
+
+            if (data["SpritesheetAnimator"]["animate"]) {
+                component.animate = data["SpritesheetAnimator"]["animate"].as<bool>();
+            }
+
+            if (data["SpritesheetAnimator"]["spritesheet_size"]) {
+                component.spritesheetSize = data["SpritesheetAnimator"]["spritesheet_size"].as<glm::vec2>();
+            }
+
+            if (data["SpritesheetAnimator"]["animations"]) {
+                for (auto a : data["SpritesheetAnimator"]["animations"]) {
+                    const std::string name = a.first.as<std::string>();
+                    const YAML::Node animation_data = a.second;
+
+                    SpritesheetAnimator::Animation animation;
+                    animation.loop = animation_data["loop"].as<bool>();
+                    for (auto f : animation_data["frames"]) {
+                        animation.frames.push_back(SpritesheetAnimator::Frame{
+                            .spriteSize = f.second["sprite_size"].as<glm::vec2>(),
+                            .spriteOffset = f.second["sprite_offset"].as<glm::vec2>(), //
+                        });
+                    }
+                    component.animations[name] = animation;
+                }
+            }
+
+            if (data["SpritesheetAnimator"]["emissionColor"]) {
+                component.mesh->material.emissionColor = data["SpritesheetAnimator"]["emissionColor"].as<glm::vec3>();
             }
         }
 

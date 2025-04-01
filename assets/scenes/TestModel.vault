@@ -142,19 +142,273 @@ GameObjects:
           Mesh: ./assets/hi.material
   - GameObject:
       ID: 2c504963-9fc9-45fb-9550-be67f3877456
-      name: GameObject
+      name: Pico
       tag: Default
       parent: NO_PARENT
       Transform:
         position: [1.56614637, 1.17967188, -2.73479795]
         rotation: [0, 0, 0]
         scale: [3.30599475, 3.30999994, 1.10158503]
-      SpritesheetRenderer:
+      SpritesheetAnimator:
         color: [1, 1, 1, 1]
         texture: ./assets/Pico_Burps.png
         spritesheet_size: [4096, 2048]
-        sprite_size: [443, 475]
-        sprite_offset: [896, 480]
+        animate: true
+        time_between_frames: 0.0500000007
+        current_animation: burpshit
+        animations:
+          burpshit:
+            loop: true
+            frames:
+              0:
+                sprite_size: [438, 467]
+                sprite_offset: [0, 0]
+              1:
+                sprite_size: [438, 467]
+                sprite_offset: [443, 0]
+              2:
+                sprite_size: [448, 469]
+                sprite_offset: [886, 0]
+              3:
+                sprite_size: [448, 469]
+                sprite_offset: [1339, 0]
+              4:
+                sprite_size: [448, 469]
+                sprite_offset: [1792, 0]
+              5:
+                sprite_size: [440, 468]
+                sprite_offset: [2245, 0]
+              6:
+                sprite_size: [440, 468]
+                sprite_offset: [2690, 0]
+              7:
+                sprite_size: [441, 475]
+                sprite_offset: [3135, 0]
+              8:
+                sprite_size: [441, 475]
+                sprite_offset: [3135, 0]
+              9:
+                sprite_size: [441, 475]
+                sprite_offset: [3135, 0]
+              10:
+                sprite_size: [443, 475]
+                sprite_offset: [3581, 0]
+              11:
+                sprite_size: [443, 475]
+                sprite_offset: [3581, 0]
+              12:
+                sprite_size: [443, 475]
+                sprite_offset: [3581, 0]
+              13:
+                sprite_size: [443, 475]
+                sprite_offset: [3581, 0]
+              14:
+                sprite_size: [443, 475]
+                sprite_offset: [3581, 0]
+              15:
+                sprite_size: [443, 475]
+                sprite_offset: [3581, 0]
+              16:
+                sprite_size: [443, 475]
+                sprite_offset: [3581, 0]
+              17:
+                sprite_size: [443, 475]
+                sprite_offset: [3581, 0]
+              18:
+                sprite_size: [443, 475]
+                sprite_offset: [3581, 0]
+              19:
+                sprite_size: [443, 475]
+                sprite_offset: [3581, 0]
+              20:
+                sprite_size: [443, 475]
+                sprite_offset: [3581, 0]
+              21:
+                sprite_size: [443, 475]
+                sprite_offset: [3581, 0]
+              22:
+                sprite_size: [443, 475]
+                sprite_offset: [0, 480]
+              23:
+                sprite_size: [443, 475]
+                sprite_offset: [0, 480]
+              24:
+                sprite_size: [443, 475]
+                sprite_offset: [448, 480]
+              25:
+                sprite_size: [443, 475]
+                sprite_offset: [448, 480]
+              26:
+                sprite_size: [443, 475]
+                sprite_offset: [896, 480]
+              27:
+                sprite_size: [443, 475]
+                sprite_offset: [896, 480]
+              28:
+                sprite_size: [443, 475]
+                sprite_offset: [1344, 480]
+              29:
+                sprite_size: [443, 475]
+                sprite_offset: [1344, 480]
+              30:
+                sprite_size: [443, 475]
+                sprite_offset: [1792, 480]
+              31:
+                sprite_size: [443, 475]
+                sprite_offset: [448, 480]
+              32:
+                sprite_size: [443, 475]
+                sprite_offset: [448, 480]
+              33:
+                sprite_size: [443, 475]
+                sprite_offset: [896, 480]
+              34:
+                sprite_size: [443, 475]
+                sprite_offset: [896, 480]
+              35:
+                sprite_size: [443, 475]
+                sprite_offset: [896, 480]
+              36:
+                sprite_size: [443, 475]
+                sprite_offset: [896, 480]
+              37:
+                sprite_size: [443, 475]
+                sprite_offset: [896, 480]
+              38:
+                sprite_size: [443, 475]
+                sprite_offset: [896, 480]
+              39:
+                sprite_size: [443, 475]
+                sprite_offset: [896, 480]
+              40:
+                sprite_size: [443, 475]
+                sprite_offset: [896, 480]
+              41:
+                sprite_size: [443, 475]
+                sprite_offset: [896, 480]
+              42:
+                sprite_size: [443, 475]
+                sprite_offset: [896, 480]
+              43:
+                sprite_size: [443, 475]
+                sprite_offset: [896, 480]
+              44:
+                sprite_size: [443, 475]
+                sprite_offset: [896, 480]
+              45:
+                sprite_size: [443, 475]
+                sprite_offset: [896, 480]
+              46:
+                sprite_size: [443, 475]
+                sprite_offset: [896, 480]
+              47:
+                sprite_size: [443, 475]
+                sprite_offset: [896, 480]
+          burpsmile:
+            loop: false
+            frames:
+              0:
+                sprite_size: [442, 468]
+                sprite_offset: [2240, 480]
+              1:
+                sprite_size: [442, 468]
+                sprite_offset: [2240, 480]
+              2:
+                sprite_size: [438, 467]
+                sprite_offset: [0, 0]
+              3:
+                sprite_size: [438, 467]
+                sprite_offset: [443, 0]
+              4:
+                sprite_size: [448, 469]
+                sprite_offset: [886, 0]
+              5:
+                sprite_size: [448, 469]
+                sprite_offset: [1339, 0]
+              6:
+                sprite_size: [448, 469]
+                sprite_offset: [1792, 0]
+              7:
+                sprite_size: [448, 469]
+                sprite_offset: [2687, 480]
+              8:
+                sprite_size: [448, 469]
+                sprite_offset: [886, 0]
+              9:
+                sprite_size: [448, 469]
+                sprite_offset: [1339, 0]
+              10:
+                sprite_size: [440, 468]
+                sprite_offset: [2245, 0]
+              11:
+                sprite_size: [440, 468]
+                sprite_offset: [2690, 0]
+              12:
+                sprite_size: [441, 475]
+                sprite_offset: [3140, 480]
+              13:
+                sprite_size: [441, 475]
+                sprite_offset: [3140, 480]
+              14:
+                sprite_size: [441, 475]
+                sprite_offset: [3140, 480]
+              15:
+                sprite_size: [443, 475]
+                sprite_offset: [3586, 480]
+              16:
+                sprite_size: [443, 475]
+                sprite_offset: [3586, 480]
+              17:
+                sprite_size: [443, 475]
+                sprite_offset: [3586, 480]
+              18:
+                sprite_size: [443, 475]
+                sprite_offset: [3586, 480]
+              19:
+                sprite_size: [443, 475]
+                sprite_offset: [3586, 480]
+              20:
+                sprite_size: [443, 475]
+                sprite_offset: [3586, 480]
+              21:
+                sprite_size: [443, 475]
+                sprite_offset: [3586, 480]
+              22:
+                sprite_size: [443, 475]
+                sprite_offset: [3586, 480]
+              23:
+                sprite_size: [443, 475]
+                sprite_offset: [3586, 480]
+              24:
+                sprite_size: [443, 475]
+                sprite_offset: [3586, 480]
+              25:
+                sprite_size: [443, 475]
+                sprite_offset: [3586, 480]
+              26:
+                sprite_size: [443, 475]
+                sprite_offset: [3586, 480]
+              27:
+                sprite_size: [443, 475]
+                sprite_offset: [3586, 480]
+              28:
+                sprite_size: [443, 475]
+                sprite_offset: [3586, 480]
+              29:
+                sprite_size: [443, 475]
+                sprite_offset: [3586, 480]
+              30:
+                sprite_size: [443, 475]
+                sprite_offset: [3586, 480]
+              31:
+                sprite_size: [443, 475]
+                sprite_offset: [3586, 480]
+          default_animation:
+            loop: false
+            frames:
+              0:
+                sprite_size: [32, 32]
+                sprite_offset: [0, 0]
       Rigidbody3D:
         mass: 1
         restitution: 2

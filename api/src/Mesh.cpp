@@ -143,7 +143,7 @@ namespace VaultRenderer {
 
         shader.SetUniform2f("texUVOffset", texUVs.x, texUVs.y);
 
-        if (diffuse && fs::exists(diffuse ? diffuse->texture_data->texture_filepath : "")) {
+        if (diffuse) {
             diffuse->Bind(0);
             shader.SetUniform1i("texture_diffuse.tex", 0);
             shader.SetUniform1i("texture_diffuse.defined", 1);
@@ -155,7 +155,7 @@ namespace VaultRenderer {
             shader.SetUniform1i("texture_diffuse.defined", 0);
         }
 
-        if (specular && fs::exists(specular ? specular->texture_data->texture_filepath : "")) {
+        if (specular) {
             specular->Bind(1);
             shader.SetUniform1i("texture_specular.tex", 1);
             shader.SetUniform1i("texture_specular.defined", 1);
@@ -167,7 +167,7 @@ namespace VaultRenderer {
             shader.SetUniform1i("texture_specular.defined", 0);
         }
 
-        if (normal && fs::exists(normal ? normal->texture_data->texture_filepath : "")) {
+        if (normal) {
             normal->Bind(2);
             shader.SetUniform1i("texture_normal.tex", 2);
             shader.SetUniform1i("texture_normal.defined", 1);
@@ -179,7 +179,7 @@ namespace VaultRenderer {
             shader.SetUniform1i("texture_normal.defined", 0);
         }
 
-        if (height && fs::exists(height ? height->texture_data->texture_filepath : "")) {
+        if (height) {
             height->Bind(3);
             shader.SetUniform1i("texture_height.tex", 3);
             shader.SetUniform1i("texture_height.defined", 1);
@@ -191,7 +191,7 @@ namespace VaultRenderer {
             shader.SetUniform1i("texture_height.defined", 0);
         }
 
-        if (metallic_map && fs::exists(metallic_map ? metallic_map->texture_data->texture_filepath : "")) {
+        if (metallic_map) {
             metallic_map->Bind(4);
             shader.SetUniform1i("texture_metallic.tex", 4);
             shader.SetUniform1i("texture_metallic.defined", 1);
@@ -203,7 +203,7 @@ namespace VaultRenderer {
             shader.SetUniform1i("texture_metallic.defined", 0);
         }
 
-        if (roughness_map && fs::exists(roughness_map ? roughness_map->texture_data->texture_filepath : "")) {
+        if (roughness_map) {
             roughness_map->Bind(5);
             shader.SetUniform1i("texture_roughness.tex", 5);
             shader.SetUniform1i("texture_roughness.defined", 1);
@@ -215,7 +215,7 @@ namespace VaultRenderer {
             shader.SetUniform1i("texture_roughness.defined", 0);
         }
 
-        if (ao_map && fs::exists(ao_map ? ao_map->texture_data->texture_filepath : "")) {
+        if (ao_map) {
             ao_map->Bind(6);
             shader.SetUniform1i("texture_ao.tex", 6);
             shader.SetUniform1i("texture_ao.defined", 1);

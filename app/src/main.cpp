@@ -408,8 +408,6 @@ int main() {
         // Update the Main Camera of a scene
         runtime.UpdateMainCamera(window);
         // Reset the Statistic Draw Calls
-        Statistics::ResetDrawCalls();
-
         // Set the background color to RED
         window.SetClearColor(0xFF0000);
 

@@ -1,5 +1,6 @@
 #include "Engine/Components/ModelRenderer.hpp"
 #include "Engine/Components/SpriteRenderer.hpp"
+#include "Engine/Components/SpritesheetAnimator.hpp"
 #include "Engine/Components/SpritesheetRenderer.hpp"
 #include "imgui/imgui.h"
 #include <Engine/Components/PointLight.hpp>
@@ -58,6 +59,7 @@ namespace Engine::Components {
         auto v3 = Scene::Main->EntityRegistry.view<ModelRenderer>();
         auto v4 = Scene::Main->EntityRegistry.view<SpriteRenderer>();
         auto v5 = Scene::Main->EntityRegistry.view<SpritesheetRenderer>();
+        auto v6 = Scene::Main->EntityRegistry.view<SpritesheetAnimator>();
 
         glm::mat4 shadow_projection = glm::perspective(glm::radians(90.0f), 2048.f / 2048.f, 1.0f, shadow_far_plane);
         glm::mat4 shadow_transforms[] = {
@@ -89,7 +91,7 @@ namespace Engine::Components {
             auto &meshRenderer = Scene::Main->EntityRegistry.get<MeshRenderer>(e);
             auto &transform = Scene::Main->EntityRegistry.get<Transform>(e);
             if (meshRenderer.mesh) {
-                transform.Update();
+                // transform.Update();
                 shader.SetUniformMat4("transformModel", transform.model);
                 meshRenderer.mesh->Draw(shader);
             }
@@ -98,7 +100,7 @@ namespace Engine::Components {
         for (auto e : v2) {
             auto &meshRenderer = Scene::Main->EntityRegistry.get<Text3D>(e);
             auto &transform = Scene::Main->EntityRegistry.get<Transform>(e);
-            transform.Update();
+            // transform.Update();
             shader.SetUniform1i("isText", 1);
             shader.SetUniformMat4("transformModel", transform.model);
             meshRenderer.Draw(shader);
@@ -107,7 +109,7 @@ namespace Engine::Components {
         for (auto e : v3) {
             auto &modelRenderer = Scene::Main->EntityRegistry.get<ModelRenderer>(e);
             auto &transform = Scene::Main->EntityRegistry.get<Transform>(e);
-            transform.Update();
+            // transform.Update();
             shader.SetUniformMat4("transformModel", transform.model);
             modelRenderer.AnimateAndSetUniforms(shader);
             modelRenderer.Draw(shader, transform.model);
@@ -117,7 +119,7 @@ namespace Engine::Components {
             auto &spriteRenderer = Scene::Main->EntityRegistry.get<SpriteRenderer>(e);
             auto &transform = Scene::Main->EntityRegistry.get<Transform>(e);
             glDisable(GL_CULL_FACE);
-            transform.Update();
+            // transform.Update();
             shader.Bind();
             shader.SetUniformMat4("transformModel", transform.model);
             shader.SetUniform1ui("u_EntityID", (uint32_t)entity);
@@ -129,7 +131,21 @@ namespace Engine::Components {
             auto &spritesheetRenderer = Scene::Main->EntityRegistry.get<SpritesheetRenderer>(e);
             auto &transform = Scene::Main->EntityRegistry.get<Transform>(e);
             glDisable(GL_CULL_FACE);
-            transform.Update();
+            // transform.Update();
+            shader.Bind();
+            shader.SetUniformMat4("transformModel", transform.model);
+            // Runtime::instance->c_ShadowMap->BindToShader(shader);
+            shader.SetUniform1ui("u_EntityID", (uint32_t)entity);
+            shader.SetUniform1i("u_UseTextureAlpha", 1);
+            spritesheetRenderer.Draw(shader);
+            shader.SetUniform1i("u_UseTextureAlpha", 0);
+        }
+
+        for (auto e : v6) {
+            auto &spritesheetRenderer = Scene::Main->EntityRegistry.get<SpritesheetAnimator>(e);
+            auto &transform = Scene::Main->EntityRegistry.get<Transform>(e);
+            glDisable(GL_CULL_FACE);
+            // transform.Update();
             shader.Bind();
             shader.SetUniformMat4("transformModel", transform.model);
             // Runtime::instance->c_ShadowMap->BindToShader(shader);

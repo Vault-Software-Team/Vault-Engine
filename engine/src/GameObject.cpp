@@ -4,6 +4,7 @@
 #include "Engine/Components/MeshRenderer.hpp"
 #include "Engine/Components/ModelAnimator.hpp"
 #include "Engine/Components/Rigidbody3D.hpp"
+#include "Engine/Components/SpritesheetAnimator.hpp"
 #include "Engine/Components/Transform.hpp"
 #include "Engine/Discord.hpp"
 #include "Engine/Runtime.hpp"
@@ -57,6 +58,8 @@ namespace Engine {
     void GameObject::UpdateRendering(VaultRenderer::Shader &shader, bool update_children) {
         using namespace Components;
 
+        auto &transform = GetComponent<Transform>();
+
         if (HasComponent<MeshRenderer>()) {
             auto &meshRenderer = GetComponent<MeshRenderer>();
             if (meshRenderer.mesh) {
@@ -66,9 +69,8 @@ namespace Engine {
                     glEnable(GL_CULL_FACE);
                 }
 
-                GetComponent<Transform>().Update();
                 shader.Bind();
-                shader.SetUniformMat4("transformModel", GetComponent<Transform>().model);
+                shader.SetUniformMat4("transformModel", transform.model);
                 // Runtime::instance->c_ShadowMap->BindToShader(shader);
 
                 // meshRenderer.AnimateAndSetUniforms(shader);
@@ -92,9 +94,7 @@ namespace Engine {
             auto &modelRenderer = GetComponent<ModelRenderer>();
             if (modelRenderer.model) {
                 glEnable(GL_CULL_FACE);
-                auto &transform = GetComponent<Transform>();
 
-                transform.Update();
                 shader.Bind();
                 // shader.SetUniformMat4("transformModel", transform.model);
                 // Runtime::instance->c_ShadowMap->BindToShader(shader);
@@ -108,9 +108,9 @@ namespace Engine {
         if (HasComponent<SpriteRenderer>()) {
             auto &spriteRenderer = GetComponent<SpriteRenderer>();
             if (spriteRenderer.mesh) {
-                auto &transform = GetComponent<Transform>();
+
                 glDisable(GL_CULL_FACE);
-                transform.Update();
+
                 shader.Bind();
                 shader.SetUniformMat4("transformModel", transform.model);
                 // Runtime::instance->c_ShadowMap->BindToShader(shader);
@@ -125,9 +125,25 @@ namespace Engine {
             auto &spritesheetRenderer = GetComponent<SpritesheetRenderer>();
             spritesheetRenderer.Update();
             if (spritesheetRenderer.mesh) {
-                auto &transform = GetComponent<Transform>();
+
                 glDisable(GL_CULL_FACE);
-                transform.Update();
+
+                shader.Bind();
+                shader.SetUniformMat4("transformModel", transform.model);
+                // Runtime::instance->c_ShadowMap->BindToShader(shader);
+                shader.SetUniform1ui("u_EntityID", (uint32_t)entity);
+                shader.SetUniform1i("u_UseTextureAlpha", 1);
+                spritesheetRenderer.Draw(shader);
+            }
+        }
+
+        if (HasComponent<SpritesheetAnimator>()) {
+            auto &spritesheetRenderer = GetComponent<SpritesheetAnimator>();
+            spritesheetRenderer.Update();
+            if (spritesheetRenderer.mesh) {
+
+                glDisable(GL_CULL_FACE);
+
                 shader.Bind();
                 shader.SetUniformMat4("transformModel", transform.model);
                 // Runtime::instance->c_ShadowMap->BindToShader(shader);
@@ -155,7 +171,10 @@ namespace Engine {
 
     void GameObject::UpdateComponents(VaultRenderer::Shader &shader) {
         using namespace Components;
-
+        if (HasComponent<Transform>()) {
+            auto &transform = GetComponent<Transform>();
+            transform.Update();
+        }
         UpdateRendering(shader);
 
         if (HasComponent<ModelAnimator>()) {

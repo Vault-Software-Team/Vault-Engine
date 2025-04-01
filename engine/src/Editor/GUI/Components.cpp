@@ -1,6 +1,7 @@
 #include "Engine/Components/Collider3D.hpp"
 #include "Engine/Components/ModelAnimator.hpp"
 #include "Engine/Components/Rigidbody3D.hpp"
+#include "Engine/Components/SpritesheetAnimator.hpp"
 #include <Editor/GUI/MainGUI.hpp>
 #include <Engine/Scene.hpp>
 #include <Engine/GameObject.hpp>
@@ -29,6 +30,7 @@ void ComponentGUI(GameObject *gameObject) {
     CallComponentGUI<ModelRenderer>(gameObject);
     CallComponentGUI<SpriteRenderer>(gameObject);
     CallComponentGUI<SpritesheetRenderer>(gameObject);
+    CallComponentGUI<SpritesheetAnimator>(gameObject);
     CallComponentGUI<Rigidbody2D>(gameObject);
     CallComponentGUI<BoxCollider2D>(gameObject);
     CallComponentGUI<Rigidbody3D>(gameObject);
@@ -66,6 +68,7 @@ void AddComponentsGUIPopup(GameObject *gameObject) {
     DisplayAddComponentButton<ModelRenderer>(gameObject);
     DisplayAddComponentButton<SpriteRenderer>(gameObject);
     DisplayAddComponentButton<SpritesheetRenderer>(gameObject);
+    DisplayAddComponentButton<SpritesheetAnimator>(gameObject);
 
     DisplayAddComponentButton<Rigidbody2D>(gameObject);
     DisplayAddComponentButton<BoxCollider2D>(gameObject);

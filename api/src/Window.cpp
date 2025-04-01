@@ -201,6 +201,7 @@ namespace VaultRenderer {
             glfwSwapBuffers(glfw_window);
             before_width = width;
             before_height = height;
+            Statistics::ResetDrawCalls();
         }
     }
 

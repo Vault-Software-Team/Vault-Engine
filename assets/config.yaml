@@ -10,4 +10,4 @@ PostProcessing.GlobalBloom: true
 PostProcessing.PBR_IBL: true
 PostProcessing.BloomThreshold: 0.75
 PostProcessing.BloomMultiplier: [0.100000001, 0.100000001, 0.100000001]
-PostProcessing.ShadowStrength: 0.5
+PostProcessing.ShadowStrength: 0.930000007

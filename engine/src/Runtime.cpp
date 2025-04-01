@@ -75,10 +75,6 @@ namespace Engine {
         auto camV = Scene::Main->EntityRegistry.view<Camera>();
 
 #ifndef BUILD_GAME
-        std::cout << "RUNNING GAME BUILD SHIT\n";
-#endif
-
-#ifndef BUILD_GAME
 
         if (Editor::GUI::selected_gameObject && Editor::EditorLayer::instance->EnableColliderGizmo) {
             auto &gameObject = Editor::GUI::selected_gameObject;
@@ -154,11 +150,8 @@ namespace Engine {
         glDisable(GL_DEPTH_TEST);
         glDepthFunc(GL_LEQUAL);
         glDisable(GL_CULL_FACE);
-        std::cout << "trying to call a icon gizmo:\n"
-                  << Scene::Main->main_camera_object << " | " << Scene::Main->EditorSceneCamera << " | " << (Editor::EditorLayer::instance->EnableIconGizmo ? "true" : "false") << "\n";
         if (Scene::Main->main_camera_object == Scene::Main->EditorSceneCamera && Scene::Main->main_camera_object && Editor::EditorLayer::instance->EnableIconGizmo) {
             Scene::Main->main_camera_object->BindToShader(*Editor::EditorLayer::instance->ColliderGizmo.shader);
-            std::cout << "calling icon gizmos\n";
 
             auto &camera = Scene::Main->StaticGameObjects_EntityRegistry.get<Camera>(Scene::Main->main_camera_object->entity);
             for (auto &e : camV) {
@@ -182,7 +175,6 @@ namespace Engine {
 
             auto v_PointLight = Scene::Main->EntityRegistry.view<PointLight>();
             for (auto &e : v_PointLight) {
-                std::cout << "point light icon\n";
                 auto &transform = Scene::Main->EntityRegistry.get<Transform>(e);
                 Transform t = transform;
                 float distance = glm::distance(t.position, camera.transform->position);
@@ -344,7 +336,7 @@ namespace Engine {
             auto &meshRenderer = Scene::Main->EntityRegistry.get<MeshRenderer>(e);
             auto &transform = Scene::Main->EntityRegistry.get<Transform>(e);
             if (meshRenderer.mesh) {
-                transform.Update();
+                // transform.Update();
                 shader.SetUniformMat4("transformModel", transform.model);
                 meshRenderer.mesh->Draw(shader);
             }
@@ -354,7 +346,7 @@ namespace Engine {
             auto &modelRenderer = Scene::Main->EntityRegistry.get<ModelRenderer>(e);
             auto &transform = Scene::Main->EntityRegistry.get<Transform>(e);
             if (modelRenderer.model) {
-                transform.Update();
+                // transform.Update();
                 // shader.SetUniformMat4("transformModel", transform.model);
                 modelRenderer.AnimateAndSetUniforms(shader);
                 modelRenderer.Draw(shader, transform.model);
@@ -371,7 +363,7 @@ namespace Engine {
         for (auto e : v_sprite) {
             auto &sprite = Scene::Main->EntityRegistry.get<SpriteRenderer>(e);
             auto &transform = Scene::Main->EntityRegistry.get<Transform>(e);
-            transform.Update();
+            // transform.Update();
             shader.SetUniformMat4("transformModel", transform.model);
             sprite.Draw(shader);
         }
@@ -379,7 +371,7 @@ namespace Engine {
         for (auto e : v_spritesheet) {
             auto &sprite = Scene::Main->EntityRegistry.get<SpritesheetRenderer>(e);
             auto &transform = Scene::Main->EntityRegistry.get<Transform>(e);
-            transform.Update();
+            // transform.Update();
             shader.SetUniformMat4("transformModel", transform.model);
             sprite.Draw(shader);
         }

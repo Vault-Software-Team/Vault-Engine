@@ -157,6 +157,9 @@ void DirectoryIterator(const std::string &str, const char *filter_str, bool dyna
             if (name.ends_with(".glsl")) {
                 icon = ICON_FA_PAINTBRUSH;
             }
+            if (name.ends_with(".xml")) {
+                icon = ICON_FA_FILE_CODE;
+            }
 
             bool pressed = ImGui::Selectable((icon + " " + dir.path().filename().string()).c_str());
 
@@ -242,6 +245,8 @@ void DirectoryIterator(const std::string &str, const char *filter_str, bool dyna
                     ImGui::SetDragDropPayload("prefab", dir.path().string().c_str(), length + 1);
                 } else if (name.ends_with(".glsl")) {
                     ImGui::SetDragDropPayload("shader", dir.path().string().c_str(), length + 1);
+                } else if (name.ends_with(".xml")) {
+                    ImGui::SetDragDropPayload("xml_file", dir.path().string().c_str(), length + 1);
                 }
                 ImGui::Text("%s %s", icon.c_str(), dir.path().filename().string().c_str());
                 ImGui::EndDragDropSource();

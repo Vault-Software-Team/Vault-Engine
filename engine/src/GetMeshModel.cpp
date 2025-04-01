@@ -41,7 +41,7 @@ namespace Engine {
         Assimp::Importer import;
         std::cout << "Importer initialized 1\n";
 
-        const aiScene *scene = import.ReadFile(path, aiProcess_Triangulate | aiProcess_FixInfacingNormals | aiProcess_LimitBoneWeights);
+        const aiScene *scene = import.ReadFile(path, aiProcess_Triangulate | aiProcess_GenNormals | aiProcess_FixInfacingNormals | aiProcess_LimitBoneWeights);
         std::cout << "Scene loaded! \n";
 
         if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
