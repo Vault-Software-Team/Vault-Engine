@@ -203,6 +203,8 @@ namespace VaultRenderer {
             before_height = height;
             Statistics::ResetDrawCalls();
         }
+
+        exit(0);
     }
 
     GLFWwindow *Window::GetGLFWWindow() const {
