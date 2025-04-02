@@ -8,6 +8,7 @@
 #include "Engine/Mono/Transform/Functions.hpp"
 #include "Engine/Mono/GameObject/Functions.hpp"
 #include "Engine/Mono/SpriteRenderer/Functions.hpp"
+#include "Engine/Mono/SpritesheetAnimator/Functions.hpp"
 #include "Engine/Mono/Rigidbody2D/Functions.hpp"
 #include "Engine/Mono/Rigidbody3D/Functions.hpp"
 #include "Engine/Mono/Camera/Functions.hpp"
@@ -289,6 +290,15 @@ namespace Engine {
         VAULT_REGISTER_FUNCTION_NAME("Vault.SpriteRenderer::SpriteRenderer_GetColor", SpriteRenderer_GetColor);
         VAULT_REGISTER_FUNCTION_NAME("Vault.SpriteRenderer::SpriteRenderer_SetColor", SpriteRenderer_SetColor);
 
+        // SpritesheetAnimator
+        VAULT_REGISTER_FUNCTION_NAME("Vault.SpritesheetAnimator::SpritesheetAnimator_GetTexture", SpritesheetAnimator_GetTexture);
+        VAULT_REGISTER_FUNCTION_NAME("Vault.SpritesheetAnimator::SpritesheetAnimator_SetTexture", SpritesheetAnimator_SetTexture);
+        VAULT_REGISTER_FUNCTION_NAME("Vault.SpritesheetAnimator::SpritesheetAnimator_GetColor", SpritesheetAnimator_GetColor);
+        VAULT_REGISTER_FUNCTION_NAME("Vault.SpritesheetAnimator::SpritesheetAnimator_SetColor", SpritesheetAnimator_SetColor);
+        VAULT_REGISTER_FUNCTION_NAME("Vault.SpritesheetAnimator::SpritesheetAnimator_GetCurrentAnimation", SpritesheetAnimator_GetCurrentAnimation);
+        VAULT_REGISTER_FUNCTION_NAME("Vault.SpritesheetAnimator::SpritesheetAnimator_SetCurrentAnimation", SpritesheetAnimator_SetCurrentAnimation);
+        VAULT_REGISTER_FUNCTION_NAME("Vault.SpritesheetAnimator::SpritesheetAnimator_GetAnimate", SpritesheetAnimator_GetAnimate);
+        VAULT_REGISTER_FUNCTION_NAME("Vault.SpritesheetAnimator::SpritesheetAnimator_SetAnimate", SpritesheetAnimator_SetAnimate);
         // Rigidbody2D
         VAULT_REGISTER_FUNCTION_NAME("Vault.Rigidbody2D::Rigidbody2D_GetKey", Rigidbody2D_GetKey);
         VAULT_REGISTER_FUNCTION_PREFIX("Vault.Rigidbody2D::", Rigidbody2D_SetVelocity);
