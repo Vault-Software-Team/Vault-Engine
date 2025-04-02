@@ -6,6 +6,7 @@
 #include "Engine/Components/Collider3D.hpp"
 #include "Engine/Components/MeshRenderer.hpp"
 #include "Engine/Components/SpriteRenderer.hpp"
+#include "Engine/Components/SpritesheetAnimator.hpp"
 #include "Engine/Components/SpritesheetRenderer.hpp"
 #include "Engine/Components/Transform.hpp"
 #include "Engine/Physics/BulletPhysics.hpp"
@@ -329,6 +330,7 @@ namespace Engine {
         auto v_text = Scene::Main->EntityRegistry.view<Text3D>();
         auto v_sprite = Scene::Main->EntityRegistry.view<SpriteRenderer>();
         auto v_spritesheet = Scene::Main->EntityRegistry.view<SpritesheetRenderer>();
+        auto v_spritesheet_animator = Scene::Main->EntityRegistry.view<SpritesheetAnimator>();
 
         shader.Bind();
 
@@ -370,6 +372,14 @@ namespace Engine {
 
         for (auto e : v_spritesheet) {
             auto &sprite = Scene::Main->EntityRegistry.get<SpritesheetRenderer>(e);
+            auto &transform = Scene::Main->EntityRegistry.get<Transform>(e);
+            // transform.Update();
+            shader.SetUniformMat4("transformModel", transform.model);
+            sprite.Draw(shader);
+        }
+
+        for (auto e : v_spritesheet_animator) {
+            auto &sprite = Scene::Main->EntityRegistry.get<SpritesheetAnimator>(e);
             auto &transform = Scene::Main->EntityRegistry.get<Transform>(e);
             // transform.Update();
             shader.SetUniformMat4("transformModel", transform.model);
