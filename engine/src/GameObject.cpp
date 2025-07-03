@@ -8,6 +8,7 @@
 #include "Engine/Components/Transform.hpp"
 #include "Engine/Discord.hpp"
 #include "Engine/Runtime.hpp"
+#include "Engine/SceneSerialization.hpp"
 #include "Renderer/Shader.hpp"
 #include "StupidFunctions.hpp"
 #include <Engine/GameObject.hpp>
@@ -345,6 +346,10 @@ namespace Engine {
         } else {
             ImGui::PushID(ID.c_str());
             if (ImGui::Selectable((icon + " " + name).c_str(), false, ImGuiSelectableFlags_SpanAvailWidth)) {
+                if (ImGui::IsItemHovered() && ImGui::IsKeyDown(ImGuiKey_LeftCtrl) && ImGui::IsKeyPressed(ImGuiKey_D)) {
+                    std::string prefab = Serializer::CreatePrefabInMemory("./assets", FindGameObjectByID(ID));
+                    auto go = Serializer::LoadPrefab(prefab);
+                }
                 DiscordRPC::instance->UpdatePresence("In Editor", "Inspecting " + name);
                 Editor::GUI::selected_gameObject = this;
             }
@@ -378,6 +383,12 @@ namespace Engine {
             ImGui::Text("%s %s", icon.c_str(), name.c_str());
             if (ImGui::Button("Select GameObject", ImVec2(200, 0))) {
                 Editor::GUI::selected_gameObject = this;
+                ImGui::CloseCurrentPopup();
+            }
+
+            if (ImGui::Button("Duplicate GameObject", ImVec2(200, 0))) {
+                std::string prefab = Serializer::CreatePrefabInMemory("./assets", FindGameObjectByID(ID));
+                auto go = Serializer::LoadPrefabFromString(prefab);
                 ImGui::CloseCurrentPopup();
             }
 

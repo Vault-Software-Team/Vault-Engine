@@ -1,0 +1,18 @@
+Prefab: 3ef5f444-e5ee-4253-bd24-f02435cb7ef7
+GameObjects:
+  - GameObject:
+      ID: 3ef5f444-e5ee-4253-bd24-f02435cb7ef7
+      name: PBR Model
+      tag: Default
+      parent: NO_PARENT
+      Transform:
+        position: [-3.36885834, 1.29377818, -0.955234468]
+        rotation: [-1.57079637, 0, 0]
+        scale: [0.0483359993, 0.0483349152, 0.0483349152]
+      ModelRenderer:
+        model_path: ./assets/models/Cerberus_by_Andrew_Maximov/Cerberus_LP.fbx
+        time_scale: 1
+        play_animation: false
+        animation_path: ""
+        mesh_materials:
+          Cerberus00_Fixed: ./assets/main-copy.material

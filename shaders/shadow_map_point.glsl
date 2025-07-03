@@ -32,7 +32,7 @@ void main() {
 
     if (u_UseTextureAlpha && texture_diffuse.defined) {
         vec4 tex = texture(texture_diffuse.tex, texCoords);
-        if (tex.a <= 0) discard;
+        if (tex.a < 0.1) discard;
     }
     gl_FragDepth = length(FragPos.xyz - light_position) / far;
 }

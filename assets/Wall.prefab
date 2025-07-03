@@ -1,0 +1,24 @@
+Prefab: ba63b1a3-cc48-4ab6-abad-652f9fba0c45
+GameObjects:
+  - GameObject:
+      ID: ba63b1a3-cc48-4ab6-abad-652f9fba0c45
+      name: Wall
+      tag: Default
+      parent: NO_PARENT
+      Transform:
+        position: [0, 8.32629776, 9.70094109]
+        rotation: [-1.57079637, 0, 0]
+        scale: [41.8341217, 41.8469925, 41.8341217]
+      MeshRenderer:
+        mesh_type: 0
+        mesh_index: -1
+        mesh_path: ""
+        material_path: ./assets/models/Bricks058_4K-JPG/Bricks.material
+      Rigidbody3D:
+        mass: 0
+        restitution: 1
+        friction: 0.5
+        trigger: false
+        fixedRotation: false
+      BoxCollider3D:
+        size: [32.1899986, 0.100000001, 32.1899986]

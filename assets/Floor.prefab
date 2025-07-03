@@ -6,14 +6,14 @@ GameObjects:
       tag: Default
       parent: NO_PARENT
       Transform:
-        position: [0, -0.295864105, 0]
+        position: [0, -0.295864105, -0.330522001]
         rotation: [0, 1.57079637, 0]
-        scale: [24.7870731, 24.7927647, 24.7870731]
+        scale: [41.8392487, 41.8469925, 41.8392487]
       MeshRenderer:
         mesh_type: 0
         mesh_index: -1
         mesh_path: ""
-        material_path: ./assets/main.material
+        material_path: ./assets/models/Bricks058_4K-JPG/Bricks.material
       Rigidbody3D:
         mass: 0
         restitution: 1
@@ -21,4 +21,4 @@ GameObjects:
         trigger: false
         fixedRotation: false
       BoxCollider3D:
-        size: [24.7900009, 0.100000001, 24.7900009]
+        size: [32.1899986, 0.100000001, 32.1899986]

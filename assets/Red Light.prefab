@@ -1,0 +1,15 @@
+Prefab: 37acef2d-495a-49a9-9c2c-0faac48bd0e2
+GameObjects:
+  - GameObject:
+      ID: 37acef2d-495a-49a9-9c2c-0faac48bd0e2
+      name: Red Light
+      tag: Default
+      parent: NO_PARENT
+      Transform:
+        position: [3.439924, 5.83245277, 5.30608559]
+        rotation: [0, 0, 0]
+        scale: [1, 1, 1]
+      PointLight:
+        intensity: 25.3899994
+        color: [1, 0.636287928, 0.29361701]
+        enable_shadow_mapping: true

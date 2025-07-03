@@ -345,7 +345,7 @@ void main() {
         if (shadow_cubemap_mapping) {
             vec3 fragToLight = current_position - (point_lights[i].position);
             float current_depth = length(fragToLight);
-            float bias = max(0.025 * (1.0 - dot(normal, L)), 0.0005);
+            float bias = max(0.05 * (1.0 - dot(normal, L)), 0.0005);
 
             int sampleRadius = 2;
             float pixelSize = 1.0 / 1024;
@@ -428,6 +428,7 @@ void main() {
     } else {
         FragColor.a = baseColor.a;
     }
+    if (FragColor.a < 0.1) discard;
 
     if (config_PostProcessing.GlobalBloom) {
         float brightness = dot(FragColor.rgb, vec3(0.2126, 0.7152, 0.0722));

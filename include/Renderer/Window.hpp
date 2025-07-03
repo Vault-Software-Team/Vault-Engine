@@ -26,6 +26,8 @@ namespace VaultRenderer {
         std::unique_ptr<Framebuffer> m_PostProcessingFramebuffer = nullptr;
 
         bool use_imgui_size = false;
+        bool render_to_image = false;
+        glm::vec2 WindowSizeBeforeImageRender = glm::vec2{0, 0};
 
         Window(const int width, const int height, const char *title, bool draw_framebuffer = false);
         ~Window();

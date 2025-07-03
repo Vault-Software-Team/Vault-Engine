@@ -6,7 +6,7 @@ GameObjects:
       tag: Default
       parent: NO_PARENT
       Transform:
-        position: [-3.36885834, 1.29377818, -0.955234468]
+        position: [-1.73103392, 2.54849267, -0.926705182]
         rotation: [-1.57079637, 0, 0]
         scale: [0.0483359993, 0.0483349152, 0.0483349152]
       ModelRenderer:
@@ -16,3 +16,11 @@ GameObjects:
         animation_path: ""
         mesh_materials:
           Cerberus00_Fixed: ./assets/main-copy.material
+      Rigidbody3D:
+        mass: 1
+        restitution: 0
+        friction: 0.5
+        trigger: false
+        fixedRotation: false
+      BoxCollider3D:
+        size: [2.29999995, 11.6000004, 3.29999995]

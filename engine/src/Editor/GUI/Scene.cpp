@@ -57,6 +57,7 @@ namespace Editor {
         Input::winPos = glm::vec2(w_p.x, w_p.y);
 
         ImGui::Image((void *)framebufferTextureID, size, ImVec2(0, 1), ImVec2(1, 0));
+        ImVec2 scene_image_pos = ImGui::GetCursorPos();
         if (ImGui::BeginDragDropTarget()) {
             if (const ImGuiPayload *payload = ImGui::AcceptDragDropPayload("scene_file")) {
                 GUI::selected_gameObject = nullptr;
@@ -78,14 +79,15 @@ namespace Editor {
         if (selected_gameObject) {
             ImGuizmo::SetOrthographic(false);
             ImGuizmo::SetDrawlist();
-            ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, size.x, size.y);
+
+            ImGuizmo::SetRect(windowPos.x, windowPos.y, (float)ImGui::GetWindowWidth(), (float)ImGui::GetWindowHeight());
 
             if (Scene::Main->main_camera_object) {
                 glm::mat4 view = Scene::Main->main_camera_object->view;
                 glm::mat4 projection = Scene::Main->main_camera_object->projection;
 
                 auto &transform = selected_gameObject->GetComponent<Transform>();
-                glm::mat4 transformMat = transform.UpdateModelWithoutParent();
+                glm::mat4 transformMat = transform.UpdateModel();
                 glm::vec3 originalRot = transform.rotation;
                 glm::vec3 originalScal = transform.scale;
 

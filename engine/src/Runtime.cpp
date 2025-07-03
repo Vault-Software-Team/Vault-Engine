@@ -12,6 +12,7 @@
 #include "Engine/Physics/BulletPhysics.hpp"
 #include "Engine/PostProcessing.hpp"
 #include "Engine/SimpleCalls.hpp"
+#include "Renderer/Shader.hpp"
 #include <Engine/Runtime.hpp>
 #include <Engine/Components/IncludeComponents.hpp>
 #include <iostream>
@@ -300,7 +301,10 @@ namespace Engine {
         int vpX = (int)(((float)VaultRenderer::Window::window->width / 2.0f) - ((float)aspectWidth / 2.0f));
         int vpY = (int)(((float)VaultRenderer::Window::window->height / 2.0f) - ((float)aspectHeight / 2.0f));
 
-        glViewport(vpX, vpY, aspectWidth, aspectHeight);
+        if (Window::window->render_to_image)
+            glViewport(0, 0, 1920, 1080);
+        else
+            glViewport(vpX, vpY, aspectWidth, aspectHeight);
     }
 
     void Runtime::UpdateMainCamera(Window &window) {

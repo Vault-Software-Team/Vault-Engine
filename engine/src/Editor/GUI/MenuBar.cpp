@@ -3,6 +3,7 @@
 #include "Engine/Mono/CSharp.hpp"
 #include "Engine/PostProcessing.hpp"
 #include "Renderer/Shader.hpp"
+#include "Renderer/Window.hpp"
 #include "imgui/ImGuiNotify.hpp"
 #include <Editor/GUI/MainGUI.hpp>
 #include <Engine/Scene.hpp>
@@ -242,6 +243,12 @@ namespace Editor {
             if (ImGui::BeginMenu("Renderer")) {
                 if (ImGui::MenuItem("Configuration")) {
                     open_hdr = true;
+                }
+
+                if (ImGui::MenuItem("Render To Image")) {
+                    VaultRenderer::Window::window->render_to_image = true;
+                    VaultRenderer::Window::window->WindowSizeBeforeImageRender.x = VaultRenderer::Window::window->width;
+                    VaultRenderer::Window::window->WindowSizeBeforeImageRender.y = VaultRenderer::Window::window->height;
                 }
 
                 if (ImGui::BeginMenu("Post Processing")) {

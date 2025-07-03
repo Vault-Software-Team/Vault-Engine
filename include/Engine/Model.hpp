@@ -1,4 +1,5 @@
 #pragma once
+#include "assimp/matrix4x4.h"
 #include <dllapi.hpp>
 #include <glm/ext.hpp>
 #include <glm/matrix.hpp>
@@ -114,7 +115,7 @@ namespace Engine {
         int m_BoneCounter = 0;
 
         void loadModel(const std::string &path);
-        void processNode(aiNode *node, const aiScene *scene);
+        void processNode(aiNode *node, const aiScene *scene, const aiMatrix4x4 &matrix);
         VaultRenderer::Mesh &processMesh(aiMesh *mesh, const aiScene *scene);
         std::vector<VaultRenderer::Texture> loadMaterialTextures(aiMaterial *mat, aiTextureType type, const std::string &typeName);
     };

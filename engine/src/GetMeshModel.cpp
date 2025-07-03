@@ -1,6 +1,10 @@
+#include "Engine/SceneSerialization.hpp"
 #include "Renderer/Mesh.hpp"
 #include "assimp/material.h"
+#include "assimp/matrix4x4.h"
 #include "assimp/postprocess.h"
+#include "glm/ext/matrix_float4x4.hpp"
+#include "uuid.hpp"
 #include <Engine/Model.hpp>
 #include <Engine/Components/MeshRenderer.hpp>
 #include <filesystem>
@@ -41,7 +45,7 @@ namespace Engine {
         Assimp::Importer import;
         std::cout << "Importer initialized 1\n";
 
-        const aiScene *scene = import.ReadFile(path, aiProcess_Triangulate | aiProcess_GenNormals | aiProcess_FixInfacingNormals | aiProcess_LimitBoneWeights);
+        const aiScene *scene = import.ReadFile(path, aiProcess_Triangulate | aiProcess_GenSmoothNormals | aiProcess_FixInfacingNormals | aiProcess_LimitBoneWeights);
         std::cout << "Scene loaded! \n";
 
         if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
@@ -50,7 +54,7 @@ namespace Engine {
         }
         directory = path.substr(0, path.find_last_of('/'));
 
-        processNode(scene->mRootNode, scene);
+        processNode(scene->mRootNode, scene, aiMatrix4x4());
         Model::GlobalBoneMaps[path] = (Model::GlobalBoneMap){GetBoneInfoMap(), GetBoneCount()};
 
         import.FreeScene();
@@ -60,9 +64,9 @@ namespace Engine {
         return &meshes[index];
     }
 
-    void ModelMesh::processNode(aiNode *node, const aiScene *scene) {
+    void ModelMesh::processNode(aiNode *node, const aiScene *scene, const aiMatrix4x4 &matrix) {
         glm::mat4 transform = glm::mat4(1.0f);
-        aiMatrix4x4 aiTransform = node->mTransformation;
+        aiMatrix4x4 aiTransform = matrix * node->mTransformation;
 
         transform[0][0] = aiTransform.a1;
         transform[0][1] = aiTransform.b1;
@@ -88,7 +92,7 @@ namespace Engine {
         }
 
         for (unsigned int i = 0; i < node->mNumChildren; i++) {
-            processNode(node->mChildren[i], scene);
+            processNode(node->mChildren[i], scene, aiTransform);
         }
     }
 
@@ -162,7 +166,7 @@ namespace Engine {
             ret = mot->Get(AI_MATKEY_TEXTURE(aiTextureType_DIFFUSE, 0), texture_name);
             std::string sTexName = texture_name.C_Str();
             std::replace(sTexName.begin(), sTexName.end(), '\\', '/');
-            // std::cout << (directory + "/textures/" + std::filesystem::path(sTexName).filename().string()).c_str() << "\n";
+            std::cout << (directory + "/textures/" + std::filesystem::path(sTexName).filename().string()).c_str() << "\n";
             meshes.back().material.SetDiffuse((directory + "/textures/" + std::filesystem::path(sTexName).filename().string()).c_str());
         }
         if (specular_count > 0) {
@@ -203,6 +207,12 @@ namespace Engine {
 
             meshes.back().material.SetAO((directory + "/textures/" + std::filesystem::path(sTexName).filename().string()).c_str());
         }
+
+        if (!std::filesystem::exists("./assets/mesh_materials")) std::filesystem::create_directory("./assets/mesh_materials");
+        const std::string material_name = "./assets/mesh_materials/" + uuid::generate_uuid_v4() + "_" + meshes.back().name + ".material";
+        Serializer::SerializeMaterial(material_name, meshes.back().material);
+        meshes.back().material.filePath = material_name;
+        std::cout << "Created " << material_name << "\n";
 
         return meshes.back();
     }

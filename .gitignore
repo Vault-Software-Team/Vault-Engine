@@ -13,6 +13,7 @@ build
 windows/build
 windows/assets
 windows/csharp-lib
+assets/*/*
 .backupofgit
 windows/Game
 windows/mono

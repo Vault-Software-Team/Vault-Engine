@@ -1,0 +1,15 @@
+Prefab: 04baab6e-5b5b-4532-a7b2-5be4cdfef090
+GameObjects:
+  - GameObject:
+      ID: 04baab6e-5b5b-4532-a7b2-5be4cdfef090
+      name: Never Gooner
+      tag: Default
+      parent: NO_PARENT
+      Transform:
+        position: [-11.0997086, 2.55954337, 2.23722506]
+        rotation: [8.92056903e-07, -1.50339806, -4.15745035e-07]
+        scale: [10.3815317, 10.3815994, 10.3815317]
+      SpriteRenderer:
+        color: [1, 1, 1, 1]
+        emissionColor: [0, 0, 0]
+        texture: ./assets/models/the-going-merry-one-piece-game-ready/cartifan69.png

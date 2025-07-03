@@ -5,6 +5,7 @@
 #include <Engine/Scene.hpp>
 #include <Engine/GameObject.hpp>
 #include <Engine/Components/IncludeComponents.hpp>
+#include <algorithm>
 #include <icons/icons.h>
 #include <imgui/imgui.h>
 #include <imgui/imgui_stdlib.h>
@@ -24,12 +25,14 @@ static std::set<std::filesystem::directory_entry> cached_files;
 
 void CacheFiles(std::string &filterStr, const std::string &str) {
     cached_files.clear();
+    std::set<std::filesystem::directory_entry> files_to_insert;
     auto iter = std::filesystem::directory_iterator(str);
 
     std::transform(filterStr.begin(), filterStr.end(), filterStr.begin(), Editor::asciitolower);
 
-    for (auto &entry : iter)
+    for (auto &entry : iter) {
         cached_files.insert(entry);
+    }
 }
 
 void DirectoryIterator(const std::string &str, const char *filter_str, bool dynamic = false) {
@@ -38,6 +41,9 @@ void DirectoryIterator(const std::string &str, const char *filter_str, bool dyna
     ImVec2 win_size = ImGui::GetWindowSize();
     ImVec2 cursor_pos = ImGui::GetCursorPos();
     ImGui::Dummy(ImGui::GetContentRegionAvail());
+    std::string filterStr = filter_str;
+    std::string Str = str;
+
     if (ImGui::BeginDragDropTarget()) {
         if (const ImGuiPayload *payload = ImGui::AcceptDragDropPayload("gameobject")) {
             const std::string id((char *)payload->Data);
@@ -46,6 +52,7 @@ void DirectoryIterator(const std::string &str, const char *filter_str, bool dyna
             if (!gameObject) goto skip_if;
 
             Serializer::CreatePrefab(std::string("./assets/") + gameObject->name + ".prefab", gameObject);
+            CacheFiles(filterStr, Str);
         }
 
     skip_if:
@@ -53,7 +60,6 @@ void DirectoryIterator(const std::string &str, const char *filter_str, bool dyna
     }
     ImGui::SetCursorPos(cursor_pos);
 
-    std::string filterStr = filter_str;
     if (isFirstFrame) {
         CacheFiles(filterStr, str);
 
@@ -66,8 +72,9 @@ void DirectoryIterator(const std::string &str, const char *filter_str, bool dyna
 
         std::transform(filterStr.begin(), filterStr.end(), filterStr.begin(), Editor::asciitolower);
 
-        for (auto &entry : iter)
+        for (auto &entry : iter) {
             dynamic_files.insert(entry);
+        }
     }
 
     static std::string FilePath = "";

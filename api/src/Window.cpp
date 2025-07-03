@@ -1,6 +1,7 @@
 #include "Editor/GUI/MainGUI.hpp"
 #include "Engine/Runtime.hpp"
 #include "GLFW/glfw3.h"
+#include "Renderer/Shader.hpp"
 #include "Renderer/Stats.hpp"
 #include <Renderer/Window.hpp>
 #include <iostream>
@@ -12,6 +13,8 @@
 #include <Renderer/Bloom.hpp>
 #include <ImGuizmo/ImGuizmo.h>
 #include <stb_image/stb_image.h>
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+#include <stb_image/stb_image_write.h>
 
 namespace VaultRenderer {
     DLL_API Window *Window::window;
@@ -19,7 +22,7 @@ namespace VaultRenderer {
     RendererConfig Window::Renderer;
 
     void Window::AspectRatioCameraViewport() {
-        glViewport(0, 0, width, height);
+        glViewport(0, 0, render_to_image ? 1920 : width, render_to_image ? 1080 : height);
     }
     void _AspectRatioCameraViewport() {
         float targetAspectRatio = (float)Window::window->targetWidth / (float)Window::window->targetHeight;
@@ -113,6 +116,17 @@ namespace VaultRenderer {
             if (!use_imgui_size)
                 glfwGetWindowSize(glfw_window, &width, &height);
 
+            if (render_to_image) {
+                width = 1920;
+                height = 1080;
+                framebuffer->width = width;
+                framebuffer->height = height;
+                m_PostProcessingFramebuffer->width = width;
+                m_PostProcessingFramebuffer->height = height;
+                framebuffer->RegenerateFramebuffer();
+                m_PostProcessingFramebuffer->RegenerateFramebuffer();
+            }
+
             bloomRenderer.mSrcViewportSize.x = width;
             bloomRenderer.mSrcViewportSize.x = height;
 
@@ -168,6 +182,27 @@ namespace VaultRenderer {
             - And other where the framebuffer shader does stuff to the rendered texture
             So, to get the ACTUAL stuff you do framebuffer->framebuffer
             */
+
+            if (render_to_image) {
+                unsigned char *buffer = new unsigned char[width * height * 3];
+                m_PostProcessingFramebuffer->Bind();
+                std::cout << "Rendering to image...\n";
+                glReadPixels(0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE, buffer);
+                stbi_flip_vertically_on_write(true);
+                stbi_write_png("./data.png", width, height, 3, buffer, width * 3);
+                m_PostProcessingFramebuffer->Unbind();
+                delete[] buffer;
+                std::cout << "Rendering to image DONE!\n";
+                width = WindowSizeBeforeImageRender.x;
+                height = WindowSizeBeforeImageRender.y;
+                framebuffer->width = width;
+                framebuffer->height = height;
+                m_PostProcessingFramebuffer->width = width;
+                m_PostProcessingFramebuffer->height = height;
+                framebuffer->RegenerateFramebuffer();
+                m_PostProcessingFramebuffer->RegenerateFramebuffer();
+                render_to_image = false;
+            }
 
             // End of Framebuffer Shenanigans
             ImGui_ImplOpenGL3_NewFrame();

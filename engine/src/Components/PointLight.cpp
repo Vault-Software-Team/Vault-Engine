@@ -124,7 +124,9 @@ namespace Engine::Components {
             shader.SetUniformMat4("transformModel", transform.model);
             shader.SetUniform1ui("u_EntityID", (uint32_t)entity);
             shader.SetUniform1i("mesh_isFlat", true);
+            shader.SetUniform1i("u_UseTextureAlpha", 1);
             spriteRenderer.Draw(shader);
+            shader.SetUniform1i("u_UseTextureAlpha", 0);
         }
 
         for (auto e : v5) {

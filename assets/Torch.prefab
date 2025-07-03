@@ -1,0 +1,19 @@
+Prefab: e1d8a46e-7405-4377-b0ca-87d64b7e33da
+GameObjects:
+  - GameObject:
+      ID: e1d8a46e-7405-4377-b0ca-87d64b7e33da
+      name: Torch
+      tag: Default
+      parent: NO_PARENT
+      Transform:
+        position: [-6.45684767, 5.00773144, 9.28903961]
+        rotation: [-3.14159203, -5.96046448e-08, -3.14159226]
+        scale: [0.0434000157, 0.0434000157, 0.0434000157]
+      ModelRenderer:
+        model_path: ./assets/models/torch/scene.gltf
+        time_scale: 1
+        play_animation: false
+        animation_path: ""
+        mesh_materials:
+          torchholder_Mat_0: ./assets/mesh_materials/612e5acb-86fe-4b86-b6c1-88bb65f2c566_torchholder_Mat_0.material
+          torch_2_Mat_0: ./assets/mesh_materials/9f275eac-554b-42d7-bc71-a493a66f1d15_torch_2_Mat_0.material

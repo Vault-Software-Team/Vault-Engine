@@ -1,0 +1,19 @@
+Prefab: d44c2460-58d1-478d-b675-408baa228d6c
+GameObjects:
+  - GameObject:
+      ID: d44c2460-58d1-478d-b675-408baa228d6c
+      name: Tree
+      tag: Default
+      parent: NO_PARENT
+      Transform:
+        position: [-8.48465538, 0, 0]
+        rotation: [0, 0, 0]
+        scale: [5.98999977, 5.98999977, 5.98999977]
+      ModelRenderer:
+        model_path: ./assets/models/Tree/Tree.fbx
+        time_scale: 1
+        play_animation: false
+        animation_path: ""
+        mesh_materials:
+          polySurface1: ./assets/models/Tree/treebark copy.material
+          polySurface1: ./assets/models/Tree/treebark.material
