@@ -1,4 +1,5 @@
 #include <Renderer/Mesh.hpp>
+#include <thread>
 #ifdef __EMSCRIPTEN__
     #include <emscripten.h>
     #define GL_GLEXT_PROTOTYPES

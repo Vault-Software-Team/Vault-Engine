@@ -919,17 +919,17 @@ namespace Engine {
         if (data["roughness_map"] && data["roughness_map"].as<std::string>() != "nullptr") {
             material.SetRoughness(data["roughness_map"].as<std::string>());
         } else {
-            material.height.reset();
+            material.roughness_map.reset();
         }
         if (data["metallic_map"] && data["metallic_map"].as<std::string>() != "nullptr") {
             material.SetMetallic(data["metallic_map"].as<std::string>());
         } else {
-            material.height.reset();
+            material.metallic_map.reset();
         }
         if (data["ao_map"] && data["ao_map"].as<std::string>() != "nullptr") {
             material.SetAO(data["ao_map"].as<std::string>());
         } else {
-            material.height.reset();
+            material.ao_map.reset();
         }
 
         if (data["ao"]) {

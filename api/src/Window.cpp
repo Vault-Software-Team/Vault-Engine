@@ -4,6 +4,8 @@
 #include "Renderer/Shader.hpp"
 #include "Renderer/Stats.hpp"
 #include <Renderer/Window.hpp>
+#include <cstddef>
+#include <cstdlib>
 #include <iostream>
 #include <imgui/imgui.h>
 #include <imgui/backends/imgui_impl_glfw.h>
@@ -238,8 +240,6 @@ namespace VaultRenderer {
             before_height = height;
             Statistics::ResetDrawCalls();
         }
-
-        exit(0);
     }
 
     GLFWwindow *Window::GetGLFWWindow() const {

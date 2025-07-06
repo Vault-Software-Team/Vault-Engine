@@ -417,21 +417,21 @@ void main() {
         vec3 ambient = vec3(ambient_amount) * albedo * ao;
         color = (ambient + Lo) * (1.2 - (shadow * config_PostProcessing.ShadowStrength));
     }
-    // color = color / (color + vec3(1.0));
-    // color = pow(color, vec3(1.0 / 2.2));
 
     // end pbr dogshit (finally)
 
     FragColor.rgb = color;
     if (texture_diffuse.defined) {
-        FragColor.a = texture(texture_diffuse.tex, texUV).a * baseColor.a;
+        FragColor.a = texture_diffuse.defined ? texture(texture_diffuse.tex, texUV).a * baseColor.a : baseColor.a;
     } else {
         FragColor.a = baseColor.a;
     }
+
     if (FragColor.a < 0.1) discard;
 
     if (config_PostProcessing.GlobalBloom) {
         float brightness = dot(FragColor.rgb, vec3(0.2126, 0.7152, 0.0722));
+
         if (emissionColor.rgb == vec3(0, 0, 0)) {
             if (brightness > config_PostProcessing.BloomThreshold) {
                 BloomColor = FragColor * vec4(config_PostProcessing.BloomMultiplier, 1);
@@ -441,6 +441,7 @@ void main() {
         } else {
             BloomColor = vec4(emissionColor.rgb, FragColor.a);
         }
+
     } else {
         BloomColor = vec4(emissionColor.rgb, FragColor.a);
     }
@@ -486,12 +487,7 @@ void main() {
     vec3 B = normalize(vec3(data_in[0].model * vec4(bitangent, 0.0)));
     vec3 N = normalize(vec3(data_in[0].model * vec4(data_in[1].normal, 0.0)));
 
-    // T = normalize(T - dot(T, N) * N);
-    // then retrieve perpendicular vector B with the cross product of T and N
-    // vec3 B = cross(N, T);
-
     mat3 mTBN = mat3(T, B, N);
-    // mTBN = transpose(mTBN);
 
     gl_Position = data_in[0].cameraCalcs * gl_in[0].gl_Position;
     texUV = data_in[0].texUV;
