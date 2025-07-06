@@ -71,7 +71,7 @@ namespace Editor {
             }
 
             if (glfwGetMouseButton(Window::window->GetGLFWWindow(), GLFW_MOUSE_BUTTON_2) == GLFW_PRESS) {
-                Scene::EditorSceneCamera->Inputs();
+                Scene::EditorSceneCamera->Inputs(Runtime::instance->timestep);
             }
         }
 

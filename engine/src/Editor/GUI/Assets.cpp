@@ -374,8 +374,29 @@ namespace Editor {
                 Filename = "New File";
             }
 
-            if (ImGui::Button(ICON_FA_PAINT_ROLLER " Add Text File", ImVec2(150, 0))) {
+            if (ImGui::Button(ICON_FA_FILE " Add Text File", ImVec2(150, 0))) {
                 std::ofstream ofs(AddFile_Folder + "/" + Filename + ".txt");
+                ofs.close();
+                ImGui::CloseCurrentPopup();
+                AddFile_Folder = "./assets";
+                Filename = "New File";
+            }
+
+            if (ImGui::Button(ICON_FA_PAINTBRUSH " Add Material File", ImVec2(150, 0))) {
+                std::ofstream ofs(AddFile_Folder + "/" + Filename + ".material");
+                ofs << "color: [1, 1, 1, 1]\n";
+                ofs << "emissionColor: [0, 0, 0]\n";
+                ofs << "texUVs: [1, 1]\n";
+                ofs << "diffuse: nullptr\n";
+                ofs << "specular: nullptr\n";
+                ofs << "normal: nullptr\n";
+                ofs << "height: nullptr\n";
+                ofs << "roughness_map: nullptr\n";
+                ofs << "metallic_map: nullptr\n";
+                ofs << "ao_map: nullptr\n";
+                ofs << "ao: 1\n";
+                ofs << "metallic: 0\n";
+                ofs << "roughness: 0";
                 ofs.close();
                 ImGui::CloseCurrentPopup();
                 AddFile_Folder = "./assets";

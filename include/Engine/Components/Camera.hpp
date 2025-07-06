@@ -33,7 +33,7 @@ namespace Engine {
 
             void UpdateMatrix();
             void BindToShader(VaultRenderer::Shader &shader);
-            void Inputs();
+            void Inputs(float deltaTime);
             void OnGUI() override;
         };
     } // namespace Components

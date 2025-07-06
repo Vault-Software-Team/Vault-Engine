@@ -16,8 +16,6 @@ out DATA {
     mat4 cameraCalcs;
     mat4 model;
     vec3 camera_position;
-    vec3 tangent;
-    vec3 bitangent;
 }
 data_out;
 
@@ -77,8 +75,6 @@ void main() {
     }
     data_out.normal = mat3(transpose(inverse(transformModel))) * totalNormal;
     data_out.normal = normalize(data_out.normal);
-    data_out.tangent = tangent;
-    data_out.bitangent = bitangent;
     // normal = vNormal;
     // model = transformModel;
 
@@ -186,9 +182,6 @@ uniform PointLight point_lights[MAX_LIGHTS];
 uniform DirectionalLight directional_lights[MAX_LIGHTS];
 uniform SpotLight spot_lights[MAX_LIGHTS];
 uniform mat4 camera_view;
-uniform float cascadePlaneDistances[16];
-uniform int cascadeCount; // number of frusta - 1
-uniform vec3 c_ShadowMapLightDir;
 
 mat3 _TBN = mat3(vec3(0), vec3(0), vec3(0));
 
@@ -256,6 +249,9 @@ const float MAX_REFLECTION_LOD = 4.0;
 layout(std140) uniform LightSpaceMatrices {
     mat4 lightSpaceMatrices[16];
 };
+uniform float cascadePlaneDistances[16];
+uniform int cascadeCount; // number of frusta - 1
+uniform vec3 c_ShadowMapLightDir;
 
 float ShadowCalculation(vec3 fragPosWorldSpace, vec3 N, vec3 L, bool cascaded) {
     // select cascade layer
@@ -444,8 +440,6 @@ void main() {
             }
         } else {
             BloomColor = vec4(emissionColor.rgb, FragColor.a);
-            float brightness = dot(emissionColor.rgb, vec3(0.2126, 0.7152, 0.0722));
-            if (brightness > 0.2) FragColor.rgb = vec3(1, 1, 1);
         }
     } else {
         BloomColor = vec4(emissionColor.rgb, FragColor.a);
@@ -474,24 +468,22 @@ in DATA {
     mat4 cameraCalcs;
     mat4 model;
     vec3 camera_position;
-    vec3 tangent;
-    vec3 bitangent;
 }
 data_in[];
 
 void main() {
-    // vec3 edge0 = gl_in[1].gl_Position.xyz - gl_in[0].gl_Position.xyz;
-    // vec3 edge1 = gl_in[2].gl_Position.xyz - gl_in[0].gl_Position.xyz;
-    // vec2 deltaUV0 = data_in[1].texUV - data_in[0].texUV;
-    // vec2 deltaUV1 = data_in[2].texUV - data_in[0].texUV;
+    vec3 edge0 = gl_in[1].gl_Position.xyz - gl_in[0].gl_Position.xyz;
+    vec3 edge1 = gl_in[2].gl_Position.xyz - gl_in[0].gl_Position.xyz;
+    vec2 deltaUV0 = data_in[1].texUV - data_in[0].texUV;
+    vec2 deltaUV1 = data_in[2].texUV - data_in[0].texUV;
 
-    // float invDet = 1.0f / (deltaUV0.x * deltaUV1.y - deltaUV1.x * deltaUV0.y);
+    float invDet = 1.0f / (deltaUV0.x * deltaUV1.y - deltaUV1.x * deltaUV0.y);
 
-    // vec3 tangent = vec3(invDet * (deltaUV1.y * edge0 - deltaUV0.y * edge1));
-    // vec3 bitangent = vec3(invDet * (-deltaUV1.x * edge0 + deltaUV0.x * edge1));
+    vec3 tangent = vec3(invDet * (deltaUV1.y * edge0 - deltaUV0.y * edge1));
+    vec3 bitangent = vec3(invDet * (-deltaUV1.x * edge0 + deltaUV0.x * edge1));
 
-    vec3 T = normalize(vec3(data_in[0].model * vec4(data_in[0].tangent, 0.0)));
-    vec3 B = normalize(vec3(data_in[0].model * vec4(data_in[0].bitangent, 0.0)));
+    vec3 T = normalize(vec3(data_in[0].model * vec4(tangent, 0.0)));
+    vec3 B = normalize(vec3(data_in[0].model * vec4(bitangent, 0.0)));
     vec3 N = normalize(vec3(data_in[0].model * vec4(data_in[1].normal, 0.0)));
 
     // T = normalize(T - dot(T, N) * N);

@@ -41,7 +41,7 @@ namespace Engine::Components {
         shader.SetUniform3f("camera_position", transform->position.x, transform->position.y, transform->position.z);
     }
 
-    void Camera::Inputs() {
+    void Camera::Inputs(float deltaTime) {
         GLFWwindow *window = VaultRenderer::Window::window->GetGLFWWindow();
         int width, heigth;
         glfwGetWindowSize(window, &width, &height);
@@ -49,35 +49,35 @@ namespace Engine::Components {
         // height = VaultRenderer::Window::window->height;
 
         if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
-            transform->position += speed * transform->rotation;
+            transform->position += speed * transform->rotation * deltaTime;
         }
 
         if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
-            transform->position += speed * -glm::normalize(glm::cross(transform->rotation, up));
+            transform->position += speed * -glm::normalize(glm::cross(transform->rotation, up)) * deltaTime;
         }
 
         if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
-            transform->position += speed * -transform->rotation;
+            transform->position += speed * -transform->rotation * deltaTime;
         }
 
         if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
-            transform->position += speed * glm::normalize(glm::cross(transform->rotation, up));
+            transform->position += speed * glm::normalize(glm::cross(transform->rotation, up)) * deltaTime;
         }
 
         if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) {
-            transform->position += speed * up;
+            transform->position += speed * up * deltaTime;
         }
 
         if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) {
-            transform->position += speed * -up;
+            transform->position += speed * -up * deltaTime;
         }
 
         if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) {
-            speed = 0.4f;
+            speed = 25.f;
         }
 
         if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_RELEASE) {
-            speed = 0.1f;
+            speed = 10.f;
         }
 
         // Mouse Input
