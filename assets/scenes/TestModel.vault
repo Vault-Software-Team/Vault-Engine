@@ -6,12 +6,12 @@ GameObjects:
       tag: Default
       parent: NO_PARENT
       Transform:
-        position: [-0.248450547, 3.73451734, -0.356282592]
+        position: [0, 5.98702335, 0.624293387]
         rotation: [0, 0, 0]
         scale: [1, 1, 1]
       PointLight:
         intensity: 25
-        color: [1, 1, 1]
+        color: [0.877500832, 0.297872365, 1]
         enable_shadow_mapping: true
   - GameObject:
       ID: d2db04b3-8f69-482a-926f-7fc53d212346
@@ -26,28 +26,19 @@ GameObjects:
         amount: 0.0500000007
         color: [1, 1, 1]
   - GameObject:
-      ID: 1689489d-b285-4ca9-9ec1-20572db8c8f3
-      name: Physics Objects
-      tag: Default
-      parent: NO_PARENT
-      Transform:
-        position: [0, 0, 0]
-        rotation: [0, 0, 0]
-        scale: [2, 2, 2]
-  - GameObject:
       ID: ba63b1a3-cc48-4ab6-abad-652f9fba0c45
-      name: Floor
+      name: Wall
       tag: Default
       parent: NO_PARENT
       Transform:
-        position: [0, -0.295864105, -0.330522001]
-        rotation: [0, 1.57079637, 0]
+        position: [0, 7.70413589, -7.96379089]
+        rotation: [1.57079637, 0, 1.57079637]
         scale: [32.1888161, 32.2305946, 32.1888161]
       MeshRenderer:
         mesh_type: 0
         mesh_index: -1
         mesh_path: ""
-        material_path: ./assets/main.material
+        material_path: ./assets/main-copy.material
       Rigidbody3D:
         mass: 0
         restitution: 1
@@ -57,576 +48,143 @@ GameObjects:
       BoxCollider3D:
         size: [32.1899986, 0.100000001, 32.1899986]
   - GameObject:
-      ID: 12bd358e-5087-4cc0-b413-a5c1a5d8b9a4
-      name: Metallic Sphere
-      tag: Default
-      parent: 1689489d-b285-4ca9-9ec1-20572db8c8f3
-      Transform:
-        position: [-3.67610979, 4.6890049, 0.450974226]
-        rotation: [0.490184754, 0.230298996, 0.611975491]
-        scale: [3.34990001, 3.34989977, 3.34989977]
-      MeshRenderer:
-        mesh_type: 1
-        mesh_index: -1
-        mesh_path: ""
-        material_path: ./assets/rusty_metal.material
-      Rigidbody3D:
-        mass: 1
-        restitution: 1
-        friction: 0.5
-        trigger: false
-        fixedRotation: false
-      MeshCollider3D:
-        size: [3.3499999, 3.3499999, 3.3499999]
-  - GameObject:
-      ID: 85eca0d7-ec3f-484c-bb8b-21d57782e6bc
-      name: Golden Sphere
-      tag: Default
-      parent: 1689489d-b285-4ca9-9ec1-20572db8c8f3
-      Transform:
-        position: [3.19833088, 3.46426868, 1.99214566]
-        rotation: [-1.49218536e-07, 0, 0]
-        scale: [3.4532001, 3.4532001, 3.4532001]
-      MeshRenderer:
-        mesh_type: 4
-        mesh_index: -1
-        mesh_path: ""
-        material_path: ./assets/rusty_metal.material
-      Rigidbody3D:
-        mass: 1
-        restitution: 2
-        friction: 0.5
-        trigger: false
-        fixedRotation: false
-      MeshCollider3D:
-        size: [3.45000005, 3.45000005, 3.45000005]
-  - GameObject:
-      ID: 3ef5f444-e5ee-4253-bd24-f02435cb7ef7
-      name: PBR Model
+      ID: d44167a1-ec4c-4a0b-9088-6fc7b5c78678
+      name: Goon Piece
       tag: Default
       parent: NO_PARENT
       Transform:
-        position: [-1.73103392, 2.54849267, -0.926705182]
-        rotation: [-1.57079637, 0, 0]
-        scale: [0.0483359993, 0.0483349152, 0.0483349152]
+        position: [0, 2.80849743, -3.33135891]
+        rotation: [0, 0, 0]
+        scale: [4.54055309, 4.54055309, 4.54055309]
       ModelRenderer:
-        model_path: ./assets/models/Cerberus_by_Andrew_Maximov/Cerberus_LP.fbx
+        model_path: ./assets/models/GOONPIECE.obj
         time_scale: 1
         play_animation: false
         animation_path: ""
         mesh_materials:
-          Cerberus00_Fixed: ./assets/main-copy.material
+          Text: ./assets/models/GOONPIECE.material
+  - GameObject:
+      ID: 31b58a3d-e4fb-4b39-b6bb-3076e0e4c9d4
+      name: Floor
+      tag: Default
+      parent: NO_PARENT
+      Transform:
+        position: [0, -0.295864105, 0]
+        rotation: [0, 1.57079637, 0]
+        scale: [32.1888161, 32.2305946, 32.1888161]
+      MeshRenderer:
+        mesh_type: 0
+        mesh_index: -1
+        mesh_path: ""
+        material_path: ./assets/main-copy.material
       Rigidbody3D:
-        mass: 1
-        restitution: 0
+        mass: 0
+        restitution: 1
         friction: 0.5
         trigger: false
         fixedRotation: false
       BoxCollider3D:
-        size: [2.29999995, 11.6000004, 3.29999995]
+        size: [32.1899986, 0.100000001, 32.1899986]
   - GameObject:
-      ID: d44167a1-ec4c-4a0b-9088-6fc7b5c78678
+      ID: e9475e0d-19bb-481f-9b2a-2038d6aa370e
+      name: Wall 2
+      tag: Default
+      parent: NO_PARENT
+      Transform:
+        position: [-8, 7.70413589, 0]
+        rotation: [3.14159274, 0, 1.57079637]
+        scale: [32.1888161, 32.2305946, 32.1888161]
+      MeshRenderer:
+        mesh_type: 0
+        mesh_index: -1
+        mesh_path: ""
+        material_path: ./assets/main-copy.material
+      Rigidbody3D:
+        mass: 0
+        restitution: 1
+        friction: 0.5
+        trigger: false
+        fixedRotation: false
+      BoxCollider3D:
+        size: [32.1899986, 0.100000001, 32.1899986]
+  - GameObject:
+      ID: 65a3e473-35a8-4a73-9a3f-eb1334b351d8
+      name: Wall 2
+      tag: Default
+      parent: NO_PARENT
+      Transform:
+        position: [8, 7.70413589, -1.20000005]
+        rotation: [0, 0, 1.57079637]
+        scale: [32.1888161, 32.2305946, 32.1888161]
+      MeshRenderer:
+        mesh_type: 0
+        mesh_index: -1
+        mesh_path: ""
+        material_path: ./assets/main-copy.material
+      Rigidbody3D:
+        mass: 0
+        restitution: 1
+        friction: 0.5
+        trigger: false
+        fixedRotation: false
+      BoxCollider3D:
+        size: [32.1899986, 0.100000001, 32.1899986]
+  - GameObject:
+      ID: 554fe4ce-14a6-43d4-be96-5311029a3dfb
+      name: Lamp
+      tag: Default
+      parent: NO_PARENT
+      Transform:
+        position: [-3.12252045, 1.52587891e-05, -1.8023448]
+        rotation: [0, 1.16828632, 0]
+        scale: [0.0360000171, 0.0360000171, 0.0360000171]
+      ModelRenderer:
+        model_path: ./assets/models/genie_lamp/scene.gltf
+        time_scale: 1
+        play_animation: false
+        animation_path: ""
+        mesh_materials:
+          Lamp_Lampada_0: ./assets/mesh_materials/8d218223-cb80-43e2-9d07-bcc9a59d1472_Lamp_Lampada_0.material
+          Lamp_chain_Lampada_0: ./assets/mesh_materials/379e1fd7-3410-4819-9526-a423e4ecb248_Lamp_chain_Lampada_0.material
+  - GameObject:
+      ID: d37285a5-e75d-4b00-95dd-3bda9dd2ad4f
+      name: Camera
+      tag: Default
+      parent: NO_PARENT
+      Transform:
+        position: [0, 4.19999981, 8.89999962]
+        rotation: [0, -0.134390354, -1]
+        scale: [1, 1, 1]
+      Camera:
+        fov: 45
+        near: 0.100000001
+        far: 100
+        main_camera: false
+        is2D: false
+        depth_camera: false
+  - GameObject:
+      ID: 961bf7d6-99c7-45ae-8c92-dc2d71302c1e
+      name: Mar 1
+      tag: Default
+      parent: NO_PARENT
+      Transform:
+        position: [4.9075532, 2.41150641, -4.49965429]
+        rotation: [-3.14159226, 0.570373595, -3.14159226]
+        scale: [9.5864439, 11.0390987, 9.5864439]
+      SpriteRenderer:
+        color: [1, 1, 1, 1]
+        emissionColor: [0, 0, 0]
+        texture: ./assets/models/the-going-merry-one-piece-game-ready/L MAR.png
+  - GameObject:
+      ID: 6ff9de0c-7488-4ebb-b6ee-88584c4629a9
       name: GameObject
       tag: Default
       parent: NO_PARENT
       Transform:
-        position: [0.481170774, -0.267260313, -3.97360897]
-        rotation: [0, 0, 0]
-        scale: [0.0500000119, 0.0500000119, 0.0500000119]
-      ModelRenderer:
-        model_path: ./assets/Character.fbx
-        time_scale: 0.5
-        play_animation: false
-        animation_path: ./assets/Character.fbx
-        mesh_materials:
-          Mesh: ./assets/hi.material
-  - GameObject:
-      ID: 2c504963-9fc9-45fb-9550-be67f3877456
-      name: Pico
-      tag: Default
-      parent: NO_PARENT
-      Transform:
-        position: [1.56614637, 0.492997348, -2.73479795]
-        rotation: [0, 0, 0.0815524906]
-        scale: [3.30599475, 3.30999994, 1.10158503]
-      SpritesheetAnimator:
+        position: [4.9075532, 2.41150641, -4.49965429]
+        rotation: [-3.14159226, 0.570373595, -3.14159226]
+        scale: [9.5864439, 11.0390987, 9.5864439]
+      SpriteRenderer:
         color: [1, 1, 1, 1]
-        texture: ./assets/picoAndNene.png
-        spritesheet_size: [4096, 4096]
-        animate: true
-        time_between_frames: 0.0500000007
-        current_animation: Pico Idle Dance
-        animations:
-          pico Up note:
-            loop: false
-            frames:
-              0:
-                sprite_size: [566, 506]
-                sprite_offset: [596, 1542]
-              1:
-                sprite_size: [566, 506]
-                sprite_offset: [596, 1542]
-              2:
-                sprite_size: [583, 505]
-                sprite_offset: [1167, 1542]
-              3:
-                sprite_size: [583, 505]
-                sprite_offset: [1167, 1542]
-              4:
-                sprite_size: [583, 505]
-                sprite_offset: [1167, 1542]
-              5:
-                sprite_size: [583, 505]
-                sprite_offset: [1167, 1542]
-              6:
-                sprite_size: [583, 505]
-                sprite_offset: [1167, 1542]
-              7:
-                sprite_size: [583, 505]
-                sprite_offset: [1167, 1542]
-              8:
-                sprite_size: [583, 505]
-                sprite_offset: [1167, 1542]
-              9:
-                sprite_size: [583, 505]
-                sprite_offset: [1167, 1542]
-              10:
-                sprite_size: [583, 505]
-                sprite_offset: [1167, 1542]
-              11:
-                sprite_size: [583, 505]
-                sprite_offset: [1167, 1542]
-              12:
-                sprite_size: [583, 505]
-                sprite_offset: [1167, 1542]
-              13:
-                sprite_size: [583, 505]
-                sprite_offset: [1167, 1542]
-          note miss up piconene:
-            loop: false
-            frames:
-              0:
-                sprite_size: [566, 506]
-                sprite_offset: [596, 1542]
-              1:
-                sprite_size: [594, 501]
-                sprite_offset: [3343, 1036]
-              2:
-                sprite_size: [594, 501]
-                sprite_offset: [3343, 1036]
-              3:
-                sprite_size: [591, 503]
-                sprite_offset: [0, 1542]
-              4:
-                sprite_size: [591, 503]
-                sprite_offset: [0, 1542]
-              5:
-                sprite_size: [591, 503]
-                sprite_offset: [0, 1542]
-              6:
-                sprite_size: [591, 503]
-                sprite_offset: [0, 1542]
-              7:
-                sprite_size: [591, 503]
-                sprite_offset: [0, 1542]
-              8:
-                sprite_size: [591, 503]
-                sprite_offset: [0, 1542]
-          note miss right pico nene:
-            loop: false
-            frames:
-              0:
-                sprite_size: [543, 486]
-                sprite_offset: [2607, 518]
-              1:
-                sprite_size: [545, 495]
-                sprite_offset: [2240, 1036]
-              2:
-                sprite_size: [545, 495]
-                sprite_offset: [2240, 1036]
-              3:
-                sprite_size: [548, 495]
-                sprite_offset: [2790, 1036]
-              4:
-                sprite_size: [548, 495]
-                sprite_offset: [2790, 1036]
-              5:
-                sprite_size: [548, 495]
-                sprite_offset: [2790, 1036]
-              6:
-                sprite_size: [548, 495]
-                sprite_offset: [2790, 1036]
-              7:
-                sprite_size: [548, 495]
-                sprite_offset: [2790, 1036]
-              8:
-                sprite_size: [548, 495]
-                sprite_offset: [2790, 1036]
-              9:
-                sprite_size: [548, 495]
-                sprite_offset: [2790, 1036]
-          pico nene knife toss:
-            loop: false
-            frames:
-              0:
-                sprite_size: [529, 514]
-                sprite_offset: [1755, 1542]
-              1:
-                sprite_size: [521, 540]
-                sprite_offset: [2289, 1542]
-              2:
-                sprite_size: [521, 540]
-                sprite_offset: [2289, 1542]
-              3:
-                sprite_size: [521, 535]
-                sprite_offset: [2815, 1542]
-              4:
-                sprite_size: [521, 535]
-                sprite_offset: [2815, 1542]
-              5:
-                sprite_size: [521, 535]
-                sprite_offset: [2815, 1542]
-              6:
-                sprite_size: [521, 535]
-                sprite_offset: [2815, 1542]
-              7:
-                sprite_size: [522, 536]
-                sprite_offset: [3341, 1542]
-              8:
-                sprite_size: [522, 536]
-                sprite_offset: [3341, 1542]
-              9:
-                sprite_size: [622, 531]
-                sprite_offset: [0, 2087]
-              10:
-                sprite_size: [622, 531]
-                sprite_offset: [0, 2087]
-              11:
-                sprite_size: [677, 531]
-                sprite_offset: [627, 2087]
-              12:
-                sprite_size: [677, 531]
-                sprite_offset: [627, 2087]
-              13:
-                sprite_size: [677, 531]
-                sprite_offset: [627, 2087]
-              14:
-                sprite_size: [734, 531]
-                sprite_offset: [1309, 2087]
-              15:
-                sprite_size: [734, 531]
-                sprite_offset: [1309, 2087]
-              16:
-                sprite_size: [746, 529]
-                sprite_offset: [2048, 2087]
-              17:
-                sprite_size: [514, 507]
-                sprite_offset: [2799, 2087]
-              18:
-                sprite_size: [514, 507]
-                sprite_offset: [2799, 2087]
-              19:
-                sprite_size: [510, 507]
-                sprite_offset: [3318, 2087]
-              20:
-                sprite_size: [510, 507]
-                sprite_offset: [3318, 2087]
-              21:
-                sprite_size: [510, 507]
-                sprite_offset: [3318, 2087]
-              22:
-                sprite_size: [510, 507]
-                sprite_offset: [3318, 2087]
-              23:
-                sprite_size: [510, 507]
-                sprite_offset: [3318, 2087]
-              24:
-                sprite_size: [510, 507]
-                sprite_offset: [3318, 2087]
-              25:
-                sprite_size: [510, 507]
-                sprite_offset: [3318, 2087]
-              26:
-                sprite_size: [510, 507]
-                sprite_offset: [3318, 2087]
-              27:
-                sprite_size: [510, 507]
-                sprite_offset: [3318, 2087]
-              28:
-                sprite_size: [510, 507]
-                sprite_offset: [3318, 2087]
-              29:
-                sprite_size: [510, 507]
-                sprite_offset: [3318, 2087]
-              30:
-                sprite_size: [510, 507]
-                sprite_offset: [3318, 2087]
-              31:
-                sprite_size: [510, 507]
-                sprite_offset: [3318, 2087]
-              32:
-                sprite_size: [510, 507]
-                sprite_offset: [3318, 2087]
-          note miss down pico nene:
-            loop: false
-            frames:
-              0:
-                sprite_size: [579, 450]
-                sprite_offset: [0, 0]
-              1:
-                sprite_size: [603, 446]
-                sprite_offset: [0, 1036]
-              2:
-                sprite_size: [603, 446]
-                sprite_offset: [0, 1036]
-              3:
-                sprite_size: [606, 442]
-                sprite_offset: [608, 1036]
-              4:
-                sprite_size: [606, 442]
-                sprite_offset: [608, 1036]
-              5:
-                sprite_size: [606, 442]
-                sprite_offset: [608, 1036]
-              6:
-                sprite_size: [606, 442]
-                sprite_offset: [608, 1036]
-              7:
-                sprite_size: [606, 442]
-                sprite_offset: [608, 1036]
-              8:
-                sprite_size: [606, 442]
-                sprite_offset: [608, 1036]
-              9:
-                sprite_size: [606, 442]
-                sprite_offset: [608, 1036]
-          Pico Note Right:
-            loop: false
-            frames:
-              0:
-                sprite_size: [543, 486]
-                sprite_offset: [2607, 518]
-              1:
-                sprite_size: [543, 486]
-                sprite_offset: [2607, 518]
-              2:
-                sprite_size: [534, 492]
-                sprite_offset: [3155, 518]
-              3:
-                sprite_size: [534, 492]
-                sprite_offset: [3155, 518]
-              4:
-                sprite_size: [534, 492]
-                sprite_offset: [3155, 518]
-              5:
-                sprite_size: [534, 492]
-                sprite_offset: [3155, 518]
-              6:
-                sprite_size: [534, 492]
-                sprite_offset: [3155, 518]
-              7:
-                sprite_size: [534, 492]
-                sprite_offset: [3155, 518]
-              8:
-                sprite_size: [534, 492]
-                sprite_offset: [3155, 518]
-              9:
-                sprite_size: [534, 492]
-                sprite_offset: [3155, 518]
-              10:
-                sprite_size: [534, 492]
-                sprite_offset: [3155, 518]
-              11:
-                sprite_size: [534, 492]
-                sprite_offset: [3155, 518]
-          note miss left pico nene:
-            loop: false
-            frames:
-              0:
-                sprite_size: [496, 493]
-                sprite_offset: [1596, 518]
-              1:
-                sprite_size: [505, 501]
-                sprite_offset: [1219, 1036]
-              2:
-                sprite_size: [505, 501]
-                sprite_offset: [1219, 1036]
-              3:
-                sprite_size: [506, 501]
-                sprite_offset: [1729, 1036]
-              4:
-                sprite_size: [506, 501]
-                sprite_offset: [1729, 1036]
-              5:
-                sprite_size: [506, 501]
-                sprite_offset: [1729, 1036]
-              6:
-                sprite_size: [506, 501]
-                sprite_offset: [1729, 1036]
-              7:
-                sprite_size: [506, 501]
-                sprite_offset: [1729, 1036]
-              8:
-                sprite_size: [506, 501]
-                sprite_offset: [1729, 1036]
-              9:
-                sprite_size: [506, 501]
-                sprite_offset: [1729, 1036]
-          Pico NOTE LEFT:
-            loop: false
-            frames:
-              0:
-                sprite_size: [496, 493]
-                sprite_offset: [1596, 518]
-              1:
-                sprite_size: [496, 493]
-                sprite_offset: [1596, 518]
-              2:
-                sprite_size: [505, 497]
-                sprite_offset: [2097, 518]
-              3:
-                sprite_size: [505, 497]
-                sprite_offset: [2097, 518]
-              4:
-                sprite_size: [505, 497]
-                sprite_offset: [2097, 518]
-              5:
-                sprite_size: [505, 497]
-                sprite_offset: [2097, 518]
-              6:
-                sprite_size: [505, 497]
-                sprite_offset: [2097, 518]
-              7:
-                sprite_size: [505, 497]
-                sprite_offset: [2097, 518]
-              8:
-                sprite_size: [505, 497]
-                sprite_offset: [2097, 518]
-              9:
-                sprite_size: [505, 497]
-                sprite_offset: [2097, 518]
-              10:
-                sprite_size: [505, 497]
-                sprite_offset: [2097, 518]
-              11:
-                sprite_size: [505, 497]
-                sprite_offset: [2097, 518]
-              12:
-                sprite_size: [505, 497]
-                sprite_offset: [2097, 518]
-              13:
-                sprite_size: [505, 497]
-                sprite_offset: [2097, 518]
-              14:
-                sprite_size: [505, 497]
-                sprite_offset: [2097, 518]
-              15:
-                sprite_size: [505, 497]
-                sprite_offset: [2097, 518]
-          Pico Idle Dance:
-            loop: true
-            frames:
-              0:
-                sprite_size: [497, 506]
-                sprite_offset: [1182, 0]
-              1:
-                sprite_size: [497, 506]
-                sprite_offset: [1182, 0]
-              2:
-                sprite_size: [502, 508]
-                sprite_offset: [1684, 0]
-              3:
-                sprite_size: [502, 508]
-                sprite_offset: [1684, 0]
-              4:
-                sprite_size: [519, 512]
-                sprite_offset: [2191, 0]
-              5:
-                sprite_size: [519, 512]
-                sprite_offset: [2715, 0]
-              6:
-                sprite_size: [525, 513]
-                sprite_offset: [3239, 0]
-              7:
-                sprite_size: [525, 513]
-                sprite_offset: [0, 518]
-              8:
-                sprite_size: [528, 513]
-                sprite_offset: [530, 518]
-              9:
-                sprite_size: [528, 513]
-                sprite_offset: [530, 518]
-              10:
-                sprite_size: [528, 513]
-                sprite_offset: [1063, 518]
-              11:
-                sprite_size: [528, 513]
-                sprite_offset: [1063, 518]
-              12:
-                sprite_size: [528, 513]
-                sprite_offset: [1063, 518]
-              13:
-                sprite_size: [528, 513]
-                sprite_offset: [1063, 518]
-              14:
-                sprite_size: [528, 513]
-                sprite_offset: [1063, 518]
-              15:
-                sprite_size: [528, 513]
-                sprite_offset: [1063, 518]
-              16:
-                sprite_size: [528, 513]
-                sprite_offset: [1063, 518]
-              17:
-                sprite_size: [528, 513]
-                sprite_offset: [1063, 518]
-              18:
-                sprite_size: [528, 513]
-                sprite_offset: [1063, 518]
-              19:
-                sprite_size: [528, 513]
-                sprite_offset: [1063, 518]
-          Pico Down Note:
-            loop: false
-            frames:
-              0:
-                sprite_size: [579, 450]
-                sprite_offset: [0, 0]
-              1:
-                sprite_size: [579, 450]
-                sprite_offset: [0, 0]
-              2:
-                sprite_size: [593, 457]
-                sprite_offset: [584, 0]
-              3:
-                sprite_size: [593, 457]
-                sprite_offset: [584, 0]
-              4:
-                sprite_size: [593, 457]
-                sprite_offset: [584, 0]
-              5:
-                sprite_size: [593, 457]
-                sprite_offset: [584, 0]
-              6:
-                sprite_size: [593, 457]
-                sprite_offset: [584, 0]
-              7:
-                sprite_size: [593, 457]
-                sprite_offset: [584, 0]
-              8:
-                sprite_size: [593, 457]
-                sprite_offset: [584, 0]
-              9:
-                sprite_size: [593, 457]
-                sprite_offset: [584, 0]
-              10:
-                sprite_size: [593, 457]
-                sprite_offset: [584, 0]
-      Rigidbody3D:
-        mass: 1
-        restitution: 2
-        friction: 0.5
-        trigger: false
-        fixedRotation: false
-      BoxCollider3D:
-        size: [3.4000001, 3.29999995, 0.100000001]
+        emissionColor: [0, 0, 0]
+        texture: ./assets/models/the-going-merry-one-piece-game-ready/L MAR.png

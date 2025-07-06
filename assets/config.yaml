@@ -8,6 +8,6 @@ Renderer.Bloom: true
 usePBR: true
 PostProcessing.GlobalBloom: true
 PostProcessing.PBR_IBL: true
-PostProcessing.BloomThreshold: 0.75
-PostProcessing.BloomMultiplier: [0.100000001, 0.100000001, 0.100000001]
-PostProcessing.ShadowStrength: 0.930000007
+PostProcessing.BloomThreshold: 0.00999999978
+PostProcessing.BloomMultiplier: [0.150000006, 0.150000006, 0.150000006]
+PostProcessing.ShadowStrength: 1.12

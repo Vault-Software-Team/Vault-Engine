@@ -1,3 +1,4 @@
+#include "Renderer/Stats.hpp"
 #include <Renderer/Skybox.hpp>
 #include <stb_image/stb_image.h>
 #include <iostream>
@@ -92,6 +93,7 @@ namespace VaultRenderer {
         glBindVertexArray(skyboxVAO);
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
+        Statistics::DrawCall();
         glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
         glBindVertexArray(0);
 
@@ -114,6 +116,7 @@ namespace VaultRenderer {
         glBindVertexArray(skyboxVAO);
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_CUBE_MAP, texture);
+        Statistics::DrawCall();
         glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
         glBindVertexArray(0);
 

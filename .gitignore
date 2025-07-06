@@ -34,3 +34,9 @@ assets copy
 ./assets/models/luffy/*
 ./windows/dist
 ./dist
+mono_crash.*
+*.renderdoc.cap
+HyperScript.md
+HyperScript
+.idea
+.vscode

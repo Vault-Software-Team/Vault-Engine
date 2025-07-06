@@ -18,34 +18,27 @@ namespace VaultRenderer {
         glGenVertexArrays(1, &VAO);
 
         for (int i = 0; i < indices.size(); i += 3) {
-            Vertex &v1 = vertices[indices[i]];     // 1
-            Vertex &v2 = vertices[indices[i + 1]]; // 3
-            Vertex &v3 = vertices[indices[i + 2]]; // 4
+            Vertex &v0 = vertices[indices[i]];     // 1
+            Vertex &v1 = vertices[indices[i + 1]]; // 3
+            Vertex &v2 = vertices[indices[i + 2]]; // 4
 
-            glm::vec3 edge1 = v2.position - v1.position;
-            glm::vec3 edge2 = v3.position - v1.position;
+            glm::vec3 edge0 = v1.position - v0.position;
+            glm::vec3 edge1 = v2.position - v0.position;
+            glm::vec2 deltaUV0 = v1.texUV - v0.texUV;
             glm::vec2 deltaUV1 = v2.texUV - v1.texUV;
-            glm::vec2 deltaUV2 = v3.texUV - v1.texUV;
 
-            float f = 1.0f / (deltaUV1.x * deltaUV2.y - deltaUV2.x * deltaUV1.y);
+            float invDet = 1.0f / (deltaUV0.x * deltaUV1.y - deltaUV1.x * deltaUV0.y);
 
-            glm::vec3 tangent;
-            tangent.x = f * (deltaUV2.y * edge1.x - deltaUV1.y * edge2.x);
-            tangent.y = f * (deltaUV2.y * edge1.y - deltaUV1.y * edge2.y);
-            tangent.z = f * (deltaUV2.y * edge1.z - deltaUV1.y * edge2.z);
+            glm::vec3 tangent = glm::vec3(invDet * (deltaUV1.y * edge0 - deltaUV0.y * edge1));
+            glm::vec3 bitangent = glm::vec3(invDet * (-deltaUV1.x * edge0 + deltaUV0.x * edge1));
 
-            glm::vec3 bitangent;
-            bitangent.x = f * (-deltaUV2.x * edge1.x + deltaUV1.x * edge2.x);
-            bitangent.y = f * (-deltaUV2.x * edge1.y + deltaUV1.x * edge2.y);
-            bitangent.z = f * (-deltaUV2.x * edge1.z + deltaUV1.x * edge2.z);
-
+            v0.tangent = tangent;
             v1.tangent = tangent;
             v2.tangent = tangent;
-            v3.tangent = tangent;
 
+            v0.bitangent = bitangent;
             v1.bitangent = bitangent;
             v2.bitangent = bitangent;
-            v3.bitangent = bitangent;
         }
 
         // VBO Setup
@@ -85,6 +78,7 @@ namespace VaultRenderer {
 
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+        Statistics::DrawCall();
 
         material.diffuse = nullptr;
         material.specular = nullptr;

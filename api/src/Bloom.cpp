@@ -1,4 +1,5 @@
 #include "Renderer/Shader.hpp"
+#include "Renderer/Stats.hpp"
 #include <Renderer/Bloom.hpp>
 #include <iostream>
 
@@ -190,6 +191,7 @@ namespace VaultRenderer {
             // Render screen-filled quad of resolution of current mip
             glBindVertexArray(quadVAO);
             glDrawArrays(GL_TRIANGLES, 0, 6);
+            Statistics::DrawCall();
             glBindVertexArray(0);
 
             // Set current mip resolution as srcResolution for next iteration
@@ -228,6 +230,7 @@ namespace VaultRenderer {
             // Render screen-filled quad of resolution of current mip
             glBindVertexArray(quadVAO);
             glDrawArrays(GL_TRIANGLES, 0, 6);
+            Statistics::DrawCall();
             glBindVertexArray(0);
         }
 

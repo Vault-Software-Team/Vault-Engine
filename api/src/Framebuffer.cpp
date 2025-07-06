@@ -1,3 +1,4 @@
+#include "Renderer/Stats.hpp"
 #include "Renderer/Texture.hpp"
 #include <Renderer/Framebuffer.hpp>
 #include <Renderer/Window.hpp>
@@ -51,6 +52,7 @@ namespace VaultRenderer {
         shader.SetUniform1i("screen_texture", 0);
 
         glDrawArrays(GL_TRIANGLES, 0, 6);
+        Statistics::DrawCall();
 
         glEnable(GL_DEPTH_TEST);
         glBindVertexArray(0);
@@ -169,6 +171,7 @@ namespace VaultRenderer {
             glBindTexture(GL_TEXTURE_2D, texture);
             shader.SetUniform1i("screen_texture", 0);
             glDrawArrays(GL_TRIANGLES, 0, 6);
+            Statistics::DrawCall();
             glEnable(GL_DEPTH_TEST);
         } else {
             // Bind a framebuffer that houses our actual framebuffer, we do this so that the framebuffer shader gets applied to the texture wink wink
@@ -193,6 +196,7 @@ namespace VaultRenderer {
             shader.Bind();
             shader.SetUniform1i("screen_texture", 0);
             glDrawArrays(GL_TRIANGLES, 0, 6);
+            Statistics::DrawCall();
             glEnable(GL_DEPTH_TEST);
 
             // Unbind the static framebuffer that houses the actual framebuffer

@@ -1,3 +1,4 @@
+#include "Renderer/Stats.hpp"
 #include <Engine/SimpleCalls.hpp>
 
 namespace SimpleCalls {
@@ -69,6 +70,7 @@ namespace SimpleCalls {
         // render Cube
         glBindVertexArray(cubeVAO);
         glDrawArrays(GL_TRIANGLES, 0, 36);
+        VaultRenderer::Statistics::DrawCall();
         glBindVertexArray(0);
     }
 
@@ -112,6 +114,7 @@ namespace SimpleCalls {
         }
         glBindVertexArray(quadVAO);
         glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+        VaultRenderer::Statistics::DrawCall();
         glBindVertexArray(0);
     }
 } // namespace SimpleCalls

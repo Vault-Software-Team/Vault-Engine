@@ -1,11 +1,11 @@
 #include <Engine/Batch.hpp>
 #include <algorithm>
 #ifdef __EMSCRIPTEN__
-#include <emscripten.h>
-#define GL_GLEXT_PROTOTYPES
-#define EGL_EGLEXT_PROTOTYPES
+    #include <emscripten.h>
+    #define GL_GLEXT_PROTOTYPES
+    #define EGL_EGLEXT_PROTOTYPES
 #else
-#include <glad/glad.h>
+    #include <glad/glad.h>
 #endif
 #include <GLFW/glfw3.h>
 #include <Renderer/Stats.hpp>
@@ -139,6 +139,7 @@ namespace Engine {
 
         glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(Vertex) * vertices.size(), vertices.data());
         glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, sizeof(uint32_t) * indices.size(), indices.data());
+        Statistics::DrawCall();
         glDrawElements(GL_TRIANGLES, static_cast<uint32_t>(indices.size()), GL_UNSIGNED_INT, 0);
 
         glBindVertexArray(0);
