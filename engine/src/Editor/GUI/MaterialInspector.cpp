@@ -84,7 +84,7 @@ namespace Editor {
             if (ImGui::BeginDragDropTarget()) {
                 if (const ImGuiPayload *payload = ImGui::AcceptDragDropPayload("image_file")) {
                     std::string path = (char *)payload->Data;
-                    MaterialInspector_material.SetHeight(path);
+                    MaterialInspector_material.SetHeight(path, true);
                 }
             }
             ImGui::NewLine();

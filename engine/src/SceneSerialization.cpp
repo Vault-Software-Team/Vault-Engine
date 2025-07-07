@@ -912,7 +912,7 @@ namespace Engine {
             material.normal.reset();
         }
         if (data["height"].as<std::string>() != "nullptr") {
-            material.SetHeight(data["height"].as<std::string>());
+            material.SetHeight(data["height"].as<std::string>(), true);
         } else {
             material.height.reset();
         }

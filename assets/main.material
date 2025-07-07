@@ -3,7 +3,7 @@ emissionColor: [0, 0, 0]
 texUVs: [1.29999995, 1.29999995]
 diffuse: ./assets/textures/Tiles035_4K-PNG/Tiles035_4K-PNG_Color.png
 specular: nullptr
-normal: nullptr
+normal: ./assets/textures/Tiles035_4K-PNG/Tiles035_4K-PNG_NormalGL.png
 height: nullptr
 roughness_map: ./assets/textures/Tiles035_4K-PNG/Tiles035_4K-PNG_Roughness.png
 metallic_map: ./assets/models/Cerberus_by_Andrew_Maximov/Textures/Cerberus_M.tga
