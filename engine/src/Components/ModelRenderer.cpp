@@ -67,7 +67,21 @@ namespace Engine::Components {
                     for (auto &mesh : model->meshes) {
                         ImGui::PushID(("ModelRenderer_" + mesh.name + std::to_string(i)).c_str());
                         if (ImGui::TreeNode(mesh.name.c_str())) {
-                            ImGui::Button(mesh.material.filePath == "" ? "Drag Material File" : mesh.material.filePath.c_str());
+                            if (ImGui::Button(mesh.material.filePath == "" ? "Drag Material File" : mesh.material.filePath.c_str())) {
+                                if (mesh.material.filePath != "")
+                                    ;
+                                Serializer::DeserializeMaterial(mesh.material.filePath, mesh.material);
+                            }
+                            if (mesh.material.filePath != "" && ImGui::Button(ICON_FA_TRASH_CAN " Remove Material")) {
+                                mesh.material.filePath = "";
+                                mesh.material.diffuse.reset();
+                                mesh.material.specular.reset();
+                                mesh.material.normal.reset();
+                                mesh.material.roughness_map.reset();
+                                mesh.material.metallic_map.reset();
+                                mesh.material.ao_map.reset();
+                                mesh.material.height.reset();
+                            }
                             if (ImGui::BeginDragDropTarget()) {
                                 if (const ImGuiPayload *payload = ImGui::AcceptDragDropPayload("material")) {
                                     mesh.material.filePath = (char *)payload->Data;

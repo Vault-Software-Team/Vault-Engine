@@ -1,4 +1,5 @@
 #pragma once
+#include "imgui/imgui.h"
 #include <dllapi.hpp>
 #include <entt/entt.hpp>
 #include <icons/icons.h>
@@ -31,6 +32,9 @@ namespace Engine {
                 if (treeNodeOpen) {
                     if (!removed)
                         uiCall();
+
+                    ImGui::Dummy(ImVec2(ImGui::GetWindowWidth(), 5));
+
                     try {
                         ImGui::TreePop();
                     } catch (std::exception &e) {
@@ -44,7 +48,7 @@ namespace Engine {
             static inline const std::string display_name = "Base Component";
             bool static_registry = false;
 
-            virtual void OnGUI(){};
+            virtual void OnGUI() {};
             virtual void Update() {}
             virtual void Init() {}
         };

@@ -104,7 +104,7 @@ namespace Editor {
 
             gameObject->GUI();
         }
-
+        ImGui::Dummy(ImVec2(ImGui::GetWindowWidth(), 10));
         ImGui::End();
     }
 } // namespace Editor
