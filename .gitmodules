@@ -1,3 +1,6 @@
 [submodule "external/openfbx"]
 	path = external/openfbx
 	url = https://github.com/nem0/OpenFBX
+[submodule "external/spdlog"]
+	path = external/spdlog
+	url = https://github.com/gabime/spdlog
