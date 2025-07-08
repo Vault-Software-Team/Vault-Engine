@@ -25,6 +25,7 @@ windows/assets2
 windows/fonts
 windows/shader
 cmake-build-debug
+cmake-build-debug/*
 dist
 *.hdr
 ./assets/skybox/*.hdr
@@ -36,7 +37,10 @@ assets copy
 ./dist
 mono_crash.*
 *.renderdoc.cap
+*.cap
 HyperScript.md
 HyperScript
 .idea
 .vscode
+data.png
+projects.json

@@ -22,6 +22,7 @@ if [ "$1" = "glinux" ]; then
     cp -r ./build/app/app ./dist/game_build/linux/bin/gamebin
     cp -r ./build/app-project/app-project ./dist/game_build/linux/bin/project_selector
     cp -r ./linux/LaunchGame.sh ./dist/game_build/linux
+    echo "Finished!"
 fi
 
 if [ "$1" = "linux" ]; then
@@ -47,6 +48,7 @@ if [ "$1" = "linux" ]; then
     cp -r "./linux/Vault Engine.sh" "./dist/linux/Vault Engine.sh"
     cp -r ./linux/LaunchGame.sh ./dist/linux/bin
     cp -r "./imgui.ini" "./dist/linux/imgui.ini"
+    echo "Finished!"
 fi
 
 # LINUX REGION END
@@ -74,6 +76,7 @@ if [ "$1" = "gwindows" ]; then
     mkdir ./dist/game_build/windows/bin
     cp -r ./windows/build/app/app.exe ./dist/game_build/windows/bin/game.exe
     cp -r ./windows/LaunchGame.bat ./dist/game_build/windows
+    echo "Finished!"
 fi
 
 if [ "$1" = "windows" ]; then
@@ -104,6 +107,7 @@ if [ "$1" = "windows" ]; then
     cp -r ./windows/LaunchGame.bat ./dist/windows/bin/LaunchGame.bat
     cp -r "./windows/Vault Engine.bat" ./dist/windows
     cp -r "./imgui.ini" "./dist/linux/imgui.ini"
+    echo "Finished!"
 fi
 
 # WINDOWS REGION END
