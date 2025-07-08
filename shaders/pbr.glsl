@@ -172,7 +172,7 @@ struct SpotLight {
     float intensity;
 };
 
-#define MAX_LIGHTS 100
+#define MAX_LIGHTS 50
 uniform int point_light_count;
 uniform int dir_light_count;
 uniform int spot_light_count;
@@ -284,19 +284,21 @@ void main() {
     EntityID = u_EntityID;
     // Load PBR Material Textures
     vec3 albedo = baseColor.rgb;
+
     if (texture_diffuse.defined) {
         albedo = texture(texture_diffuse.tex, texUV).rgb * baseColor.rgb;
     }
 
     vec3 normal = getNormalFromNormalMap();
-    // vec3 world_pos = current_position; just here for reference.
+    vec3 WorldPos = current_position;
 
-    // Material Properties
+    // float metallic = texture(texture_metallic, texUV).r;
+    // float roughness = texture(texture_roughness, texUV).r;
+    // float ao = texture(texture_ao, texUV).r;
     float metallic = material.metallic;
     float roughness = material.roughness;
     float ao = material.ao;
 
-    // If textures are defined, override the material properties
     if (texture_metallic.defined) metallic = texture(texture_metallic.tex, texUV).r;
     if (texture_roughness.defined) roughness = texture(texture_roughness.tex, texUV).r;
     if (texture_ao.defined) ao = texture(texture_ao.tex, texUV).r;
@@ -311,13 +313,14 @@ void main() {
     F0 = mix(F0, albedo, material.metallic);
 
     vec3 Lo = vec3(0.0);
+    // point lights
     float shadow = 0.0f;
 
     for (int i = 0; i < point_light_count; ++i) {
-        vec3 L = normalize(point_lights[i].position - current_position);
+        vec3 L = normalize(point_lights[i].position - WorldPos);
         vec3 H = normalize(V + L);
 
-        float distance = length(point_lights[i].position - current_position);
+        float distance = length(point_lights[i].position - WorldPos);
         float attenuation = 1.0 / (distance * distance);
         vec3 radiance = point_lights[i].color * attenuation * point_lights[i].intensity;
 
@@ -397,6 +400,7 @@ void main() {
     vec3 irradiance = texture(irradianceMap, N).rgb;
     vec3 diffuse = irradiance * albedo;
 
+    // sample both the pre-filter map and the BRDF lut and combine them together as per the Split-Sum approximation to get the IBL specular part.
     const float MAX_REFLECTION_LOD = 4.0;
     vec3 prefilteredColor = textureLod(prefilterMap, R, roughness * MAX_REFLECTION_LOD).rgb;
     vec2 brdf = texture(brdfLUT, vec2(max(dot(N, V), 0.0), roughness)).rg;
@@ -413,16 +417,16 @@ void main() {
     }
 
     // end pbr dogshit (finally)
-    if (FragColor.a < 0.1) discard;
 
     FragColor.rgb = color;
     if (texture_diffuse.defined) {
-        FragColor.a = texture(texture_diffuse.tex, texUV).a * baseColor.a;
+        FragColor.a = texture_diffuse.defined ? texture(texture_diffuse.tex, texUV).a * baseColor.a : baseColor.a;
     } else {
         FragColor.a = baseColor.a;
     }
 
-    // Set Bloom Color
+    if (FragColor.a < 0.1) discard;
+
     if (config_PostProcessing.GlobalBloom) {
         float brightness = dot(FragColor.rgb, vec3(0.2126, 0.7152, 0.0722));
 
