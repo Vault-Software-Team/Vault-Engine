@@ -114,10 +114,11 @@ namespace VaultRenderer {
         while (!glfwWindowShouldClose(glfw_window)) {
             Statistics::CalculateFPS(previous_time);
 
-            // glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            // If we're not measuring it using the ImGui window then use GLFW's window size.
             if (!use_imgui_size)
                 glfwGetWindowSize(glfw_window, &width, &height);
 
+            // If we're rendering to an image, set width & height to 1920x1080 and regenerate the framebuffers, as you see, you don't need to read a comment for this.
             if (render_to_image) {
                 width = 1920;
                 height = 1080;
@@ -129,19 +130,17 @@ namespace VaultRenderer {
                 m_PostProcessingFramebuffer->RegenerateFramebuffer();
             }
 
+            // Set Bloom Renderers sizes
             bloomRenderer.mSrcViewportSize.x = width;
             bloomRenderer.mSrcViewportSize.x = height;
-
             bloomRenderer.mSrcViewportSizeFloat.x = width;
             bloomRenderer.mSrcViewportSizeFloat.x = height;
 
-            // Framebuffer Shenanigans
             glfwPollEvents();
 
             shadow_render_call();
-            // glViewport(0, 0, width, height);
 
-            // glEnable(GL_FRAMEBUFFER_SRGB);
+            // Bind the framebuffer and start drawing!
             framebuffer->Bind();
             VaultRenderer::Window::window->AspectRatioCameraViewport();
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -157,9 +156,8 @@ namespace VaultRenderer {
 
             framebuffer->UnbindAndDrawOnScreen(framebuffer_shader);
 
-            if (Renderer.Bloom) {
-                bloomRenderer.RenderBloomTexture(framebuffer->color_attachements[0].ID, 0.005f);
-            }
+            if (Renderer.Bloom) bloomRenderer.RenderBloomTexture(framebuffer->color_attachements[0].ID, 0.005f);
+
             VaultRenderer::Window::window->AspectRatioCameraViewport();
 
             framebuffer_shader.Bind();
@@ -182,7 +180,7 @@ namespace VaultRenderer {
             Basically Framebuffer class has two framebuffers:
             - One where the elements get rendered it
             - And other where the framebuffer shader does stuff to the rendered texture
-            So, to get the ACTUAL stuff you do framebuffer->framebuffer
+            So, to get the ACTUAL stuff you do framebuffer->framebuffer, do not ask why i couldn't name it something else, just deal with it cunt.
             */
 
             if (render_to_image) {
