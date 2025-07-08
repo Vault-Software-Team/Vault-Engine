@@ -17,6 +17,7 @@
 #include "Engine/Mono/Entity/Functions.hpp"
 #include "Engine/Mono/ModelAnimator/Functions.hpp"
 #include "Engine/Mono/PointLight/Functions.hpp"
+#include "Renderer/Logger.hpp"
 #include "mono/metadata/assembly.h"
 #include "mono/metadata/image.h"
 #include "mono/metadata/loader.h"
@@ -108,7 +109,7 @@ namespace Engine {
                 CSharp::instance->entity_classes[std::string(std::string(nameSpace) + "." + name)] = std::pair(nameSpace, name);
             }
 
-            printf("%s.%s\n", nameSpace, name);
+            ENGINE_INFO("{0}.{1}", nameSpace, name);
         }
     }
 
@@ -138,16 +139,21 @@ namespace Engine {
         LoadSubClasses(core_assembly);
 
         RegisterVaultFunctions();
-        // DevConsoleSetup(core_assembly);
+        DevConsoleSetup(core_assembly);
     }
 
     void CSharp::DevConsoleSetup(MonoAssembly *core_assembly) {
+        CSharp::instance->command_classes.clear();
+
         MonoImage *image = mono_assembly_get_image(core_assembly);
+        CSharp::instance->command_classes["DevConsole.CommandRegistry"] = std::make_unique<CSharpClass>(image, "DevConsole", "CommandRegistry");
+        auto &registry = CSharp::instance->command_classes["DevConsole.CommandRegistry"];
+
+        mono_runtime_object_init(registry->GetHandleTarget());
+
         const MonoTableInfo *typeDefinitionsTable = mono_image_get_table_info(image, MONO_TABLE_TYPEDEF);
         int32_t type_count = mono_table_info_get_rows(typeDefinitionsTable);
-        MonoClass *vault_script_class = mono_class_from_name(image, "DevConsole", "Command");
-
-        CSharp::instance->command_classes.clear();
+        MonoClass *vault_command_class = mono_class_from_name(image, "DevConsole", "Command");
 
         for (int32_t i = 0; i < type_count; i++) {
             uint32_t cols[MONO_TYPEDEF_SIZE];
@@ -156,19 +162,24 @@ namespace Engine {
             const char *nameSpace = mono_metadata_string_heap(image, cols[MONO_TYPEDEF_NAMESPACE]);
             const char *name = mono_metadata_string_heap(image, cols[MONO_TYPEDEF_NAME]);
 
-            MonoClass *entity_class = mono_class_from_name(image, nameSpace, name);
-            bool isSubclass = mono_class_is_subclass_of(entity_class, vault_script_class, false);
+            MonoClass *cmd_class = mono_class_from_name(image, nameSpace, name);
+            bool isSubclass = mono_class_is_subclass_of(cmd_class, vault_command_class, false);
 
-            if (entity_class == vault_script_class)
+            if (cmd_class == vault_command_class)
                 continue;
 
             if (isSubclass) {
                 CSharp::instance->command_classes[std::string(std::string(nameSpace) + "." + name)] = std::make_unique<CSharpClass>(image, std::string(nameSpace), std::string(name));
 
-                void *__args[] = {};
-
                 MonoObject *exception = nullptr;
-                mono_runtime_invoke(CSharp::instance->command_classes[std::string(std::string(nameSpace) + "." + name)]->GetMethod("Register", 0), CSharp::instance->command_classes[std::string(std::string(nameSpace) + "." + name)]->GetHandleTarget(), __args, &exception);
+                ENGINE_INFO("Initializing Command: {0}.{1} {2}", nameSpace, name, (void *)CSharp::instance->command_classes[std::string(std::string(nameSpace) + "." + name)].get());
+                ENGINE_ASSERT(CSharp::instance->command_classes[std::string(std::string(nameSpace) + "." + name)].get() != nullptr, "Command Class should NOT be nullptr!");
+                MonoObject *handle = CSharp::instance->command_classes[std::string(std::string(nameSpace) + "." + name)]->GetHandleTarget();
+
+                mono_runtime_object_init(handle);
+
+                MonoMethod *method = CSharp::instance->command_classes[std::string(std::string(nameSpace) + "." + name)]->GetMethod("Init", 0);
+                // mono_runtime_invoke(method, handle, nullptr, &exception);
 
                 if (exception) {
                     MonoObject *exc = NULL;
@@ -177,15 +188,11 @@ namespace Engine {
                         mono_print_unhandled_exception(exc);
                     } else {
                         Editor::GUI::LogError(mono_string_to_utf8(str)); // Log log(mono_string_to_utf8(str), LOG_ERROR);
+                        ENGINE_ERROR(mono_string_to_utf8(str));
                     }
                 }
-                // mono_runtime_object_init(CSharp::instance->command_classes[std::string(std::string(nameSpace) + "." + name)]->GetHandleTarget());
-
-                printf("Command: %s.%s\n", nameSpace, name);
             }
         }
-
-        CSharp::instance->command_classes["DevConsole.CommandRegistry"] = std::make_unique<CSharpClass>(image, "DevConsole", "CommandRegistry");
     }
 
     void CSharp::ReloadAssembly() {
@@ -383,7 +390,8 @@ namespace Engine {
             std::string build_command = "cd assets";
             build_command += " && \"";
             build_command += "dotnet"; // custom dotnet path here in the future maybe??
-            build_command += "\" build WarningLevel=0 -o VAULT_OUT";
+            build_command += "\" build -o VAULT_OUT";
+            ENGINE_INFO("Compiling C# Code, Command: {}", build_command);
             std::unique_ptr<FILE, decltype(&pclose)> pipe(popen(build_command.c_str(), "r"), pclose);
 
             if (!pipe) {

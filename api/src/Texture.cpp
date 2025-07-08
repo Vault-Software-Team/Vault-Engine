@@ -1,6 +1,8 @@
+#include "Renderer/Logger.hpp"
 #include "Renderer/Window.hpp"
 #include <Renderer/Texture.hpp>
 #include <stb_image/stb_image.h>
+#include <spdlog/spdlog.h>
 #ifdef __EMSCRIPTEN__
     #include <emscripten.h>
     #define GL_GLEXT_PROTOTYPES
@@ -15,7 +17,7 @@ namespace VaultRenderer {
     DLL_API std::vector<std::shared_ptr<Texture::t_texture>> Texture::textures;
 
     Texture::t_texture::~t_texture() {
-        std::cout << "t_texture" << texture_filepath << " deleted\n";
+        ENGINE_INFO("Texture \"{0}\" fully deleted", texture_filepath);
         glDeleteTextures(1, &ID);
     }
 
@@ -64,7 +66,7 @@ namespace VaultRenderer {
 
                     stbi_image_free(data);
                 } else {
-                    std::cout << "Failed to load HDR image." << std::endl;
+                    ENGINE_ERROR("Faile to load HDR Image.");
                 }
             } else {
 

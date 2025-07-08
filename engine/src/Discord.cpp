@@ -1,3 +1,4 @@
+#include "Renderer/Logger.hpp"
 #include "discord-rpc/discord_rpc.h"
 #include <Engine/Discord.hpp>
 
@@ -7,7 +8,7 @@ DiscordRPC *DiscordRPC::instance = nullptr;
 
 DiscordRPC::DiscordRPC(const std::string &id) : m_ID(id) {
     if (instance) {
-        std::cout << "ERROR: Cannot have more than one Discord RPC client!\n";
+        APP_ERROR("Cannot have more than one Discord RPC client!");
         return;
     }
     instance = this;
@@ -16,28 +17,26 @@ DiscordRPC::DiscordRPC(const std::string &id) : m_ID(id) {
     memset(handlers.get(), 0, sizeof(*handlers));
 
     handlers->ready = [](const DiscordUser *request) {
-        std::cout << "Discord: Ready" << std::endl;
+        APP_INFO("Discord Ready");
     };
 
     handlers->errored = [](int errorCode, const char *message) {
-        std::cout << "Discord: Error " << errorCode << ": " << message
-                  << std::endl;
+        APP_ERROR("Discord Error {0}: {1}", errorCode, message);
     };
 
     handlers->disconnected = [](int errorCode, const char *message) {
-        std::cout << "Discord: Disconnected " << errorCode << ": " << message
-                  << std::endl;
+        APP_ERROR("Discord Disconnected {0}: {1}", errorCode, message);
     };
 
     handlers->joinGame = [](const char *joinSecret) {
-        std::cout << "Discord: Join Game " << joinSecret << std::endl;
+        APP_INFO("Discord Join Game {0}", joinSecret);
     };
 
     handlers->spectateGame = [](const char *spectateSecret) {
-        std::cout << "Discord: Spectate Game " << spectateSecret << std::endl;
+        APP_INFO("Discord Spectate Game {0}", spectateSecret);
     };
 
-    std::cout << "Discord Initialized\n";
+    APP_INFO("Discord Initialized");
     Discord_Initialize(id.c_str(), handlers.get(), 1, nullptr);
 }
 

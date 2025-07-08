@@ -46,3 +46,5 @@ data.png
 projects.json
 hyperscript
 hyperscript/*
+logs
+*.log

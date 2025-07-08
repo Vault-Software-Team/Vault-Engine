@@ -8,6 +8,7 @@
 #include "../vendor/glm/gtx/quaternion.hpp"
 #include "Engine/Mono/CSharp.hpp"
 #include "Engine/Runtime.hpp"
+#include "Renderer/Logger.hpp"
 #include "Renderer/Shader.hpp"
 #include "efsw/efsw.hpp"
 #include "imgui/TextEditor.hpp"
@@ -43,17 +44,15 @@ namespace Editor {
         void handleFileAction(efsw::WatchID watchid, const std::string &dir, const std::string &filename, efsw::Action action, std::string oldFilename) override {
             switch (action) {
             case efsw::Actions::Add:
-                std::cout << "DIR (" << dir << ") FILE (" << filename << ") has event Added"
-                          << std::endl;
+                APP_INFO("Directory: {0}, File: {1} has event Added", dir, filename);
                 break;
             case efsw::Actions::Delete:
-                std::cout << "DIR (" << dir << ") FILE (" << filename << ") has event Delete"
-                          << std::endl;
+                APP_INFO("Directory: {0}, File: {1} has event Delete", dir, filename);
                 break;
             case efsw::Actions::Modified: {
                 if (filename.ends_with(".cs")) {
                     if (counter <= 0) {
-                        std::cout << "DIR (" << dir << ") FILE (" << filename << ") has event Modified" << std::endl;
+                        APP_INFO("Directory: {0}, File: {1} has event Modified", dir, filename);
 
                         std::array<char, 1000> buffer;
                         std::string result;
@@ -94,7 +93,8 @@ namespace Editor {
                     if (++counter >= 3) counter = 0;
                 } else if (filename.ends_with(".glsl")) {
                     if (counter <= 0) {
-                        std::cout << "DIR GLSL (" << dir << ") FILE (" << filename << ") has event Modified" << std::endl;
+                        // std::cout << "DIR GLSL (" << dir << ") FILE (" << filename << ") has event Modified" << std::endl;
+                        APP_INFO("Directory GLSL: {0}, File: {1} has event Modified", dir, filename);
                         Engine::Runtime::instance->main_thread_calls.push_back([&]() {
                             auto findShader = VaultRenderer::Shader::shaders.find(dir + filename);
                             if (findShader != VaultRenderer::Shader::shaders.end()) {
@@ -109,11 +109,13 @@ namespace Editor {
                 break;
             }
             case efsw::Actions::Moved:
-                std::cout << "DIR (" << dir << ") FILE (" << filename << ") has event Moved from ("
-                          << oldFilename << ")" << std::endl;
+                // std::cout << "DIR (" << dir << ") FILE (" << filename << ") has event Moved from ("
+                //   << oldFilename << ")" << std::endl;
+                APP_INFO("Directory: {0}, File: {1} has event Moved From: {2}", dir, filename, oldFilename);
                 break;
             default:
-                std::cout << "Should never happen!" << std::endl;
+                // std::cout << "Should never happen!" << std::endl;
+                APP_WARN("This should never happen.");
             }
         }
     };

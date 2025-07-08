@@ -16,6 +16,7 @@ In here you will throw up all over your desk cuz the coding is fucking ass
 #include "GLFW/glfw3.h"
 #include "HyperScript/HyperScript.hpp"
 #include "Renderer/Framebuffer.hpp"
+#include "Renderer/Logger.hpp"
 #include "imgui/TextEditor.hpp"
 #include "mono/metadata/row-indexes.h"
 #include <filesystem>
@@ -84,9 +85,6 @@ void OnGUI(uint32_t smID) {
 }
 
 using namespace Editor;
-void print(const std::string &traki) {
-    std::cout << traki << "\n";
-}
 
 int main() {
     using namespace VaultRenderer;
@@ -96,7 +94,7 @@ int main() {
     // Load up the window shit
     Serializer::LoadConfigFile("./assets/config.yaml");
 #ifdef BUILD_GAME
-    std::cout << "its game build\n";
+    APP_INFO("This is a Game Build!");
     Window window(1280, 720, Serializer::config.title == "" ? "Vault Engine" : Serializer::config.title.c_str());
 #else
     Window window(1280, 720, "Vault Engine");

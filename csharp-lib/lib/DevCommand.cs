@@ -7,7 +7,7 @@ namespace DevConsole
     {
         public static Dictionary<string, Command> commands;
 
-        public static void Execute(string command, string args)
+        public void Execute(string command, string args)
         {
             if (commands[command] != null)
             {
@@ -23,7 +23,7 @@ namespace DevConsole
     {
         public string name = "";
 
-        public Command()
+        public virtual void Init()
         {
             CommandRegistry.commands[name] = this;
         }

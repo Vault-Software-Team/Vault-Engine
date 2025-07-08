@@ -1,11 +1,12 @@
 #include "Engine/Runtime.hpp"
+#include "Renderer/Logger.hpp"
 #include <Engine/Physics/BulletPhysics.hpp>
 
 namespace Engine {
     Physics3D *Physics3D::instance = nullptr;
     Physics3D::Physics3D(const glm::vec3 &gravity) : gravity(gravity) {
         if (instance) {
-            std::cout << "Only one instance of Physics3D can exist! you fucking moron\n";
+            APP_ERROR("Only one instance of Physics3D can exist, you fucking dimwit");
         }
         instance = this;
 

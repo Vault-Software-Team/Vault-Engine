@@ -1,6 +1,7 @@
 #include "Engine/DecomposeTransform.hpp"
 #include "Engine/Physics/BulletPhysics.hpp"
 #include "Engine/Runtime.hpp"
+#include "Renderer/Logger.hpp"
 #include <Engine/Components/Rigidbody3D.hpp>
 #include <Editor/GUI/MainGUI.hpp>
 #include <icons/icons.h>
@@ -30,7 +31,7 @@ namespace Engine::Components {
         glm::vec3 q = transform->rotation;
         btQuaternion rotation;
         rotation.setEulerZYX(q.z, q.y, q.x);
-        std::cout << "Created a Bulet Physics Rigidbody\n";
+        ENGINE_INFO("Created Bullet Physics Rigidbody");
 
         bt_transform->setRotation(rotation);
 

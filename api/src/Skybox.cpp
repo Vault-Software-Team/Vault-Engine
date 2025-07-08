@@ -1,4 +1,6 @@
+#include "Renderer/Logger.hpp"
 #include "Renderer/Stats.hpp"
+#include "spdlog/spdlog.h"
 #include <Renderer/Skybox.hpp>
 #include <stb_image/stb_image.h>
 #include <iostream>
@@ -72,7 +74,8 @@ namespace VaultRenderer {
                 glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_SRGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
                 stbi_image_free(data);
             } else {
-                std::cout << "Texture failed to load " << facesCubemap[i] << "\n";
+                // std::cout << "Texture failed to load " << facesCubemap[i] << "\n";
+                ENGINE_ERROR("Skybox texture failed to load: {0}", facesCubemap[i]);
                 stbi_image_free(data);
             }
         }

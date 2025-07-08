@@ -1,4 +1,5 @@
 #include "Engine/SceneSerialization.hpp"
+#include "Renderer/Logger.hpp"
 #include "Renderer/Mesh.hpp"
 #include "assimp/material.h"
 #include "assimp/matrix4x4.h"
@@ -41,15 +42,14 @@ namespace Engine {
     }
 
     void ModelMesh::loadModel(const std::string &path) {
-        std::cout << "Loading model " << path << "\n";
+        // std::cout << "Loading model " << path << "\n";
+        APP_INFO("Loading Model {}", path);
         Assimp::Importer import;
-        std::cout << "Importer initialized 1\n";
 
         const aiScene *scene = import.ReadFile(path, aiProcess_Triangulate | aiProcess_GenSmoothNormals | aiProcess_FixInfacingNormals | aiProcess_LimitBoneWeights);
-        std::cout << "Scene loaded! \n";
 
         if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
-            std::cout << "Assimp Importer Error: " << import.GetErrorString() << "\n";
+            APP_ERROR("Assimp Importer Error: {}", import.GetErrorString());
             return;
         }
         directory = path.substr(0, path.find_last_of('/'));
@@ -166,7 +166,7 @@ namespace Engine {
             ret = mot->Get(AI_MATKEY_TEXTURE(aiTextureType_DIFFUSE, 0), texture_name);
             std::string sTexName = texture_name.C_Str();
             std::replace(sTexName.begin(), sTexName.end(), '\\', '/');
-            std::cout << (directory + "/textures/" + std::filesystem::path(sTexName).filename().string()).c_str() << "\n";
+            // std::cout << (directory + "/textures/" + std::filesystem::path(sTexName).filename().string()).c_str() << "\n";
             meshes.back().material.SetDiffuse((directory + "/textures/" + std::filesystem::path(sTexName).filename().string()).c_str());
         }
         if (specular_count > 0) {
@@ -212,7 +212,7 @@ namespace Engine {
         const std::string material_name = "./assets/mesh_materials/" + uuid::generate_uuid_v4() + "_" + meshes.back().name + ".material";
         Serializer::SerializeMaterial(material_name, meshes.back().material);
         meshes.back().material.filePath = material_name;
-        std::cout << "Created " << material_name << "\n";
+        APP_INFO("Created {}", material_name);
 
         return meshes.back();
     }

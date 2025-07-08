@@ -7,6 +7,7 @@
 #include "Engine/Components/Rigidbody3D.hpp"
 #include "Engine/Discord.hpp"
 #include "Engine/Physics/BulletPhysics.hpp"
+#include "Renderer/Logger.hpp"
 #include "mono/metadata/object-forward.h"
 #include <Engine/Scene.hpp>
 #include <iostream>
@@ -80,7 +81,8 @@ namespace Engine {
             }
         }
 
-        std::cout << gameObjectA->name << " Collided with " << gameObjectB->name << "\n";
+        // std::cout << gameObjectA->name << " Collided with " << gameObjectB->name << "\n";
+        ENGINE_INFO("{0} Collided with {1}", gameObjectA->name, gameObjectB->name);
     }
 
     void PhysisContactListener::EndContact(b2Contact *contact) {
@@ -159,7 +161,7 @@ namespace Engine {
 
     Scene::~Scene() {
         Editor::GUI::selected_gameObject = nullptr;
-        std::cout << "Deleting scene...\n";
+        APP_INFO("Scene Deleted");
         GameObjects.clear();
         main_camera_object = nullptr;
     }

@@ -7,6 +7,7 @@
 #include "Engine/Components/SpritesheetAnimator.hpp"
 #include "Engine/PostProcessing.hpp"
 #include "Engine/Runtime.hpp"
+#include "Renderer/Logger.hpp"
 #include "Renderer/Window.hpp"
 #include "glm/fwd.hpp"
 #include "yaml-cpp/emittermanip.h"
@@ -796,7 +797,7 @@ namespace Engine {
 
         yaml::Node data = yaml::Load(ss.str());
         if (!data["Scene"]) {
-            std::cout << "Invalid Scene File!\n";
+            APP_ERROR("Invalid Scene File");
             return;
         }
         std::string sceneName = data["Scene"].as<std::string>();
@@ -831,7 +832,7 @@ namespace Engine {
 
         yaml::Node data = yaml::Load(content);
         if (!data["Scene"]) {
-            std::cout << "Invalid Scene File!\n";
+            APP_ERROR("Invalid Scene File");
             return;
         }
         std::string sceneName = data["Scene"].as<std::string>();
@@ -982,7 +983,7 @@ namespace Engine {
 
         yaml::Node data = yaml::Load(ss.str());
         if (!data["Prefab"]) {
-            std::cout << "Invalid Prefab File!\n";
+            APP_ERROR("Invalid Prefab File");
             return nullptr;
         }
         std::string parent_id = data["Prefab"].as<std::string>();
@@ -1023,7 +1024,7 @@ namespace Engine {
 
         yaml::Node data = yaml::Load(prefab_data);
         if (!data["Prefab"]) {
-            std::cout << "Invalid Prefab File!\n";
+            APP_ERROR("Invalid Prefab File");
             return nullptr;
         }
         std::string parent_id = data["Prefab"].as<std::string>();

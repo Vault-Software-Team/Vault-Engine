@@ -1,9 +1,11 @@
+#include "Renderer/Logger.hpp"
 #include "Renderer/Stats.hpp"
 #include "Renderer/Texture.hpp"
 #include <Renderer/Framebuffer.hpp>
 #include <Renderer/Window.hpp>
 #include <iostream>
 #include <stb_image/stb_image.h>
+#include <spdlog/spdlog.h>
 
 float rectangleVertices[] = {
     // Coords    // texCoords
@@ -90,7 +92,7 @@ namespace VaultRenderer {
         std::vector<uint32_t> attachments = {GL_COLOR_ATTACHMENT0};
 
         for (auto &a : color_attachements) {
-            std::cout << a.attachement << " Regenerated attachement.\n";
+            ENGINE_INFO("Regenerated \"{0}\" attachement", a.attachement);
             glGenTextures(1, &a.ID);
             glBindTexture(GL_TEXTURE_2D, a.ID);
 
@@ -117,7 +119,7 @@ namespace VaultRenderer {
 
         auto fboStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
         if (fboStatus != GL_FRAMEBUFFER_COMPLETE)
-            std::cout << "FB Error: " << fboStatus << "\n";
+            ENGINE_ERROR("Framebuffer Error: {0}", fboStatus);
 
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
@@ -130,7 +132,6 @@ namespace VaultRenderer {
         // glDeleteTextures(1, &entityTexture);
 
         for (auto &a : color_attachements) {
-            std::cout << a.ID << " CA\n";
             glDeleteTextures(1, &a.ID);
         }
     }

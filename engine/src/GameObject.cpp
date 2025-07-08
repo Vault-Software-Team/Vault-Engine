@@ -9,6 +9,7 @@
 #include "Engine/Discord.hpp"
 #include "Engine/Runtime.hpp"
 #include "Engine/SceneSerialization.hpp"
+#include "Renderer/Logger.hpp"
 #include "Renderer/Shader.hpp"
 #include "StupidFunctions.hpp"
 #include <Engine/GameObject.hpp>
@@ -220,7 +221,7 @@ namespace Engine {
     std::shared_ptr<GameObject> &GameObject::AddChild(const std::string &name, const std::string &tag) {
         auto &pChild = GameObject::New(name, tag);
         pChild->parent = ID;
-        std::cout << ID << " " << pChild->parent << " " << pChild->name << " " << this->name << "\n";
+        ENGINE_INFO("Added Child: {0}, {1}, {2}, {3}", ID, pChild->parent, pChild->name, this->name);
         return pChild;
     }
 

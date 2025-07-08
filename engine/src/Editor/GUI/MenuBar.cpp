@@ -2,6 +2,7 @@
 #include "Engine/Model.hpp"
 #include "Engine/Mono/CSharp.hpp"
 #include "Engine/PostProcessing.hpp"
+#include "Renderer/Logger.hpp"
 #include "Renderer/Shader.hpp"
 #include "Renderer/Window.hpp"
 #include "imgui/ImGuiNotify.hpp"
@@ -335,7 +336,7 @@ namespace Editor {
                     fs::copy(isLinux ? "./bin/LaunchGame.sh" : "./bin/LaunchGame.bat", build_path / "BUILD_GAME" / (isLinux ? "LaunchGame.sh" : "LaunchGame.bat"), fs::copy_options::recursive);
                     ImGui::InsertNotification({ImGuiToastType::Success, 5000, "Built game for %s successfully!", isLinux ? "linux" : "windows"});
                 } catch (std::exception &e) {
-                    std::cout << "[FS-ERROR] " << e.what() << "\n";
+                    APP_ERROR("Try Catch failed: {0}", e.what());
                     ImGui::InsertNotification({ImGuiToastType::Error, 5000, "%s", e.what()});
                 }
             }

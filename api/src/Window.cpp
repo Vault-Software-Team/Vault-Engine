@@ -1,6 +1,7 @@
 #include "Editor/GUI/MainGUI.hpp"
 #include "Engine/Runtime.hpp"
 #include "GLFW/glfw3.h"
+#include "Renderer/Logger.hpp"
 #include "Renderer/Shader.hpp"
 #include "Renderer/Stats.hpp"
 #include <Renderer/Window.hpp>
@@ -15,6 +16,7 @@
 #include <Renderer/Bloom.hpp>
 #include <ImGuizmo/ImGuizmo.h>
 #include <stb_image/stb_image.h>
+#include <spdlog/spdlog.h>
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include <stb_image/stb_image_write.h>
 
@@ -52,6 +54,11 @@ namespace VaultRenderer {
 
     Window::Window(const int width, const int height, const char *title, bool draw_screen) : width(width), height(height), title(title) {
         window = this;
+
+        // setup logger
+        Logger logger;
+        spdlog::get("VAULT")->info("Info from vault engine.");
+
         glfwInit();
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -59,7 +66,7 @@ namespace VaultRenderer {
 
         glfw_window = glfwCreateWindow(width, height, title, NULL, NULL);
         if (glfw_window == NULL) {
-            std::cout << "Failed to create GLFW Window\n";
+            ENGINE_ERROR("Failed to create GLFW Window");
             glfwTerminate();
             return;
         }
@@ -186,13 +193,13 @@ namespace VaultRenderer {
             if (render_to_image) {
                 unsigned char *buffer = new unsigned char[width * height * 3];
                 m_PostProcessingFramebuffer->Bind();
-                std::cout << "Rendering to image...\n";
+                ENGINE_INFO("Rendering to image...");
                 glReadPixels(0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE, buffer);
                 stbi_flip_vertically_on_write(true);
                 stbi_write_png("./data.png", width, height, 3, buffer, width * 3);
                 m_PostProcessingFramebuffer->Unbind();
                 delete[] buffer;
-                std::cout << "Rendering to image DONE!\n";
+                ENGINE_INFO("Successfully rendered to image!");
                 width = WindowSizeBeforeImageRender.x;
                 height = WindowSizeBeforeImageRender.y;
                 framebuffer->width = width;

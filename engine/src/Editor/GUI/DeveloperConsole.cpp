@@ -1,5 +1,6 @@
 #include "Engine/Mono/CSharp.hpp"
 #include "Engine/Mono/HelperFunctions.hpp"
+#include "Renderer/Logger.hpp"
 #include "Renderer/Stats.hpp"
 #include "mono/metadata/class.h"
 #include "mono/metadata/object.h"
@@ -91,6 +92,44 @@ namespace Editor {
                 real_string += " ";
             }
             GUI::LogTick(real_string);
+        } else if (ccode_StartsWith(command.c_str(), "core_warn")) {
+            std::vector<std::string> out = console_GetArguments(command);
+
+            std::string real_string;
+            for (auto &string : out) {
+                real_string += string;
+                real_string += " ";
+            }
+            APP_WARN(real_string);
+        } else if (ccode_StartsWith(command.c_str(), "core_error")) {
+            std::vector<std::string> out = console_GetArguments(command);
+
+            std::string real_string;
+            for (auto &string : out) {
+                real_string += string;
+                real_string += " ";
+            }
+            APP_ERROR(real_string);
+        } else if (ccode_StartsWith(command.c_str(), "core_info")) {
+            std::stringstream ss(command);
+
+            std::vector<std::string> out = console_GetArguments(command);
+            std::string real_string;
+            for (auto &string : out) {
+                real_string += string;
+                real_string += " ";
+            }
+            APP_INFO(real_string);
+        } else if (ccode_StartsWith(command.c_str(), "core_trace")) {
+            std::stringstream ss(command);
+
+            std::vector<std::string> out = console_GetArguments(command);
+            std::string real_string;
+            for (auto &string : out) {
+                real_string += string;
+                real_string += " ";
+            }
+            APP_TRACE(real_string);
         } else if (ccode_StartsWith(command.c_str(), "clear")) {
             GUI::logs.clear();
         } else {
@@ -107,6 +146,9 @@ namespace Editor {
             }
 
             auto &registry = CSharp::instance->command_classes["DevConsole.CommandRegistry"];
+
+            APP_INFO("Developer Console: {}", (void *)registry.get());
+            if (!registry) return;
 
             void *__args[2] = {
                 CSharpHelper::StrToMonoString(command),

@@ -1,3 +1,4 @@
+#include "Renderer/Logger.hpp"
 #include <SDL2/SDL_mixer.h>
 #include <Engine/Audio.hpp>
 #include <iostream>
@@ -17,7 +18,7 @@ namespace Engine {
     void Audio2D::PlayMusic(const std::string &path, float volume, bool loop) {
         Mix_Music *music = Mix_LoadMUS(path.c_str());
         if (music == NULL) {
-            std::cout << "Failed to load music: " + path << "\n";
+            ENGINE_ERROR("Failed to load music: {0}", path);
             return;
         }
 

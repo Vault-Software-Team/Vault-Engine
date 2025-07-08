@@ -1,3 +1,4 @@
+#include "Renderer/Logger.hpp"
 #include <Engine/Model.hpp>
 #include <Engine/Components/MeshRenderer.hpp>
 #include <iostream>
@@ -18,14 +19,12 @@ namespace Engine {
     }
 
     void Model::loadModel(const std::string &path) {
-        std::cout << "Loading Model " << path << "\n";
+        APP_INFO("Loading Model {}", path);
         Assimp::Importer import;
-        std::cout << "Importer initialized\n";
         const aiScene *scene = import.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_FixInfacingNormals | aiProcess_LimitBoneWeights);
-        std::cout << "Scene read file!\n";
 
         if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
-            std::cout << "Assimp Importer Error: " << import.GetErrorString() << "\n";
+            APP_ERROR("Assimp Importer Error: {}", import.GetErrorString());
             return;
         }
         directory = path.substr(0, path.find_last_of('/'));
@@ -89,7 +88,8 @@ namespace Engine {
         using namespace Engine::Components;
         auto &pChild = GameObject::New(mesh->mName.C_Str());
         pChild->parent = parent->ID;
-        std::cout << pChild->name << "\n";
+        // std::cout << pChild->name << "\n";
+        // APP_INFO(pChild->name);
         pChild->AddComponent<MeshRenderer>();
 
         auto &meshRenderer = pChild->GetComponent<MeshRenderer>();

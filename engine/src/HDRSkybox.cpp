@@ -160,7 +160,7 @@ namespace VaultRenderer {
         if (counter >= 4) return;
         if (counter < 4) counter++;
 
-        std::cout << "PAST HERE \n";
+        // std::cout << "PAST HERE \n";
 
         // ENV CUBEMAP
         equirectToCubemapShader->Bind();

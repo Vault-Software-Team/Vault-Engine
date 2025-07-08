@@ -25,8 +25,6 @@ public class Player : Entity
     {
         rigidbody = GetComponent<Rigidbody2D>();
         bg = GetByID(GameObject.GetIDByName("Background")).GetComponent<SpriteRenderer>();
-
-        DebugCommand cmd = new DebugCommand();
     }
 
     private void OnUpdate()

@@ -1,3 +1,4 @@
+#include "Renderer/Logger.hpp"
 #include "Renderer/Shader.hpp"
 #include "Renderer/Stats.hpp"
 #include <Renderer/Bloom.hpp>
@@ -80,7 +81,7 @@ namespace VaultRenderer {
         // check completion status
         int status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
         if (status != GL_FRAMEBUFFER_COMPLETE) {
-            printf("gbuffer FBO error, status: 0x\%x\n", status);
+            ENGINE_ERROR("GBuffer FBO Error! Status: {0:x}", status);
             glBindFramebuffer(GL_FRAMEBUFFER, 0);
             return false;
         }

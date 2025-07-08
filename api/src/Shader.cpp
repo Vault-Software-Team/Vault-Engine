@@ -1,8 +1,10 @@
+#include "Renderer/Logger.hpp"
 #include <Renderer/Shader.hpp>
 #include <cstddef>
 #include <stdio.h>
 #include <fstream>
 #include <iostream>
+#include <spdlog/spdlog.h>
 
 namespace VaultRenderer {
     DLL_API Shader *Shader::binded_shader;
@@ -14,7 +16,7 @@ namespace VaultRenderer {
 
     Shader::Shader(const std::string &shader_file, bool CustomShader) : path(shader_file), EngineShader(!CustomShader) {
         Build();
-        std::cout << "Added a new GLSL shader: " << shader_file << "\n";
+        ENGINE_INFO("Added a new GLSL shader: {0}", shader_file);
         shaders[path] = this;
     }
 
@@ -23,10 +25,11 @@ namespace VaultRenderer {
 
         std::string vertCode, fragCode, geometryCode, line;
 
-        printf("%s\n", (std::string("Loading shader: ") + path).c_str());
+        ENGINE_INFO("Loading shader: {}", path);
         std::ifstream fstream_shader_file(path);
         if (!fstream_shader_file.is_open()) {
-            std::cout << "Failed to open shader file" << std::endl;
+            // std::cout << "Failed to open shader file" << std::endl;
+            ENGINE_ERROR("Failed to open shader file: {0}", path);
         }
 
         while (getline(fstream_shader_file, line)) {
@@ -70,8 +73,7 @@ namespace VaultRenderer {
             glGetShaderiv(vertShader, GL_COMPILE_STATUS, &success);
             if (!success) {
                 glGetShaderInfoLog(vertShader, 512, NULL, infoLog);
-                printf("Failed to compile Vertex Shader");
-                std::cout << infoLog << std::endl;
+                ENGINE_ERROR("Failed to compile Vertex Shader:\n{0}", infoLog);
             }
 
             if (type == ShaderType::GEOMETRY) {
@@ -81,8 +83,7 @@ namespace VaultRenderer {
                 glGetShaderiv(geometryShader, GL_COMPILE_STATUS, &success);
                 if (!success) {
                     glGetShaderInfoLog(geometryShader, 512, NULL, infoLog);
-                    printf("Failed to compile Geometry Shader");
-                    std::cout << infoLog << std::endl;
+                    ENGINE_ERROR("Failed to compile Geometry Shader:\n{0}", infoLog);
                 }
             }
         }
@@ -93,8 +94,7 @@ namespace VaultRenderer {
         glGetShaderiv(fragShader, GL_COMPILE_STATUS, &success);
         if (!success) {
             glGetShaderInfoLog(fragShader, 512, NULL, infoLog);
-            printf("Failed to compile Fragment Shader");
-            std::cout << infoLog << std::endl;
+            ENGINE_ERROR("Failed to compile Fragment Shader:\n{0}", infoLog);
         }
 
         ID = rebuild ? ID : glCreateProgram();
@@ -116,8 +116,7 @@ namespace VaultRenderer {
         glGetProgramiv(ID, GL_LINK_STATUS, &success);
         if (!success) {
             glGetProgramInfoLog(ID, 512, NULL, infoLog);
-            printf("Failed to link program");
-            std::cout << infoLog << std::endl;
+            ENGINE_ERROR("Failed to link program:\n{0}", infoLog);
         }
 
         glDeleteShader(vertShader);

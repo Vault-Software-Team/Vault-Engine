@@ -1,3 +1,4 @@
+#include "Renderer/Logger.hpp"
 #include <Engine/Batch.hpp>
 #include <algorithm>
 #ifdef __EMSCRIPTEN__
@@ -13,6 +14,7 @@
 #include <Engine/Components/MeshRenderer.hpp>
 #include <Engine/Components/Transform.hpp>
 #include <Engine/Scene.hpp>
+#include <spdlog/spdlog.h>
 
 using namespace VaultRenderer;
 namespace Engine {
@@ -102,7 +104,7 @@ namespace Engine {
 
         for (uint32_t &index : mesh->indices) {
             uint32_t offsetted_index = index + (max_index == 0 ? max_index : max_index + 1);
-            std::cout << max_index << " " << offsetted_index << "\n";
+            ENGINE_INFO("Batch: {0} | {1}", max_index, offsetted_index);
 
             indices.push_back(offsetted_index);
         }

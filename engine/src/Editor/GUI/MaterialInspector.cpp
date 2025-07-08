@@ -1,4 +1,5 @@
 #pragma once
+#include "Renderer/Logger.hpp"
 #include <Editor/GUI/MainGUI.hpp>
 #include <Engine/Scene.hpp>
 #include <Engine/GameObject.hpp>
@@ -41,7 +42,7 @@ namespace Editor {
             if (ImGui::BeginDragDropTarget()) {
                 if (const ImGuiPayload *payload = ImGui::AcceptDragDropPayload("image_file")) {
                     std::string path = (char *)payload->Data;
-                    std::cout << path << "\n";
+                    APP_INFO("Material Inspector: {}", path);
                     MaterialInspector_material.SetDiffuse(path);
                 }
             }

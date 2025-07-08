@@ -1,6 +1,7 @@
 #include "Engine/Components/Camera.hpp"
 #include "Engine/Components/DirectionalLight.hpp"
 #include "Engine/Runtime.hpp"
+#include "Renderer/Logger.hpp"
 #include "Renderer/Window.hpp"
 #include "glm/fwd.hpp"
 #include <Engine/CascadedShadowMap.hpp>
@@ -38,7 +39,7 @@ namespace Engine {
 
         int status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
         if (status != GL_FRAMEBUFFER_COMPLETE) {
-            std::cout << "[ERROR] Framebuffer is not complete!";
+            ENGINE_ERROR("Framebuffer is not complete!");
             throw 0;
         }
 
@@ -106,7 +107,8 @@ namespace Engine {
     std::vector<glm::mat4> CascadedShadowMap::GetLightSpaceMatrices(Components::Camera &camera, glm::vec3 lightDir) {
         std::vector<glm::mat4> ret;
         // const auto corners = Runtime::instance->GetFrustumCornersWorldSpace(camera.projection, camera.view);
-        std::cout << m_ShadowCascadeLevels.size() + 1 << " IS THE SIZE\n";
+        // std::cout << m_ShadowCascadeLevels.size() + 1 << " IS THE SIZE\n";
+        ENGINE_INFO("{0} is the size!", m_ShadowCascadeLevels.size());
         for (size_t i = 0; i < m_ShadowCascadeLevels.size() + 1; ++i) {
             // GetLightSpaceMatrix(camera, camera.near, camera.far, lightDir);
             if (i == 0) {
@@ -140,7 +142,8 @@ namespace Engine {
         lightDir = &light.transform->position;
 
         const auto lightMatrices = GetLightSpaceMatrices(*Scene::Main->main_camera_object, *lightDir);
-        std::cout << "erm yes??\n";
+        // std::cout << "erm yes??\n";
+        ENGINE_INFO("Yeah?");
         glBindBuffer(GL_UNIFORM_BUFFER, m_MatricesUBO);
         for (size_t i = 0; i < lightMatrices.size(); ++i) {
             glBufferSubData(GL_UNIFORM_BUFFER, i * sizeof(glm::mat4x4), sizeof(glm::mat4x4), &lightMatrices[i]);

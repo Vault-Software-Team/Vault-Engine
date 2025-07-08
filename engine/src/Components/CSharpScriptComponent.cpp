@@ -1,4 +1,5 @@
 #include "Engine/Mono/CSharp.hpp"
+#include "Renderer/Logger.hpp"
 #include "mono/metadata/class.h"
 #include <Engine/Components/CSharpScriptComponent.hpp>
 #include <Engine/Scene.hpp>
@@ -11,7 +12,7 @@
 namespace Engine::Components {
     void CSharpScriptComponent::Init() {
         for (auto klass : selected_scripts) {
-            std::cout << klass.second.first << "." << klass.second.second << "\n";
+            ENGINE_INFO("Script {0}.{1}", klass.second.first, klass.second.second);
             script_instances[klass.first] = std::make_shared<ScriptClass>(CSharp::instance->core_assembly_image, klass.second.first, klass.second.second);
             script_instances[klass.first]->InitInstance(ID);
         }
@@ -24,9 +25,9 @@ namespace Engine::Components {
     }
 
     void CSharpScriptComponent::OnStart() {
-        std::cout << "Initing script component! " << ID << "\n";
+        ENGINE_INFO("Initializing script component {}", ID);
         for (auto klass : selected_scripts) {
-            std::cout << klass.second.first << "." << klass.second.second << "\n";
+            ENGINE_INFO("{0}.{1}", klass.second.first, klass.second.second);
             // script_instances[klass.first] = std::make_shared<ScriptClass>(CSharp::instance->core_assembly_image, klass.second.first, klass.second.second);
             script_instances[klass.first]->OnStart(ID);
         }
@@ -64,7 +65,8 @@ namespace Engine::Components {
                         const char *field_name = mono_field_get_name(field);
                         MonoType *type = mono_field_get_type(field);
                         const char *type_name = mono_type_get_name(type);
-                        std::cout << type_name << " " << field_name << "\n";
+                        // std::cout << type_name << " " << field_name << "\n";
+                        ENGINE_INFO("Field {0}.{1}", type_name, field_name);
                     }
 
                     ImGui::TreePop();

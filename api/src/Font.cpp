@@ -1,3 +1,4 @@
+#include "Renderer/Logger.hpp"
 #include <Renderer/Font.hpp>
 #include <iostream>
 #include <Renderer/Mesh.hpp>
@@ -11,7 +12,7 @@ namespace VaultRenderer {
     int Font::InitFT() {
         font_shader = std::make_unique<Shader>("./shaders/text_shader.glsl");
         if (FT_Init_FreeType(&ft)) {
-            spdlog::error("Couldn't init FreeType Library");
+            ENGINE_ERROR("Couldn't init FreeType Library");
             return -1;
         }
         return 0;
@@ -20,20 +21,20 @@ namespace VaultRenderer {
     Font::Font(const char *font, uint32_t scale) : font_path(font) {
         FT_Face face;
         if (FT_New_Face(ft, font, 0, &face)) {
-            spdlog::error("Failed to load font {0}", std::string(font));
+            ENGINE_ERROR("Failed to load font {0}", std::string(font));
         }
 
         FT_Set_Pixel_Sizes(face, 0, scale);
 
         if (FT_Load_Char(face, 'X', FT_LOAD_RENDER)) {
-            spdlog::error("Failed to load Glyph");
+            ENGINE_ERROR("Failed to load Glyph");
         }
 
         glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
         for (unsigned char c = 0; c < 128; c++) {
             if (FT_Load_Char(face, c, FT_LOAD_RENDER)) {
-                spdlog::error("Failed to load Glyph");
+                ENGINE_ERROR("Failed to load Glyph");
                 continue;
             }
             // generate texture

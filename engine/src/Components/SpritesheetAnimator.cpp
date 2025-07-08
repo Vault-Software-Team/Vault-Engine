@@ -1,5 +1,6 @@
 #include "Engine/Components/SpritesheetRenderer.hpp"
 #include "Engine/Runtime.hpp"
+#include "Renderer/Logger.hpp"
 #include "imgui/imgui.h"
 #include <Engine/Components/SpritesheetAnimator.hpp>
 #include <Engine/Scene.hpp>
@@ -214,7 +215,7 @@ namespace Engine::Components {
             std::string animation_name = name.substr(0, name.size() - 4);
             if (current_animation == "") current_animation = animation_name;
 
-            std::cout << animation_name << " | " << current_animation << frames.size() << "\n";
+            ENGINE_INFO("Animation: {0} | {1} | {2}", animation_name, current_animation, frames.size());
 
             if (current_animation != animation_name) {
                 // std::cout << name << " | " << current_animation << frames.size() << "\n";
