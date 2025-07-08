@@ -133,7 +133,7 @@ struct SpotLight {
     float intensity;
 };
 
-#define MAX_LIGHTS 100
+#define MAX_LIGHTS 50
 uniform int point_light_count;
 uniform int dir_light_count;
 uniform int spot_light_count;

@@ -9,7 +9,7 @@ namespace VaultRenderer {
     std::unordered_map<std::string, Shader *> Shader::shaders;
 
     Shader::~Shader() {
-        shaders.erase(path);
+        // shaders.erase(path);
     }
 
     Shader::Shader(const std::string &shader_file, bool CustomShader) : path(shader_file), EngineShader(!CustomShader) {

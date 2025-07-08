@@ -15,14 +15,11 @@ namespace VaultRenderer {
     DLL_API std::vector<std::shared_ptr<Texture::t_texture>> Texture::textures;
 
     Texture::t_texture::~t_texture() {
-        if (glfwWindowShouldClose(VaultRenderer::Window::window->GetGLFWWindow())) return;
-
         std::cout << "t_texture" << texture_filepath << " deleted\n";
         glDeleteTextures(1, &ID);
     }
 
     Texture::~Texture() {
-        if (glfwWindowShouldClose(VaultRenderer::Window::window->GetGLFWWindow())) return;
         if (texture_data.use_count() <= 2) {
             for (int i = 0; i < textures.size(); i++) {
                 if (textures[i]->texture_filepath == texture_data->texture_filepath) {

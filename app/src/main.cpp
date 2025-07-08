@@ -468,6 +468,7 @@ int main() {
         }
     }, Function_GUI, Function_ShadowMapRendering, Function_FramebufferShaderUniforms, Function_MousePicking);
     // clang-format on
+    exit(0);
 
     return 0;
 }
