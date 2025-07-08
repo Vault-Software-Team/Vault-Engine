@@ -49,3 +49,9 @@ hyperscript
 hyperscript/*
 logs
 *.log
+!assets/*.csproj
+!assets/skybox/*
+!assets/*.md
+!assets/config.yaml
+!assets/VAULT_API
+!assets/VAULT_OUT
