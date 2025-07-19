@@ -28,7 +28,7 @@ namespace Editor {
             uint32_t diffuseID = MaterialInspector_material.diffuse == nullptr ? 0 : MaterialInspector_material.diffuse->texture_data->ID;
             uint32_t specularID = MaterialInspector_material.specular == nullptr ? 0 : MaterialInspector_material.specular->texture_data->ID;
             uint32_t normalID = MaterialInspector_material.normal == nullptr ? 0 : MaterialInspector_material.normal->texture_data->ID;
-            uint32_t heightID = MaterialInspector_material.height == nullptr ? 0 : MaterialInspector_material.height->texture_data->ID;
+            uint32_t heightID = MaterialInspector_material.emission_map == nullptr ? 0 : MaterialInspector_material.emission_map->texture_data->ID;
             uint32_t metallic_mapID = MaterialInspector_material.metallic_map == nullptr ? 0 : MaterialInspector_material.metallic_map->texture_data->ID;
             uint32_t roughness_mapID = MaterialInspector_material.roughness_map == nullptr ? 0 : MaterialInspector_material.roughness_map->texture_data->ID;
             uint32_t ao_mapID = MaterialInspector_material.ao_map == nullptr ? 0 : MaterialInspector_material.ao_map->texture_data->ID;
@@ -79,13 +79,13 @@ namespace Editor {
             ImGui::Text("Height Texture");
             ImGui::ImageButton((void *)heightID, ImVec2(100, 100), ImVec2(0, 1), ImVec2(1, 0));
             if (ImGui::IsItemClicked(1)) {
-                MaterialInspector_material.height.reset();
-                MaterialInspector_material.height = nullptr;
+                MaterialInspector_material.emission_map.reset();
+                MaterialInspector_material.emission_map = nullptr;
             }
             if (ImGui::BeginDragDropTarget()) {
                 if (const ImGuiPayload *payload = ImGui::AcceptDragDropPayload("image_file")) {
                     std::string path = (char *)payload->Data;
-                    MaterialInspector_material.SetHeight(path, true);
+                    MaterialInspector_material.SetEmission(path, true);
                 }
             }
             ImGui::NewLine();

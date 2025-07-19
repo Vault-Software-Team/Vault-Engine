@@ -868,7 +868,8 @@ namespace Engine {
         emitter << yaml::Key << "diffuse" << yaml::Value << (material.diffuse ? material.diffuse->texture_data->texture_filepath : "nullptr");
         emitter << yaml::Key << "specular" << yaml::Value << (material.specular ? material.specular->texture_data->texture_filepath : "nullptr");
         emitter << yaml::Key << "normal" << yaml::Value << (material.normal ? material.normal->texture_data->texture_filepath : "nullptr");
-        emitter << yaml::Key << "height" << yaml::Value << (material.height ? material.height->texture_data->texture_filepath : "nullptr");
+        APP_INFO("{0}", (void *)material.emission_map.get());
+        emitter << yaml::Key << "emission" << yaml::Value << (material.emission_map ? material.emission_map->texture_data->texture_filepath : "nullptr");
         emitter << yaml::Key << "roughness_map" << yaml::Value << (material.roughness_map ? material.roughness_map->texture_data->texture_filepath : "nullptr");
         emitter << yaml::Key << "metallic_map" << yaml::Value << (material.metallic_map ? material.metallic_map->texture_data->texture_filepath : "nullptr");
         emitter << yaml::Key << "ao_map" << yaml::Value << (material.ao_map ? material.ao_map->texture_data->texture_filepath : "nullptr");
@@ -912,10 +913,10 @@ namespace Engine {
         } else {
             material.normal.reset();
         }
-        if (data["height"].as<std::string>() != "nullptr") {
-            material.SetHeight(data["height"].as<std::string>(), true);
+        if (data["emission"]) {
+            if (data["emission"].as<std::string>() != "nullptr") material.SetEmission(data["emission"].as<std::string>(), true);
         } else {
-            material.height.reset();
+            material.emission_map.reset();
         }
         if (data["roughness_map"] && data["roughness_map"].as<std::string>() != "nullptr") {
             material.SetRoughness(data["roughness_map"].as<std::string>());

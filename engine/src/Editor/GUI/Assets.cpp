@@ -21,18 +21,28 @@ using namespace Engine::Components;
 namespace fs = std::filesystem;
 
 static std::string AddFile_Folder = "./assets";
-static std::set<std::filesystem::directory_entry> cached_files;
+static std::vector<std::filesystem::directory_entry> cached_files;
+
+bool SortEntries(fs::directory_entry a, fs::directory_entry b) {
+    return a.path().filename().string() < b.path().filename().string();
+}
 
 void CacheFiles(std::string &filterStr, const std::string &str) {
     cached_files.clear();
-    std::set<std::filesystem::directory_entry> files_to_insert;
+    std::vector<std::filesystem::directory_entry> files_to_insert;
     auto iter = std::filesystem::directory_iterator(str);
 
     std::transform(filterStr.begin(), filterStr.end(), filterStr.begin(), Editor::asciitolower);
 
     for (auto &entry : iter) {
-        cached_files.insert(entry);
+        if (entry.is_directory())
+            cached_files.push_back(entry);
+        else
+            files_to_insert.push_back(entry);
     }
+    std::sort(cached_files.begin(), cached_files.end(), SortEntries);
+    std::sort(files_to_insert.begin(), files_to_insert.end(), SortEntries);
+    cached_files.insert(cached_files.end(), files_to_insert.begin(), files_to_insert.end());
 }
 
 void DirectoryIterator(const std::string &str, const char *filter_str, bool dynamic = false) {
@@ -66,15 +76,22 @@ void DirectoryIterator(const std::string &str, const char *filter_str, bool dyna
         isFirstFrame = false;
     }
 
-    std::set<std::filesystem::directory_entry> dynamic_files;
+    std::vector<std::filesystem::directory_entry> dynamic_files;
     if (dynamic) {
         auto iter = std::filesystem::directory_iterator(str);
+        std::vector<std::filesystem::directory_entry> files_to_insert;
 
         std::transform(filterStr.begin(), filterStr.end(), filterStr.begin(), Editor::asciitolower);
 
         for (auto &entry : iter) {
-            dynamic_files.insert(entry);
+            if (entry.is_directory())
+                dynamic_files.push_back(entry);
+            else
+                files_to_insert.push_back(entry);
         }
+        std::sort(dynamic_files.begin(), dynamic_files.end(), SortEntries);
+        std::sort(files_to_insert.begin(), files_to_insert.end(), SortEntries);
+        dynamic_files.insert(dynamic_files.end(), files_to_insert.begin(), files_to_insert.end());
     }
 
     static std::string FilePath = "";

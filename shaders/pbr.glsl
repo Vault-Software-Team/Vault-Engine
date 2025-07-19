@@ -104,7 +104,7 @@ struct Texture {
 uniform Texture texture_diffuse;
 uniform Texture texture_specular;
 uniform Texture texture_normal;
-uniform Texture texture_height;
+uniform Texture texture_emission;
 uniform Texture texture_roughness;
 uniform Texture texture_metallic;
 uniform Texture texture_ao;
@@ -427,7 +427,7 @@ void main() {
 
     if (FragColor.a < 0.1) discard;
 
-    if (config_PostProcessing.GlobalBloom) {
+    if (config_PostProcessing.GlobalBloom && !texture_emission.defined) {
         float brightness = dot(FragColor.rgb, vec3(0.2126, 0.7152, 0.0722));
 
         if (emissionColor.rgb == vec3(0, 0, 0)) {
@@ -442,6 +442,11 @@ void main() {
 
     } else {
         BloomColor = vec4(emissionColor.rgb, FragColor.a);
+    }
+
+    if (texture_emission.defined) {
+        vec4 tex_emmission_color = texture(texture_emission.tex, texUV);
+        BloomColor = vec4(tex_emmission_color.rgb * emissionColor.rgb, FragColor.a);
     }
 
     // BloomColor = vec4(5, 5, 5, 1);

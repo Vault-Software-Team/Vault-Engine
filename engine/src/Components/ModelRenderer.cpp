@@ -1,3 +1,4 @@
+#include "Renderer/Mesh.hpp"
 #include "imgui/imgui.h"
 #include <Engine/Components/ModelRenderer.hpp>
 #include <Editor/GUI/MainGUI.hpp>
@@ -5,6 +6,17 @@
 #include <Engine/SceneSerialization.hpp>
 #include <Engine/Runtime.hpp>
 #include <string>
+
+void RemoveMaterialData(VaultRenderer::Material &material) {
+    material.filePath = "";
+    material.diffuse.reset();
+    material.specular.reset();
+    material.normal.reset();
+    material.roughness_map.reset();
+    material.metallic_map.reset();
+    material.ao_map.reset();
+    material.emission_map.reset();
+}
 
 namespace Engine::Components {
     void ModelRenderer::OnGUI() {
@@ -72,22 +84,17 @@ namespace Engine::Components {
                                     ;
                                 Serializer::DeserializeMaterial(mesh.material.filePath, mesh.material);
                             }
-                            if (mesh.material.filePath != "" && ImGui::Button(ICON_FA_TRASH_CAN " Remove Material")) {
-                                mesh.material.filePath = "";
-                                mesh.material.diffuse.reset();
-                                mesh.material.specular.reset();
-                                mesh.material.normal.reset();
-                                mesh.material.roughness_map.reset();
-                                mesh.material.metallic_map.reset();
-                                mesh.material.ao_map.reset();
-                                mesh.material.height.reset();
-                            }
                             if (ImGui::BeginDragDropTarget()) {
                                 if (const ImGuiPayload *payload = ImGui::AcceptDragDropPayload("material")) {
+                                    RemoveMaterialData(mesh.material);
                                     mesh.material.filePath = (char *)payload->Data;
                                     Serializer::DeserializeMaterial(mesh.material.filePath, mesh.material);
                                 }
                             }
+                            if (mesh.material.filePath != "" && ImGui::Button(ICON_FA_TRASH_CAN " Remove Material")) {
+                                RemoveMaterialData(mesh.material);
+                            }
+
                             ImGui::TreePop();
                         }
                         ImGui::PopID();

@@ -9,7 +9,7 @@ namespace VaultRenderer {
         TEXTURE_DIFFUSE,
         TEXTURE_SPECULAR,
         TEXTURE_NORMAL,
-        TEXTURE_HEIGHT,
+        TEXTURE_EMISSION,
         TEXTURE_HDRI,
         TEXTURE_GUI_ICON
     };

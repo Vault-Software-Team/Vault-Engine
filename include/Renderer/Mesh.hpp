@@ -23,7 +23,7 @@ namespace VaultRenderer {
         std::unique_ptr<VaultRenderer::Texture> diffuse{nullptr};
         std::unique_ptr<VaultRenderer::Texture> specular{nullptr};
         std::unique_ptr<VaultRenderer::Texture> normal{nullptr};
-        std::unique_ptr<VaultRenderer::Texture> height{nullptr};
+        std::unique_ptr<VaultRenderer::Texture> emission_map{nullptr};
         std::unique_ptr<VaultRenderer::Texture> roughness_map{nullptr};
         std::unique_ptr<VaultRenderer::Texture> metallic_map{nullptr};
         std::unique_ptr<VaultRenderer::Texture> ao_map{nullptr};
@@ -33,7 +33,7 @@ namespace VaultRenderer {
         void SetDiffuse(const std::string &texture_path, bool gl_linear = false);
         void SetSpecular(const std::string &texture_path, bool gl_linear = false);
         void SetNormal(const std::string &texture_path, bool gl_linear = false);
-        void SetHeight(const std::string &texture_path, bool gl_linear = false);
+        void SetEmission(const std::string &texture_path, bool gl_linear = false);
         void SetRoughness(const std::string &texture_path, bool gl_linear = false);
         void SetMetallic(const std::string &texture_path, bool gl_linear = false);
         void SetAO(const std::string &texture_path, bool gl_linear = false);
