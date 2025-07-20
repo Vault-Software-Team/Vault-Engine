@@ -402,7 +402,7 @@ namespace Engine {
             auto &light = Scene::Main->EntityRegistry.get<DirectionalLight>(Scene::Main->EntityRegistry.view<DirectionalLight>().back());
             c_ShadowMap->lightDir = &light.transform->position;
             if (light.enable_shadow_mapping) {
-                shadow_map.CalculateMatrices(light.transform->position, Scene::Main->main_camera_object->transform->position, Scene::Main->main_camera_object->front);
+                shadow_map.CalculateMatrices(light.transform->position, *Scene::Main->main_camera_object);
                 shadow_map.SetLightProjection(*default_shader);
             }
         }

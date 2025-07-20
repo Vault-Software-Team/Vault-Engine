@@ -41,6 +41,10 @@ namespace VaultRenderer {
 
         GLFWwindow *GetGLFWWindow() const;
 
+        // Frame to Image
+        static int RENDER_TO_IMAGE_FrameCount;
+        static std::string RENDER_TO_IMAGE_Folder;
+
         // RENDERER SETTINGS
         static RendererConfig Renderer;
 

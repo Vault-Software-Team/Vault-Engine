@@ -1,5 +1,6 @@
 #include "Engine/Components/BoneManipulator.hpp"
 #include "Engine/Components/ModelAnimator.hpp"
+#include "Engine/Components/ModelRenderer.hpp"
 #include "Engine/Discord.hpp"
 #include "Engine/SceneSerialization.hpp"
 #include <Editor/GUI/MainGUI.hpp>
@@ -54,35 +55,9 @@ namespace Editor {
 
                 auto &gameObject = GameObject::New("Model");
 
-                int i = 0;
-                for (auto &mesh : model->meshes) {
-                    auto &_gameObject = GameObject::New(mesh.name);
-                    _gameObject->AddComponent<MeshRenderer>();
-                    _gameObject->parent = gameObject->ID;
-
-                    auto &meshRenderer = _gameObject->GetComponent<MeshRenderer>();
-                    meshRenderer.SetCustomMeshType(mesh.vertices, mesh.indices);
-                    meshRenderer.mesh_index = i;
-                    meshRenderer.mesh_path = model->path;
-                    meshRenderer.model = std::shared_ptr<ModelMesh>(model);
-
-                    i++;
-                }
-                // for (auto &bone : model->m_BoneInfoMap) {
-                //     // first = bone name, second = bone info
-                //     std::cout << "Creating bone manip: " << bone.first << "\n";
-                //     auto &_gameObject = GameObject::New(bone.first);
-                //     std::cout << _gameObject.get() << " " << gameObject.get() << "\n";
-                //     _gameObject->AddComponent<BoneManipulator>();
-                //     _gameObject->parent = gameObject->ID;
-
-                //     auto &boneManipulator = _gameObject->AddComponent<BoneManipulator>();
-                //     boneManipulator.nodeName = bone.first;
-                // }
-
-                auto &comp = gameObject->AddComponent<ModelAnimator>();
-
-                comp.model = std::make_unique<ModelMesh>((char *)payload->Data);
+                auto &renderer = gameObject->AddComponent<ModelRenderer>();
+                renderer.model.reset();
+                renderer.model = std::make_unique<ModelMesh>((char *)payload->Data);
             }
 
             ImGui::EndDragDropTarget();

@@ -24,8 +24,7 @@ namespace Engine::Components {
     }
 
     void SpriteRenderer::Draw(VaultRenderer::Shader &shader) {
-        if (mesh)
-            mesh->Draw(shader);
+        if (mesh) mesh->Draw(shader);
     }
 
     void SpriteRenderer::OnGUI() {
@@ -42,6 +41,18 @@ namespace Engine::Components {
                 if (const ImGuiPayload *payload = ImGui::AcceptDragDropPayload("image_file")) {
                     std::string path = (char *)payload->Data;
                     mesh->material.SetDiffuse(path);
+                }
+            }
+
+            ImGui::Text("Emission Texture");
+            ImGui::ImageButton((mesh->material.emission_map ? reinterpret_cast<void *>(mesh->material.emission_map->texture_data->ID) : 0), ImVec2(100, 100), ImVec2(0, 1), ImVec2(1, 0));
+            if (ImGui::IsItemClicked(1)) {
+                mesh->material.emission_map.reset();
+            }
+            if (ImGui::BeginDragDropTarget()) {
+                if (const ImGuiPayload *payload = ImGui::AcceptDragDropPayload("image_file")) {
+                    std::string path = (char *)payload->Data;
+                    mesh->material.SetEmission(path);
                 }
             }
 

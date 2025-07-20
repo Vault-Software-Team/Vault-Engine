@@ -1138,6 +1138,14 @@ namespace Engine {
         if (data["PostProcessing.ShadowStrength"]) {
             PostProcessing::ShadowStrength = data["PostProcessing.ShadowStrength"].as<float>();
         }
+
+        if (data["RTI.FrameCount"]) {
+            VaultRenderer::Window::RENDER_TO_IMAGE_FrameCount = data["RTI.FrameCount"].as<int>();
+        }
+
+        if (data["RTI.Folder"]) {
+            VaultRenderer::Window::RENDER_TO_IMAGE_Folder = data["RTI.Folder"].as<std::string>();
+        }
     }
 
     void Serializer::SaveConfigFile(const std::string &path) {
@@ -1166,6 +1174,10 @@ namespace Engine {
         emitter << yaml::Key << "PostProcessing.BloomThreshold" << yaml::Value << PostProcessing::BloomThreshold;
         emitter << yaml::Key << "PostProcessing.BloomMultiplier" << yaml::Value << PostProcessing::BloomMultiplier;
         emitter << yaml::Key << "PostProcessing.ShadowStrength" << yaml::Value << PostProcessing::ShadowStrength;
+
+        // Render To Image
+        emitter << yaml::Key << "RTI.FrameCount" << yaml::Value << VaultRenderer::Window::RENDER_TO_IMAGE_FrameCount;
+        emitter << yaml::Key << "RTI.Folder" << yaml::Value << VaultRenderer::Window::RENDER_TO_IMAGE_Folder;
 
         std::ofstream file(path);
         file << emitter.c_str();

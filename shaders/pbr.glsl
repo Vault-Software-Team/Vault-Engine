@@ -262,7 +262,8 @@ float ShadowCalculation(vec3 fragPosWorldSpace, vec3 N, vec3 L, bool cascaded) {
 
         float closestDepth = texture(m_shadowMap, lightCoords.xy).r;
         float currentDepth = lightCoords.z;
-        float bias = max(dirshadow_bias_max * (1.0f - dot(N, L)), dirshadow_bias_min);
+        float diffuseFactor = dot(N, -L);
+        float bias = mix(dirshadow_bias_max, dirshadow_bias_min, diffuseFactor);
 
         int sampleRadius = 2;
         vec2 pixelSize = 1.0 / textureSize(m_shadowMap, 0);
@@ -273,6 +274,8 @@ float ShadowCalculation(vec3 fragPosWorldSpace, vec3 N, vec3 L, bool cascaded) {
                     shadow += 1.0f;
             }
         }
+        // if (currentDepth > closestDepth + bias)
+        // shadow += 1.0f;
 
         shadow /= pow((sampleRadius * 2 + 1), 2);
     }

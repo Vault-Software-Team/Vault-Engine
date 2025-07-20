@@ -1,4 +1,5 @@
 #pragma once
+#include "Renderer/Window.hpp"
 #include "imgui/ImGuiNotify.hpp"
 #include <Editor/GUI/MainGUI.hpp>
 #include <Engine/Scene.hpp>
@@ -26,6 +27,9 @@ namespace Editor {
             }
 
             ImGui::InputText("Game Title", &Engine::Serializer::config.title);
+
+            ImGui::InputInt("RTI Counter", &VaultRenderer::Window::RENDER_TO_IMAGE_FrameCount);
+            ImGui::InputText("Folder Path", &VaultRenderer::Window::RENDER_TO_IMAGE_Folder);
 
             if (ImGui::Button(ICON_FA_FLOPPY_DISK " Save Configuration")) {
                 Engine::Serializer::SaveConfigFile("./assets/config.yaml");

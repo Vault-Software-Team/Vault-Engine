@@ -270,6 +270,7 @@ int main() {
 
     auto Function_ShadowMapRendering = [&] {
         // Directional Light  Shadow Mapping
+        glCullFace(GL_FRONT);
         if (Scene::Main->EntityRegistry.valid(Scene::Main->EntityRegistry.view<DirectionalLight>().back())) {
             if (Scene::Main->EntityRegistry.get<DirectionalLight>(Scene::Main->EntityRegistry.view<DirectionalLight>().back()).enable_shadow_mapping) {
                 shadow_map.RenderSpace([&](std::unique_ptr<Shader> &shadow_shader) {
@@ -289,6 +290,7 @@ int main() {
 
             light.DrawToShadowMap(shadow_cubemap_shader);
         }
+        glCullFace(GL_BACK);
     };
 
     auto Function_FramebufferShaderUniforms = [&](Shader &fbShader) {

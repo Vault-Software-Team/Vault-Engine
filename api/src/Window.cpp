@@ -22,6 +22,8 @@
 
 namespace VaultRenderer {
     DLL_API Window *Window::window;
+    int Window::RENDER_TO_IMAGE_FrameCount = 1;
+    std::string Window::RENDER_TO_IMAGE_Folder = "./";
 
     RendererConfig Window::Renderer;
 
@@ -196,7 +198,8 @@ namespace VaultRenderer {
                 ENGINE_INFO("Rendering to image...");
                 glReadPixels(0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE, buffer);
                 stbi_flip_vertically_on_write(true);
-                stbi_write_png("./data.png", width, height, 3, buffer, width * 3);
+                std::string path = RENDER_TO_IMAGE_Folder + "/" + std::to_string(RENDER_TO_IMAGE_FrameCount) + ".png";
+                stbi_write_png(path.c_str(), width, height, 3, buffer, width * 3);
                 m_PostProcessingFramebuffer->Unbind();
                 delete[] buffer;
                 ENGINE_INFO("Successfully rendered to image!");
@@ -209,6 +212,7 @@ namespace VaultRenderer {
                 framebuffer->RegenerateFramebuffer();
                 m_PostProcessingFramebuffer->RegenerateFramebuffer();
                 render_to_image = false;
+                RENDER_TO_IMAGE_FrameCount++;
             }
 
             // End of Framebuffer Shenanigans

@@ -41,11 +41,17 @@ namespace Editor {
         if (!open)
             return;
 
+        static int shadow_map_size = 4096;
+
         if (ImGui::Begin("Shadow Mapping", &open, ImGuiWindowFlags_NoDocking)) {
             VaultRenderer::ShadowMap *map = Engine::Runtime::instance->shadowMap;
             ImGui::DragFloat("Near", &map->near);
             ImGui::DragFloat("Far", &map->far);
             ImGui::DragFloat("Ortho Size", &map->ortho_size);
+            ImGui::DragInt("Shadow Map Resolution", &shadow_map_size);
+            if (ImGui::Button("Regenerate Shadow Map")) {
+                map->ChangeShadowMapSize(shadow_map_size, shadow_map_size);
+            }
             ImGui::ImageButton((void *)map->GetTextureID(), ImVec2(200, 200), ImVec2(0, 1), ImVec2(1, 0));
 
             ImGui::End();

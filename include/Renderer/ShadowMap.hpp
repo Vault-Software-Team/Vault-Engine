@@ -1,4 +1,5 @@
 #pragma once
+#include "Engine/Components/Camera.hpp"
 #include <dllapi.hpp>
 #include <cstdint>
 #include <string>
@@ -34,7 +35,7 @@ namespace VaultRenderer {
         void RenderSpace(std::function<void(std::unique_ptr<Shader> &)> shadow_render_call);
         void ChangeShadowMapSize(const uint32_t width, const uint32_t height);
         void BindTexture(int slot = 10);
-        void CalculateMatrices(const glm::vec3 &light_position, const glm::vec3 &cam_pos, const glm::vec3 &cam_front);
+        void CalculateMatrices(const glm::vec3 &light_position, Engine::Components::Camera &camera);
         DepthFramebuffer &GetDepthBuffer();
         void SetLightProjection(Shader &shader);
         uint32_t &GetTextureID();
